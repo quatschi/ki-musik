@@ -33,14 +33,14 @@
 <body>
   <a class="back" href="index.html">← Übersicht</a>
   <h1>🎵 KI-Musik Radio</h1>
-  <p class="subtitle">Zufälliger Kanal · Zufälliges Video</p>
+  <p class="subtitle" id="subtitle">Zufälliger Kanal · Zufälliges Video</p>
   <div class="filter-section" id="filters">
     <button class="filter-btn active" onclick="setFilter('Alle')">Alle</button>
   </div>
   <div class="player-container">
     <div class="video-frame">
       <div class="placeholder" id="placeholder"><span class="spinner"></span>Lade...</div>
-      <iframe id="player" src="" allowfullscreen allow="autoplay" style="display:none"></iframe>
+      <div id="yt-player"></div>
     </div>
     <div class="info" id="info"></div>
   </div>
@@ -48,6 +48,36 @@
 <script>
   let channelList = [];
   let currentFilter = 'Alle';
+  let ytPlayer = null;
+  let playerReady = false;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const startFilter = urlParams.get('kategorie') || 'Alle';
+
+  // YouTube IFrame API laden
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player('yt-player', {
+      width: '100%',
+      height: '100%',
+      playerVars: { autoplay: 1, rel: 0 },
+      events: {
+        onReady: () => { playerReady = true; },
+        onStateChange: (e) => {
+          // Wenn Video endet (state = 0), automatisch nächstes laden
+          if (e.data === YT.PlayerState.ENDED) {
+            pickRandom();
+          }
+        }
+      }
+    });
+    // Stil anpassen
+    const iframe = document.querySelector('#yt-player iframe');
+    if (iframe) { iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '0'; iframe.style.width = '100%'; iframe.style.height = '100%'; }
+  }
 
   async function loadChannelList() {
     const resp = await fetch('index.html');
@@ -70,7 +100,6 @@
   async function loadOneChannel(entry) {
     document.getElementById('placeholder').innerHTML = '<span class="spinner"></span>Lade ' + entry.name + '...';
     document.getElementById('placeholder').style.display = 'flex';
-    document.getElementById('player').style.display = 'none';
     const resp = await fetch(entry.file);
     const text = await resp.text();
     const parser = new DOMParser();
@@ -91,6 +120,7 @@
   function setFilter(kat) {
     currentFilter = kat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === kat));
+    document.getElementById('subtitle').textContent = kat === 'Alle' ? 'Alle Kategorien · Zufälliges Video' : kat + ' · Zufälliges Video';
     pickRandom();
   }
 
@@ -110,11 +140,15 @@
     if (!videos.length) { pickRandom(); return; }
     const video = videos[Math.floor(Math.random() * videos.length)];
 
-    // YouTube einbetten – autoplay
-    const player = document.getElementById('player');
-    player.src = `https://www.youtube.com/embed/${video.videoId}?autoplay=1&rel=0`;
-    player.style.display = 'block';
     document.getElementById('placeholder').style.display = 'none';
+
+    // Video im YouTube-Player laden
+    if (ytPlayer && playerReady) {
+      ytPlayer.loadVideoById(video.videoId);
+    } else {
+      // Fallback falls API noch nicht bereit
+      setTimeout(() => { if (ytPlayer && playerReady) ytPlayer.loadVideoById(video.videoId); }, 1000);
+    }
 
     document.getElementById('info').innerHTML = `
       <div class="channel-row">
@@ -141,7 +175,17 @@
       btn.onclick = () => setFilter(cat);
       filterDiv.appendChild(btn);
     });
-    pickRandom();
+
+    if (startFilter !== 'Alle') {
+      currentFilter = startFilter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === startFilter));
+      document.getElementById('subtitle').textContent = startFilter + ' · Zufälliges Video';
+    }
+
+    // Warten bis YouTube API bereit
+    const waitForPlayer = setInterval(() => {
+      if (playerReady) { clearInterval(waitForPlayer); pickRandom(); }
+    }, 200);
   }
 
   init();
