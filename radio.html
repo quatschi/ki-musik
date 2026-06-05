@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI-Musik Radio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 30px 20px; }
+  .back { position: fixed; top: 20px; left: 20px; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; }
+  .back:hover { color: #e0d7ff; }
+  h1 { font-size: 2rem; font-weight: 300; color: #e0d7ff; margin-bottom: 8px; text-align: center; }
+  .subtitle { font-size: 0.85rem; color: #9b8fc0; margin-bottom: 30px; text-align: center; }
+  .filter-section { margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 640px; }
+  .filter-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #9b8fc0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
+  .filter-btn.active { background: rgba(180,150,255,0.25); border-color: rgba(180,150,255,0.6); color: #e8e0ff; }
+  .card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; text-align: center; }
+  .channel-thumb { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); margin-bottom: 12px; }
+  .channel-name { font-size: 0.8rem; color: #9b8fc0; margin-bottom: 10px; letter-spacing: 0.05em; }
+  .video-title { font-size: 1rem; color: #e8e0ff; line-height: 1.4; margin-bottom: 6px; }
+  .video-dur { font-size: 0.8rem; color: #7a6fa0; margin-bottom: 20px; }
+  .video-thumb { width: 100%; max-width: 400px; border-radius: 10px; margin-bottom: 24px; }
+  .btn-play { display: block; background: rgba(180,150,255,0.25); border: 1px solid rgba(180,150,255,0.6); border-radius: 50px; color: #e8e0ff; padding: 16px 40px; font-size: 1rem; text-decoration: none; transition: all 0.2s ease; margin-bottom: 12px; }
+  .btn-play:hover { background: rgba(180,150,255,0.4); transform: scale(1.02); }
+  .btn-next { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; color: #9b8fc0; padding: 12px 32px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease; display: block; width: 100%; font-family: inherit; }
+  .btn-next:hover { background: rgba(255,255,255,0.12); color: #e0d7ff; }
+  .loading { color: #9b8fc0; font-size: 0.9rem; padding: 20px; }
+  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(180,150,255,0.3); border-top-color: #b496ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← Übersicht</a>
+  <h1>🎵 KI-Musik Radio</h1>
+  <p class="subtitle">Zufälliger Kanal · Zufälliges Video</p>
+  <div class="filter-section" id="filters">
+    <button class="filter-btn active" onclick="setFilter('Alle')">Alle</button>
+  </div>
+  <div class="card" id="card">
+    <div class="loading"><span class="spinner"></span>Lade Kanalliste...</div>
+  </div>
+
+<script>
+  let channelList = [];
+  let currentFilter = 'Alle';
+
+  // Schritt 1: Nur index.html laden – sehr schnell
+  async function loadChannelList() {
+    const resp = await fetch('index.html');
+    const text = await resp.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    const links = [];
+    doc.querySelectorAll('a.card').forEach(a => {
+      const href = a.getAttribute('href');
+      const cats = a.getAttribute('data-cats') || '';
+      const name = a.querySelector('.card-name')?.textContent?.trim() || '';
+      const thumb = a.querySelector('.ch-thumb')?.getAttribute('src') || '';
+      if (href && href.endsWith('.html') && href !== 'neu.html' && href !== 'radio.html') {
+        links.push({ file: href, categories: cats, name, thumb });
+      }
+    });
+    return links;
+  }
+
+  // Schritt 2: Nur EINEN zufälligen Kanal laden – schnell
+  async function loadOneChannel(entry) {
+    document.getElementById('card').innerHTML = `<div class="loading"><span class="spinner"></span>Lade ${entry.name}...</div>`;
+    const resp = await fetch(entry.file);
+    const text = await resp.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    const videos = [];
+    doc.querySelectorAll('.video-card').forEach(card => {
+      const url = card.getAttribute('href');
+      const title = card.querySelector('.video-title')?.textContent?.trim() || '';
+      const dur = card.querySelector('.video-dur')?.textContent?.trim() || '';
+      const thumb = card.querySelector('.thumb')?.getAttribute('src') || '';
+      if (url && title) videos.push({ url, title, dur, thumb });
+    });
+    return videos;
+  }
+
+  function setFilter(kat) {
+    currentFilter = kat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === kat));
+    pickRandom();
+  }
+
+  function getFiltered() {
+    if (currentFilter === 'Alle') return channelList;
+    return channelList.filter(c => c.categories.includes(currentFilter));
+  }
+
+  async function pickRandom() {
+    const filtered = getFiltered();
+    if (!filtered.length) {
+      document.getElementById('card').innerHTML = '<div class="loading">Keine Kanäle in dieser Kategorie.</div>';
+      return;
+    }
+
+    // Zufälligen Kanal wählen
+    const channel = filtered[Math.floor(Math.random() * filtered.length)];
+
+    // Nur diesen einen Kanal laden
+    const videos = await loadOneChannel(channel);
+    if (!videos.length) { pickRandom(); return; }
+
+    // Zufälliges Video wählen
+    const video = videos[Math.floor(Math.random() * videos.length)];
+
+    document.getElementById('card').innerHTML = `
+      ${channel.thumb ? `<img class="channel-thumb" src="${channel.thumb}" onerror="this.style.display='none'">` : ''}
+      <div class="channel-name">${channel.name}</div>
+      <div class="video-title">${video.title}</div>
+      <div class="video-dur">${video.dur}</div>
+      ${video.thumb ? `<img class="video-thumb" src="${video.thumb}" onerror="this.style.display='none'">` : ''}
+      <a class="btn-play" href="${video.url}" target="_blank">▶ Auf YouTube abspielen</a>
+      <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
+    `;
+  }
+
+  async function init() {
+    channelList = await loadChannelList();
+
+    // Kategorien aus der bereits geladenen Liste
+    const cats = new Set();
+    channelList.forEach(c => {
+      if (c.categories) c.categories.split(',').forEach(cat => { const t = cat.trim(); if (t) cats.add(t); });
+    });
+    const filterDiv = document.getElementById('filters');
+    [...cats].sort().forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.textContent = cat;
+      btn.onclick = () => setFilter(cat);
+      filterDiv.appendChild(btn);
+    });
+
+    pickRandom();
+  }
+
+  init();
+</script>
+</body>
+</html>
