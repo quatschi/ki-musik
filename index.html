@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI-Musik – Übersicht</title>
+<link rel="icon" type="image/png" href="KI-Sax.png">
+<link rel="apple-touch-icon" href="KI-Sax.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -124,12 +126,48 @@
     color: #e8e0ff;
     font-weight: 500;
   }
-
+  .alpha-bar {
+    position: fixed;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    z-index: 100;
+  }
+  .alpha-bar a {
+    display: block;
+    width: 22px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #4a3f6a;
+    text-decoration: none;
+    line-height: 1.7;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+  }
+  .alpha-bar a.has-entries {
+    color: #9b8fc0;
+  }
+  .alpha-bar a.has-entries:hover {
+    background: rgba(180,150,255,0.25);
+    color: #fff;
+  }
+  .alpha-anchor {
+    display: block;
+    height: 0;
+    visibility: hidden;
+  }
+  @media (max-width: 500px) {
+    .alpha-bar a { font-size: 0.6rem; width: 18px; }
+  }
 </style>
 </head>
 <body>
   <h1>🎵 KI-Musik</h1>
-  <div class="subtitle">207 Kanäle · 07.06.2026 08:40</div>
+  <div class="subtitle">208 Kanäle · 07.06.2026 09:00</div>
   <div style="text-align:center;margin-bottom:24px">
     <a href="neu.html" style="color:#9b8fc0;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:8px;">🕐 Neueste Kanäle</a>
     <a href="radio.html" id="radio-link" style="color:#9b8fc0;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:8px;">📻 Radio</a>
@@ -620,6 +658,14 @@
             <div class="card-info">
                 <span class="card-name">FunkFlow</span>
                 <span class="card-meta">11 Videos · 07.06.2026</span>
+            </div>
+            <span class="card-arrow">›</span>
+        </a>
+        <a class="card" href="FunkyClef.html" data-cats="Funk, Soul, Lounge">
+            <img src="https://yt3.ggpht.com/FgNllkePsJYFYEM_muvHTHGGHgEFiJNNwq2X5XjK7yDlJB7GZYAQD01zTxC0SlDcQIgU06oFlw=s800-c-k-c0x00ffffff-no-rj" class="ch-thumb">
+            <div class="card-info">
+                <span class="card-name">FunkyClef</span>
+                <span class="card-meta">20 Videos · 07.06.2026</span>
             </div>
             <span class="card-arrow">›</span>
         </a>
@@ -1808,6 +1854,7 @@
             <span class="card-arrow">›</span>
         </a>
   </div>
+  <div class="alpha-bar" id="alpha-bar"></div>
 <script>
   function filterCards(kat) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -1819,12 +1866,39 @@
         card.style.display = 'none';
       }
     });
-    // Radio-Link mit gewählter Kategorie aktualisieren
     const radioLink = document.getElementById('radio-link');
     if (radioLink) {
       radioLink.href = kat === 'Alle' ? 'radio.html' : 'radio.html?kategorie=' + encodeURIComponent(kat);
     }
+    buildAlphaBar();
   }
+
+  function buildAlphaBar() {
+    const bar = document.getElementById('alpha-bar');
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    document.querySelectorAll('.alpha-anchor').forEach(a => a.remove());
+    const cards = Array.from(document.querySelectorAll('.card'))
+      .filter(c => c.style.display !== 'none');
+    const firstOfLetter = {};
+    cards.forEach(card => {
+      const name = card.querySelector('.card-name').textContent.trim();
+      const letter = name[0].toUpperCase();
+      if (!firstOfLetter[letter]) firstOfLetter[letter] = card;
+    });
+    Object.entries(firstOfLetter).forEach(([letter, card]) => {
+      const anchor = document.createElement('span');
+      anchor.className = 'alpha-anchor';
+      anchor.id = 'alpha-' + letter;
+      card.parentNode.insertBefore(anchor, card);
+    });
+    bar.innerHTML = letters.map(l => {
+      const has = firstOfLetter[l] ? 'has-entries' : '';
+      const href = firstOfLetter[l] ? '#alpha-' + l : '#';
+      return '<a href="' + href + '" class="' + has + '">' + l + '</a>';
+    }).join('');
+  }
+
+  window.addEventListener('DOMContentLoaded', buildAlphaBar);
 </script>
 </body>
 </html>
