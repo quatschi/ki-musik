@@ -17,7 +17,7 @@
   .player-container { width: 100%; max-width: 640px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; overflow: hidden; }
   .video-frame { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
   .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-  .video-frame .placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9b8fc0; font-size: 0.9rem; }
+  .video-frame .placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9b8fc0; font-size: 0.9rem; flex-direction: column; gap: 10px; }
   .info { padding: 16px 20px; }
   .channel-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .channel-thumb { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(180,150,255,0.3); flex-shrink: 0; }
@@ -26,7 +26,8 @@
   .video-dur { font-size: 0.75rem; color: #7a6fa0; margin-bottom: 16px; }
   .btn-next { background: rgba(180,150,255,0.2); border: 1px solid rgba(180,150,255,0.5); border-radius: 50px; color: #e8e0ff; padding: 14px 32px; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; display: block; width: 100%; font-family: inherit; }
   .btn-next:hover { background: rgba(180,150,255,0.35); }
-  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(180,150,255,0.3); border-top-color: #b496ff; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(180,150,255,0.3); border-top-color: #b496ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -39,17 +40,26 @@
   </div>
   <div class="player-container">
     <div class="video-frame">
-      <div class="placeholder" id="placeholder"><span class="spinner"></span>Lade...</div>
+      <div class="placeholder" id="placeholder">
+        <span class="spinner"></span>
+        <span class="status-msg" id="status-msg">Lade...</span>
+      </div>
       <div id="yt-player"></div>
     </div>
     <div class="info" id="info"></div>
   </div>
 
 <script>
+  // YouTube Data API Schlüssel (nur für Einbettbarkeits-Check)
+  const API_KEY = 'AIzaSyAMqQPFipnCXme2n5znJO4tcNBkVudntFc';
+  const API_KEY2 = 'AIzaSyBBOUTQIbs9_xUbVqbEKyVBb5q7xc1y0oM';
+
   let channelList = [];
   let currentFilter = 'Alle';
   let ytPlayer = null;
   let playerReady = false;
+  let isLoading = false;
+  let playbackTimeout = null;
 
   const urlParams = new URLSearchParams(window.location.search);
   const startFilter = urlParams.get('kategorie') || 'Alle';
@@ -67,16 +77,54 @@
       events: {
         onReady: () => { playerReady = true; },
         onStateChange: (e) => {
-          // Wenn Video endet (state = 0), automatisch nächstes laden
+          if (e.data === YT.PlayerState.PLAYING) {
+            clearPlaybackTimeout();
+            document.getElementById('placeholder').style.display = 'none';
+          }
           if (e.data === YT.PlayerState.ENDED) {
             pickRandom();
           }
+        },
+        onError: (e) => {
+          console.log('YouTube Fehler:', e.data);
+          clearPlaybackTimeout();
+          setTimeout(() => pickRandom(), 1000);
         }
       }
     });
-    // Stil anpassen
-    const iframe = document.querySelector('#yt-player iframe');
-    if (iframe) { iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '0'; iframe.style.width = '100%'; iframe.style.height = '100%'; }
+  }
+
+  function startPlaybackTimeout() {
+    clearPlaybackTimeout();
+    playbackTimeout = setTimeout(() => {
+      if (ytPlayer && ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
+        console.log('Timeout – weiter');
+        pickRandom();
+      }
+    }, 7000);
+  }
+
+  function clearPlaybackTimeout() {
+    if (playbackTimeout) { clearTimeout(playbackTimeout); playbackTimeout = null; }
+  }
+
+  // Prüft ob ein Video einbettbar ist via YouTube Data API
+  async function isEmbeddable(videoId) {
+    const keys = [API_KEY, API_KEY2];
+    for (const key of keys) {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=status&id=${videoId}&key=${key}`;
+        const resp = await fetch(url);
+        if (!resp.ok) continue;
+        const data = await resp.json();
+        const item = data.items && data.items[0];
+        if (!item) return false;
+        return item.status.embeddable === true;
+      } catch(e) {
+        continue;
+      }
+    }
+    return true; // Im Zweifel versuchen
   }
 
   async function loadChannelList() {
@@ -90,7 +138,7 @@
       const cats = a.getAttribute('data-cats') || '';
       const name = a.querySelector('.card-name')?.textContent?.trim() || '';
       const thumb = a.querySelector('.ch-thumb')?.getAttribute('src') || '';
-      if (href && href.endsWith('.html') && href !== 'neu.html' && href !== 'radio.html') {
+      if (href && href.endsWith('.html') && href !== 'neu.html' && href !== 'radio.html' && href !== 'radio2.html') {
         links.push({ file: href, categories: cats, name, thumb });
       }
     });
@@ -98,8 +146,6 @@
   }
 
   async function loadOneChannel(entry) {
-    document.getElementById('placeholder').innerHTML = '<span class="spinner"></span>Lade ' + entry.name + '...';
-    document.getElementById('placeholder').style.display = 'flex';
     const resp = await fetch(entry.file);
     const text = await resp.text();
     const parser = new DOMParser();
@@ -129,36 +175,76 @@
     return channelList.filter(c => c.categories.includes(currentFilter));
   }
 
+  function setStatus(msg) {
+    document.getElementById('status-msg').textContent = msg;
+    document.getElementById('placeholder').style.display = 'flex';
+  }
+
   async function pickRandom() {
+    if (isLoading) return;
+    isLoading = true;
+    clearPlaybackTimeout();
+
     const filtered = getFiltered();
     if (!filtered.length) {
       document.getElementById('info').innerHTML = '<p style="color:#9b8fc0;text-align:center;padding:10px">Keine Kanäle in dieser Kategorie.</p>';
+      isLoading = false;
       return;
     }
-    const channel = filtered[Math.floor(Math.random() * filtered.length)];
-    const videos = await loadOneChannel(channel);
-    if (!videos.length) { pickRandom(); return; }
-    const video = videos[Math.floor(Math.random() * videos.length)];
 
-    document.getElementById('placeholder').style.display = 'none';
+    let attempts = 0;
+    while (attempts < 10) {
+      attempts++;
+      const channel = filtered[Math.floor(Math.random() * filtered.length)];
+      setStatus('Lade ' + channel.name + '...');
+      const videos = await loadOneChannel(channel);
+      if (!videos.length) continue;
 
-    // Video im YouTube-Player laden
-    if (ytPlayer && playerReady) {
-      ytPlayer.loadVideoById(video.videoId);
-    } else {
-      // Fallback falls API noch nicht bereit
-      setTimeout(() => { if (ytPlayer && playerReady) ytPlayer.loadVideoById(video.videoId); }, 1000);
+      // Zufälliges Video wählen und auf Einbettbarkeit prüfen
+      const shuffled = videos.sort(() => Math.random() - 0.5);
+      let found = null;
+      for (const video of shuffled.slice(0, 8)) { // max 8 API-Anfragen pro Versuch
+        setStatus('Prüfe Video...');
+        const ok = await isEmbeddable(video.videoId);
+        if (ok) { found = { video, channel }; break; }
+      }
+      if (!found) continue;
+
+      // Einbettbares Video gefunden – abspielen
+      const { video, channel: ch } = found;
+      document.getElementById('placeholder').style.display = 'flex';
+      setStatus('Starte...');
+
+      if (ytPlayer && playerReady) {
+        ytPlayer.loadVideoById(video.videoId);
+        startPlaybackTimeout();
+      } else {
+        const wait = setInterval(() => {
+          if (playerReady) {
+            clearInterval(wait);
+            ytPlayer.loadVideoById(video.videoId);
+            startPlaybackTimeout();
+          }
+        }, 200);
+      }
+
+      document.getElementById('info').innerHTML = `
+        <div class="channel-row">
+          ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
+          <span class="channel-name">${ch.name}</span>
+        </div>
+        <div class="video-title">${video.title}</div>
+        <div class="video-dur">${video.dur}</div>
+        <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
+      `;
+      isLoading = false;
+      return;
     }
 
-    document.getElementById('info').innerHTML = `
-      <div class="channel-row">
-        ${channel.thumb ? `<img class="channel-thumb" src="${channel.thumb}" onerror="this.style.display='none'">` : ''}
-        <span class="channel-name">${channel.name}</span>
-      </div>
-      <div class="video-title">${video.title}</div>
-      <div class="video-dur">${video.dur}</div>
-      <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
-    `;
+    // Nach 10 Versuchen aufgeben
+    setStatus('Kein abspielbares Video gefunden – tippe zum Wiederholen');
+    document.getElementById('info').innerHTML = `<button class="btn-next" onclick="pickRandom()">⟳ Nochmal versuchen</button>`;
+    isLoading = false;
   }
 
   async function init() {
@@ -182,7 +268,6 @@
       document.getElementById('subtitle').textContent = startFilter + ' · Zufälliges Video';
     }
 
-    // Warten bis YouTube API bereit
     const waitForPlayer = setInterval(() => {
       if (playerReady) { clearInterval(waitForPlayer); pickRandom(); }
     }, 200);
