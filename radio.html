@@ -47,6 +47,25 @@
 
 <script>
   let channelList = [];
+  let playbackTimeout = null;
+
+  function startPlaybackTimeout() {
+    clearPlaybackTimeout();
+    // Nach 6 Sekunden prüfen ob Video wirklich spielt
+    playbackTimeout = setTimeout(() => {
+      if (ytPlayer && ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
+        console.log('Kein Abspielen erkannt – weiter zum nächsten Video');
+        pickRandom();
+      }
+    }, 6000);
+  }
+
+  function clearPlaybackTimeout() {
+    if (playbackTimeout) {
+      clearTimeout(playbackTimeout);
+      playbackTimeout = null;
+    }
+  }
   let currentFilter = 'Alle';
   let ytPlayer = null;
   let playerReady = false;
@@ -67,15 +86,17 @@
       events: {
         onReady: () => { playerReady = true; },
         onStateChange: (e) => {
-          // Wenn Video endet (state = 0), automatisch nächstes laden
+          if (e.data === YT.PlayerState.PLAYING) {
+            // Video spielt wirklich – Timeout abbrechen
+            clearPlaybackTimeout();
+          }
           if (e.data === YT.PlayerState.ENDED) {
             pickRandom();
           }
         },
         onError: (e) => {
-          // 101/150 = Einbettung verboten, 2 = ungültige ID, 5 = HTML5-Fehler
-          // In allen Faellen: naechstes Video laden
           console.log('YouTube Fehler:', e.data);
+          clearPlaybackTimeout();
           setTimeout(() => pickRandom(), 1500);
         }
       }
@@ -151,6 +172,7 @@
     // Video im YouTube-Player laden
     if (ytPlayer && playerReady) {
       ytPlayer.loadVideoById(video.videoId);
+      startPlaybackTimeout();
     } else {
       // Fallback falls API noch nicht bereit
       setTimeout(() => { if (ytPlayer && playerReady) ytPlayer.loadVideoById(video.videoId); }, 1000);
