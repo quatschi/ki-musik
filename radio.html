@@ -71,6 +71,12 @@
           if (e.data === YT.PlayerState.ENDED) {
             pickRandom();
           }
+        },
+        onError: (e) => {
+          // 101/150 = Einbettung verboten, 2 = ungültige ID, 5 = HTML5-Fehler
+          // In allen Faellen: naechstes Video laden
+          console.log('YouTube Fehler:', e.data);
+          setTimeout(() => pickRandom(), 1500);
         }
       }
     });
