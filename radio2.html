@@ -63,6 +63,9 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const startFilter = urlParams.get('kategorie') || 'Alle';
+  const kanalParam = urlParams.get('kanal') || null;   // z.B. radio2.html?kanal=Blue_Flame_Rock.html
+  let kanalVideosCache = null;                          // Videos des fixierten Kanals (nur einmal laden)
+  let randomStartEnabled = true;                        // Zufälliger Zeiteinstieg an/aus
 
   // YouTube IFrame API laden
   const tag = document.createElement('script');
@@ -175,6 +178,34 @@
     return channelList.filter(c => c.categories.includes(currentFilter));
   }
 
+  // "2:15:43" oder "12:34" -> Sekunden
+  function durToSeconds(dur) {
+    if (!dur) return 0;
+    const parts = dur.trim().split(':').map(Number);
+    if (parts.some(isNaN)) return 0;
+    if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+    if (parts.length === 2) return parts[0]*60 + parts[1];
+    return 0;
+  }
+
+  // Zufälligen Startpunkt wählen: zwischen Minute 10 und 80% der Dauer,
+  // nur bei Videos über 20 Minuten – kürzere starten normal bei 0
+  function randomStartSeconds(dur) {
+    if (!randomStartEnabled) return 0;
+    const total = durToSeconds(dur);
+    if (total < 1200) return 0;
+    const min = 600;
+    const max = Math.floor(total * 0.8);
+    if (max <= min) return 0;
+    return min + Math.floor(Math.random() * (max - min));
+  }
+
+  function toggleRandomStart() {
+    randomStartEnabled = !randomStartEnabled;
+    const btn = document.getElementById('btn-randomstart');
+    if (btn) btn.classList.toggle('active', randomStartEnabled);
+  }
+
   function setStatus(msg) {
     document.getElementById('status-msg').textContent = msg;
     document.getElementById('placeholder').style.display = 'flex';
@@ -185,7 +216,13 @@
     isLoading = true;
     clearPlaybackTimeout();
 
-    const filtered = getFiltered();
+    let filtered;
+    if (kanalParam) {
+      const fixed = channelList.find(c => c.file === kanalParam);
+      filtered = fixed ? [fixed] : [];
+    } else {
+      filtered = getFiltered();
+    }
     if (!filtered.length) {
       document.getElementById('info').innerHTML = '<p style="color:#9b8fc0;text-align:center;padding:10px">Keine Kanäle in dieser Kategorie.</p>';
       isLoading = false;
@@ -197,8 +234,14 @@
       attempts++;
       const channel = filtered[Math.floor(Math.random() * filtered.length)];
       setStatus('Lade ' + channel.name + '...');
-      const videos = await loadOneChannel(channel);
-      if (!videos.length) continue;
+      let videos;
+      if (kanalParam) {
+        if (!kanalVideosCache) kanalVideosCache = await loadOneChannel(channel);
+        videos = kanalVideosCache;
+      } else {
+        videos = await loadOneChannel(channel);
+      }
+      if (!videos.length) { if (kanalParam) break; continue; }
 
       // Zufälliges Video wählen und auf Einbettbarkeit prüfen
       const shuffled = videos.sort(() => Math.random() - 0.5);
@@ -215,14 +258,15 @@
       document.getElementById('placeholder').style.display = 'flex';
       setStatus('Starte...');
 
+      const startSec = randomStartSeconds(video.dur);
       if (ytPlayer && playerReady) {
-        ytPlayer.loadVideoById(video.videoId);
+        ytPlayer.loadVideoById({ videoId: video.videoId, startSeconds: startSec });
         startPlaybackTimeout();
       } else {
         const wait = setInterval(() => {
           if (playerReady) {
             clearInterval(wait);
-            ytPlayer.loadVideoById(video.videoId);
+            ytPlayer.loadVideoById({ videoId: video.videoId, startSeconds: startSec });
             startPlaybackTimeout();
           }
         }, 200);
@@ -234,7 +278,7 @@
           <span class="channel-name">${ch.name}</span>
         </div>
         <div class="video-title">${video.title}</div>
-        <div class="video-dur">${video.dur}</div>
+        <div class="video-dur">${video.dur}${startSec > 0 ? ' · Einstieg bei ' + Math.floor(startSec/60) + ' min' : ''}</div>
         <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
       `;
       isLoading = false;
@@ -249,6 +293,29 @@
 
   async function init() {
     channelList = await loadChannelList();
+
+    // Toggle-Button für zufälligen Zeiteinstieg
+    const fdiv = document.getElementById('filters');
+    const tbtn = document.createElement('button');
+    tbtn.className = 'filter-btn active';
+    tbtn.id = 'btn-randomstart';
+    tbtn.textContent = '⏩ Zufallseinstieg';
+    tbtn.onclick = toggleRandomStart;
+    fdiv.appendChild(tbtn);
+
+    if (kanalParam) {
+      // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
+      document.querySelectorAll('.filter-btn').forEach(b => { if (b.id !== 'btn-randomstart') b.style.display = 'none'; });
+      const fixed = channelList.find(c => c.file === kanalParam);
+      document.getElementById('subtitle').textContent = fixed
+        ? '📌 Nur Kanal: ' + fixed.name
+        : 'Kanal nicht gefunden: ' + kanalParam;
+      const waitForPlayer0 = setInterval(() => {
+        if (playerReady) { clearInterval(waitForPlayer0); pickRandom(); }
+      }, 200);
+      return;
+    }
+
     const cats = new Set();
     channelList.forEach(c => {
       if (c.categories) c.categories.split(',').forEach(cat => { const t = cat.trim(); if (t) cats.add(t); });
