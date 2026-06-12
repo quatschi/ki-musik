@@ -59,7 +59,7 @@
   const API_KEY2 = 'AIzaSyBBOUTQIbs9_xUbVqbEKyVBb5q7xc1y0oM';
 
   let channelList = [];
-  let currentFilter = 'Alle';
+  let includedCats = new Set(); // im Einschluss-Modus gewählte Kategorien (leer = Alle)
   let excludeMode = false;      // false = Einschluss, true = Ausschluss
   let excludedCats = new Set(); // im Ausschluss-Modus ausgeschlossene Kategorien
   let ytPlayer = null;
@@ -175,7 +175,7 @@
   function toggleMode() {
     excludeMode = !excludeMode;
     excludedCats.clear();
-    currentFilter = 'Alle';
+    includedCats.clear();
     const toggle = document.getElementById('mode-toggle');
     toggle.textContent = excludeMode ? '⊖ Ausschluss-Modus' : '⊕ Einschluss-Modus';
     toggle.classList.toggle('excl-mode', excludeMode);
@@ -206,10 +206,27 @@
         : n + ' Kategorie' + (n > 1 ? 'n' : '') + ' ausgeschlossen';
       pickRandom();
     } else {
-      // Einschluss-Modus wie bisher
-      currentFilter = kat;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === kat));
-      document.getElementById('subtitle').textContent = kat === 'Alle' ? 'Alle Kategorien · Zufälliges Video' : kat + ' · Zufälliges Video';
+      // Einschluss-Modus: mehrere Kategorien togglebar
+      if (kat === 'Alle') {
+        includedCats.clear();
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-alle').classList.add('active');
+        document.getElementById('subtitle').textContent = 'Alle Kategorien · Zufälliges Video';
+      } else {
+        if (includedCats.has(kat)) {
+          includedCats.delete(kat);
+        } else {
+          includedCats.add(kat);
+        }
+        const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent === kat);
+        if (btn) btn.classList.toggle('active', includedCats.has(kat));
+        // Alle-Knopf: aktiv nur wenn nichts ausgewählt
+        document.getElementById('btn-alle').classList.toggle('active', includedCats.size === 0);
+        const n = includedCats.size;
+        document.getElementById('subtitle').textContent = n === 0
+          ? 'Alle Kategorien · Zufälliges Video'
+          : [...includedCats].join(', ') + ' · Zufälliges Video';
+      }
       pickRandom();
     }
   }
@@ -223,8 +240,12 @@
         return !chCats.some(cat => excludedCats.has(cat));
       });
     }
-    if (currentFilter === 'Alle') return channelList;
-    return channelList.filter(c => c.categories.includes(currentFilter));
+    // Einschluss: Kanal muss mindestens eine der gewählten Kategorien haben
+    if (includedCats.size === 0) return channelList;
+    return channelList.filter(ch => {
+      const chCats = ch.categories.split(',').map(s => s.trim()).filter(Boolean);
+      return chCats.some(cat => includedCats.has(cat));
+    });
   }
 
   // "2:15:43" oder "12:34" -> Sekunden
@@ -380,8 +401,9 @@
     });
 
     if (startFilter !== 'Alle') {
-      currentFilter = startFilter;
+      includedCats.add(startFilter);
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === startFilter));
+      document.getElementById('btn-alle').classList.remove('active');
       document.getElementById('subtitle').textContent = startFilter + ' · Zufälliges Video';
     }
 
