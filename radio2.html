@@ -14,6 +14,9 @@
   .filter-section { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 640px; width: 100%; }
   .filter-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #9b8fc0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
   .filter-btn.active { background: rgba(180,150,255,0.25); border-color: rgba(180,150,255,0.6); color: #e8e0ff; }
+  .filter-btn.excluded { background: rgba(255,80,80,0.15); border-color: rgba(255,100,100,0.5); color: #ff9999; text-decoration: line-through; }
+  .mode-toggle { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #7a6fa0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; margin-bottom: 8px; }
+  .mode-toggle.excl-mode { background: rgba(255,80,80,0.15); border-color: rgba(255,100,100,0.4); color: #ff9999; }
   .player-container { width: 100%; max-width: 640px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; overflow: hidden; }
   .video-frame { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
   .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
@@ -35,8 +38,9 @@
   <a class="back" href="index.html">← Übersicht</a>
   <h1>🎵 KI-Musik Radio</h1>
   <p class="subtitle" id="subtitle">Zufälliger Kanal · Zufälliges Video</p>
+  <button class="mode-toggle" id="mode-toggle" onclick="toggleMode()">⊕ Einschluss-Modus</button>
   <div class="filter-section" id="filters">
-    <button class="filter-btn active" onclick="setFilter('Alle')">Alle</button>
+    <button class="filter-btn active" id="btn-alle" onclick="setFilter('Alle')">Alle</button>
   </div>
   <div class="player-container">
     <div class="video-frame">
@@ -56,6 +60,8 @@
 
   let channelList = [];
   let currentFilter = 'Alle';
+  let excludeMode = false;      // false = Einschluss, true = Ausschluss
+  let excludedCats = new Set(); // im Ausschluss-Modus ausgeschlossene Kategorien
   let ytPlayer = null;
   let playerReady = false;
   let isLoading = false;
@@ -166,14 +172,57 @@
     return videos;
   }
 
-  function setFilter(kat) {
-    currentFilter = kat;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === kat));
-    document.getElementById('subtitle').textContent = kat === 'Alle' ? 'Alle Kategorien · Zufälliges Video' : kat + ' · Zufälliges Video';
+  function toggleMode() {
+    excludeMode = !excludeMode;
+    excludedCats.clear();
+    currentFilter = 'Alle';
+    const toggle = document.getElementById('mode-toggle');
+    toggle.textContent = excludeMode ? '⊖ Ausschluss-Modus' : '⊕ Einschluss-Modus';
+    toggle.classList.toggle('excl-mode', excludeMode);
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.remove('active', 'excluded');
+      if (!excludeMode && b.id === 'btn-alle') b.classList.add('active');
+    });
+    document.getElementById('subtitle').textContent = excludeMode
+      ? 'Kategorien antippen zum Ausschließen'
+      : 'Alle Kategorien · Zufälliges Video';
     pickRandom();
   }
 
+  function setFilter(kat) {
+    if (excludeMode) {
+      // Im Ausschluss-Modus: Kategorie ein-/ausschließen
+      const btn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent === kat);
+      if (excludedCats.has(kat)) {
+        excludedCats.delete(kat);
+        if (btn) { btn.classList.remove('excluded'); }
+      } else {
+        excludedCats.add(kat);
+        if (btn) { btn.classList.add('excluded'); }
+      }
+      const n = excludedCats.size;
+      document.getElementById('subtitle').textContent = n === 0
+        ? 'Kategorien antippen zum Ausschließen'
+        : n + ' Kategorie' + (n > 1 ? 'n' : '') + ' ausgeschlossen';
+      pickRandom();
+    } else {
+      // Einschluss-Modus wie bisher
+      currentFilter = kat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.textContent === kat));
+      document.getElementById('subtitle').textContent = kat === 'Alle' ? 'Alle Kategorien · Zufälliges Video' : kat + ' · Zufälliges Video';
+      pickRandom();
+    }
+  }
+
   function getFiltered() {
+    if (excludeMode) {
+      if (excludedCats.size === 0) return channelList;
+      // Strikt: Kanal fällt raus, wenn er IRGENDEINE ausgeschlossene Kategorie enthält
+      return channelList.filter(ch => {
+        const chCats = ch.categories.split(',').map(s => s.trim()).filter(Boolean);
+        return !chCats.some(cat => excludedCats.has(cat));
+      });
+    }
     if (currentFilter === 'Alle') return channelList;
     return channelList.filter(c => c.categories.includes(currentFilter));
   }
@@ -306,6 +355,7 @@
     if (kanalParam) {
       // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
       document.querySelectorAll('.filter-btn').forEach(b => { if (b.id !== 'btn-randomstart') b.style.display = 'none'; });
+      const mt = document.getElementById('mode-toggle'); if (mt) mt.style.display = 'none';
       const fixed = channelList.find(c => c.file === kanalParam);
       document.getElementById('subtitle').textContent = fixed
         ? '📌 Nur Kanal: ' + fixed.name
