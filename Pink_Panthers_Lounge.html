@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@pinkpantherlounge -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,237 +51,97 @@
       <div class="channel-count">33 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=EuejrcbKFTw" target="_blank">
-            <img src="https://i.ytimg.com/vi/EuejrcbKFTw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whispers & Jazz Pt. 2 — 3 Hours Of 1940's Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">3:09:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uzPMVBXTUiE" target="_blank">
-            <img src="https://i.ytimg.com/vi/uzPMVBXTUiE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smoke & Jazz — 2 Hours Of Vintage Jazz To Relax At Night</span>
-                <span class="video-dur">2:02:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TdalDhP39CU" target="_blank">
-            <img src="https://i.ytimg.com/vi/TdalDhP39CU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rooftop Jazz — 2 Hours Of Vintage Noir Jazz To Relax</span>
-                <span class="video-dur">2:34:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=I5LA6ByKMmA" target="_blank">
-            <img src="https://i.ytimg.com/vi/I5LA6ByKMmA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">One Last Espresso — 2 Hours of Atmospheric Noir Jazz for Late Night Thoughts & Reflection</span>
-                <span class="video-dur">2:04:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=K-odn3PcRIQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/K-odn3PcRIQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz for Villains — 2 Hours of Late Night Jazz for Rainy Thoughts & Reflection</span>
-                <span class="video-dur">2:00:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mwq5QIbNK2Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/mwq5QIbNK2Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Espresso & Jazz — 1950s Night Jazz Noir for Work, Focus & Late Night Thinking</span>
-                <span class="video-dur">2:01:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=n9tP9cgXuIg" target="_blank">
-            <img src="https://i.ytimg.com/vi/n9tP9cgXuIg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Baths & Jazz — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">2:34:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yCwT8g3o-A8" target="_blank">
-            <img src="https://i.ytimg.com/vi/yCwT8g3o-A8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Caffeine & Tunes — 1940's Noir Vintage Jazz For Relaxation</span>
-                <span class="video-dur">2:39:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HS8qaqVv2nk" target="_blank">
-            <img src="https://i.ytimg.com/vi/HS8qaqVv2nk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tunes From The Shadow — Vintage Upright Bass & Trumpet Jazz</span>
-                <span class="video-dur">1:33:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=re9NFFkBauc" target="_blank">
-            <img src="https://i.ytimg.com/vi/re9NFFkBauc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Light Me One — Vintage Noir Jazz For Relaxation & Quiet Hours</span>
-                <span class="video-dur">2:02:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=84zsKRAkgIw" target="_blank">
-            <img src="https://i.ytimg.com/vi/84zsKRAkgIw/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">【24/7 LIVE】Pink Panther Jazz — 1940s–1950s Noir Jazz for Relaxation & Study</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=B4tQph_9kfw" target="_blank">
-            <img src="https://i.ytimg.com/vi/B4tQph_9kfw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lonely Nights — Vintage Retro Jazz For Slow Evenings</span>
-                <span class="video-dur">2:42:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8ixX9ViMttE" target="_blank">
-            <img src="https://i.ytimg.com/vi/8ixX9ViMttE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Business Is Business — Slow Retro Noir Jazz For Relaxation</span>
-                <span class="video-dur">1:58:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mOxX_fu_Cvk" target="_blank">
-            <img src="https://i.ytimg.com/vi/mOxX_fu_Cvk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Gentleman — 2 Hours of 1950s Noir Jazz for  Study & Reflection</span>
-                <span class="video-dur">1:58:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JMlv4gJZiak" target="_blank">
-            <img src="https://i.ytimg.com/vi/JMlv4gJZiak/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Mirror Doesn’t Lie — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">1:41:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rUa1MWv-xPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/rUa1MWv-xPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Place To Hide — Old Noir Jazz For Late Night Relaxation</span>
-                <span class="video-dur">1:39:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OXIVnS4ehqo" target="_blank">
-            <img src="https://i.ytimg.com/vi/OXIVnS4ehqo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxed Saxophone Nights — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">1:00:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WGoaCVu4fbc" target="_blank">
-            <img src="https://i.ytimg.com/vi/WGoaCVu4fbc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Don't Trust Your Shadow — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">2:00:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pSQRMXegxek" target="_blank">
-            <img src="https://i.ytimg.com/vi/pSQRMXegxek/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Evenings like this — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">4:03:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8bSJamIq8Yk" target="_blank">
-            <img src="https://i.ytimg.com/vi/8bSJamIq8Yk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Calm Your Mind — Vintage Noir Jazz For Relaxation & Quiet Hours</span>
-                <span class="video-dur">1:09:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sMH9BsfVteE" target="_blank">
-            <img src="https://i.ytimg.com/vi/sMH9BsfVteE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Thinker — Vintage 1940's Noir Jazz For Late Night Moods</span>
-                <span class="video-dur">1:08:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=byycq3ekYPg" target="_blank">
-            <img src="https://i.ytimg.com/vi/byycq3ekYPg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz On My Mind — Night Detective Jazz With Saxophone</span>
-                <span class="video-dur">1:11:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cz5nVhI6ipQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/cz5nVhI6ipQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">They're Plotting Something — Slow Vintage 1940's Jazz To Study</span>
-                <span class="video-dur">2:00:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VNyhdK0NtN0" target="_blank">
-            <img src="https://i.ytimg.com/vi/VNyhdK0NtN0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Moment Alone – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:01:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LIkGf6BeQgY" target="_blank">
-            <img src="https://i.ytimg.com/vi/LIkGf6BeQgY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Secrets & Jazz — Vintage Noir Jazz For Relaxation</span>
-                <span class="video-dur">1:42:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QT5Wgp4fcMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/QT5Wgp4fcMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Always Check Your Back – Vintage Noir Jazz for Quiet Evenings</span>
-                <span class="video-dur">1:40:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=o6n25dvFdvA" target="_blank">
-            <img src="https://i.ytimg.com/vi/o6n25dvFdvA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Silence & Jazz — Midnight Detective Jazz</span>
-                <span class="video-dur">2:00:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ln9WaL0HXHc" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ln9WaL0HXHc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whispers & Jazz — Vintage 1940's Noir Jazz for Relaxation</span>
-                <span class="video-dur">1:00:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BXwKy9rfkMM" target="_blank">
-            <img src="https://i.ytimg.com/vi/BXwKy9rfkMM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cigarette Burns Slow – Vintage Detective Jazz for Relaxation</span>
-                <span class="video-dur">1:01:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IuoBjfR2gWc" target="_blank">
-            <img src="https://i.ytimg.com/vi/IuoBjfR2gWc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Case Lingers – Slow Noir Jazz Music for Deep Night Focus</span>
-                <span class="video-dur">2:26:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s_PuHcMehCs" target="_blank">
-            <img src="https://i.ytimg.com/vi/s_PuHcMehCs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">He Knew… But Said Nothing – Classic Detective Jazz for Dark City Nights</span>
-                <span class="video-dur">1:16:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AysVwEbOof8" target="_blank">
-            <img src="https://i.ytimg.com/vi/AysVwEbOof8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The File Was Never Closed. – Vintage Noir Jazz for Deep Focus & Mystery</span>
-                <span class="video-dur">1:17:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qx-FJHtkBb0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qx-FJHtkBb0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Something in the Air…– Vintage Noir Jazz for Late Evenings</span>
-                <span class="video-dur">1:01:22</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Pink Panther's Lounge";
+const VIDEOS = [{"id": "EuejrcbKFTw", "title": "Whispers & Jazz Pt. 2 — 3 Hours Of 1940's Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/EuejrcbKFTw/mqdefault.jpg", "dur": "3:09:37"}, {"id": "uzPMVBXTUiE", "title": "Smoke & Jazz — 2 Hours Of Vintage Jazz To Relax At Night", "thumb": "https://i.ytimg.com/vi/uzPMVBXTUiE/mqdefault.jpg", "dur": "2:02:52"}, {"id": "TdalDhP39CU", "title": "Rooftop Jazz — 2 Hours Of Vintage Noir Jazz To Relax", "thumb": "https://i.ytimg.com/vi/TdalDhP39CU/mqdefault.jpg", "dur": "2:34:20"}, {"id": "I5LA6ByKMmA", "title": "One Last Espresso — 2 Hours of Atmospheric Noir Jazz for Late Night Thoughts & Reflection", "thumb": "https://i.ytimg.com/vi/I5LA6ByKMmA/mqdefault.jpg", "dur": "2:04:28"}, {"id": "K-odn3PcRIQ", "title": "Jazz for Villains — 2 Hours of Late Night Jazz for Rainy Thoughts & Reflection", "thumb": "https://i.ytimg.com/vi/K-odn3PcRIQ/mqdefault.jpg", "dur": "2:00:08"}, {"id": "mwq5QIbNK2Q", "title": "Espresso & Jazz — 1950s Night Jazz Noir for Work, Focus & Late Night Thinking", "thumb": "https://i.ytimg.com/vi/mwq5QIbNK2Q/mqdefault.jpg", "dur": "2:01:08"}, {"id": "n9tP9cgXuIg", "title": "Baths & Jazz — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/n9tP9cgXuIg/mqdefault.jpg", "dur": "2:34:33"}, {"id": "yCwT8g3o-A8", "title": "Caffeine & Tunes — 1940's Noir Vintage Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/yCwT8g3o-A8/mqdefault.jpg", "dur": "2:39:21"}, {"id": "HS8qaqVv2nk", "title": "Tunes From The Shadow — Vintage Upright Bass & Trumpet Jazz", "thumb": "https://i.ytimg.com/vi/HS8qaqVv2nk/mqdefault.jpg", "dur": "1:33:05"}, {"id": "re9NFFkBauc", "title": "Light Me One — Vintage Noir Jazz For Relaxation & Quiet Hours", "thumb": "https://i.ytimg.com/vi/re9NFFkBauc/mqdefault.jpg", "dur": "2:02:57"}, {"id": "84zsKRAkgIw", "title": "【24/7 LIVE】Pink Panther Jazz — 1940s–1950s Noir Jazz for Relaxation & Study", "thumb": "https://i.ytimg.com/vi/84zsKRAkgIw/mqdefault_live.jpg", "dur": ""}, {"id": "B4tQph_9kfw", "title": "Lonely Nights — Vintage Retro Jazz For Slow Evenings", "thumb": "https://i.ytimg.com/vi/B4tQph_9kfw/mqdefault.jpg", "dur": "2:42:33"}, {"id": "8ixX9ViMttE", "title": "Business Is Business — Slow Retro Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/8ixX9ViMttE/mqdefault.jpg", "dur": "1:58:39"}, {"id": "mOxX_fu_Cvk", "title": "The Gentleman — 2 Hours of 1950s Noir Jazz for  Study & Reflection", "thumb": "https://i.ytimg.com/vi/mOxX_fu_Cvk/mqdefault.jpg", "dur": "1:58:39"}, {"id": "JMlv4gJZiak", "title": "The Mirror Doesn’t Lie — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/JMlv4gJZiak/mqdefault.jpg", "dur": "1:41:47"}, {"id": "rUa1MWv-xPc", "title": "A Place To Hide — Old Noir Jazz For Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/rUa1MWv-xPc/mqdefault.jpg", "dur": "1:39:32"}, {"id": "OXIVnS4ehqo", "title": "Relaxed Saxophone Nights — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/OXIVnS4ehqo/mqdefault.jpg", "dur": "1:00:04"}, {"id": "WGoaCVu4fbc", "title": "Don't Trust Your Shadow — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/WGoaCVu4fbc/mqdefault.jpg", "dur": "2:00:13"}, {"id": "pSQRMXegxek", "title": "Evenings like this — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/pSQRMXegxek/mqdefault.jpg", "dur": "4:03:58"}, {"id": "8bSJamIq8Yk", "title": "Calm Your Mind — Vintage Noir Jazz For Relaxation & Quiet Hours", "thumb": "https://i.ytimg.com/vi/8bSJamIq8Yk/mqdefault.jpg", "dur": "1:09:09"}, {"id": "sMH9BsfVteE", "title": "The Thinker — Vintage 1940's Noir Jazz For Late Night Moods", "thumb": "https://i.ytimg.com/vi/sMH9BsfVteE/mqdefault.jpg", "dur": "1:08:38"}, {"id": "byycq3ekYPg", "title": "Jazz On My Mind — Night Detective Jazz With Saxophone", "thumb": "https://i.ytimg.com/vi/byycq3ekYPg/mqdefault.jpg", "dur": "1:11:40"}, {"id": "cz5nVhI6ipQ", "title": "They're Plotting Something — Slow Vintage 1940's Jazz To Study", "thumb": "https://i.ytimg.com/vi/cz5nVhI6ipQ/mqdefault.jpg", "dur": "2:00:09"}, {"id": "VNyhdK0NtN0", "title": "A Moment Alone – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/VNyhdK0NtN0/mqdefault.jpg", "dur": "2:01:17"}, {"id": "LIkGf6BeQgY", "title": "Secrets & Jazz — Vintage Noir Jazz For Relaxation", "thumb": "https://i.ytimg.com/vi/LIkGf6BeQgY/mqdefault.jpg", "dur": "1:42:04"}, {"id": "QT5Wgp4fcMs", "title": "Always Check Your Back – Vintage Noir Jazz for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/QT5Wgp4fcMs/mqdefault.jpg", "dur": "1:40:58"}, {"id": "o6n25dvFdvA", "title": "Silence & Jazz — Midnight Detective Jazz", "thumb": "https://i.ytimg.com/vi/o6n25dvFdvA/mqdefault.jpg", "dur": "2:00:29"}, {"id": "Ln9WaL0HXHc", "title": "Whispers & Jazz — Vintage 1940's Noir Jazz for Relaxation", "thumb": "https://i.ytimg.com/vi/Ln9WaL0HXHc/mqdefault.jpg", "dur": "1:00:06"}, {"id": "BXwKy9rfkMM", "title": "Cigarette Burns Slow – Vintage Detective Jazz for Relaxation", "thumb": "https://i.ytimg.com/vi/BXwKy9rfkMM/mqdefault.jpg", "dur": "1:01:23"}, {"id": "IuoBjfR2gWc", "title": "The Case Lingers – Slow Noir Jazz Music for Deep Night Focus", "thumb": "https://i.ytimg.com/vi/IuoBjfR2gWc/mqdefault.jpg", "dur": "2:26:23"}, {"id": "s_PuHcMehCs", "title": "He Knew… But Said Nothing – Classic Detective Jazz for Dark City Nights", "thumb": "https://i.ytimg.com/vi/s_PuHcMehCs/mqdefault.jpg", "dur": "1:16:56"}, {"id": "AysVwEbOof8", "title": "The File Was Never Closed. – Vintage Noir Jazz for Deep Focus & Mystery", "thumb": "https://i.ytimg.com/vi/AysVwEbOof8/mqdefault.jpg", "dur": "1:17:26"}, {"id": "Qx-FJHtkBb0", "title": "Something in the Air…– Vintage Noir Jazz for Late Evenings", "thumb": "https://i.ytimg.com/vi/Qx-FJHtkBb0/mqdefault.jpg", "dur": "1:01:22"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

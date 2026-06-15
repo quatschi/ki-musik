@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@havanacafeambience -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,153 +51,97 @@
       <div class="channel-count">21 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=rXh5GEksZDc" target="_blank">
-            <img src="https://i.ytimg.com/vi/rXh5GEksZDc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Madrugada de Amor Perdido - Ecos del Alma Cibano</span>
-                <span class="video-dur">1:19:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=53Gkj6vu83w" target="_blank">
-            <img src="https://i.ytimg.com/vi/53Gkj6vu83w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Noches de Fuego y Tecuerdos - Susurros del Cafe de La Habana</span>
-                <span class="video-dur">46:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kJsJ8DaOVOo" target="_blank">
-            <img src="https://i.ytimg.com/vi/kJsJ8DaOVOo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ritmo en la Sangre -  Susurros del Cafe debLa Habana</span>
-                <span class="video-dur">55:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=m6ta2QSQG9Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/m6ta2QSQG9Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cafe,Amor y Silencio -  Madrugada de Amor perdido</span>
-                <span class="video-dur">55:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mEfi6IcspOc" target="_blank">
-            <img src="https://i.ytimg.com/vi/mEfi6IcspOc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Echoes of Bolero in Old Havana - son,Bolero y Vida</span>
-                <span class="video-dur">55:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7gKOVz25MNg" target="_blank">
-            <img src="https://i.ytimg.com/vi/7gKOVz25MNg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Madrugada en La Habana -  MoolightvBolero for a Lonely Soul</span>
-                <span class="video-dur">55:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w6wGDUTFBBU" target="_blank">
-            <img src="https://i.ytimg.com/vi/w6wGDUTFBBU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Madrugada en La Habana - Bolero Beneath the Cuban Moon</span>
-                <span class="video-dur">55:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=733xBw7n_UY" target="_blank">
-            <img src="https://i.ytimg.com/vi/733xBw7n_UY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title"> Perfume & Cigarettes in La Habana - Bolero en la Madrugada</span>
-                <span class="video-dur">46:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_mcE0e4nFCw" target="_blank">
-            <img src="https://i.ytimg.com/vi/_mcE0e4nFCw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Echoes of Bolero in olf Havan - son y  Luz en La Havana</span>
-                <span class="video-dur">46:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nqK7-bGjx24" target="_blank">
-            <img src="https://i.ytimg.com/vi/nqK7-bGjx24/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada - Susurros del Alma en La Habana</span>
-                <span class="video-dur">55:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v15ccexDEAM" target="_blank">
-            <img src="https://i.ytimg.com/vi/v15ccexDEAM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada - Noches de La Habana</span>
-                <span class="video-dur">1:33:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_7i8OE1STPU" target="_blank">
-            <img src="https://i.ytimg.com/vi/_7i8OE1STPU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero Bajo la Luna - Magia de La Habana</span>
-                <span class="video-dur">1:25:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jjFJE9wRqLY" target="_blank">
-            <img src="https://i.ytimg.com/vi/jjFJE9wRqLY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada - Noches que Susurran Amor</span>
-                <span class="video-dur">1:33:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=a4djF6Tm1ZY" target="_blank">
-            <img src="https://i.ytimg.com/vi/a4djF6Tm1ZY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Madrugada en La Habana - Bolero para el Alma</span>
-                <span class="video-dur">1:32:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OZyrLx4pSdA" target="_blank">
-            <img src="https://i.ytimg.com/vi/OZyrLx4pSdA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugara - Entre Sombrasbde la Habana</span>
-                <span class="video-dur">55:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ex-xcpnuIBQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/ex-xcpnuIBQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Un Retrato Una Herida -;Noches de Bolero y Nostalgia en La Habana</span>
-                <span class="video-dur">55:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e6X-z6bMoPg" target="_blank">
-            <img src="https://i.ytimg.com/vi/e6X-z6bMoPg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada -- Sernata en la Habana Vieja</span>
-                <span class="video-dur">55:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sLNRFavT6xY" target="_blank">
-            <img src="https://i.ytimg.com/vi/sLNRFavT6xY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">La Habana y sus Historias -- Son,Bolero y Vida</span>
-                <span class="video-dur">46:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ipb1x--zqgw" target="_blank">
-            <img src="https://i.ytimg.com/vi/ipb1x--zqgw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada -- Susurros del Alma en L Habana</span>
-                <span class="video-dur">55:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vRuuFTBWMdI" target="_blank">
-            <img src="https://i.ytimg.com/vi/vRuuFTBWMdI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugara -- Entre Sombrasbde la Habana</span>
-                <span class="video-dur">59:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3nSiYGN2LFo" target="_blank">
-            <img src="https://i.ytimg.com/vi/3nSiYGN2LFo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bolero en la Madrugada -- Voces del Alma en La Habana</span>
-                <span class="video-dur">54:55</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Havana cafe ambience";
+const VIDEOS = [{"id": "rXh5GEksZDc", "title": "Madrugada de Amor Perdido - Ecos del Alma Cibano", "thumb": "https://i.ytimg.com/vi/rXh5GEksZDc/mqdefault.jpg", "dur": "1:19:46"}, {"id": "53Gkj6vu83w", "title": "Noches de Fuego y Tecuerdos - Susurros del Cafe de La Habana", "thumb": "https://i.ytimg.com/vi/53Gkj6vu83w/mqdefault.jpg", "dur": "46:46"}, {"id": "kJsJ8DaOVOo", "title": "Ritmo en la Sangre -  Susurros del Cafe debLa Habana", "thumb": "https://i.ytimg.com/vi/kJsJ8DaOVOo/mqdefault.jpg", "dur": "55:12"}, {"id": "m6ta2QSQG9Q", "title": "Cafe,Amor y Silencio -  Madrugada de Amor perdido", "thumb": "https://i.ytimg.com/vi/m6ta2QSQG9Q/mqdefault.jpg", "dur": "55:40"}, {"id": "mEfi6IcspOc", "title": "Echoes of Bolero in Old Havana - son,Bolero y Vida", "thumb": "https://i.ytimg.com/vi/mEfi6IcspOc/mqdefault.jpg", "dur": "55:40"}, {"id": "7gKOVz25MNg", "title": "Madrugada en La Habana -  MoolightvBolero for a Lonely Soul", "thumb": "https://i.ytimg.com/vi/7gKOVz25MNg/mqdefault.jpg", "dur": "55:12"}, {"id": "w6wGDUTFBBU", "title": "Madrugada en La Habana - Bolero Beneath the Cuban Moon", "thumb": "https://i.ytimg.com/vi/w6wGDUTFBBU/mqdefault.jpg", "dur": "55:12"}, {"id": "733xBw7n_UY", "title": "Perfume & Cigarettes in La Habana - Bolero en la Madrugada", "thumb": "https://i.ytimg.com/vi/733xBw7n_UY/mqdefault.jpg", "dur": "46:46"}, {"id": "_mcE0e4nFCw", "title": "Echoes of Bolero in olf Havan - son y  Luz en La Havana", "thumb": "https://i.ytimg.com/vi/_mcE0e4nFCw/mqdefault.jpg", "dur": "46:46"}, {"id": "nqK7-bGjx24", "title": "Bolero en la Madrugada - Susurros del Alma en La Habana", "thumb": "https://i.ytimg.com/vi/nqK7-bGjx24/mqdefault.jpg", "dur": "55:40"}, {"id": "v15ccexDEAM", "title": "Bolero en la Madrugada - Noches de La Habana", "thumb": "https://i.ytimg.com/vi/v15ccexDEAM/mqdefault.jpg", "dur": "1:33:47"}, {"id": "_7i8OE1STPU", "title": "Bolero Bajo la Luna - Magia de La Habana", "thumb": "https://i.ytimg.com/vi/_7i8OE1STPU/mqdefault.jpg", "dur": "1:25:13"}, {"id": "jjFJE9wRqLY", "title": "Bolero en la Madrugada - Noches que Susurran Amor", "thumb": "https://i.ytimg.com/vi/jjFJE9wRqLY/mqdefault.jpg", "dur": "1:33:38"}, {"id": "a4djF6Tm1ZY", "title": "Madrugada en La Habana - Bolero para el Alma", "thumb": "https://i.ytimg.com/vi/a4djF6Tm1ZY/mqdefault.jpg", "dur": "1:32:49"}, {"id": "OZyrLx4pSdA", "title": "Bolero en la Madrugara - Entre Sombrasbde la Habana", "thumb": "https://i.ytimg.com/vi/OZyrLx4pSdA/mqdefault.jpg", "dur": "55:12"}, {"id": "ex-xcpnuIBQ", "title": "Un Retrato Una Herida -;Noches de Bolero y Nostalgia en La Habana", "thumb": "https://i.ytimg.com/vi/ex-xcpnuIBQ/mqdefault.jpg", "dur": "55:40"}, {"id": "e6X-z6bMoPg", "title": "Bolero en la Madrugada -- Sernata en la Habana Vieja", "thumb": "https://i.ytimg.com/vi/e6X-z6bMoPg/mqdefault.jpg", "dur": "55:40"}, {"id": "sLNRFavT6xY", "title": "La Habana y sus Historias -- Son,Bolero y Vida", "thumb": "https://i.ytimg.com/vi/sLNRFavT6xY/mqdefault.jpg", "dur": "46:57"}, {"id": "ipb1x--zqgw", "title": "Bolero en la Madrugada -- Susurros del Alma en L Habana", "thumb": "https://i.ytimg.com/vi/ipb1x--zqgw/mqdefault.jpg", "dur": "55:12"}, {"id": "vRuuFTBWMdI", "title": "Bolero en la Madrugara -- Entre Sombrasbde la Habana", "thumb": "https://i.ytimg.com/vi/vRuuFTBWMdI/mqdefault.jpg", "dur": "59:31"}, {"id": "3nSiYGN2LFo", "title": "Bolero en la Madrugada -- Voces del Alma en La Habana", "thumb": "https://i.ytimg.com/vi/3nSiYGN2LFo/mqdefault.jpg", "dur": "54:55"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

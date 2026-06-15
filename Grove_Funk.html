@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@grovefunk -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,153 +51,97 @@
       <div class="channel-count">21 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=6Vq39cHpjgY" target="_blank">
-            <img src="https://i.ytimg.com/vi/6Vq39cHpjgY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3PRanbtJjuA" target="_blank">
-            <img src="https://i.ytimg.com/vi/3PRanbtJjuA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎼 Locks You in the Groove | Minimal Soul Funk for Late Night Drive</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i3jDfY2v5Ko" target="_blank">
-            <img src="https://i.ytimg.com/vi/i3jDfY2v5Ko/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎩When the City Listens in Silence | Minimal Soul Funk · Midnight Lounge</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uxKdy4bpp_M" target="_blank">
-            <img src="https://i.ytimg.com/vi/uxKdy4bpp_M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎙️The Sound That Feels Right When You’re Done Talking for the Day | Minimal Soul Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Z0VOVKpcWC4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Z0VOVKpcWC4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🥃When the Whiskey Hits the Right Note | Minimal Soul Funk · Late Night Jazz Bar</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bro68Lq-Y6M" target="_blank">
-            <img src="https://i.ytimg.com/vi/bro68Lq-Y6M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥The Groove You Grow Into | Minimal Soul Funk · Mature Soul Session</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=z5ANNtTVoGM" target="_blank">
-            <img src="https://i.ytimg.com/vi/z5ANNtTVoGM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">💿Where the Groove Stays on Record | Minimal Soul Funk · Vintage Groove</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rVwlqCsSGyg" target="_blank">
-            <img src="https://i.ytimg.com/vi/rVwlqCsSGyg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎧Plays Clean in the Background While You Unwind | Minimal Soul Funk · Late Night Relax</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zsewRLkM-7s" target="_blank">
-            <img src="https://i.ytimg.com/vi/zsewRLkM-7s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🌃Late Night Rhythm from the Old Soul Streets | Minimal Soul Funk · Vintage Jazz Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oIqnwjedG14" target="_blank">
-            <img src="https://i.ytimg.com/vi/oIqnwjedG14/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🍷Bring Back Real Groove to Your Evenings | Minimal Soul Funk for Unwinding</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=f9J82mY6xCk" target="_blank">
-            <img src="https://i.ytimg.com/vi/f9J82mY6xCk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=m_RE5krIcrM" target="_blank">
-            <img src="https://i.ytimg.com/vi/m_RE5krIcrM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎼 Locks You in the Groove | Minimal Soul Funk for Late Night Drive</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=plOKesQ_Als" target="_blank">
-            <img src="https://i.ytimg.com/vi/plOKesQ_Als/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎩When the City Listens in Silence | Minimal Soul Funk · Midnight Lounge</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Uop-WHbVmDM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Uop-WHbVmDM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎙️The Sound That Feels Right When You’re Done Talking for the Day | Minimal Soul Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Tz4lbxgIGHM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Tz4lbxgIGHM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🥃When the Whiskey Hits the Right Note | Minimal Soul Funk · Late Night Jazz Bar</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6-cHWLQ0_Qs" target="_blank">
-            <img src="https://i.ytimg.com/vi/6-cHWLQ0_Qs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥The Groove You Grow Into | Minimal Soul Funk · Mature Soul Session</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GholijCqxfE" target="_blank">
-            <img src="https://i.ytimg.com/vi/GholijCqxfE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">💿Where the Groove Stays on Record | Minimal Soul Funk · Vintage Groove</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2JdmNXji9_o" target="_blank">
-            <img src="https://i.ytimg.com/vi/2JdmNXji9_o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎧Plays Clean in the Background While You Unwind | Minimal Soul Funk · Late Night Relax</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5LPDhRrwyHk" target="_blank">
-            <img src="https://i.ytimg.com/vi/5LPDhRrwyHk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🌃Late Night Rhythm from the Old Soul Streets | Minimal Soul Funk · Vintage Jazz Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JiWTcrTv61c" target="_blank">
-            <img src="https://i.ytimg.com/vi/JiWTcrTv61c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🍷Bring Back Real Groove to Your Evenings | Minimal Soul Funk for Unwinding</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T70m0s9jP8U" target="_blank">
-            <img src="https://i.ytimg.com/vi/T70m0s9jP8U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk</span>
-                <span class="video-dur">1:52:16</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Grove Funk";
+const VIDEOS = [{"id": "6Vq39cHpjgY", "title": "🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk", "thumb": "https://i.ytimg.com/vi/6Vq39cHpjgY/mqdefault.jpg", "dur": "1:52:16"}, {"id": "3PRanbtJjuA", "title": "🎼 Locks You in the Groove | Minimal Soul Funk for Late Night Drive", "thumb": "https://i.ytimg.com/vi/3PRanbtJjuA/mqdefault.jpg", "dur": "1:52:16"}, {"id": "i3jDfY2v5Ko", "title": "🎩When the City Listens in Silence | Minimal Soul Funk · Midnight Lounge", "thumb": "https://i.ytimg.com/vi/i3jDfY2v5Ko/mqdefault.jpg", "dur": "1:52:16"}, {"id": "uxKdy4bpp_M", "title": "🎙️The Sound That Feels Right When You’re Done Talking for the Day | Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/uxKdy4bpp_M/mqdefault.jpg", "dur": "1:52:16"}, {"id": "Z0VOVKpcWC4", "title": "🥃When the Whiskey Hits the Right Note | Minimal Soul Funk · Late Night Jazz Bar", "thumb": "https://i.ytimg.com/vi/Z0VOVKpcWC4/mqdefault.jpg", "dur": "1:52:16"}, {"id": "bro68Lq-Y6M", "title": "🔥The Groove You Grow Into | Minimal Soul Funk · Mature Soul Session", "thumb": "https://i.ytimg.com/vi/bro68Lq-Y6M/mqdefault.jpg", "dur": "1:52:16"}, {"id": "z5ANNtTVoGM", "title": "💿Where the Groove Stays on Record | Minimal Soul Funk · Vintage Groove", "thumb": "https://i.ytimg.com/vi/z5ANNtTVoGM/mqdefault.jpg", "dur": "1:52:16"}, {"id": "rVwlqCsSGyg", "title": "🎧Plays Clean in the Background While You Unwind | Minimal Soul Funk · Late Night Relax", "thumb": "https://i.ytimg.com/vi/rVwlqCsSGyg/mqdefault.jpg", "dur": "1:52:16"}, {"id": "zsewRLkM-7s", "title": "🌃Late Night Rhythm from the Old Soul Streets | Minimal Soul Funk · Vintage Jazz Funk", "thumb": "https://i.ytimg.com/vi/zsewRLkM-7s/mqdefault.jpg", "dur": "1:52:16"}, {"id": "oIqnwjedG14", "title": "🍷Bring Back Real Groove to Your Evenings | Minimal Soul Funk for Unwinding", "thumb": "https://i.ytimg.com/vi/oIqnwjedG14/mqdefault.jpg", "dur": "1:52:16"}, {"id": "f9J82mY6xCk", "title": "🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk", "thumb": "https://i.ytimg.com/vi/f9J82mY6xCk/mqdefault.jpg", "dur": "1:52:16"}, {"id": "m_RE5krIcrM", "title": "🎼 Locks You in the Groove | Minimal Soul Funk for Late Night Drive", "thumb": "https://i.ytimg.com/vi/m_RE5krIcrM/mqdefault.jpg", "dur": "1:52:16"}, {"id": "plOKesQ_Als", "title": "🎩When the City Listens in Silence | Minimal Soul Funk · Midnight Lounge", "thumb": "https://i.ytimg.com/vi/plOKesQ_Als/mqdefault.jpg", "dur": "1:52:16"}, {"id": "Uop-WHbVmDM", "title": "🎙️The Sound That Feels Right When You’re Done Talking for the Day | Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/Uop-WHbVmDM/mqdefault.jpg", "dur": "1:52:16"}, {"id": "Tz4lbxgIGHM", "title": "🥃When the Whiskey Hits the Right Note | Minimal Soul Funk · Late Night Jazz Bar", "thumb": "https://i.ytimg.com/vi/Tz4lbxgIGHM/mqdefault.jpg", "dur": "1:52:16"}, {"id": "6-cHWLQ0_Qs", "title": "🔥The Groove You Grow Into | Minimal Soul Funk · Mature Soul Session", "thumb": "https://i.ytimg.com/vi/6-cHWLQ0_Qs/mqdefault.jpg", "dur": "1:52:16"}, {"id": "GholijCqxfE", "title": "💿Where the Groove Stays on Record | Minimal Soul Funk · Vintage Groove", "thumb": "https://i.ytimg.com/vi/GholijCqxfE/mqdefault.jpg", "dur": "1:52:16"}, {"id": "2JdmNXji9_o", "title": "🎧Plays Clean in the Background While You Unwind | Minimal Soul Funk · Late Night Relax", "thumb": "https://i.ytimg.com/vi/2JdmNXji9_o/mqdefault.jpg", "dur": "1:52:16"}, {"id": "5LPDhRrwyHk", "title": "🌃Late Night Rhythm from the Old Soul Streets | Minimal Soul Funk · Vintage Jazz Funk", "thumb": "https://i.ytimg.com/vi/5LPDhRrwyHk/mqdefault.jpg", "dur": "1:52:16"}, {"id": "JiWTcrTv61c", "title": "🍷Bring Back Real Groove to Your Evenings | Minimal Soul Funk for Unwinding", "thumb": "https://i.ytimg.com/vi/JiWTcrTv61c/mqdefault.jpg", "dur": "1:52:16"}, {"id": "T70m0s9jP8U", "title": "🎙️When the Groove Hits After Midnight | Minimal Soul Funk · Vintage Jazz Funk", "thumb": "https://i.ytimg.com/vi/T70m0s9jP8U/mqdefault.jpg", "dur": "1:52:16"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@whiskwy -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,218 +51,97 @@
       <div class="channel-count">30 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=P6gt1z5nNLY" target="_blank">
-            <img src="https://i.ytimg.com/vi/P6gt1z5nNLY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues For Men Who Never Gave Up | Slow Blues For Lonely Nights</span>
-                <span class="video-dur">54:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=taJxuzgkCKc" target="_blank">
-            <img src="https://i.ytimg.com/vi/taJxuzgkCKc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues For Silent Souls 🥃🎩</span>
-                <span class="video-dur">0:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cfRzLlmulDg" target="_blank">
-            <img src="https://i.ytimg.com/vi/cfRzLlmulDg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues Songs For Men Who Walk Alone | Slow Blues For Silent Nights</span>
-                <span class="video-dur">1:02:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=swPPdj11Ids" target="_blank">
-            <img src="https://i.ytimg.com/vi/swPPdj11Ids/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues | Deep Soul Blues for Late Nights</span>
-                <span class="video-dur">0:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=koiL0gWitVg" target="_blank">
-            <img src="https://i.ytimg.com/vi/koiL0gWitVg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Men Who Carry Silence  Slow Midnight Blues for Lonely Souls &Late Night Reflection</span>
-                <span class="video-dur">1:50:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oWSnAU_Jn54" target="_blank">
-            <img src="https://i.ytimg.com/vi/oWSnAU_Jn54/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Some Men Carry Silence 🥃 | Whiskey Blues for Lonely Souls #shorts</span>
-                <span class="video-dur">0:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Q13u9yIrZgE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Q13u9yIrZgE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Silent Men 🥃 Slow Dark Blues for Late Night Reflection & Lonely Souls</span>
-                <span class="video-dur">54:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-Jfg89pDZcg" target="_blank">
-            <img src="https://i.ytimg.com/vi/-Jfg89pDZcg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight</span>
-                <span class="video-dur">0:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MsOQj07AzmM" target="_blank">
-            <img src="https://i.ytimg.com/vi/MsOQj07AzmM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight</span>
-                <span class="video-dur">1:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iCPhrHKonrg" target="_blank">
-            <img src="https://i.ytimg.com/vi/iCPhrHKonrg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight</span>
-                <span class="video-dur">1:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jBHow4M-Sz8" target="_blank">
-            <img src="https://i.ytimg.com/vi/jBHow4M-Sz8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">If Blues Lives in Your Soul… Welcome Home | Blues Short</span>
-                <span class="video-dur">0:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UPj5aA4YE2Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/UPj5aA4YE2Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues | Deep Soul Blues for Late Nights</span>
-                <span class="video-dur">0:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=l_fRkJxwmDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/l_fRkJxwmDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight Healing</span>
-                <span class="video-dur">1:06:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xdvmHQfnMfA" target="_blank">
-            <img src="https://i.ytimg.com/vi/xdvmHQfnMfA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues | Deep Soul Blues for Late Nights</span>
-                <span class="video-dur">0:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u1-YQSYARms" target="_blank">
-            <img src="https://i.ytimg.com/vi/u1-YQSYARms/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">This Blues Hits Different at Night 🌧️🥃</span>
-                <span class="video-dur">0:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7016wU4JzFA" target="_blank">
-            <img src="https://i.ytimg.com/vi/7016wU4JzFA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Whiskey Blues 🥃🌧️ | Dark Noir Blues Guitar</span>
-                <span class="video-dur">0:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aqQ_T_3qfno" target="_blank">
-            <img src="https://i.ytimg.com/vi/aqQ_T_3qfno/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Whiskey Blues 🍂 Slow Blues for Late Night Relaxing & Calm Vibes</span>
-                <span class="video-dur">1:48:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QsX-_YvrjSo" target="_blank">
-            <img src="https://i.ytimg.com/vi/QsX-_YvrjSo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Blues for Lonely Souls 🥃🎸</span>
-                <span class="video-dur">0:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qNlFNzQygFs" target="_blank">
-            <img src="https://i.ytimg.com/vi/qNlFNzQygFs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues | Song For Men Who Stay Silent Session</span>
-                <span class="video-dur">2:11:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=or6DW0o5eKw" target="_blank">
-            <img src="https://i.ytimg.com/vi/or6DW0o5eKw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Some wounds never learned how to speak.</span>
-                <span class="video-dur">0:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jglNKqElHa8" target="_blank">
-            <img src="https://i.ytimg.com/vi/jglNKqElHa8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Some men don’t talk… they carry.</span>
-                <span class="video-dur">0:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=liF_JbYFZdI" target="_blank">
-            <img src="https://i.ytimg.com/vi/liF_JbYFZdI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues | Deep Soul for Long, Silent Nights</span>
-                <span class="video-dur">1:50:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ft_ZJHmAJqI" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ft_ZJHmAJqI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">This Song Hits Different at Night 🌒🥃</span>
-                <span class="video-dur">0:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YQGdxuo4KA0" target="_blank">
-            <img src="https://i.ytimg.com/vi/YQGdxuo4KA0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues | Songs for Men Who Carry Silence</span>
-                <span class="video-dur">55:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-OfRGubalSE" target="_blank">
-            <img src="https://i.ytimg.com/vi/-OfRGubalSE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues for Silent Men 🎸🥃</span>
-                <span class="video-dur">0:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rlDw-TGEFoU" target="_blank">
-            <img src="https://i.ytimg.com/vi/rlDw-TGEFoU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Whiskey Blues | Songs for Men Who Stay Silent</span>
-                <span class="video-dur">1:27:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A-RcRuAZj6U" target="_blank">
-            <img src="https://i.ytimg.com/vi/A-RcRuAZj6U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues Vibe | Silent Men Feel This</span>
-                <span class="video-dur">0:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XoF1Zalh2RY" target="_blank">
-            <img src="https://i.ytimg.com/vi/XoF1Zalh2RY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Blues | Midnight Confessions for Silent Men (Deep Soul Blues Mix)</span>
-                <span class="video-dur">15:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Wg_51xqmi7k" target="_blank">
-            <img src="https://i.ytimg.com/vi/Wg_51xqmi7k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Blues for Late Nights | Whisky In The Blues</span>
-                <span class="video-dur">0:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=en4eZ_rkx6o" target="_blank">
-            <img src="https://i.ytimg.com/vi/en4eZ_rkx6o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentleman Dark Blues | Music for Men Who Remain Silent</span>
-                <span class="video-dur">36:23</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Whisky In The Blues";
+const VIDEOS = [{"id": "P6gt1z5nNLY", "title": "Dark Whiskey Blues For Men Who Never Gave Up | Slow Blues For Lonely Nights", "thumb": "https://i.ytimg.com/vi/P6gt1z5nNLY/mqdefault.jpg", "dur": "54:53"}, {"id": "taJxuzgkCKc", "title": "Dark Whiskey Blues For Silent Souls 🥃🎩", "thumb": "https://i.ytimg.com/vi/taJxuzgkCKc/mqdefault.jpg", "dur": "0:50"}, {"id": "cfRzLlmulDg", "title": "Dark Whiskey Blues Songs For Men Who Walk Alone | Slow Blues For Silent Nights", "thumb": "https://i.ytimg.com/vi/cfRzLlmulDg/mqdefault.jpg", "dur": "1:02:16"}, {"id": "swPPdj11Ids", "title": "Dark Blues | Deep Soul Blues for Late Nights", "thumb": "https://i.ytimg.com/vi/swPPdj11Ids/mqdefault.jpg", "dur": "0:41"}, {"id": "koiL0gWitVg", "title": "Whiskey Blues for Men Who Carry Silence  Slow Midnight Blues for Lonely Souls &Late Night Reflection", "thumb": "https://i.ytimg.com/vi/koiL0gWitVg/mqdefault.jpg", "dur": "1:50:28"}, {"id": "oWSnAU_Jn54", "title": "Some Men Carry Silence 🥃 | Whiskey Blues for Lonely Souls #shorts", "thumb": "https://i.ytimg.com/vi/oWSnAU_Jn54/mqdefault.jpg", "dur": "0:44"}, {"id": "Q13u9yIrZgE", "title": "Whiskey Blues for Silent Men 🥃 Slow Dark Blues for Late Night Reflection & Lonely Souls", "thumb": "https://i.ytimg.com/vi/Q13u9yIrZgE/mqdefault.jpg", "dur": "54:30"}, {"id": "-Jfg89pDZcg", "title": "Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight", "thumb": "https://i.ytimg.com/vi/-Jfg89pDZcg/mqdefault.jpg", "dur": "0:56"}, {"id": "MsOQj07AzmM", "title": "Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight", "thumb": "https://i.ytimg.com/vi/MsOQj07AzmM/mqdefault.jpg", "dur": "1:01"}, {"id": "iCPhrHKonrg", "title": "Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight", "thumb": "https://i.ytimg.com/vi/iCPhrHKonrg/mqdefault.jpg", "dur": "1:07"}, {"id": "jBHow4M-Sz8", "title": "If Blues Lives in Your Soul… Welcome Home | Blues Short", "thumb": "https://i.ytimg.com/vi/jBHow4M-Sz8/mqdefault.jpg", "dur": "0:50"}, {"id": "UPj5aA4YE2Y", "title": "Dark Blues | Deep Soul Blues for Late Nights", "thumb": "https://i.ytimg.com/vi/UPj5aA4YE2Y/mqdefault.jpg", "dur": "0:40"}, {"id": "l_fRkJxwmDA", "title": "Whiskey Blues for Lonely Souls 🌧️ Slow Dark Blues & Midnight Healing", "thumb": "https://i.ytimg.com/vi/l_fRkJxwmDA/mqdefault.jpg", "dur": "1:06:31"}, {"id": "xdvmHQfnMfA", "title": "Dark Blues | Deep Soul Blues for Late Nights", "thumb": "https://i.ytimg.com/vi/xdvmHQfnMfA/mqdefault.jpg", "dur": "0:37"}, {"id": "u1-YQSYARms", "title": "This Blues Hits Different at Night 🌧️🥃", "thumb": "https://i.ytimg.com/vi/u1-YQSYARms/mqdefault.jpg", "dur": "0:21"}, {"id": "7016wU4JzFA", "title": "Midnight Whiskey Blues 🥃🌧️ | Dark Noir Blues Guitar", "thumb": "https://i.ytimg.com/vi/7016wU4JzFA/mqdefault.jpg", "dur": "0:34"}, {"id": "aqQ_T_3qfno", "title": "Midnight Whiskey Blues 🍂 Slow Blues for Late Night Relaxing & Calm Vibes", "thumb": "https://i.ytimg.com/vi/aqQ_T_3qfno/mqdefault.jpg", "dur": "1:48:09"}, {"id": "QsX-_YvrjSo", "title": "Midnight Blues for Lonely Souls 🥃🎸", "thumb": "https://i.ytimg.com/vi/QsX-_YvrjSo/mqdefault.jpg", "dur": "0:36"}, {"id": "qNlFNzQygFs", "title": "Dark Blues | Song For Men Who Stay Silent Session", "thumb": "https://i.ytimg.com/vi/qNlFNzQygFs/mqdefault.jpg", "dur": "2:11:01"}, {"id": "or6DW0o5eKw", "title": "Some wounds never learned how to speak.", "thumb": "https://i.ytimg.com/vi/or6DW0o5eKw/mqdefault.jpg", "dur": "0:42"}, {"id": "jglNKqElHa8", "title": "Some men don’t talk… they carry.", "thumb": "https://i.ytimg.com/vi/jglNKqElHa8/mqdefault.jpg", "dur": "0:41"}, {"id": "liF_JbYFZdI", "title": "Dark Whiskey Blues | Deep Soul for Long, Silent Nights", "thumb": "https://i.ytimg.com/vi/liF_JbYFZdI/mqdefault.jpg", "dur": "1:50:50"}, {"id": "Ft_ZJHmAJqI", "title": "This Song Hits Different at Night 🌒🥃", "thumb": "https://i.ytimg.com/vi/Ft_ZJHmAJqI/mqdefault.jpg", "dur": "0:53"}, {"id": "YQGdxuo4KA0", "title": "Dark Whiskey Blues | Songs for Men Who Carry Silence", "thumb": "https://i.ytimg.com/vi/YQGdxuo4KA0/mqdefault.jpg", "dur": "55:27"}, {"id": "-OfRGubalSE", "title": "Dark Blues for Silent Men 🎸🥃", "thumb": "https://i.ytimg.com/vi/-OfRGubalSE/mqdefault.jpg", "dur": "0:45"}, {"id": "rlDw-TGEFoU", "title": "Dark Whiskey Blues | Songs for Men Who Stay Silent", "thumb": "https://i.ytimg.com/vi/rlDw-TGEFoU/mqdefault.jpg", "dur": "1:27:56"}, {"id": "A-RcRuAZj6U", "title": "Dark Blues Vibe | Silent Men Feel This", "thumb": "https://i.ytimg.com/vi/A-RcRuAZj6U/mqdefault.jpg", "dur": "0:36"}, {"id": "XoF1Zalh2RY", "title": "Dark Blues | Midnight Confessions for Silent Men (Deep Soul Blues Mix)", "thumb": "https://i.ytimg.com/vi/XoF1Zalh2RY/mqdefault.jpg", "dur": "15:32"}, {"id": "Wg_51xqmi7k", "title": "Slow Blues for Late Nights | Whisky In The Blues", "thumb": "https://i.ytimg.com/vi/Wg_51xqmi7k/mqdefault.jpg", "dur": "0:23"}, {"id": "en4eZ_rkx6o", "title": "Gentleman Dark Blues | Music for Men Who Remain Silent", "thumb": "https://i.ytimg.com/vi/en4eZ_rkx6o/mqdefault.jpg", "dur": "36:23"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

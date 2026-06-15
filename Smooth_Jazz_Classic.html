@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@smoothjazz-classic -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,148 +51,97 @@
       <div class="channel-count">20 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=CwLA9U2owcE" target="_blank">
-            <img src="https://i.ytimg.com/vi/CwLA9U2owcE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson - Moody's Mood | Timeless Smooth Jazz Guitar & Soulful Night Vibes|Smooth Jazz Classic</span>
-                <span class="video-dur">5:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FeGXb27g2Ic" target="_blank">
-            <img src="https://i.ytimg.com/vi/FeGXb27g2Ic/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Songs That Live Forever | Timeless Smooth Jazz, Soul & Jazz Pop Classics</span>
-                <span class="video-dur">2:16:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VTMlvj7vrD8" target="_blank">
-            <img src="https://i.ytimg.com/vi/VTMlvj7vrD8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson - Blue Monday | Smooth Jazz Guitar Nights • Timeless Smooth Jazz Classic</span>
-                <span class="video-dur">5:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uGvX8tYw0Ik" target="_blank">
-            <img src="https://i.ytimg.com/vi/uGvX8tYw0Ik/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – 30 Timeless Hits | Smooth Jazz, Jazz Pop & Soul Classics That Never Get Old</span>
-                <span class="video-dur">2:26:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SohaT8bcO4g" target="_blank">
-            <img src="https://i.ytimg.com/vi/SohaT8bcO4g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Walking to New Orleans | Timeless Smooth Jazz Guitar & Soulful Nights</span>
-                <span class="video-dur">5:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ax61s8V8O0k" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ax61s8V8O0k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson - Midnight Letters & Neon Dreams | Classic Smooth Jazz Guitar for Relaxing</span>
-                <span class="video-dur">2:21:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nmMkYJ0QAIg" target="_blank">
-            <img src="https://i.ytimg.com/vi/nmMkYJ0QAIg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">george benson - Turn The Feeling Around | Smooth Jazz Classic Guitar Vibes for Relaxing & Unwinding</span>
-                <span class="video-dur">3:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QsorpUyvEiQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/QsorpUyvEiQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – 30 Greatest Hits Collection | Timeless Smooth Jazz, Soul & R&B Classics</span>
-                <span class="video-dur">2:04:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gUnevyW72DQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/gUnevyW72DQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Breezin' | Timeless Smooth Jazz Guitar Masterpiece & Relaxing Jazz Classics</span>
-                <span class="video-dur">4:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xf15ogOc5JE" target="_blank">
-            <img src="https://i.ytimg.com/vi/xf15ogOc5JE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – In Flight Nights | Timeless Smooth Jazz & Soul Classics</span>
-                <span class="video-dur">40:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YbGYdP8jVcg" target="_blank">
-            <img src="https://i.ytimg.com/vi/YbGYdP8jVcg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Nature Boy | Timeless Smooth Jazz & Soul Masterpiece</span>
-                <span class="video-dur">4:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T4txDpZ1rac" target="_blank">
-            <img src="https://i.ytimg.com/vi/T4txDpZ1rac/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – The Blue Hour Revue | Smooth Jazz Nights & Timeless Soul Grooves</span>
-                <span class="video-dur">40:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h6WjjOv7Mp4" target="_blank">
-            <img src="https://i.ytimg.com/vi/h6WjjOv7Mp4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Turn Your Love Around – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove</span>
-                <span class="video-dur">4:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ohbg3kLmb8I" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ohbg3kLmb8I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson – Behind the Velvet Smile – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove</span>
-                <span class="video-dur">4:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vN3m08kolAM" target="_blank">
-            <img src="https://i.ytimg.com/vi/vN3m08kolAM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson's - Every Beat Leads to You – Smooth Jazz Nights | Timeless Jazz,Soul & R&B Love Songs</span>
-                <span class="video-dur">41:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h45JUtGHxMQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/h45JUtGHxMQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson's - Love X Love Inspired – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove</span>
-                <span class="video-dur">4:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6JSk3KwsviU" target="_blank">
-            <img src="https://i.ytimg.com/vi/6JSk3KwsviU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson "Soulfire Blues" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.</span>
-                <span class="video-dur">1:06:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sFTvv2wOHE4" target="_blank">
-            <img src="https://i.ytimg.com/vi/sFTvv2wOHE4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson - "Give Me the Night" – Smooth Jazz Nights, Soul & R&B Night Vibes.</span>
-                <span class="video-dur">4:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zlNauIGnuGE" target="_blank">
-            <img src="https://i.ytimg.com/vi/zlNauIGnuGE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson "Forever In Your Eyes" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.</span>
-                <span class="video-dur">42:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WC8CMXQ5x8k" target="_blank">
-            <img src="https://i.ytimg.com/vi/WC8CMXQ5x8k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">George Benson - "Give Me the Night" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits</span>
-                <span class="video-dur">43:13</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Smooth Jazz Classic";
+const VIDEOS = [{"id": "CwLA9U2owcE", "title": "George Benson - Moody's Mood | Timeless Smooth Jazz Guitar & Soulful Night Vibes|Smooth Jazz Classic", "thumb": "https://i.ytimg.com/vi/CwLA9U2owcE/mqdefault.jpg", "dur": "5:55"}, {"id": "FeGXb27g2Ic", "title": "George Benson – Songs That Live Forever | Timeless Smooth Jazz, Soul & Jazz Pop Classics", "thumb": "https://i.ytimg.com/vi/FeGXb27g2Ic/mqdefault.jpg", "dur": "2:16:32"}, {"id": "VTMlvj7vrD8", "title": "George Benson - Blue Monday | Smooth Jazz Guitar Nights • Timeless Smooth Jazz Classic", "thumb": "https://i.ytimg.com/vi/VTMlvj7vrD8/mqdefault.jpg", "dur": "5:29"}, {"id": "uGvX8tYw0Ik", "title": "George Benson – 30 Timeless Hits | Smooth Jazz, Jazz Pop & Soul Classics That Never Get Old", "thumb": "https://i.ytimg.com/vi/uGvX8tYw0Ik/mqdefault.jpg", "dur": "2:26:21"}, {"id": "SohaT8bcO4g", "title": "George Benson – Walking to New Orleans | Timeless Smooth Jazz Guitar & Soulful Nights", "thumb": "https://i.ytimg.com/vi/SohaT8bcO4g/mqdefault.jpg", "dur": "5:23"}, {"id": "Ax61s8V8O0k", "title": "George Benson - Midnight Letters & Neon Dreams | Classic Smooth Jazz Guitar for Relaxing", "thumb": "https://i.ytimg.com/vi/Ax61s8V8O0k/mqdefault.jpg", "dur": "2:21:54"}, {"id": "nmMkYJ0QAIg", "title": "george benson - Turn The Feeling Around | Smooth Jazz Classic Guitar Vibes for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/nmMkYJ0QAIg/mqdefault.jpg", "dur": "3:55"}, {"id": "QsorpUyvEiQ", "title": "George Benson – 30 Greatest Hits Collection | Timeless Smooth Jazz, Soul & R&B Classics", "thumb": "https://i.ytimg.com/vi/QsorpUyvEiQ/mqdefault.jpg", "dur": "2:04:49"}, {"id": "gUnevyW72DQ", "title": "George Benson – Breezin' | Timeless Smooth Jazz Guitar Masterpiece & Relaxing Jazz Classics", "thumb": "https://i.ytimg.com/vi/gUnevyW72DQ/mqdefault.jpg", "dur": "4:10"}, {"id": "xf15ogOc5JE", "title": "George Benson – In Flight Nights | Timeless Smooth Jazz & Soul Classics", "thumb": "https://i.ytimg.com/vi/xf15ogOc5JE/mqdefault.jpg", "dur": "40:25"}, {"id": "YbGYdP8jVcg", "title": "George Benson – Nature Boy | Timeless Smooth Jazz & Soul Masterpiece", "thumb": "https://i.ytimg.com/vi/YbGYdP8jVcg/mqdefault.jpg", "dur": "4:25"}, {"id": "T4txDpZ1rac", "title": "George Benson – The Blue Hour Revue | Smooth Jazz Nights & Timeless Soul Grooves", "thumb": "https://i.ytimg.com/vi/T4txDpZ1rac/mqdefault.jpg", "dur": "40:51"}, {"id": "h6WjjOv7Mp4", "title": "George Benson – Turn Your Love Around – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/h6WjjOv7Mp4/mqdefault.jpg", "dur": "4:25"}, {"id": "Ohbg3kLmb8I", "title": "George Benson – Behind the Velvet Smile – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/Ohbg3kLmb8I/mqdefault.jpg", "dur": "4:30"}, {"id": "vN3m08kolAM", "title": "George Benson's - Every Beat Leads to You – Smooth Jazz Nights | Timeless Jazz,Soul & R&B Love Songs", "thumb": "https://i.ytimg.com/vi/vN3m08kolAM/mqdefault.jpg", "dur": "41:49"}, {"id": "h45JUtGHxMQ", "title": "George Benson's - Love X Love Inspired – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/h45JUtGHxMQ/mqdefault.jpg", "dur": "4:15"}, {"id": "6JSk3KwsviU", "title": "George Benson \"Soulfire Blues\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.", "thumb": "https://i.ytimg.com/vi/6JSk3KwsviU/mqdefault.jpg", "dur": "1:06:30"}, {"id": "sFTvv2wOHE4", "title": "George Benson - \"Give Me the Night\" – Smooth Jazz Nights, Soul & R&B Night Vibes.", "thumb": "https://i.ytimg.com/vi/sFTvv2wOHE4/mqdefault.jpg", "dur": "4:32"}, {"id": "zlNauIGnuGE", "title": "George Benson \"Forever In Your Eyes\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.", "thumb": "https://i.ytimg.com/vi/zlNauIGnuGE/mqdefault.jpg", "dur": "42:26"}, {"id": "WC8CMXQ5x8k", "title": "George Benson - \"Give Me the Night\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits", "thumb": "https://i.ytimg.com/vi/WC8CMXQ5x8k/mqdefault.jpg", "dur": "43:13"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@solalmabrazilianvibes -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,519 +51,97 @@
       <div class="channel-count">73 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=abz1I3_NSZc" target="_blank">
-            <img src="https://i.ytimg.com/vi/abz1I3_NSZc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Postcard From Brazil | Morning Coffee & Bossa Nova · Timeless Brazil Instrumental</span>
-                <span class="video-dur">1:51:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=f3sySp1n4N4" target="_blank">
-            <img src="https://i.ytimg.com/vi/f3sySp1n4N4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Window Over Rio · Timeless Bossa Nova | Retro Playlist</span>
-                <span class="video-dur">1:51:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dB2mqT89hYs" target="_blank">
-            <img src="https://i.ytimg.com/vi/dB2mqT89hYs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Ipanema 1977 🌴 Luxury Jazz & Timeless Bossa Nova Instrumental Music</span>
-                <span class="video-dur">1:51:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3KdP4H43x8A" target="_blank">
-            <img src="https://i.ytimg.com/vi/3KdP4H43x8A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Brazil 🌴 White Sand Afternoons · Timeless Bossa Nova | Copacabana 1976</span>
-                <span class="video-dur">1:52:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xV5Ys2nawzg" target="_blank">
-            <img src="https://i.ytimg.com/vi/xV5Ys2nawzg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Brazil 🌴 Just Another Slow Day in Rio · Timeless Bossa Nova | 1975</span>
-                <span class="video-dur">1:51:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=G5LVmtAssJ0" target="_blank">
-            <img src="https://i.ytimg.com/vi/G5LVmtAssJ0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Morning in Ipanema 🌴 Timeless Bossa Nova · Soft Jazz & Café Brazil | 1974</span>
-                <span class="video-dur">1:51:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bpcz79XTidk" target="_blank">
-            <img src="https://i.ytimg.com/vi/bpcz79XTidk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Brazil 🌴 Café Morning in Rio · Timeless Bossa Nova Instrumental | Ipanema 1973</span>
-                <span class="video-dur">1:52:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vJ_0ch4JT2Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/vJ_0ch4JT2Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Morning Bossa Nova 🌴 Timeless Instrumental · Pour Your Coffee Slowly | Rio 1972</span>
-                <span class="video-dur">1:51:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6gfVgj5gNyg" target="_blank">
-            <img src="https://i.ytimg.com/vi/6gfVgj5gNyg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Lobby Bar at the Copacabana Palace 🌴 Timeless Bossa Nova Instrumental | Rio 1971</span>
-                <span class="video-dur">1:51:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=a9LLhhvpNUU" target="_blank">
-            <img src="https://i.ytimg.com/vi/a9LLhhvpNUU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Brazil Was Made for Mornings Like This 🌴 Timeless Bossa Nova | Ipanema 1970</span>
-                <span class="video-dur">1:51:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TUmiqo-yZP4" target="_blank">
-            <img src="https://i.ytimg.com/vi/TUmiqo-yZP4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Ipanema🌴 Dreams of Another Era · Timeless Brazil Bossa Nova | 1969</span>
-                <span class="video-dur">1:51:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kuck6dq0G1Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/kuck6dq0G1Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Sundown at Copacabana 🇧🇷 Timeless Bossa Nova | Brazil Instrumental Music 1968</span>
-                <span class="video-dur">1:51:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VAN_qBf9qOM" target="_blank">
-            <img src="https://i.ytimg.com/vi/VAN_qBf9qOM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Rio 🌴 Timeless Bossa Nova · Golden Hours & Saudade | Brazil Retro 1967</span>
-                <span class="video-dur">1:49:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6h-fZWWUsBQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/6h-fZWWUsBQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Music 🌴 Vintage Rio · Brazil Lounge & Timeless Bossa Nova | 1966</span>
-                <span class="video-dur">1:49:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6nS0r-IXUws" target="_blank">
-            <img src="https://i.ytimg.com/vi/6nS0r-IXUws/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost in Another Era 🌴 Timeless Bossa Nova for Slow Relax | Vintage Brazil 1965</span>
-                <span class="video-dur">1:48:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Lq3ucpZhTfM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Lq3ucpZhTfM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Memories of Ipanema · 1964 🇧🇷 Vintage Bossa Nova & Golden Age Brazil Instrumental Music</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zZMnJEbbXAY" target="_blank">
-            <img src="https://i.ytimg.com/vi/zZMnJEbbXAY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Café da Manhã ☕ Old World Bossa Nova & Vintage Brazil Jazzy | Rio 1963</span>
-                <span class="video-dur">2:00:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=y1McjFGRV0s" target="_blank">
-            <img src="https://i.ytimg.com/vi/y1McjFGRV0s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saudade do Rio 🌅 Timeless Bossa Nova & Brazil Jazz from Another Era | 1962</span>
-                <span class="video-dur">1:58:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YghW1awvPMk" target="_blank">
-            <img src="https://i.ytimg.com/vi/YghW1awvPMk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Last Light Over Rio 🌅 Soft Jazzy Bossa Nova & Timeless Brazil | 1961</span>
-                <span class="video-dur">1:48:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hqjn1eby0TU" target="_blank">
-            <img src="https://i.ytimg.com/vi/hqjn1eby0TU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Postcard From Brazil 1960 🌴 Timeless Brazilian Jazz & Dreamy Bossa Nova</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1CoKeYKCZDU" target="_blank">
-            <img src="https://i.ytimg.com/vi/1CoKeYKCZDU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Bossa Nova 🇧🇷 Ipanema Girl in the Sun | Timeless Brazil 1979</span>
-                <span class="video-dur">1:51:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gbRRHM023Hk" target="_blank">
-            <img src="https://i.ytimg.com/vi/gbRRHM023Hk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Money Ipanema 1978 🌴 Elegant Bossa Nova & Timeless Brazil Instrumental Music</span>
-                <span class="video-dur">1:51:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u7YkYe4_jEo" target="_blank">
-            <img src="https://i.ytimg.com/vi/u7YkYe4_jEo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Summer Afternoons 1977 | Brazil Instrumental Music for Slow Days | Timeless Bossa Nova</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=K8nEkpKU_6o" target="_blank">
-            <img src="https://i.ytimg.com/vi/K8nEkpKU_6o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌊 𝑾𝒉𝒆𝒏 𝑨𝒇𝒕𝒆𝒓𝒏𝒐𝒐𝒏𝒔 𝑻𝒂𝒔𝒕𝒆𝒅 𝑳𝒊𝒌𝒆 𝑺𝒂𝒍𝒕 𝒂𝒏𝒅 𝑺𝒖𝒏 | Ipanema 1976</span>
-                <span class="video-dur">2:00:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=l-RnsEPNJvA" target="_blank">
-            <img src="https://i.ytimg.com/vi/l-RnsEPNJvA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Jazz 🌴 Old Money Music · 𝑾𝒉𝒆𝒓𝒆 𝑻𝒊𝒎𝒆 𝑭𝒐𝒓𝒈𝒐𝒕 𝒕𝒐 𝑹𝒖𝒔𝒉 | Copacabana 1975</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0m3GTdlWUXE" target="_blank">
-            <img src="https://i.ytimg.com/vi/0m3GTdlWUXE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Tropical Jazz 🌺 Maracujá, Under the Carioca Sun | A Calm Afternoon in 1974</span>
-                <span class="video-dur">1:59:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zsyutNQg5UE" target="_blank">
-            <img src="https://i.ytimg.com/vi/zsyutNQg5UE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Vintage Jazz 🌞 A Warm Ocean Breeze in Copacabana | Summer 1973</span>
-                <span class="video-dur">1:59:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QtFG7Q44p_E" target="_blank">
-            <img src="https://i.ytimg.com/vi/QtFG7Q44p_E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Brazilian Jazz 🌞 Caipirinha, Sand & Relax | A Brazilian Dream 1972</span>
-                <span class="video-dur">1:58:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KDZAMTNMzcg" target="_blank">
-            <img src="https://i.ytimg.com/vi/KDZAMTNMzcg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Vintage Brazilian 🌴 Warm Summer To Remember | Lost In Rio 1971</span>
-                <span class="video-dur">1:59:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=93dFZFGRHRo" target="_blank">
-            <img src="https://i.ytimg.com/vi/93dFZFGRHRo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Mellow Brazil 🌴 Slow Morning Lost in Melody | Golden Era 1970</span>
-                <span class="video-dur">2:00:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bqKtEHB9dH8" target="_blank">
-            <img src="https://i.ytimg.com/vi/bqKtEHB9dH8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Chill Brazil 🌞 Sunlit Afternoons & Relaxing Music | Vintage Daydream 1969</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wG5BeE_lqCo" target="_blank">
-            <img src="https://i.ytimg.com/vi/wG5BeE_lqCo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Relaxing Music 🌴 Saudade do Rio | Vintage Brasil 1968</span>
-                <span class="video-dur">1:58:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lPSq1CqM2Pc" target="_blank">
-            <img src="https://i.ytimg.com/vi/lPSq1CqM2Pc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌅 Memories of Rio - Warm Afternoons by the Sea  Copacabana 1967</span>
-                <span class="video-dur">1:58:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TCjw8u1eWp0" target="_blank">
-            <img src="https://i.ytimg.com/vi/TCjw8u1eWp0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌅 Old Money Rio - Golden Afternoons | Ipanema 1966</span>
-                <span class="video-dur">2:01:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mjE_eHjSoMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/mjE_eHjSoMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental ☕ Cafè Music — Sand Between Our Fingers | Ipanema 1970</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XU58HbQxCDs" target="_blank">
-            <img src="https://i.ytimg.com/vi/XU58HbQxCDs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌴 Relax Music — Letters From a Golden Summer | Rio 1978</span>
-                <span class="video-dur">2:00:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=q7dRF0oaIB0" target="_blank">
-            <img src="https://i.ytimg.com/vi/q7dRF0oaIB0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental ☕ The Last Coffee Before We Said Goodbye | Retro Brazil 1972</span>
-                <span class="video-dur">2:00:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kqDrpOxN8nU" target="_blank">
-            <img src="https://i.ytimg.com/vi/kqDrpOxN8nU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌴 Desafinado and the Sound of Old Rio | Golden Memories 1975</span>
-                <span class="video-dur">2:00:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8KGweVaS3hU" target="_blank">
-            <img src="https://i.ytimg.com/vi/8KGweVaS3hU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🇧🇷 Corcovado and the Summer Breeze of Rio | 1968 Memories</span>
-                <span class="video-dur">2:02:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_pUAAOoeNbY" target="_blank">
-            <img src="https://i.ytimg.com/vi/_pUAAOoeNbY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌴 Garota de Ipanema and the Summer We Never Forgot | Rio 1963</span>
-                <span class="video-dur">2:00:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mtgxqzMCQDs" target="_blank">
-            <img src="https://i.ytimg.com/vi/mtgxqzMCQDs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🌅 Those Days We Played Barefoot Until the Sun Went Down  Copacabana 1978</span>
-                <span class="video-dur">2:00:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5HyMKU3wU60" target="_blank">
-            <img src="https://i.ytimg.com/vi/5HyMKU3wU60/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌴 Garota de Ipanema and the Love We Left on That Beach | Rio 1964</span>
-                <span class="video-dur">2:00:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=D9YHFAZXnV4" target="_blank">
-            <img src="https://i.ytimg.com/vi/D9YHFAZXnV4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova Instrumental 🌅 When Every Sunset Tasted Like Papaya | Recife 1971</span>
-                <span class="video-dur">2:00:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=J09CUjY44Ek" target="_blank">
-            <img src="https://i.ytimg.com/vi/J09CUjY44Ek/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🇧🇷 Between Colorful Streets and Ocean Breeze | Salvador 1966</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TZtbXy6B8OU" target="_blank">
-            <img src="https://i.ytimg.com/vi/TZtbXy6B8OU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🌅 The Summer We Thought Would Last Forever | Copacabana 1976</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fNMWqTZusho" target="_blank">
-            <img src="https://i.ytimg.com/vi/fNMWqTZusho/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🇧🇷 Sunlight, Silence and Slow Days — A Postcard From Brazil | Santos 1971</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4xIRygS7p5c" target="_blank">
-            <img src="https://i.ytimg.com/vi/4xIRygS7p5c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🇧🇷 Some Days You Carry With You Forever | Ipanema 1974</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tvcdpVnLWv0" target="_blank">
-            <img src="https://i.ytimg.com/vi/tvcdpVnLWv0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🇧🇷 Two Friends Who Never Forgot That Summer — A Postcard From Brazil | Rio 1969</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3e08domzTVU" target="_blank">
-            <img src="https://i.ytimg.com/vi/3e08domzTVU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova 🌊 Where Golden Afternoons Never End — A Postcard From Brazil | Rio 1974</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h4OHm_dt714" target="_blank">
-            <img src="https://i.ytimg.com/vi/h4OHm_dt714/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Morning Coffee Music ☕ Sunny Café Instrumental | Bahia 1972</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5wNK8puucDM" target="_blank">
-            <img src="https://i.ytimg.com/vi/5wNK8puucDM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Café ☕ 2h Background Music For Coffee shop Ambience | Salvador 1967</span>
-                <span class="video-dur">2:00:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jNUvqBqYxx4" target="_blank">
-            <img src="https://i.ytimg.com/vi/jNUvqBqYxx4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage  Bossa Nova 🌊 2h Instrumental music for slow and Peaceful moments | Praia do Forte 1968</span>
-                <span class="video-dur">2:00:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=no-6ECMG2Ho" target="_blank">
-            <img src="https://i.ytimg.com/vi/no-6ECMG2Ho/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Retro Bossa Nova 🍹 2h Instrumental Music for Beach Bar | Santos 1968</span>
-                <span class="video-dur">2:00:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pIX4EVm8j94" target="_blank">
-            <img src="https://i.ytimg.com/vi/pIX4EVm8j94/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Golden Afternoon Memories 🌊 Calm Instrumental Bossa Nova for Relax | Ipanema 1971</span>
-                <span class="video-dur">2:00:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hOhsV-aAy0Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/hOhsV-aAy0Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Bossa Nova 🌴 2h Sunny Relaxing Instrumental Music For Slow Morning | Recife 1965</span>
-                <span class="video-dur">2:00:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e4Rcq407mK8" target="_blank">
-            <img src="https://i.ytimg.com/vi/e4Rcq407mK8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Brazilian Elegance 🍷 Instrumental Bossa Nova Music for Dinner | Rio 1969</span>
-                <span class="video-dur">2:01:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zYWCCdg8UJM" target="_blank">
-            <img src="https://i.ytimg.com/vi/zYWCCdg8UJM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nostalgic Bossa Nova 🌅 Gentle Instrumental Vibes for Slow Moments | Rio De Janerio 1961</span>
-                <span class="video-dur">2:00:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6DakW9jQEDk" target="_blank">
-            <img src="https://i.ytimg.com/vi/6DakW9jQEDk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Bossa Nova Instrumental 🍹 Cocktail Bar & Aperitif Background Music | Ipanema 1964</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XG9kAbyEGeM" target="_blank">
-            <img src="https://i.ytimg.com/vi/XG9kAbyEGeM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Bossa Nova & Relaxing Beach Ambience 🌊 Peaceful Instrumental Music | Praia do Forte 1966</span>
-                <span class="video-dur">2:00:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=an2CtksgtU8" target="_blank">
-            <img src="https://i.ytimg.com/vi/an2CtksgtU8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soulful Bossa Nova & Restaurant Music 🍽️ Warm Dinner Background | Bahia 1972</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tyoArMzq9tw" target="_blank">
-            <img src="https://i.ytimg.com/vi/tyoArMzq9tw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Restaurant Lounge ☀️ 2h Soft Background Music for Brunch & Relaxation | Fortaleza 1965</span>
-                <span class="video-dur">2:00:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3PDKk3nkIlc" target="_blank">
-            <img src="https://i.ytimg.com/vi/3PDKk3nkIlc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova 🌅 Sunset Beach Instrumental Music for Aperitif | Rio 1977</span>
-                <span class="video-dur">1:58:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vM_oqm0IkIw" target="_blank">
-            <img src="https://i.ytimg.com/vi/vM_oqm0IkIw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Bossa Nova 🌴 Café Vibes with a Coastal Feel | Leblon 1960</span>
-                <span class="video-dur">2:00:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=K9N80L9xxpk" target="_blank">
-            <img src="https://i.ytimg.com/vi/K9N80L9xxpk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Happy Bossa Nova 🎶 Vintage Carnival Vibes Music & Carioca Passion | Rio 1970</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KT3b2JBGJqw" target="_blank">
-            <img src="https://i.ytimg.com/vi/KT3b2JBGJqw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Seaside Relax in Recife 🌊 Soft Bossa Nova with Ocean Breeze | 1965</span>
-                <span class="video-dur">2:00:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mUmowmkYF3o" target="_blank">
-            <img src="https://i.ytimg.com/vi/mUmowmkYF3o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Joyful Bossa Nova 🎭 Vintage Carnival Vibes in Lapa | Rio 1973</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8ywed3U5VcE" target="_blank">
-            <img src="https://i.ytimg.com/vi/8ywed3U5VcE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Instrumental Bossa Nova Vintage ☀️ Morning Lounge Café Mood for Slow Relax | Bahia Coast 1961</span>
-                <span class="video-dur">2:00:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=esjnbjnCtg0" target="_blank">
-            <img src="https://i.ytimg.com/vi/esjnbjnCtg0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Classic Bossa Nova Brasil 🌙 Cocktail Bar Music for Late Evening Vibes | Rio Nights 1975</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WxOJ1hrF-GQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/WxOJ1hrF-GQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soft Bossa Nova Restaurant Music 🍽️ 2h Elegant Dinner Background | Copacabana 1963</span>
-                <span class="video-dur">2:00:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X5xOWI5YY78" target="_blank">
-            <img src="https://i.ytimg.com/vi/X5xOWI5YY78/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Café ☕ 2h Relaxing Music for Relax & Calm Evenings | São Paulo 1970</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9mSXFLr0R84" target="_blank">
-            <img src="https://i.ytimg.com/vi/9mSXFLr0R84/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Bossa Nova Instrumental ☕️ Music Café Sounds for Reading and Study | Ipanema 1960</span>
-                <span class="video-dur">2:00:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4DdpbKtmAJ0" target="_blank">
-            <img src="https://i.ytimg.com/vi/4DdpbKtmAJ0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Bossa Nova 🍸 2h Elegant Lounge Music for Relaxing Evenings | Fortaleza 1970</span>
-                <span class="video-dur">1:58:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HlzB2ycyWyM" target="_blank">
-            <img src="https://i.ytimg.com/vi/HlzB2ycyWyM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Bossa Nova 🌴 2h Relaxing Background Music | Rio de Janeiro 1960</span>
-                <span class="video-dur">2:00:36</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "SolAlma Brazilian Vibes";
+const VIDEOS = [{"id": "abz1I3_NSZc", "title": "Postcard From Brazil | Morning Coffee & Bossa Nova · Timeless Brazil Instrumental", "thumb": "https://i.ytimg.com/vi/abz1I3_NSZc/mqdefault.jpg", "dur": "1:51:24"}, {"id": "f3sySp1n4N4", "title": "Window Over Rio · Timeless Bossa Nova | Retro Playlist", "thumb": "https://i.ytimg.com/vi/f3sySp1n4N4/mqdefault.jpg", "dur": "1:51:21"}, {"id": "dB2mqT89hYs", "title": "Old Money Ipanema 1977 🌴 Luxury Jazz & Timeless Bossa Nova Instrumental Music", "thumb": "https://i.ytimg.com/vi/dB2mqT89hYs/mqdefault.jpg", "dur": "1:51:30"}, {"id": "3KdP4H43x8A", "title": "Old Money Brazil 🌴 White Sand Afternoons · Timeless Bossa Nova | Copacabana 1976", "thumb": "https://i.ytimg.com/vi/3KdP4H43x8A/mqdefault.jpg", "dur": "1:52:01"}, {"id": "xV5Ys2nawzg", "title": "Old Money Brazil 🌴 Just Another Slow Day in Rio · Timeless Bossa Nova | 1975", "thumb": "https://i.ytimg.com/vi/xV5Ys2nawzg/mqdefault.jpg", "dur": "1:51:31"}, {"id": "G5LVmtAssJ0", "title": "Slow Morning in Ipanema 🌴 Timeless Bossa Nova · Soft Jazz & Café Brazil | 1974", "thumb": "https://i.ytimg.com/vi/G5LVmtAssJ0/mqdefault.jpg", "dur": "1:51:15"}, {"id": "bpcz79XTidk", "title": "Old Money Brazil 🌴 Café Morning in Rio · Timeless Bossa Nova Instrumental | Ipanema 1973", "thumb": "https://i.ytimg.com/vi/bpcz79XTidk/mqdefault.jpg", "dur": "1:52:01"}, {"id": "vJ_0ch4JT2Q", "title": "Morning Bossa Nova 🌴 Timeless Instrumental · Pour Your Coffee Slowly | Rio 1972", "thumb": "https://i.ytimg.com/vi/vJ_0ch4JT2Q/mqdefault.jpg", "dur": "1:51:36"}, {"id": "6gfVgj5gNyg", "title": "The Lobby Bar at the Copacabana Palace 🌴 Timeless Bossa Nova Instrumental | Rio 1971", "thumb": "https://i.ytimg.com/vi/6gfVgj5gNyg/mqdefault.jpg", "dur": "1:51:37"}, {"id": "a9LLhhvpNUU", "title": "Brazil Was Made for Mornings Like This 🌴 Timeless Bossa Nova | Ipanema 1970", "thumb": "https://i.ytimg.com/vi/a9LLhhvpNUU/mqdefault.jpg", "dur": "1:51:41"}, {"id": "TUmiqo-yZP4", "title": "Old Money Ipanema🌴 Dreams of Another Era · Timeless Brazil Bossa Nova | 1969", "thumb": "https://i.ytimg.com/vi/TUmiqo-yZP4/mqdefault.jpg", "dur": "1:51:20"}, {"id": "kuck6dq0G1Y", "title": "Sundown at Copacabana 🇧🇷 Timeless Bossa Nova | Brazil Instrumental Music 1968", "thumb": "https://i.ytimg.com/vi/kuck6dq0G1Y/mqdefault.jpg", "dur": "1:51:14"}, {"id": "VAN_qBf9qOM", "title": "Old Money Rio 🌴 Timeless Bossa Nova · Golden Hours & Saudade | Brazil Retro 1967", "thumb": "https://i.ytimg.com/vi/VAN_qBf9qOM/mqdefault.jpg", "dur": "1:49:40"}, {"id": "6h-fZWWUsBQ", "title": "Old Money Music 🌴 Vintage Rio · Brazil Lounge & Timeless Bossa Nova | 1966", "thumb": "https://i.ytimg.com/vi/6h-fZWWUsBQ/mqdefault.jpg", "dur": "1:49:45"}, {"id": "6nS0r-IXUws", "title": "Lost in Another Era 🌴 Timeless Bossa Nova for Slow Relax | Vintage Brazil 1965", "thumb": "https://i.ytimg.com/vi/6nS0r-IXUws/mqdefault.jpg", "dur": "1:48:53"}, {"id": "Lq3ucpZhTfM", "title": "Memories of Ipanema · 1964 🇧🇷 Vintage Bossa Nova & Golden Age Brazil Instrumental Music", "thumb": "https://i.ytimg.com/vi/Lq3ucpZhTfM/mqdefault.jpg", "dur": "2:02:38"}, {"id": "zZMnJEbbXAY", "title": "Café da Manhã ☕ Old World Bossa Nova & Vintage Brazil Jazzy | Rio 1963", "thumb": "https://i.ytimg.com/vi/zZMnJEbbXAY/mqdefault.jpg", "dur": "2:00:37"}, {"id": "y1McjFGRV0s", "title": "Saudade do Rio 🌅 Timeless Bossa Nova & Brazil Jazz from Another Era | 1962", "thumb": "https://i.ytimg.com/vi/y1McjFGRV0s/mqdefault.jpg", "dur": "1:58:57"}, {"id": "YghW1awvPMk", "title": "Last Light Over Rio 🌅 Soft Jazzy Bossa Nova & Timeless Brazil | 1961", "thumb": "https://i.ytimg.com/vi/YghW1awvPMk/mqdefault.jpg", "dur": "1:48:44"}, {"id": "hqjn1eby0TU", "title": "Postcard From Brazil 1960 🌴 Timeless Brazilian Jazz & Dreamy Bossa Nova", "thumb": "https://i.ytimg.com/vi/hqjn1eby0TU/mqdefault.jpg", "dur": "2:02:38"}, {"id": "1CoKeYKCZDU", "title": "Old Money Bossa Nova 🇧🇷 Ipanema Girl in the Sun | Timeless Brazil 1979", "thumb": "https://i.ytimg.com/vi/1CoKeYKCZDU/mqdefault.jpg", "dur": "1:51:24"}, {"id": "gbRRHM023Hk", "title": "Old Money Ipanema 1978 🌴 Elegant Bossa Nova & Timeless Brazil Instrumental Music", "thumb": "https://i.ytimg.com/vi/gbRRHM023Hk/mqdefault.jpg", "dur": "1:51:13"}, {"id": "u7YkYe4_jEo", "title": "Summer Afternoons 1977 | Brazil Instrumental Music for Slow Days | Timeless Bossa Nova", "thumb": "https://i.ytimg.com/vi/u7YkYe4_jEo/mqdefault.jpg", "dur": "2:02:38"}, {"id": "K8nEkpKU_6o", "title": "Timeless Bossa Nova Instrumental 🌊 𝑾𝒉𝒆𝒏 𝑨𝒇𝒕𝒆𝒓𝒏𝒐𝒐𝒏𝒔 𝑻𝒂𝒔𝒕𝒆𝒅 𝑳𝒊𝒌𝒆 𝑺𝒂𝒍𝒕 𝒂𝒏𝒅 𝑺𝒖𝒏 | Ipanema 1976", "thumb": "https://i.ytimg.com/vi/K8nEkpKU_6o/mqdefault.jpg", "dur": "2:00:20"}, {"id": "l-RnsEPNJvA", "title": "Timeless Bossa Nova Jazz 🌴 Old Money Music · 𝑾𝒉𝒆𝒓𝒆 𝑻𝒊𝒎𝒆 𝑭𝒐𝒓𝒈𝒐𝒕 𝒕𝒐 𝑹𝒖𝒔𝒉 | Copacabana 1975", "thumb": "https://i.ytimg.com/vi/l-RnsEPNJvA/mqdefault.jpg", "dur": "2:02:38"}, {"id": "0m3GTdlWUXE", "title": "Timeless Bossa Nova & Tropical Jazz 🌺 Maracujá, Under the Carioca Sun | A Calm Afternoon in 1974", "thumb": "https://i.ytimg.com/vi/0m3GTdlWUXE/mqdefault.jpg", "dur": "1:59:30"}, {"id": "zsyutNQg5UE", "title": "Timeless Bossa Nova & Vintage Jazz 🌞 A Warm Ocean Breeze in Copacabana | Summer 1973", "thumb": "https://i.ytimg.com/vi/zsyutNQg5UE/mqdefault.jpg", "dur": "1:59:00"}, {"id": "QtFG7Q44p_E", "title": "Timeless Bossa Nova & Brazilian Jazz 🌞 Caipirinha, Sand & Relax | A Brazilian Dream 1972", "thumb": "https://i.ytimg.com/vi/QtFG7Q44p_E/mqdefault.jpg", "dur": "1:58:27"}, {"id": "KDZAMTNMzcg", "title": "Timeless Bossa Nova & Vintage Brazilian 🌴 Warm Summer To Remember | Lost In Rio 1971", "thumb": "https://i.ytimg.com/vi/KDZAMTNMzcg/mqdefault.jpg", "dur": "1:59:08"}, {"id": "93dFZFGRHRo", "title": "Timeless Bossa Nova & Mellow Brazil 🌴 Slow Morning Lost in Melody | Golden Era 1970", "thumb": "https://i.ytimg.com/vi/93dFZFGRHRo/mqdefault.jpg", "dur": "2:00:52"}, {"id": "bqKtEHB9dH8", "title": "Timeless Bossa Nova & Chill Brazil 🌞 Sunlit Afternoons & Relaxing Music | Vintage Daydream 1969", "thumb": "https://i.ytimg.com/vi/bqKtEHB9dH8/mqdefault.jpg", "dur": "1:58:42"}, {"id": "wG5BeE_lqCo", "title": "Timeless Bossa Nova & Relaxing Music 🌴 Saudade do Rio | Vintage Brasil 1968", "thumb": "https://i.ytimg.com/vi/wG5BeE_lqCo/mqdefault.jpg", "dur": "1:58:32"}, {"id": "lPSq1CqM2Pc", "title": "Timeless Bossa Nova Instrumental 🌅 Memories of Rio - Warm Afternoons by the Sea  Copacabana 1967", "thumb": "https://i.ytimg.com/vi/lPSq1CqM2Pc/mqdefault.jpg", "dur": "1:58:36"}, {"id": "TCjw8u1eWp0", "title": "Timeless Bossa Nova Instrumental 🌅 Old Money Rio - Golden Afternoons | Ipanema 1966", "thumb": "https://i.ytimg.com/vi/TCjw8u1eWp0/mqdefault.jpg", "dur": "2:01:10"}, {"id": "mjE_eHjSoMs", "title": "Timeless Bossa Nova Instrumental ☕ Cafè Music — Sand Between Our Fingers | Ipanema 1970", "thumb": "https://i.ytimg.com/vi/mjE_eHjSoMs/mqdefault.jpg", "dur": "2:02:38"}, {"id": "XU58HbQxCDs", "title": "Timeless Bossa Nova Instrumental 🌴 Relax Music — Letters From a Golden Summer | Rio 1978", "thumb": "https://i.ytimg.com/vi/XU58HbQxCDs/mqdefault.jpg", "dur": "2:00:30"}, {"id": "q7dRF0oaIB0", "title": "Timeless Bossa Nova Instrumental ☕ The Last Coffee Before We Said Goodbye | Retro Brazil 1972", "thumb": "https://i.ytimg.com/vi/q7dRF0oaIB0/mqdefault.jpg", "dur": "2:00:51"}, {"id": "kqDrpOxN8nU", "title": "Timeless Bossa Nova Instrumental 🌴 Desafinado and the Sound of Old Rio | Golden Memories 1975", "thumb": "https://i.ytimg.com/vi/kqDrpOxN8nU/mqdefault.jpg", "dur": "2:00:18"}, {"id": "8KGweVaS3hU", "title": "Timeless Bossa Nova Instrumental 🇧🇷 Corcovado and the Summer Breeze of Rio | 1968 Memories", "thumb": "https://i.ytimg.com/vi/8KGweVaS3hU/mqdefault.jpg", "dur": "2:02:38"}, {"id": "_pUAAOoeNbY", "title": "Timeless Bossa Nova Instrumental 🌴 Garota de Ipanema and the Summer We Never Forgot | Rio 1963", "thumb": "https://i.ytimg.com/vi/_pUAAOoeNbY/mqdefault.jpg", "dur": "2:00:54"}, {"id": "mtgxqzMCQDs", "title": "Timeless Bossa Nova 🌅 Those Days We Played Barefoot Until the Sun Went Down  Copacabana 1978", "thumb": "https://i.ytimg.com/vi/mtgxqzMCQDs/mqdefault.jpg", "dur": "2:00:14"}, {"id": "5HyMKU3wU60", "title": "Timeless Bossa Nova Instrumental 🌴 Garota de Ipanema and the Love We Left on That Beach | Rio 1964", "thumb": "https://i.ytimg.com/vi/5HyMKU3wU60/mqdefault.jpg", "dur": "2:00:58"}, {"id": "D9YHFAZXnV4", "title": "Timeless Bossa Nova Instrumental 🌅 When Every Sunset Tasted Like Papaya | Recife 1971", "thumb": "https://i.ytimg.com/vi/D9YHFAZXnV4/mqdefault.jpg", "dur": "2:00:36"}, {"id": "J09CUjY44Ek", "title": "Timeless Bossa Nova 🇧🇷 Between Colorful Streets and Ocean Breeze | Salvador 1966", "thumb": "https://i.ytimg.com/vi/J09CUjY44Ek/mqdefault.jpg", "dur": "1:58:42"}, {"id": "TZtbXy6B8OU", "title": "Timeless Bossa Nova 🌅 The Summer We Thought Would Last Forever | Copacabana 1976", "thumb": "https://i.ytimg.com/vi/TZtbXy6B8OU/mqdefault.jpg", "dur": "1:58:42"}, {"id": "fNMWqTZusho", "title": "Timeless Bossa Nova 🇧🇷 Sunlight, Silence and Slow Days — A Postcard From Brazil | Santos 1971", "thumb": "https://i.ytimg.com/vi/fNMWqTZusho/mqdefault.jpg", "dur": "1:58:42"}, {"id": "4xIRygS7p5c", "title": "Timeless Bossa Nova 🇧🇷 Some Days You Carry With You Forever | Ipanema 1974", "thumb": "https://i.ytimg.com/vi/4xIRygS7p5c/mqdefault.jpg", "dur": "1:58:42"}, {"id": "tvcdpVnLWv0", "title": "Timeless Bossa Nova 🇧🇷 Two Friends Who Never Forgot That Summer — A Postcard From Brazil | Rio 1969", "thumb": "https://i.ytimg.com/vi/tvcdpVnLWv0/mqdefault.jpg", "dur": "1:58:42"}, {"id": "3e08domzTVU", "title": "Timeless Bossa Nova 🌊 Where Golden Afternoons Never End — A Postcard From Brazil | Rio 1974", "thumb": "https://i.ytimg.com/vi/3e08domzTVU/mqdefault.jpg", "dur": "1:58:42"}, {"id": "h4OHm_dt714", "title": "Timeless Bossa Nova & Morning Coffee Music ☕ Sunny Café Instrumental | Bahia 1972", "thumb": "https://i.ytimg.com/vi/h4OHm_dt714/mqdefault.jpg", "dur": "1:58:42"}, {"id": "5wNK8puucDM", "title": "Bossa Nova Café ☕ 2h Background Music For Coffee shop Ambience | Salvador 1967", "thumb": "https://i.ytimg.com/vi/5wNK8puucDM/mqdefault.jpg", "dur": "2:00:47"}, {"id": "jNUvqBqYxx4", "title": "Vintage  Bossa Nova 🌊 2h Instrumental music for slow and Peaceful moments | Praia do Forte 1968", "thumb": "https://i.ytimg.com/vi/jNUvqBqYxx4/mqdefault.jpg", "dur": "2:00:32"}, {"id": "no-6ECMG2Ho", "title": "Retro Bossa Nova 🍹 2h Instrumental Music for Beach Bar | Santos 1968", "thumb": "https://i.ytimg.com/vi/no-6ECMG2Ho/mqdefault.jpg", "dur": "2:00:32"}, {"id": "pIX4EVm8j94", "title": "Golden Afternoon Memories 🌊 Calm Instrumental Bossa Nova for Relax | Ipanema 1971", "thumb": "https://i.ytimg.com/vi/pIX4EVm8j94/mqdefault.jpg", "dur": "2:00:19"}, {"id": "hOhsV-aAy0Q", "title": "Vintage Bossa Nova 🌴 2h Sunny Relaxing Instrumental Music For Slow Morning | Recife 1965", "thumb": "https://i.ytimg.com/vi/hOhsV-aAy0Q/mqdefault.jpg", "dur": "2:00:11"}, {"id": "e4Rcq407mK8", "title": "Timeless Brazilian Elegance 🍷 Instrumental Bossa Nova Music for Dinner | Rio 1969", "thumb": "https://i.ytimg.com/vi/e4Rcq407mK8/mqdefault.jpg", "dur": "2:01:01"}, {"id": "zYWCCdg8UJM", "title": "Nostalgic Bossa Nova 🌅 Gentle Instrumental Vibes for Slow Moments | Rio De Janerio 1961", "thumb": "https://i.ytimg.com/vi/zYWCCdg8UJM/mqdefault.jpg", "dur": "2:00:37"}, {"id": "6DakW9jQEDk", "title": "Vintage Bossa Nova Instrumental 🍹 Cocktail Bar & Aperitif Background Music | Ipanema 1964", "thumb": "https://i.ytimg.com/vi/6DakW9jQEDk/mqdefault.jpg", "dur": "1:58:42"}, {"id": "XG9kAbyEGeM", "title": "Timeless Bossa Nova & Relaxing Beach Ambience 🌊 Peaceful Instrumental Music | Praia do Forte 1966", "thumb": "https://i.ytimg.com/vi/XG9kAbyEGeM/mqdefault.jpg", "dur": "2:00:36"}, {"id": "an2CtksgtU8", "title": "Soulful Bossa Nova & Restaurant Music 🍽️ Warm Dinner Background | Bahia 1972", "thumb": "https://i.ytimg.com/vi/an2CtksgtU8/mqdefault.jpg", "dur": "1:58:42"}, {"id": "tyoArMzq9tw", "title": "Bossa Nova Restaurant Lounge ☀️ 2h Soft Background Music for Brunch & Relaxation | Fortaleza 1965", "thumb": "https://i.ytimg.com/vi/tyoArMzq9tw/mqdefault.jpg", "dur": "2:00:51"}, {"id": "3PDKk3nkIlc", "title": "Tropical Bossa Nova 🌅 Sunset Beach Instrumental Music for Aperitif | Rio 1977", "thumb": "https://i.ytimg.com/vi/3PDKk3nkIlc/mqdefault.jpg", "dur": "1:58:41"}, {"id": "vM_oqm0IkIw", "title": "Gentle Bossa Nova 🌴 Café Vibes with a Coastal Feel | Leblon 1960", "thumb": "https://i.ytimg.com/vi/vM_oqm0IkIw/mqdefault.jpg", "dur": "2:00:30"}, {"id": "K9N80L9xxpk", "title": "Happy Bossa Nova 🎶 Vintage Carnival Vibes Music & Carioca Passion | Rio 1970", "thumb": "https://i.ytimg.com/vi/K9N80L9xxpk/mqdefault.jpg", "dur": "1:58:42"}, {"id": "KT3b2JBGJqw", "title": "Seaside Relax in Recife 🌊 Soft Bossa Nova with Ocean Breeze | 1965", "thumb": "https://i.ytimg.com/vi/KT3b2JBGJqw/mqdefault.jpg", "dur": "2:00:14"}, {"id": "mUmowmkYF3o", "title": "Joyful Bossa Nova 🎭 Vintage Carnival Vibes in Lapa | Rio 1973", "thumb": "https://i.ytimg.com/vi/mUmowmkYF3o/mqdefault.jpg", "dur": "1:58:42"}, {"id": "8ywed3U5VcE", "title": "Instrumental Bossa Nova Vintage ☀️ Morning Lounge Café Mood for Slow Relax | Bahia Coast 1961", "thumb": "https://i.ytimg.com/vi/8ywed3U5VcE/mqdefault.jpg", "dur": "2:00:58"}, {"id": "esjnbjnCtg0", "title": "Classic Bossa Nova Brasil 🌙 Cocktail Bar Music for Late Evening Vibes | Rio Nights 1975", "thumb": "https://i.ytimg.com/vi/esjnbjnCtg0/mqdefault.jpg", "dur": "1:58:42"}, {"id": "WxOJ1hrF-GQ", "title": "Soft Bossa Nova Restaurant Music 🍽️ 2h Elegant Dinner Background | Copacabana 1963", "thumb": "https://i.ytimg.com/vi/WxOJ1hrF-GQ/mqdefault.jpg", "dur": "2:00:20"}, {"id": "X5xOWI5YY78", "title": "Bossa Nova Café ☕ 2h Relaxing Music for Relax & Calm Evenings | São Paulo 1970", "thumb": "https://i.ytimg.com/vi/X5xOWI5YY78/mqdefault.jpg", "dur": "1:58:42"}, {"id": "9mSXFLr0R84", "title": "Gentle Bossa Nova Instrumental ☕️ Music Café Sounds for Reading and Study | Ipanema 1960", "thumb": "https://i.ytimg.com/vi/9mSXFLr0R84/mqdefault.jpg", "dur": "2:00:28"}, {"id": "4DdpbKtmAJ0", "title": "Vintage Bossa Nova 🍸 2h Elegant Lounge Music for Relaxing Evenings | Fortaleza 1970", "thumb": "https://i.ytimg.com/vi/4DdpbKtmAJ0/mqdefault.jpg", "dur": "1:58:42"}, {"id": "HlzB2ycyWyM", "title": "Vintage Bossa Nova 🌴 2h Relaxing Background Music | Rio de Janeiro 1960", "thumb": "https://i.ytimg.com/vi/HlzB2ycyWyM/mqdefault.jpg", "dur": "2:00:36"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

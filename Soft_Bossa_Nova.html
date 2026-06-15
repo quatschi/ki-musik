@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@sofbossanova -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,930 +51,97 @@
       <div class="channel-count">132 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=69Yoyegl1AE" target="_blank">
-            <img src="https://i.ytimg.com/vi/69Yoyegl1AE/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aUZFnLThD-U" target="_blank">
-            <img src="https://i.ytimg.com/vi/aUZFnLThD-U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 101 Hits 🌞 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iIJw69ub3Z0" target="_blank">
-            <img src="https://i.ytimg.com/vi/iIJw69ub3Z0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YkCguQ1H2Mo" target="_blank">
-            <img src="https://i.ytimg.com/vi/YkCguQ1H2Mo/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pEvVro9g3aw" target="_blank">
-            <img src="https://i.ytimg.com/vi/pEvVro9g3aw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Productive</span>
-                <span class="video-dur">33:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZoMiMnDddjM" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZoMiMnDddjM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=c_bnBClNhDQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/c_bnBClNhDQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R0iLwYTIHLs" target="_blank">
-            <img src="https://i.ytimg.com/vi/R0iLwYTIHLs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening</span>
-                <span class="video-dur">34:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M-gVySwL1Cw" target="_blank">
-            <img src="https://i.ytimg.com/vi/M-gVySwL1Cw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cQ6jAilkfwY" target="_blank">
-            <img src="https://i.ytimg.com/vi/cQ6jAilkfwY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bS7ZFgz3FYw" target="_blank">
-            <img src="https://i.ytimg.com/vi/bS7ZFgz3FYw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Café Jazz</span>
-                <span class="video-dur">32:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8Wx9wuYE5Q0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8Wx9wuYE5Q0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 101 Hits 🌞 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qFxedYmg_yw" target="_blank">
-            <img src="https://i.ytimg.com/vi/qFxedYmg_yw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ikk6BxpmWQE" target="_blank">
-            <img src="https://i.ytimg.com/vi/ikk6BxpmWQE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Café Vibes</span>
-                <span class="video-dur">34:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=phlSHtTNJ0Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/phlSHtTNJ0Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:54:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X2a9vev92rU" target="_blank">
-            <img src="https://i.ytimg.com/vi/X2a9vev92rU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7J6hDP_E7FU" target="_blank">
-            <img src="https://i.ytimg.com/vi/7J6hDP_E7FU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Study Flow</span>
-                <span class="video-dur">36:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Xih2H3zov7c" target="_blank">
-            <img src="https://i.ytimg.com/vi/Xih2H3zov7c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=k8irkHu9Uu0" target="_blank">
-            <img src="https://i.ytimg.com/vi/k8irkHu9Uu0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uVms8-FqNWc" target="_blank">
-            <img src="https://i.ytimg.com/vi/uVms8-FqNWc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">24/7 Relax Bossa 🌴 Soft Bossa Nova Covers of Top 100 Hits 2026 | Easy Listening & Relax</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=si9lxCo59fc" target="_blank">
-            <img src="https://i.ytimg.com/vi/si9lxCo59fc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hzX9s9Se_nU" target="_blank">
-            <img src="https://i.ytimg.com/vi/hzX9s9Se_nU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zQWrrXNRL7g" target="_blank">
-            <img src="https://i.ytimg.com/vi/zQWrrXNRL7g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u_h82j34DEo" target="_blank">
-            <img src="https://i.ytimg.com/vi/u_h82j34DEo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎶 Chill Cafe Music ☕ </span>
-                <span class="video-dur">32:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WkiQLFX_TnM" target="_blank">
-            <img src="https://i.ytimg.com/vi/WkiQLFX_TnM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:54:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DssZKUCCJhs" target="_blank">
-            <img src="https://i.ytimg.com/vi/DssZKUCCJhs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XfL0ZMVquJ8" target="_blank">
-            <img src="https://i.ytimg.com/vi/XfL0ZMVquJ8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌺 Relaxing Morning Cafe Music ☕</span>
-                <span class="video-dur">33:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wCBDwwnZx3o" target="_blank">
-            <img src="https://i.ytimg.com/vi/wCBDwwnZx3o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">24/7 Relax Bossa 🌴 Soft Bossa Nova Covers of Top 100 Hits 2026 | Easy Listening & Relax</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IY2tFDEqz_k" target="_blank">
-            <img src="https://i.ytimg.com/vi/IY2tFDEqz_k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JaSPA6vz114" target="_blank">
-            <img src="https://i.ytimg.com/vi/JaSPA6vz114/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎷 Soft Bossa Jazz Covers ☕</span>
-                <span class="video-dur">32:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X8zYLUbzFnc" target="_blank">
-            <img src="https://i.ytimg.com/vi/X8zYLUbzFnc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rXTVHL8jW8w" target="_blank">
-            <img src="https://i.ytimg.com/vi/rXTVHL8jW8w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KGZFDpvsj0c" target="_blank">
-            <img src="https://i.ytimg.com/vi/KGZFDpvsj0c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 ✨ Easy Listening & Chill ☕</span>
-                <span class="video-dur">32:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VFQzZ74sby0" target="_blank">
-            <img src="https://i.ytimg.com/vi/VFQzZ74sby0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Il6ExBybnf4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Il6ExBybnf4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PzY1Vk4_efs" target="_blank">
-            <img src="https://i.ytimg.com/vi/PzY1Vk4_efs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌞 Smooth Summer Jazz ☕</span>
-                <span class="video-dur">33:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Tt9x1whTHNM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Tt9x1whTHNM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3e12KXc-6oo" target="_blank">
-            <img src="https://i.ytimg.com/vi/3e12KXc-6oo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_5UdeH1Zpes" target="_blank">
-            <img src="https://i.ytimg.com/vi/_5UdeH1Zpes/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5Z6ZbP8pn6s" target="_blank">
-            <img src="https://i.ytimg.com/vi/5Z6ZbP8pn6s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oCvu5g5Qato" target="_blank">
-            <img src="https://i.ytimg.com/vi/oCvu5g5Qato/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7K8JGbXwM_c" target="_blank">
-            <img src="https://i.ytimg.com/vi/7K8JGbXwM_c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6O4b_6Stmp0" target="_blank">
-            <img src="https://i.ytimg.com/vi/6O4b_6Stmp0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎧 Cozy Coffee Shop Ambience ☕</span>
-                <span class="video-dur">32:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2JsAAyhYz00" target="_blank">
-            <img src="https://i.ytimg.com/vi/2JsAAyhYz00/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:54:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Pm0-acKh3U0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Pm0-acKh3U0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cbOVnQSKTqA" target="_blank">
-            <img src="https://i.ytimg.com/vi/cbOVnQSKTqA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌴 Relaxing Cafe Jazz Vibes ☕</span>
-                <span class="video-dur">32:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5CxOQO0_coE" target="_blank">
-            <img src="https://i.ytimg.com/vi/5CxOQO0_coE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8E_fVOMPNF8" target="_blank">
-            <img src="https://i.ytimg.com/vi/8E_fVOMPNF8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8zmGZ86XyxY" target="_blank">
-            <img src="https://i.ytimg.com/vi/8zmGZ86XyxY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hCZE07-UEt4" target="_blank">
-            <img src="https://i.ytimg.com/vi/hCZE07-UEt4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w5rhA0FPgrY" target="_blank">
-            <img src="https://i.ytimg.com/vi/w5rhA0FPgrY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=H-AYzrmWag0" target="_blank">
-            <img src="https://i.ytimg.com/vi/H-AYzrmWag0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BFr6ZC9Sci8" target="_blank">
-            <img src="https://i.ytimg.com/vi/BFr6ZC9Sci8/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">CHILL SOFT BOSSA NOVA Covers Of Popular Songs ☀️ 100 Hits 2026</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5SY7OWhwVF4" target="_blank">
-            <img src="https://i.ytimg.com/vi/5SY7OWhwVF4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j1L7-auNz4s" target="_blank">
-            <img src="https://i.ytimg.com/vi/j1L7-auNz4s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X9yM-Ag51KM" target="_blank">
-            <img src="https://i.ytimg.com/vi/X9yM-Ag51KM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XiwaR-PM7L4" target="_blank">
-            <img src="https://i.ytimg.com/vi/XiwaR-PM7L4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6aZZE2BzHyw" target="_blank">
-            <img src="https://i.ytimg.com/vi/6aZZE2BzHyw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u0TFySfYoOo" target="_blank">
-            <img src="https://i.ytimg.com/vi/u0TFySfYoOo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zMnZUKYvptQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/zMnZUKYvptQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qzg5GYMp5KA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qzg5GYMp5KA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kA2-ph9f2MA" target="_blank">
-            <img src="https://i.ytimg.com/vi/kA2-ph9f2MA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.</span>
-                <span class="video-dur">11:54:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w-LRN0J1gt8" target="_blank">
-            <img src="https://i.ytimg.com/vi/w-LRN0J1gt8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TtRsxiOHlUU" target="_blank">
-            <img src="https://i.ytimg.com/vi/TtRsxiOHlUU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6pafTq_iuLQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/6pafTq_iuLQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:54:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XpKVZVsHazI" target="_blank">
-            <img src="https://i.ytimg.com/vi/XpKVZVsHazI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7e6TLzcNUgs" target="_blank">
-            <img src="https://i.ytimg.com/vi/7e6TLzcNUgs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9M99-7kYpyM" target="_blank">
-            <img src="https://i.ytimg.com/vi/9M99-7kYpyM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZX1rgJNd7qk" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZX1rgJNd7qk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hrvHbmv3VWY" target="_blank">
-            <img src="https://i.ytimg.com/vi/hrvHbmv3VWY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ic1D8pfbJLE" target="_blank">
-            <img src="https://i.ytimg.com/vi/ic1D8pfbJLE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TI5IX7esi-c" target="_blank">
-            <img src="https://i.ytimg.com/vi/TI5IX7esi-c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yZOue_LQrG4" target="_blank">
-            <img src="https://i.ytimg.com/vi/yZOue_LQrG4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OKcioWeukmU" target="_blank">
-            <img src="https://i.ytimg.com/vi/OKcioWeukmU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OQBIGbgf3CE" target="_blank">
-            <img src="https://i.ytimg.com/vi/OQBIGbgf3CE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QpRAiiymSAs" target="_blank">
-            <img src="https://i.ytimg.com/vi/QpRAiiymSAs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mmigr_57vyI" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mmigr_57vyI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1gjL4T-m2tQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/1gjL4T-m2tQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yZn1PeXaTYs" target="_blank">
-            <img src="https://i.ytimg.com/vi/yZn1PeXaTYs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NPuVE9PnIus" target="_blank">
-            <img src="https://i.ytimg.com/vi/NPuVE9PnIus/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bLumLyXVzkY" target="_blank">
-            <img src="https://i.ytimg.com/vi/bLumLyXVzkY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fANBzLEepWE" target="_blank">
-            <img src="https://i.ytimg.com/vi/fANBzLEepWE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3UCb4ycXasM" target="_blank">
-            <img src="https://i.ytimg.com/vi/3UCb4ycXasM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔴 LIVE 24/7 – Best Soft Bossa Nova Covers 2026 🎶 199 Timeless Hits for Relaxation & Chill Vibes</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rMTrPtUJ8Eo" target="_blank">
-            <img src="https://i.ytimg.com/vi/rMTrPtUJ8Eo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R1zFJBJsizY" target="_blank">
-            <img src="https://i.ytimg.com/vi/R1zFJBJsizY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tYTG1LT39Gk" target="_blank">
-            <img src="https://i.ytimg.com/vi/tYTG1LT39Gk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Hy-zikPXfzA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Hy-zikPXfzA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SH3UVfCgyPI" target="_blank">
-            <img src="https://i.ytimg.com/vi/SH3UVfCgyPI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=djNlNIVfEEA" target="_blank">
-            <img src="https://i.ytimg.com/vi/djNlNIVfEEA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=umaRRHOiDuw" target="_blank">
-            <img src="https://i.ytimg.com/vi/umaRRHOiDuw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers 2026 ♫ Best Bossa Nova Covers of Popular Songs for a Relaxing Vibe</span>
-                <span class="video-dur">1:18:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lFSMeDgzGpw" target="_blank">
-            <img src="https://i.ytimg.com/vi/lFSMeDgzGpw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CF3_NT7Cmr8" target="_blank">
-            <img src="https://i.ytimg.com/vi/CF3_NT7Cmr8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers 2026 ♫ Best Bossa Nova Covers of Popular Songs for a Relaxing Vibe</span>
-                <span class="video-dur">59:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PfSH3xnKXdE" target="_blank">
-            <img src="https://i.ytimg.com/vi/PfSH3xnKXdE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QSUCwrUazw8" target="_blank">
-            <img src="https://i.ytimg.com/vi/QSUCwrUazw8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 🎹 Best Bossa Nova Songs 2026   Ultimate Bossa Nova Playlist</span>
-                <span class="video-dur">59:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oKn58xArhnA" target="_blank">
-            <img src="https://i.ytimg.com/vi/oKn58xArhnA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JjZf-itJcoE" target="_blank">
-            <img src="https://i.ytimg.com/vi/JjZf-itJcoE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular 100 Hits 💥 Best Bossa Nova Songs 2026   Bossa Nova Playlist</span>
-                <span class="video-dur">59:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ww9sJYm9AxU" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ww9sJYm9AxU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fICkp2wb_qc" target="_blank">
-            <img src="https://i.ytimg.com/vi/fICkp2wb_qc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Cover Songs 2026 ☕ Best Latin Jazz Cover Songs For Work, Study & Good Mood</span>
-                <span class="video-dur">59:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jg5bFTsOc2U" target="_blank">
-            <img src="https://i.ytimg.com/vi/jg5bFTsOc2U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6EZHYjKUbFU" target="_blank">
-            <img src="https://i.ytimg.com/vi/6EZHYjKUbFU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">2026 Bossa Nova Covers 🎵 50 Popular Songs Hits Playlist For Relax, Work, Study</span>
-                <span class="video-dur">59:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=d14D691qTdE" target="_blank">
-            <img src="https://i.ytimg.com/vi/d14D691qTdE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gfkAx6keGBE" target="_blank">
-            <img src="https://i.ytimg.com/vi/gfkAx6keGBE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 50 Hits 2026 ✨ –Smooth & Relaxing Music for Study Sessions & Work</span>
-                <span class="video-dur">1:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w5UQb6bWQws" target="_blank">
-            <img src="https://i.ytimg.com/vi/w5UQb6bWQws/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JuvysdNwcw0" target="_blank">
-            <img src="https://i.ytimg.com/vi/JuvysdNwcw0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 50 Hits 2026 ✨ Smooth & Relaxing Music for Coffee Time</span>
-                <span class="video-dur">1:18:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HJKMZ1U0Wis" target="_blank">
-            <img src="https://i.ytimg.com/vi/HJKMZ1U0Wis/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ysup1MBTw5U" target="_blank">
-            <img src="https://i.ytimg.com/vi/ysup1MBTw5U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz Songs 2026 for Relaxing,Work & Study</span>
-                <span class="video-dur">1:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wK-DxQZqLDw" target="_blank">
-            <img src="https://i.ytimg.com/vi/wK-DxQZqLDw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7Qm5dutgFbo" target="_blank">
-            <img src="https://i.ytimg.com/vi/7Qm5dutgFbo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Study Flow</span>
-                <span class="video-dur">1:18:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=veQ6U7fbdEw" target="_blank">
-            <img src="https://i.ytimg.com/vi/veQ6U7fbdEw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mb_Lv4EOKOQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mb_Lv4EOKOQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴✨–Smooth & Relaxing Music for Work, Study & Focus</span>
-                <span class="video-dur">1:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=B1jQMqGhU70" target="_blank">
-            <img src="https://i.ytimg.com/vi/B1jQMqGhU70/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=auxxAlLFMYQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/auxxAlLFMYQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴✨–Smooth & Relaxing Music for Work, Study & Focus</span>
-                <span class="video-dur">1:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8j5vznXklvw" target="_blank">
-            <img src="https://i.ytimg.com/vi/8j5vznXklvw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MQlmRfIrSrg" target="_blank">
-            <img src="https://i.ytimg.com/vi/MQlmRfIrSrg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴–Smooth & Relaxing Music for Peaceful Productivity</span>
-                <span class="video-dur">1:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Lwy8eFxBCtE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Lwy8eFxBCtE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kWF2cHKOGNw" target="_blank">
-            <img src="https://i.ytimg.com/vi/kWF2cHKOGNw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relax Bossa ✨ Smooth Bossa Nova & Cozy Café Jazz for Work & Productivity</span>
-                <span class="video-dur">1:18:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_9iJ5IH53OM" target="_blank">
-            <img src="https://i.ytimg.com/vi/_9iJ5IH53OM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XFyWRtjHuWI" target="_blank">
-            <img src="https://i.ytimg.com/vi/XFyWRtjHuWI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Bossa Nova Covers of Popular Songs 50 Hits🌴 Soft Lounge Jazz Songs for Stress Relief & Calm Mood</span>
-                <span class="video-dur">1:18:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jNUJiXMCwEU" target="_blank">
-            <img src="https://i.ytimg.com/vi/jNUJiXMCwEU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g0Nj711Vr6M" target="_blank">
-            <img src="https://i.ytimg.com/vi/g0Nj711Vr6M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zh_bifppwpU" target="_blank">
-            <img src="https://i.ytimg.com/vi/zh_bifppwpU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bqp1-G4ZoNY" target="_blank">
-            <img src="https://i.ytimg.com/vi/bqp1-G4ZoNY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=foNGgpSYLqU" target="_blank">
-            <img src="https://i.ytimg.com/vi/foNGgpSYLqU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3rFJvNSWAuk" target="_blank">
-            <img src="https://i.ytimg.com/vi/3rFJvNSWAuk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3lS9dhRUgUA" target="_blank">
-            <img src="https://i.ytimg.com/vi/3lS9dhRUgUA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OQWXPiMoXf8" target="_blank">
-            <img src="https://i.ytimg.com/vi/OQWXPiMoXf8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yMO-vMKGdjU" target="_blank">
-            <img src="https://i.ytimg.com/vi/yMO-vMKGdjU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=filLiGthRLA" target="_blank">
-            <img src="https://i.ytimg.com/vi/filLiGthRLA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zscRR8FJITs" target="_blank">
-            <img src="https://i.ytimg.com/vi/zscRR8FJITs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:55:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZFVxfwWgDR0" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZFVxfwWgDR0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RkQWMcCjlco" target="_blank">
-            <img src="https://i.ytimg.com/vi/RkQWMcCjlco/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova Covers of Popular Songs 2026 📀 Soft Romantic Bossa Playlist | Relax Bossa LIVE 24/7</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zrlO1nrtm-w" target="_blank">
-            <img src="https://i.ytimg.com/vi/zrlO1nrtm-w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026</span>
-                <span class="video-dur">11:54:59</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Soft Bossa Nova";
+const VIDEOS = [{"id": "69Yoyegl1AE", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/69Yoyegl1AE/mqdefault_live.jpg", "dur": ""}, {"id": "aUZFnLThD-U", "title": "Bossa Nova Covers of Popular 101 Hits 🌞 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/aUZFnLThD-U/mqdefault.jpg", "dur": "11:54:56"}, {"id": "iIJw69ub3Z0", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/iIJw69ub3Z0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "YkCguQ1H2Mo", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/YkCguQ1H2Mo/mqdefault_live.jpg", "dur": ""}, {"id": "pEvVro9g3aw", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Productive", "thumb": "https://i.ytimg.com/vi/pEvVro9g3aw/mqdefault.jpg", "dur": "33:00"}, {"id": "ZoMiMnDddjM", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/ZoMiMnDddjM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "c_bnBClNhDQ", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/c_bnBClNhDQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "R0iLwYTIHLs", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening", "thumb": "https://i.ytimg.com/vi/R0iLwYTIHLs/mqdefault.jpg", "dur": "34:26"}, {"id": "M-gVySwL1Cw", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/M-gVySwL1Cw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "cQ6jAilkfwY", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/cQ6jAilkfwY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "bS7ZFgz3FYw", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Café Jazz", "thumb": "https://i.ytimg.com/vi/bS7ZFgz3FYw/mqdefault.jpg", "dur": "32:20"}, {"id": "8Wx9wuYE5Q0", "title": "Bossa Nova Covers of Popular 101 Hits 🌞 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/8Wx9wuYE5Q0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "qFxedYmg_yw", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/qFxedYmg_yw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ikk6BxpmWQE", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Café Vibes", "thumb": "https://i.ytimg.com/vi/ikk6BxpmWQE/mqdefault.jpg", "dur": "34:19"}, {"id": "phlSHtTNJ0Q", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/phlSHtTNJ0Q/mqdefault.jpg", "dur": "11:54:59"}, {"id": "X2a9vev92rU", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/X2a9vev92rU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7J6hDP_E7FU", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Study Flow", "thumb": "https://i.ytimg.com/vi/7J6hDP_E7FU/mqdefault.jpg", "dur": "36:36"}, {"id": "Xih2H3zov7c", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/Xih2H3zov7c/mqdefault.jpg", "dur": "11:55:01"}, {"id": "k8irkHu9Uu0", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/k8irkHu9Uu0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "uVms8-FqNWc", "title": "24/7 Relax Bossa 🌴 Soft Bossa Nova Covers of Top 100 Hits 2026 | Easy Listening & Relax", "thumb": "https://i.ytimg.com/vi/uVms8-FqNWc/mqdefault.jpg", "dur": "11:55:01"}, {"id": "si9lxCo59fc", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/si9lxCo59fc/mqdefault.jpg", "dur": "11:55:00"}, {"id": "hzX9s9Se_nU", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/hzX9s9Se_nU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "zQWrrXNRL7g", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/zQWrrXNRL7g/mqdefault.jpg", "dur": "11:54:56"}, {"id": "u_h82j34DEo", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎶 Chill Cafe Music ☕", "thumb": "https://i.ytimg.com/vi/u_h82j34DEo/mqdefault.jpg", "dur": "32:26"}, {"id": "WkiQLFX_TnM", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/WkiQLFX_TnM/mqdefault.jpg", "dur": "11:54:58"}, {"id": "DssZKUCCJhs", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/DssZKUCCJhs/mqdefault.jpg", "dur": "11:54:56"}, {"id": "XfL0ZMVquJ8", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌺 Relaxing Morning Cafe Music ☕", "thumb": "https://i.ytimg.com/vi/XfL0ZMVquJ8/mqdefault.jpg", "dur": "33:28"}, {"id": "wCBDwwnZx3o", "title": "24/7 Relax Bossa 🌴 Soft Bossa Nova Covers of Top 100 Hits 2026 | Easy Listening & Relax", "thumb": "https://i.ytimg.com/vi/wCBDwwnZx3o/mqdefault.jpg", "dur": "11:55:00"}, {"id": "IY2tFDEqz_k", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/IY2tFDEqz_k/mqdefault.jpg", "dur": "11:54:56"}, {"id": "JaSPA6vz114", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎷 Soft Bossa Jazz Covers ☕", "thumb": "https://i.ytimg.com/vi/JaSPA6vz114/mqdefault.jpg", "dur": "32:23"}, {"id": "X8zYLUbzFnc", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/X8zYLUbzFnc/mqdefault.jpg", "dur": "11:55:00"}, {"id": "rXTVHL8jW8w", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/rXTVHL8jW8w/mqdefault.jpg", "dur": "11:55:00"}, {"id": "KGZFDpvsj0c", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 ✨ Easy Listening & Chill ☕", "thumb": "https://i.ytimg.com/vi/KGZFDpvsj0c/mqdefault.jpg", "dur": "32:26"}, {"id": "VFQzZ74sby0", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/VFQzZ74sby0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "Il6ExBybnf4", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/Il6ExBybnf4/mqdefault.jpg", "dur": "11:55:01"}, {"id": "PzY1Vk4_efs", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌞 Smooth Summer Jazz ☕", "thumb": "https://i.ytimg.com/vi/PzY1Vk4_efs/mqdefault.jpg", "dur": "33:43"}, {"id": "Tt9x1whTHNM", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/Tt9x1whTHNM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "3e12KXc-6oo", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/3e12KXc-6oo/mqdefault.jpg", "dur": "11:54:56"}, {"id": "_5UdeH1Zpes", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/_5UdeH1Zpes/mqdefault.jpg", "dur": "11:55:01"}, {"id": "5Z6ZbP8pn6s", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/5Z6ZbP8pn6s/mqdefault.jpg", "dur": "11:54:56"}, {"id": "oCvu5g5Qato", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/oCvu5g5Qato/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7K8JGbXwM_c", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/7K8JGbXwM_c/mqdefault.jpg", "dur": "11:55:00"}, {"id": "6O4b_6Stmp0", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🎧 Cozy Coffee Shop Ambience ☕", "thumb": "https://i.ytimg.com/vi/6O4b_6Stmp0/mqdefault.jpg", "dur": "32:49"}, {"id": "2JsAAyhYz00", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/2JsAAyhYz00/mqdefault.jpg", "dur": "11:54:57"}, {"id": "Pm0-acKh3U0", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/Pm0-acKh3U0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "cbOVnQSKTqA", "title": "Best Collection Bossa Nova Songs – Bossa Nova Covers 2026 🌴 Relaxing Cafe Jazz Vibes ☕", "thumb": "https://i.ytimg.com/vi/cbOVnQSKTqA/mqdefault.jpg", "dur": "32:57"}, {"id": "5CxOQO0_coE", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/5CxOQO0_coE/mqdefault.jpg", "dur": "11:55:00"}, {"id": "8E_fVOMPNF8", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/8E_fVOMPNF8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "8zmGZ86XyxY", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/8zmGZ86XyxY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "hCZE07-UEt4", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/hCZE07-UEt4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "w5rhA0FPgrY", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/w5rhA0FPgrY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "H-AYzrmWag0", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/H-AYzrmWag0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "BFr6ZC9Sci8", "title": "CHILL SOFT BOSSA NOVA Covers Of Popular Songs ☀️ 100 Hits 2026", "thumb": "https://i.ytimg.com/vi/BFr6ZC9Sci8/mqdefault_live.jpg", "dur": ""}, {"id": "5SY7OWhwVF4", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/5SY7OWhwVF4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "j1L7-auNz4s", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/j1L7-auNz4s/mqdefault.jpg", "dur": "11:55:01"}, {"id": "X9yM-Ag51KM", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/X9yM-Ag51KM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "XiwaR-PM7L4", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/XiwaR-PM7L4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "6aZZE2BzHyw", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/6aZZE2BzHyw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "u0TFySfYoOo", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/u0TFySfYoOo/mqdefault.jpg", "dur": "11:55:00"}, {"id": "zMnZUKYvptQ", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/zMnZUKYvptQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "Qzg5GYMp5KA", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/Qzg5GYMp5KA/mqdefault.jpg", "dur": "11:55:00"}, {"id": "kA2-ph9f2MA", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7.", "thumb": "https://i.ytimg.com/vi/kA2-ph9f2MA/mqdefault.jpg", "dur": "11:54:58"}, {"id": "w-LRN0J1gt8", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/w-LRN0J1gt8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "TtRsxiOHlUU", "title": "Bossa Nova Covers of Popular Songs 51 Hits 2026 for Relaxing - LIVE 24/7", "thumb": "https://i.ytimg.com/vi/TtRsxiOHlUU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "6pafTq_iuLQ", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/6pafTq_iuLQ/mqdefault.jpg", "dur": "11:54:58"}, {"id": "XpKVZVsHazI", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/XpKVZVsHazI/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7e6TLzcNUgs", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/7e6TLzcNUgs/mqdefault.jpg", "dur": "11:55:00"}, {"id": "9M99-7kYpyM", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/9M99-7kYpyM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ZX1rgJNd7qk", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/ZX1rgJNd7qk/mqdefault.jpg", "dur": "11:55:00"}, {"id": "hrvHbmv3VWY", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/hrvHbmv3VWY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ic1D8pfbJLE", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/ic1D8pfbJLE/mqdefault.jpg", "dur": "11:55:00"}, {"id": "TI5IX7esi-c", "title": "Bossa Nova Covers of Popular 100 Hits 📻 Best Bossa Nova Songs 2026 - Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/TI5IX7esi-c/mqdefault.jpg", "dur": "11:55:00"}, {"id": "yZOue_LQrG4", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/yZOue_LQrG4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "OKcioWeukmU", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/OKcioWeukmU/mqdefault.jpg", "dur": "11:54:56"}, {"id": "OQBIGbgf3CE", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/OQBIGbgf3CE/mqdefault.jpg", "dur": "11:54:59"}, {"id": "QpRAiiymSAs", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/QpRAiiymSAs/mqdefault.jpg", "dur": "11:54:56"}, {"id": "Mmigr_57vyI", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/Mmigr_57vyI/mqdefault.jpg", "dur": "11:55:01"}, {"id": "1gjL4T-m2tQ", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/1gjL4T-m2tQ/mqdefault.jpg", "dur": "11:54:56"}, {"id": "yZn1PeXaTYs", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/yZn1PeXaTYs/mqdefault.jpg", "dur": "11:54:56"}, {"id": "NPuVE9PnIus", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/NPuVE9PnIus/mqdefault.jpg", "dur": "11:54:56"}, {"id": "bLumLyXVzkY", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/bLumLyXVzkY/mqdefault.jpg", "dur": "11:55:01"}, {"id": "fANBzLEepWE", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/fANBzLEepWE/mqdefault.jpg", "dur": "11:54:56"}, {"id": "3UCb4ycXasM", "title": "🔴 LIVE 24/7 – Best Soft Bossa Nova Covers 2026 🎶 199 Timeless Hits for Relaxation & Chill Vibes", "thumb": "https://i.ytimg.com/vi/3UCb4ycXasM/mqdefault.jpg", "dur": "11:54:56"}, {"id": "rMTrPtUJ8Eo", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/rMTrPtUJ8Eo/mqdefault.jpg", "dur": "11:54:56"}, {"id": "R1zFJBJsizY", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/R1zFJBJsizY/mqdefault.jpg", "dur": "11:54:56"}, {"id": "tYTG1LT39Gk", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/tYTG1LT39Gk/mqdefault.jpg", "dur": "11:54:56"}, {"id": "Hy-zikPXfzA", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/Hy-zikPXfzA/mqdefault.jpg", "dur": "11:55:00"}, {"id": "SH3UVfCgyPI", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/SH3UVfCgyPI/mqdefault.jpg", "dur": "11:54:56"}, {"id": "djNlNIVfEEA", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/djNlNIVfEEA/mqdefault.jpg", "dur": "11:55:00"}, {"id": "umaRRHOiDuw", "title": "Bossa Nova Covers 2026 ♫ Best Bossa Nova Covers of Popular Songs for a Relaxing Vibe", "thumb": "https://i.ytimg.com/vi/umaRRHOiDuw/mqdefault.jpg", "dur": "1:18:24"}, {"id": "lFSMeDgzGpw", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/lFSMeDgzGpw/mqdefault.jpg", "dur": "11:54:56"}, {"id": "CF3_NT7Cmr8", "title": "Bossa Nova Covers 2026 ♫ Best Bossa Nova Covers of Popular Songs for a Relaxing Vibe", "thumb": "https://i.ytimg.com/vi/CF3_NT7Cmr8/mqdefault.jpg", "dur": "59:02"}, {"id": "PfSH3xnKXdE", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/PfSH3xnKXdE/mqdefault.jpg", "dur": "11:54:56"}, {"id": "QSUCwrUazw8", "title": "Bossa Nova Covers of Popular Songs 🎹 Best Bossa Nova Songs 2026   Ultimate Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/QSUCwrUazw8/mqdefault.jpg", "dur": "59:02"}, {"id": "oKn58xArhnA", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/oKn58xArhnA/mqdefault.jpg", "dur": "11:54:56"}, {"id": "JjZf-itJcoE", "title": "Bossa Nova Covers of Popular 100 Hits 💥 Best Bossa Nova Songs 2026   Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/JjZf-itJcoE/mqdefault.jpg", "dur": "59:02"}, {"id": "Ww9sJYm9AxU", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/Ww9sJYm9AxU/mqdefault.jpg", "dur": "11:54:56"}, {"id": "fICkp2wb_qc", "title": "Bossa Nova Cover Songs 2026 ☕ Best Latin Jazz Cover Songs For Work, Study & Good Mood", "thumb": "https://i.ytimg.com/vi/fICkp2wb_qc/mqdefault.jpg", "dur": "59:02"}, {"id": "jg5bFTsOc2U", "title": "Tropical Bossa Nova Cover 2026 🎷 Summer Jazz Melt the Stress Away [𝗿𝗲𝗹𝗮𝘅𝗶𝗻𝗴 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁]", "thumb": "https://i.ytimg.com/vi/jg5bFTsOc2U/mqdefault.jpg", "dur": "11:54:56"}, {"id": "6EZHYjKUbFU", "title": "2026 Bossa Nova Covers 🎵 50 Popular Songs Hits Playlist For Relax, Work, Study", "thumb": "https://i.ytimg.com/vi/6EZHYjKUbFU/mqdefault.jpg", "dur": "59:02"}, {"id": "d14D691qTdE", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/d14D691qTdE/mqdefault.jpg", "dur": "11:54:56"}, {"id": "gfkAx6keGBE", "title": "Bossa Nova Covers of Popular Songs 50 Hits 2026 ✨ –Smooth & Relaxing Music for Study Sessions & Work", "thumb": "https://i.ytimg.com/vi/gfkAx6keGBE/mqdefault.jpg", "dur": "1:28:33"}, {"id": "w5UQb6bWQws", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/w5UQb6bWQws/mqdefault.jpg", "dur": "11:54:56"}, {"id": "JuvysdNwcw0", "title": "Bossa Nova Covers of Popular Songs 50 Hits 2026 ✨ Smooth & Relaxing Music for Coffee Time", "thumb": "https://i.ytimg.com/vi/JuvysdNwcw0/mqdefault.jpg", "dur": "1:18:24"}, {"id": "HJKMZ1U0Wis", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/HJKMZ1U0Wis/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ysup1MBTw5U", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz Songs 2026 for Relaxing,Work & Study", "thumb": "https://i.ytimg.com/vi/ysup1MBTw5U/mqdefault.jpg", "dur": "1:28:33"}, {"id": "wK-DxQZqLDw", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/wK-DxQZqLDw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7Qm5dutgFbo", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴Soft Lounge Jazz 2026 for Easy Listening & Study Flow", "thumb": "https://i.ytimg.com/vi/7Qm5dutgFbo/mqdefault.jpg", "dur": "1:18:24"}, {"id": "veQ6U7fbdEw", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/veQ6U7fbdEw/mqdefault.jpg", "dur": "11:55:01"}, {"id": "Mb_Lv4EOKOQ", "title": "Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴✨–Smooth & Relaxing Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/Mb_Lv4EOKOQ/mqdefault.jpg", "dur": "1:28:33"}, {"id": "B1jQMqGhU70", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/B1jQMqGhU70/mqdefault.jpg", "dur": "11:55:01"}, {"id": "auxxAlLFMYQ", "title": "Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴✨–Smooth & Relaxing Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/auxxAlLFMYQ/mqdefault.jpg", "dur": "1:28:33"}, {"id": "8j5vznXklvw", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/8j5vznXklvw/mqdefault.jpg", "dur": "11:55:01"}, {"id": "MQlmRfIrSrg", "title": "Bossa Nova Covers of Popular Songs 50 Hits 2026 🌴–Smooth & Relaxing Music for Peaceful Productivity", "thumb": "https://i.ytimg.com/vi/MQlmRfIrSrg/mqdefault.jpg", "dur": "1:28:33"}, {"id": "Lwy8eFxBCtE", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/Lwy8eFxBCtE/mqdefault.jpg", "dur": "11:55:00"}, {"id": "kWF2cHKOGNw", "title": "Relax Bossa ✨ Smooth Bossa Nova & Cozy Café Jazz for Work & Productivity", "thumb": "https://i.ytimg.com/vi/kWF2cHKOGNw/mqdefault.jpg", "dur": "1:18:24"}, {"id": "_9iJ5IH53OM", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/_9iJ5IH53OM/mqdefault.jpg", "dur": "11:55:01"}, {"id": "XFyWRtjHuWI", "title": "Top Bossa Nova Covers of Popular Songs 50 Hits🌴 Soft Lounge Jazz Songs for Stress Relief & Calm Mood", "thumb": "https://i.ytimg.com/vi/XFyWRtjHuWI/mqdefault.jpg", "dur": "1:18:24"}, {"id": "jNUJiXMCwEU", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/jNUJiXMCwEU/mqdefault.jpg", "dur": "11:55:01"}, {"id": "g0Nj711Vr6M", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/g0Nj711Vr6M/mqdefault.jpg", "dur": "11:55:00"}, {"id": "zh_bifppwpU", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/zh_bifppwpU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "bqp1-G4ZoNY", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/bqp1-G4ZoNY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "foNGgpSYLqU", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/foNGgpSYLqU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "3rFJvNSWAuk", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/3rFJvNSWAuk/mqdefault.jpg", "dur": "11:55:01"}, {"id": "3lS9dhRUgUA", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/3lS9dhRUgUA/mqdefault.jpg", "dur": "11:55:00"}, {"id": "OQWXPiMoXf8", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/OQWXPiMoXf8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "yMO-vMKGdjU", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/yMO-vMKGdjU/mqdefault.jpg", "dur": "11:54:59"}, {"id": "filLiGthRLA", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/filLiGthRLA/mqdefault.jpg", "dur": "11:55:01"}, {"id": "zscRR8FJITs", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/zscRR8FJITs/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ZFVxfwWgDR0", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/ZFVxfwWgDR0/mqdefault.jpg", "dur": "11:54:57"}, {"id": "RkQWMcCjlco", "title": "Bossa Nova Covers of Popular Songs 2026 📀 Soft Romantic Bossa Playlist | Relax Bossa LIVE 24/7", "thumb": "https://i.ytimg.com/vi/RkQWMcCjlco/mqdefault_live.jpg", "dur": ""}, {"id": "zrlO1nrtm-w", "title": "Top 100 Bossa Nova Popular Songs Playlist 🌊🎧 New Bossa Nova Covers 2026", "thumb": "https://i.ytimg.com/vi/zrlO1nrtm-w/mqdefault.jpg", "dur": "11:54:59"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

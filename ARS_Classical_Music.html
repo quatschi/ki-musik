@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@arsclassicamusica -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,372 +51,97 @@
       <div class="channel-count">52 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=iaNbw1CH1xU" target="_blank">
-            <img src="https://i.ytimg.com/vi/iaNbw1CH1xU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin Nocturne Op.9 No.2 | 432Hz Gentle Piano Music for Sleep and a Peaceful Night | 1 Hour NO ADS</span>
-                <span class="video-dur">1:03:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Rxxfg1jl5Ro" target="_blank">
-            <img src="https://i.ytimg.com/vi/Rxxfg1jl5Ro/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin Études: Chopin's Beautiful Piano Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]</span>
-                <span class="video-dur">3:13:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s6m0Gq1PKm4" target="_blank">
-            <img src="https://i.ytimg.com/vi/s6m0Gq1PKm4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Handel: The GOD's Choice | that's why HANDEL is the BEST of BAROQUE composer | No Ads</span>
-                <span class="video-dur">1:40:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RYNKwHy5z_o" target="_blank">
-            <img src="https://i.ytimg.com/vi/RYNKwHy5z_o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin Sad Nocturne: Chopin's Complete Nocturne Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]</span>
-                <span class="video-dur">3:44:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JYgXKGwRRrg" target="_blank">
-            <img src="https://i.ytimg.com/vi/JYgXKGwRRrg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Essential Brahms: that's why BRAHMS is the most UNDERATED ROMANTIC composer | 432Hz Classical NO ADS</span>
-                <span class="video-dur">2:38:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hiAJ1PBJCao" target="_blank">
-            <img src="https://i.ytimg.com/vi/hiAJ1PBJCao/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Schubert: Schubert's Beautiful Piano Pieces Soothe the Soul | 432Hz Classical Music - NO ADS</span>
-                <span class="video-dur">2:53:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-GEq5dqe3Xc" target="_blank">
-            <img src="https://i.ytimg.com/vi/-GEq5dqe3Xc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Italian Classical Music Heritage | Verdi, Vivaldi, Puccini, Rossini, Corelli,...</span>
-                <span class="video-dur">2:22:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GQk6T_aDOAA" target="_blank">
-            <img src="https://i.ytimg.com/vi/GQk6T_aDOAA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Piano: 30 Most Beautiful Classical Music You'll Ever Hear | Classical Music Calm the Soul</span>
-                <span class="video-dur">2:47:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mXQkt-Fcym4" target="_blank">
-            <img src="https://i.ytimg.com/vi/mXQkt-Fcym4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Chopin: Chopin's Beautiful Piano Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]</span>
-                <span class="video-dur">2:25:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DisPSENJPGk" target="_blank">
-            <img src="https://i.ytimg.com/vi/DisPSENJPGk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">TOP 20 Best ADAGIOS: Violin, Piano & Cello | Emotional Classical Music for Soul & Heart</span>
-                <span class="video-dur">2:58:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6Pl2g5h0lc0" target="_blank">
-            <img src="https://i.ytimg.com/vi/6Pl2g5h0lc0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Liszt: that's why Liszt is the KING of PIANO 🎹 | Calm & Beautiful Piano</span>
-                <span class="video-dur">1:04:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1D9hx7gcKjo" target="_blank">
-            <img src="https://i.ytimg.com/vi/1D9hx7gcKjo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Chopin: that's why Chopin is the BEST ROMANTIC composer | Classical Music 432Hz</span>
-                <span class="video-dur">2:54:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7xE2GWdfzqY" target="_blank">
-            <img src="https://i.ytimg.com/vi/7xE2GWdfzqY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Beethoven: that's why Beethoven is the BEST composer | Classical Music Gems</span>
-                <span class="video-dur">3:21:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zwhtDYcFXBY" target="_blank">
-            <img src="https://i.ytimg.com/vi/zwhtDYcFXBY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mozart Piano Sonatas: Calm & Beautiful Classical Piano Music for Soul & Heart | Classical Music Gems</span>
-                <span class="video-dur">3:15:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5eX52wzN0Ss" target="_blank">
-            <img src="https://i.ytimg.com/vi/5eX52wzN0Ss/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Swan Lake - Tchaikovsky [NO ADS] | The Most Beatiful Classical Music</span>
-                <span class="video-dur">1:12:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zeHMIlB0wFg" target="_blank">
-            <img src="https://i.ytimg.com/vi/zeHMIlB0wFg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Tchaikovsky: that's why Tchaikovsky is the BEST Russian composer | Classical Music Gems</span>
-                <span class="video-dur">2:13:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zxdK7aYKvVU" target="_blank">
-            <img src="https://i.ytimg.com/vi/zxdK7aYKvVU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Brahms: that's why Brahms is the MOST ROMANTIC composer | Classical Music Gems</span>
-                <span class="video-dur">2:18:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M3wAsTc0h8E" target="_blank">
-            <img src="https://i.ytimg.com/vi/M3wAsTc0h8E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">[NO ADS] - Beethoven - Für Elise 432Hz | Calm & Emotional Piano Classics for Sleeping & Relaxation</span>
-                <span class="video-dur">1:32:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VdiIwJqkKxE" target="_blank">
-            <img src="https://i.ytimg.com/vi/VdiIwJqkKxE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Chopin: Ensential Classical Music for Sleeping & Relaxation | Nocturne, Mazurkas, Waltz,...</span>
-                <span class="video-dur">1:24:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WBtUSgfbCZc" target="_blank">
-            <img src="https://i.ytimg.com/vi/WBtUSgfbCZc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin 432Hz: Calm Piano Classical Music for Sleeping & Lonely Night | NO ADS</span>
-                <span class="video-dur">53:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oIUKeZuK4Hw" target="_blank">
-            <img src="https://i.ytimg.com/vi/oIUKeZuK4Hw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Clair de Lune — Fragile Memory of Beautiful Sorrow at Midnight | Best of Debussy | NO ADS</span>
-                <span class="video-dur">1:18:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SOfybWPv2uE" target="_blank">
-            <img src="https://i.ytimg.com/vi/SOfybWPv2uE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Morning Mood: Classical Music for Relaxation and Meditation | Grieg, Brahms, Dvořák, Wagner,...</span>
-                <span class="video-dur">2:24:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XVvDJaYQVi0" target="_blank">
-            <img src="https://i.ytimg.com/vi/XVvDJaYQVi0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin – Nocturne Op. 9 No. 2 | Soothing Piano for Sleep, Relaxation & Calm Night | 1 Hour NO ADS</span>
-                <span class="video-dur">1:25:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pAOj2I_H4JU" target="_blank">
-            <img src="https://i.ytimg.com/vi/pAOj2I_H4JU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Sad Chopin Nocturnes 432Hz | Emotional Piano for Lonely Nights | 1 Hour NO ADS</span>
-                <span class="video-dur">1:06:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9o4goBpxUpk" target="_blank">
-            <img src="https://i.ytimg.com/vi/9o4goBpxUpk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Adagios: TOP 15 Adagio Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn,...</span>
-                <span class="video-dur">1:41:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OLUu9Lzskn8" target="_blank">
-            <img src="https://i.ytimg.com/vi/OLUu9Lzskn8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">NO ADS -  Beethoven - Moonlight Sonata | 432 Hz Peacful Piano for Sleep & Relaxation</span>
-                <span class="video-dur">1:26:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VVPdb9ELnuY" target="_blank">
-            <img src="https://i.ytimg.com/vi/VVPdb9ELnuY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Rachmanioff: The Last Melancholy Soul | Classical Music Gems - 2 Hours NO ADS</span>
-                <span class="video-dur">2:29:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L4xYaF_43Nw" target="_blank">
-            <img src="https://i.ytimg.com/vi/L4xYaF_43Nw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Adagios: TOP 20 Adagio Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn,...</span>
-                <span class="video-dur">1:46:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=naKc3ud-3HM" target="_blank">
-            <img src="https://i.ytimg.com/vi/naKc3ud-3HM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Mozart: The Eternal Genius of Classical Music | Classical Music Gems</span>
-                <span class="video-dur">4:04:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DuQ9fjc_yOY" target="_blank">
-            <img src="https://i.ytimg.com/vi/DuQ9fjc_yOY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Lizst: The King of the Piano 🎹- 1 HOURS NO ADS | Classical Music Gems</span>
-                <span class="video-dur">1:13:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MsmF8lgmH68" target="_blank">
-            <img src="https://i.ytimg.com/vi/MsmF8lgmH68/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Antonín Dvořák: From the New Work | Classical Music for Relaxation | Classical Music Gems</span>
-                <span class="video-dur">2:43:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xs0WF1bOcRc" target="_blank">
-            <img src="https://i.ytimg.com/vi/xs0WF1bOcRc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Genius of Beethoven | that's why Beethoven is the BEST composer ( a classical playlist)</span>
-                <span class="video-dur">3:27:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9SA369CUO6I" target="_blank">
-            <img src="https://i.ytimg.com/vi/9SA369CUO6I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin's Mazurkas Complete | 50 Chopin's Calm & Emotional Classical for Relaxation & Deep Focus</span>
-                <span class="video-dur">2:14:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QC9ST1dXAr8" target="_blank">
-            <img src="https://i.ytimg.com/vi/QC9ST1dXAr8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vivaldi - The Four Seasons Complete: A Portrait of Time | Emotional Classical Music</span>
-                <span class="video-dur">42:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WAs-8JfdkJw" target="_blank">
-            <img src="https://i.ytimg.com/vi/WAs-8JfdkJw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">5 Hours of Classical Music for Sleeping 🌙 | Calm & Emotional Classical Music for Relaxation</span>
-                <span class="video-dur">5:19:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kWeq121zPl4" target="_blank">
-            <img src="https://i.ytimg.com/vi/kWeq121zPl4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">20 Most Beautiful Adagios: Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn</span>
-                <span class="video-dur">2:04:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Xebn_yKud1o" target="_blank">
-            <img src="https://i.ytimg.com/vi/Xebn_yKud1o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chopin 432Hz: COMPLETE Nocturne |  A Quiet Night of Piano Reflection | Starry Night Piano Ambience</span>
-                <span class="video-dur">2:34:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=n34BCN8W7VM" target="_blank">
-            <img src="https://i.ytimg.com/vi/n34BCN8W7VM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">20 Most Beautiful Adagios: Calm & Emotional Classical Music | Rachmaninoff, Mozart, Tchaikovsky</span>
-                <span class="video-dur">2:16:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3Wow7nuWD_I" target="_blank">
-            <img src="https://i.ytimg.com/vi/3Wow7nuWD_I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Franz Schubert: When His Last Pandora’s Box Opened | Classical Music Gems</span>
-                <span class="video-dur">3:41:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=D_i6XZC7rvM" target="_blank">
-            <img src="https://i.ytimg.com/vi/D_i6XZC7rvM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Lizst: The King of the Piano 🎹- 1 HOURS NO ADS | Classical Music Gems</span>
-                <span class="video-dur">1:21:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CsU0JxDwlMU" target="_blank">
-            <img src="https://i.ytimg.com/vi/CsU0JxDwlMU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Chopin: Eternal Dream of the Piano🎹 - 2 Hours NO ADS | Classical Music Gems</span>
-                <span class="video-dur">2:09:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=K2UAJ688sT8" target="_blank">
-            <img src="https://i.ytimg.com/vi/K2UAJ688sT8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Baroque: Monumental Heritage of the Age🎻| Handel, Bach & Vivaldi</span>
-                <span class="video-dur">4:47:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=duAJMNERWTo" target="_blank">
-            <img src="https://i.ytimg.com/vi/duAJMNERWTo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Strauss II: The Waltz King | The Blue Danube Waltz & Vienna Waltz Classics</span>
-                <span class="video-dur">1:18:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=E5mIO5c2Fkc" target="_blank">
-            <img src="https://i.ytimg.com/vi/E5mIO5c2Fkc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Bach: The GOD's Choice 🎻 | Classical Music Gems | Brandenburg Concerto, Cello Suite, Cantata</span>
-                <span class="video-dur">4:13:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NI0RNjwWN6Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/NI0RNjwWN6Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of VERDI: The Voice of Italy - [NO ADS] | Classical Music Gems</span>
-                <span class="video-dur">2:31:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yQE4mOVblI8" target="_blank">
-            <img src="https://i.ytimg.com/vi/yQE4mOVblI8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vivaldi: Architect of Time 🎻🎶 | 35 Best of Vivaldi Masterpieces Everyone Knows</span>
-                <span class="video-dur">3:11:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=B-n1N21IE6o" target="_blank">
-            <img src="https://i.ytimg.com/vi/B-n1N21IE6o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Chopin: Poet of the Piano🎹 - 3 Hours NO ADS | Classical Music Gems</span>
-                <span class="video-dur">3:09:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2G5L2RXHWs0" target="_blank">
-            <img src="https://i.ytimg.com/vi/2G5L2RXHWs0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Tchaikovsky - NO ADS | Classical Gems</span>
-                <span class="video-dur">2:13:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ou82v-_5ecg" target="_blank">
-            <img src="https://i.ytimg.com/vi/ou82v-_5ecg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Handel: Architect of Baroque - NO ADS  | Classical Music Gems</span>
-                <span class="video-dur">2:54:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SRg2kax9Vls" target="_blank">
-            <img src="https://i.ytimg.com/vi/SRg2kax9Vls/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Haydn: The Father of Symphony | Classical Music Gems</span>
-                <span class="video-dur">4:04:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M2eic51FW7M" target="_blank">
-            <img src="https://i.ytimg.com/vi/M2eic51FW7M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Paganini: The Devil's Violinist | Classical Music Gems</span>
-                <span class="video-dur">1:18:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sdAml6aOt0c" target="_blank">
-            <img src="https://i.ytimg.com/vi/sdAml6aOt0c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Vivaldi - The Four Seasons: A Portrait of Time | Classical Music Gems</span>
-                <span class="video-dur">1:53:15</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "ARS Classical Music";
+const VIDEOS = [{"id": "iaNbw1CH1xU", "title": "Chopin Nocturne Op.9 No.2 | 432Hz Gentle Piano Music for Sleep and a Peaceful Night | 1 Hour NO ADS", "thumb": "https://i.ytimg.com/vi/iaNbw1CH1xU/mqdefault.jpg", "dur": "1:03:44"}, {"id": "Rxxfg1jl5Ro", "title": "Chopin Études: Chopin's Beautiful Piano Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]", "thumb": "https://i.ytimg.com/vi/Rxxfg1jl5Ro/mqdefault_live.jpg", "dur": "3:13:36"}, {"id": "s6m0Gq1PKm4", "title": "Best of Handel: The GOD's Choice | that's why HANDEL is the BEST of BAROQUE composer | No Ads", "thumb": "https://i.ytimg.com/vi/s6m0Gq1PKm4/mqdefault.jpg", "dur": "1:40:36"}, {"id": "RYNKwHy5z_o", "title": "Chopin Sad Nocturne: Chopin's Complete Nocturne Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]", "thumb": "https://i.ytimg.com/vi/RYNKwHy5z_o/mqdefault.jpg", "dur": "3:44:13"}, {"id": "JYgXKGwRRrg", "title": "Essential Brahms: that's why BRAHMS is the most UNDERATED ROMANTIC composer | 432Hz Classical NO ADS", "thumb": "https://i.ytimg.com/vi/JYgXKGwRRrg/mqdefault.jpg", "dur": "2:38:12"}, {"id": "hiAJ1PBJCao", "title": "Gentle Schubert: Schubert's Beautiful Piano Pieces Soothe the Soul | 432Hz Classical Music - NO ADS", "thumb": "https://i.ytimg.com/vi/hiAJ1PBJCao/mqdefault.jpg", "dur": "2:53:40"}, {"id": "-GEq5dqe3Xc", "title": "Italian Classical Music Heritage | Verdi, Vivaldi, Puccini, Rossini, Corelli,...", "thumb": "https://i.ytimg.com/vi/-GEq5dqe3Xc/mqdefault.jpg", "dur": "2:22:23"}, {"id": "GQk6T_aDOAA", "title": "Gentle Piano: 30 Most Beautiful Classical Music You'll Ever Hear | Classical Music Calm the Soul", "thumb": "https://i.ytimg.com/vi/GQk6T_aDOAA/mqdefault.jpg", "dur": "2:47:11"}, {"id": "mXQkt-Fcym4", "title": "Gentle Chopin: Chopin's Beautiful Piano Pieces Soothe the Soul | Chopin 432 Hz [ NO ADS ]", "thumb": "https://i.ytimg.com/vi/mXQkt-Fcym4/mqdefault.jpg", "dur": "2:25:28"}, {"id": "DisPSENJPGk", "title": "TOP 20 Best ADAGIOS: Violin, Piano & Cello | Emotional Classical Music for Soul & Heart", "thumb": "https://i.ytimg.com/vi/DisPSENJPGk/mqdefault.jpg", "dur": "2:58:43"}, {"id": "6Pl2g5h0lc0", "title": "Best of Liszt: that's why Liszt is the KING of PIANO 🎹 | Calm & Beautiful Piano", "thumb": "https://i.ytimg.com/vi/6Pl2g5h0lc0/mqdefault.jpg", "dur": "1:04:32"}, {"id": "1D9hx7gcKjo", "title": "Best of Chopin: that's why Chopin is the BEST ROMANTIC composer | Classical Music 432Hz", "thumb": "https://i.ytimg.com/vi/1D9hx7gcKjo/mqdefault.jpg", "dur": "2:54:36"}, {"id": "7xE2GWdfzqY", "title": "Best of Beethoven: that's why Beethoven is the BEST composer | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/7xE2GWdfzqY/mqdefault.jpg", "dur": "3:21:13"}, {"id": "zwhtDYcFXBY", "title": "Mozart Piano Sonatas: Calm & Beautiful Classical Piano Music for Soul & Heart | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/zwhtDYcFXBY/mqdefault.jpg", "dur": "3:15:23"}, {"id": "5eX52wzN0Ss", "title": "Swan Lake - Tchaikovsky [NO ADS] | The Most Beatiful Classical Music", "thumb": "https://i.ytimg.com/vi/5eX52wzN0Ss/mqdefault.jpg", "dur": "1:12:39"}, {"id": "zeHMIlB0wFg", "title": "Best of Tchaikovsky: that's why Tchaikovsky is the BEST Russian composer | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/zeHMIlB0wFg/mqdefault.jpg", "dur": "2:13:18"}, {"id": "zxdK7aYKvVU", "title": "Best of Brahms: that's why Brahms is the MOST ROMANTIC composer | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/zxdK7aYKvVU/mqdefault.jpg", "dur": "2:18:29"}, {"id": "M3wAsTc0h8E", "title": "[NO ADS] - Beethoven - Für Elise 432Hz | Calm & Emotional Piano Classics for Sleeping & Relaxation", "thumb": "https://i.ytimg.com/vi/M3wAsTc0h8E/mqdefault.jpg", "dur": "1:32:26"}, {"id": "VdiIwJqkKxE", "title": "Best of Chopin: Ensential Classical Music for Sleeping & Relaxation | Nocturne, Mazurkas, Waltz,...", "thumb": "https://i.ytimg.com/vi/VdiIwJqkKxE/mqdefault.jpg", "dur": "1:24:27"}, {"id": "WBtUSgfbCZc", "title": "Chopin 432Hz: Calm Piano Classical Music for Sleeping & Lonely Night | NO ADS", "thumb": "https://i.ytimg.com/vi/WBtUSgfbCZc/mqdefault.jpg", "dur": "53:24"}, {"id": "oIUKeZuK4Hw", "title": "Clair de Lune — Fragile Memory of Beautiful Sorrow at Midnight | Best of Debussy | NO ADS", "thumb": "https://i.ytimg.com/vi/oIUKeZuK4Hw/mqdefault.jpg", "dur": "1:18:10"}, {"id": "SOfybWPv2uE", "title": "Morning Mood: Classical Music for Relaxation and Meditation | Grieg, Brahms, Dvořák, Wagner,...", "thumb": "https://i.ytimg.com/vi/SOfybWPv2uE/mqdefault.jpg", "dur": "2:24:39"}, {"id": "XVvDJaYQVi0", "title": "Chopin – Nocturne Op. 9 No. 2 | Soothing Piano for Sleep, Relaxation & Calm Night | 1 Hour NO ADS", "thumb": "https://i.ytimg.com/vi/XVvDJaYQVi0/mqdefault.jpg", "dur": "1:25:22"}, {"id": "pAOj2I_H4JU", "title": "Sad Chopin Nocturnes 432Hz | Emotional Piano for Lonely Nights | 1 Hour NO ADS", "thumb": "https://i.ytimg.com/vi/pAOj2I_H4JU/mqdefault.jpg", "dur": "1:06:34"}, {"id": "9o4goBpxUpk", "title": "Adagios: TOP 15 Adagio Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn,...", "thumb": "https://i.ytimg.com/vi/9o4goBpxUpk/mqdefault.jpg", "dur": "1:41:24"}, {"id": "OLUu9Lzskn8", "title": "NO ADS -  Beethoven - Moonlight Sonata | 432 Hz Peacful Piano for Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/OLUu9Lzskn8/mqdefault.jpg", "dur": "1:26:51"}, {"id": "VVPdb9ELnuY", "title": "Best of Rachmanioff: The Last Melancholy Soul | Classical Music Gems - 2 Hours NO ADS", "thumb": "https://i.ytimg.com/vi/VVPdb9ELnuY/mqdefault.jpg", "dur": "2:29:56"}, {"id": "L4xYaF_43Nw", "title": "Adagios: TOP 20 Adagio Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn,...", "thumb": "https://i.ytimg.com/vi/L4xYaF_43Nw/mqdefault.jpg", "dur": "1:46:40"}, {"id": "naKc3ud-3HM", "title": "Best of Mozart: The Eternal Genius of Classical Music | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/naKc3ud-3HM/mqdefault.jpg", "dur": "4:04:50"}, {"id": "DuQ9fjc_yOY", "title": "Best of Lizst: The King of the Piano 🎹- 1 HOURS NO ADS | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/DuQ9fjc_yOY/mqdefault.jpg", "dur": "1:13:13"}, {"id": "MsmF8lgmH68", "title": "Best of Antonín Dvořák: From the New Work | Classical Music for Relaxation | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/MsmF8lgmH68/mqdefault.jpg", "dur": "2:43:25"}, {"id": "xs0WF1bOcRc", "title": "Genius of Beethoven | that's why Beethoven is the BEST composer ( a classical playlist)", "thumb": "https://i.ytimg.com/vi/xs0WF1bOcRc/mqdefault.jpg", "dur": "3:27:50"}, {"id": "9SA369CUO6I", "title": "Chopin's Mazurkas Complete | 50 Chopin's Calm & Emotional Classical for Relaxation & Deep Focus", "thumb": "https://i.ytimg.com/vi/9SA369CUO6I/mqdefault.jpg", "dur": "2:14:07"}, {"id": "QC9ST1dXAr8", "title": "Vivaldi - The Four Seasons Complete: A Portrait of Time | Emotional Classical Music", "thumb": "https://i.ytimg.com/vi/QC9ST1dXAr8/mqdefault.jpg", "dur": "42:48"}, {"id": "WAs-8JfdkJw", "title": "5 Hours of Classical Music for Sleeping 🌙 | Calm & Emotional Classical Music for Relaxation", "thumb": "https://i.ytimg.com/vi/WAs-8JfdkJw/mqdefault.jpg", "dur": "5:19:06"}, {"id": "kWeq121zPl4", "title": "20 Most Beautiful Adagios: Calm & Emotional Classical Music | Rachmaninoff, Mozart, Vivaldi, Haydn", "thumb": "https://i.ytimg.com/vi/kWeq121zPl4/mqdefault.jpg", "dur": "2:04:52"}, {"id": "Xebn_yKud1o", "title": "Chopin 432Hz: COMPLETE Nocturne |  A Quiet Night of Piano Reflection | Starry Night Piano Ambience", "thumb": "https://i.ytimg.com/vi/Xebn_yKud1o/mqdefault.jpg", "dur": "2:34:37"}, {"id": "n34BCN8W7VM", "title": "20 Most Beautiful Adagios: Calm & Emotional Classical Music | Rachmaninoff, Mozart, Tchaikovsky", "thumb": "https://i.ytimg.com/vi/n34BCN8W7VM/mqdefault.jpg", "dur": "2:16:04"}, {"id": "3Wow7nuWD_I", "title": "Best of Franz Schubert: When His Last Pandora’s Box Opened | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/3Wow7nuWD_I/mqdefault.jpg", "dur": "3:41:01"}, {"id": "D_i6XZC7rvM", "title": "Best of Lizst: The King of the Piano 🎹- 1 HOURS NO ADS | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/D_i6XZC7rvM/mqdefault.jpg", "dur": "1:21:19"}, {"id": "CsU0JxDwlMU", "title": "Best of Chopin: Eternal Dream of the Piano🎹 - 2 Hours NO ADS | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/CsU0JxDwlMU/mqdefault.jpg", "dur": "2:09:03"}, {"id": "K2UAJ688sT8", "title": "Best of Baroque: Monumental Heritage of the Age🎻| Handel, Bach & Vivaldi", "thumb": "https://i.ytimg.com/vi/K2UAJ688sT8/mqdefault.jpg", "dur": "4:47:50"}, {"id": "duAJMNERWTo", "title": "Best of Strauss II: The Waltz King | The Blue Danube Waltz & Vienna Waltz Classics", "thumb": "https://i.ytimg.com/vi/duAJMNERWTo/mqdefault.jpg", "dur": "1:18:33"}, {"id": "E5mIO5c2Fkc", "title": "Best of Bach: The GOD's Choice 🎻 | Classical Music Gems | Brandenburg Concerto, Cello Suite, Cantata", "thumb": "https://i.ytimg.com/vi/E5mIO5c2Fkc/mqdefault.jpg", "dur": "4:13:20"}, {"id": "NI0RNjwWN6Y", "title": "Best of VERDI: The Voice of Italy - [NO ADS] | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/NI0RNjwWN6Y/mqdefault.jpg", "dur": "2:31:51"}, {"id": "yQE4mOVblI8", "title": "Vivaldi: Architect of Time 🎻🎶 | 35 Best of Vivaldi Masterpieces Everyone Knows", "thumb": "https://i.ytimg.com/vi/yQE4mOVblI8/mqdefault.jpg", "dur": "3:11:40"}, {"id": "B-n1N21IE6o", "title": "Best of Chopin: Poet of the Piano🎹 - 3 Hours NO ADS | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/B-n1N21IE6o/mqdefault.jpg", "dur": "3:09:59"}, {"id": "2G5L2RXHWs0", "title": "Best of Tchaikovsky - NO ADS | Classical Gems", "thumb": "https://i.ytimg.com/vi/2G5L2RXHWs0/mqdefault.jpg", "dur": "2:13:18"}, {"id": "ou82v-_5ecg", "title": "Best of Handel: Architect of Baroque - NO ADS  | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/ou82v-_5ecg/mqdefault.jpg", "dur": "2:54:02"}, {"id": "SRg2kax9Vls", "title": "Best of Haydn: The Father of Symphony | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/SRg2kax9Vls/mqdefault.jpg", "dur": "4:04:02"}, {"id": "M2eic51FW7M", "title": "Best of Paganini: The Devil's Violinist | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/M2eic51FW7M/mqdefault.jpg", "dur": "1:18:31"}, {"id": "sdAml6aOt0c", "title": "Best of Vivaldi - The Four Seasons: A Portrait of Time | Classical Music Gems", "thumb": "https://i.ytimg.com/vi/sdAml6aOt0c/mqdefault.jpg", "dur": "1:53:15"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

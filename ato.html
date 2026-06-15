@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@ato.sounds -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,587 +51,97 @@
       <div class="channel-count">83 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=tdNpXGIdcd4" target="_blank">
-            <img src="https://i.ytimg.com/vi/tdNpXGIdcd4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Uptown Soul — Nuyorican Salsa Jazz & Gospel-Influenced Grooves</span>
-                <span class="video-dur">1:15:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=voTuiWoazGo" target="_blank">
-            <img src="https://i.ytimg.com/vi/voTuiWoazGo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz — The Cuatro Sessions | Jíbaro Folk Grooves</span>
-                <span class="video-dur">58:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=U_nCCcXaU50" target="_blank">
-            <img src="https://i.ytimg.com/vi/U_nCCcXaU50/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Havana Lounge Jazz Vol. II — Qué Volá? | Smooth Cuban Jazz</span>
-                <span class="video-dur">1:11:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IFQCjq5yc6w" target="_blank">
-            <img src="https://i.ytimg.com/vi/IFQCjq5yc6w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Iranian Jazz Vol. II — Shiraz Rose Night | Romantic Persian Night Groove</span>
-                <span class="video-dur">1:01:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Td5iBWirQjo" target="_blank">
-            <img src="https://i.ytimg.com/vi/Td5iBWirQjo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz Vol. VI — Santurce Blue Hour | Afro-Caribbean Jazz Groove</span>
-                <span class="video-dur">1:08:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IQpIYQhARw0" target="_blank">
-            <img src="https://i.ytimg.com/vi/IQpIYQhARw0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mediterranean Noir — Sicilian Jazz & Underworld Lounge Grooves</span>
-                <span class="video-dur">1:12:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JMbTCswuAXg" target="_blank">
-            <img src="https://i.ytimg.com/vi/JMbTCswuAXg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Salsa Lounge Jazz Vol. V — Rooftop Rumba Society | Smooth Latin Jazz Groove</span>
-                <span class="video-dur">1:09:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QGJsZ7R4YYc" target="_blank">
-            <img src="https://i.ytimg.com/vi/QGJsZ7R4YYc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz Vol. V — Last Train Through Shibuya | Neon Urban Jazz Fusion</span>
-                <span class="video-dur">1:12:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4vWWizbyYsU" target="_blank">
-            <img src="https://i.ytimg.com/vi/4vWWizbyYsU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Lounge Jazz — Sunset in Ipanema | Smooth Brazilian Lounge Groove</span>
-                <span class="video-dur">48:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=79UF3U8hRm8" target="_blank">
-            <img src="https://i.ytimg.com/vi/79UF3U8hRm8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz — 5 hour Latin Jazz Mix | Jazz Day Special</span>
-                <span class="video-dur">5:32:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GudvVGHk_LQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/GudvVGHk_LQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Havana Lounge Jazz — Brass & Rum in the Club | Smooth Cuban Jazz</span>
-                <span class="video-dur">1:12:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w1Chg-9ZvUQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/w1Chg-9ZvUQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Salsa Lounge Jazz Vol. IV — Candlelight & Congas | Smooth Latin Jazz Groove</span>
-                <span class="video-dur">1:08:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=V-4hkINAXuQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/V-4hkINAXuQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz Vol. V — Boricua Moonfire</span>
-                <span class="video-dur">1:18:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-Rg7xtuatz0" target="_blank">
-            <img src="https://i.ytimg.com/vi/-Rg7xtuatz0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Flamenco Jazz – After Hours in Sevilla</span>
-                <span class="video-dur">1:04:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RadU-RXRiUs" target="_blank">
-            <img src="https://i.ytimg.com/vi/RadU-RXRiUs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">JAZZHOP Vol. 1 |  Oud Boom Bap | Jazzhop & Late Night Oud Beats</span>
-                <span class="video-dur">1:12:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QZhdqu_8DzQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/QZhdqu_8DzQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">PSYCHEDELIC JUNGLE JAZZ Vol. III — Hypnotic Tribal Groove | Tribal Psychedelic Jazz Mix</span>
-                <span class="video-dur">1:43:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WDz15eyw1hA" target="_blank">
-            <img src="https://i.ytimg.com/vi/WDz15eyw1hA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz Vol. IV – Boricua After Hours | Salsa Jazz Groove</span>
-                <span class="video-dur">1:03:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ljoe_MpgCCE" target="_blank">
-            <img src="https://i.ytimg.com/vi/ljoe_MpgCCE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ARABIAN MIDNIGHT JAZZ — Dark Oud & Brass Nights | Arabic Jazz Fusion Mix</span>
-                <span class="video-dur">57:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2JnypF82yHA" target="_blank">
-            <img src="https://i.ytimg.com/vi/2JnypF82yHA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz – Original Flame | Deep Night Groove</span>
-                <span class="video-dur">1:18:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jqI2-rlv_28" target="_blank">
-            <img src="https://i.ytimg.com/vi/jqI2-rlv_28/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Salsa Lounge Jazz — Golden Conga Nights | Tropical Latin Groove</span>
-                <span class="video-dur">59:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fb4QmZ18bB8" target="_blank">
-            <img src="https://i.ytimg.com/vi/fb4QmZ18bB8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz - Neon Sleepless Express | Vol. IV</span>
-                <span class="video-dur">53:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=36ryjYeprMI" target="_blank">
-            <img src="https://i.ytimg.com/vi/36ryjYeprMI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lounge Mariachi Jazz – Velvet Tequila Nights | Mexican After Hours</span>
-                <span class="video-dur">52:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dna_qwm2Ieo" target="_blank">
-            <img src="https://i.ytimg.com/vi/dna_qwm2Ieo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ranchero Mex Jazz – Midnight Cantina Groove | Mexican After Hours</span>
-                <span class="video-dur">39:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yuMCg5ogAnM" target="_blank">
-            <img src="https://i.ytimg.com/vi/yuMCg5ogAnM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz Vol. III – Caribbean Velvet Nights | Salsa Jazz Groove</span>
-                <span class="video-dur">59:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eJCScOR1qe4" target="_blank">
-            <img src="https://i.ytimg.com/vi/eJCScOR1qe4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Space Cowboy Jazz — Orbital Frontier Groove | Cosmic Western Instrumental</span>
-                <span class="video-dur">1:00:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YMQEleTVYw8" target="_blank">
-            <img src="https://i.ytimg.com/vi/YMQEleTVYw8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Salsa Lounge Jazz Vol. II – Noche en San Juan | Tropical After Hours</span>
-                <span class="video-dur">45:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mbds3N28acE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mbds3N28acE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Iranian Jazz – Tehran After Midnight | Romantic Persian Night Groove</span>
-                <span class="video-dur">57:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KS4uSwY0Ehc" target="_blank">
-            <img src="https://i.ytimg.com/vi/KS4uSwY0Ehc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Amazon Jungle Jazz — Rainforest Groove & Tribal Jazz Instrumental Mix</span>
-                <span class="video-dur">1:04:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7W8sbWZXw7U" target="_blank">
-            <img src="https://i.ytimg.com/vi/7W8sbWZXw7U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Havana Lounge Jazz — Cuban Midnight Jazz | Smooth Latin Instrumental Mix</span>
-                <span class="video-dur">1:07:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RsryaOpQMQw" target="_blank">
-            <img src="https://i.ytimg.com/vi/RsryaOpQMQw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz Vol. II – San Juan After Midnight | Salsa Jazz Groove</span>
-                <span class="video-dur">1:08:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yNSbWJDtmSc" target="_blank">
-            <img src="https://i.ytimg.com/vi/yNSbWJDtmSc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz Vol. III — Tokyo Night Jazz | Urban Instrumental Groove Mix</span>
-                <span class="video-dur">1:03:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wtVEFiqCxf4" target="_blank">
-            <img src="https://i.ytimg.com/vi/wtVEFiqCxf4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz — The Big One (Complete 5 Hour Collection)</span>
-                <span class="video-dur">4:57:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DSst9lIO8rg" target="_blank">
-            <img src="https://i.ytimg.com/vi/DSst9lIO8rg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Spiritual Ethio-Jazz Fusion — Ethiopian Avant Jazz Vol. III | 90 Min Deep Instrumental</span>
-                <span class="video-dur">1:29:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GRLEdVlpNyg" target="_blank">
-            <img src="https://i.ytimg.com/vi/GRLEdVlpNyg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Psychedelic Jungle Jazz Vol. II — Jungle Funk Fusion Mix | High-Energy Instrumental Groove</span>
-                <span class="video-dur">1:02:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=p5QpjEFEssc" target="_blank">
-            <img src="https://i.ytimg.com/vi/p5QpjEFEssc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Salsa Lounge Jazz — Calle Habanera Sessions | Late Night Latin Groove</span>
-                <span class="video-dur">1:03:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GrQh-HAe784" target="_blank">
-            <img src="https://i.ytimg.com/vi/GrQh-HAe784/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz Vol. VI — Obsidian Ceremony | Deep Midnight Ritual Groove</span>
-                <span class="video-dur">54:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ouWGLlJtg34" target="_blank">
-            <img src="https://i.ytimg.com/vi/ouWGLlJtg34/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ATO STUDIES II — Botánica Mariachi Jazz | Dark Mexican Fusion Playlist</span>
-                <span class="video-dur">54:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4XzhEMe5zbk" target="_blank">
-            <img src="https://i.ytimg.com/vi/4XzhEMe5zbk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Sacred Desert Jazz - Egyptian Inspired Experimental Jazz | Cinematic Instrumental Groove</span>
-                <span class="video-dur">57:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9TlAlNi5vPY" target="_blank">
-            <img src="https://i.ytimg.com/vi/9TlAlNi5vPY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz (B-Side): Hidden Platform Sessions | Late Night Tokyo Smooth Jazz Groove</span>
-                <span class="video-dur">1:02:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yfdVMrAFcpA" target="_blank">
-            <img src="https://i.ytimg.com/vi/yfdVMrAFcpA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz Vol. II – Tokyo After Midnight | Urban Night Groove</span>
-                <span class="video-dur">44:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5cY2jUjG584" target="_blank">
-            <img src="https://i.ytimg.com/vi/5cY2jUjG584/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Puerto Rican Jazz – Caribbean Night Groove | Salsa Jazz & Afro-Boricua Vibes</span>
-                <span class="video-dur">52:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iuclcns5ZE8" target="_blank">
-            <img src="https://i.ytimg.com/vi/iuclcns5ZE8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Psychedelic Jungle Jazz — Deep Ritual Groove</span>
-                <span class="video-dur">52:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kfyTsk2RSuo" target="_blank">
-            <img src="https://i.ytimg.com/vi/kfyTsk2RSuo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Metro Japanese Jazz Vol. I — Nocturnal Urban Jazz from Tokyo Subway Lines</span>
-                <span class="video-dur">1:11:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KHW7gz81mwY" target="_blank">
-            <img src="https://i.ytimg.com/vi/KHW7gz81mwY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz — Nocturnal Ancestral Club | Deep ritual grooves & after-hours jazz</span>
-                <span class="video-dur">48:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gL2QnQbry90" target="_blank">
-            <img src="https://i.ytimg.com/vi/gL2QnQbry90/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ethiopian Avant Jazz Vol. II — After Hours Loft</span>
-                <span class="video-dur">45:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qf6qP8_0FNI" target="_blank">
-            <img src="https://i.ytimg.com/vi/qf6qP8_0FNI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Night Jazz | West African Grooves</span>
-                <span class="video-dur">52:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4T4aAu2oWJY" target="_blank">
-            <img src="https://i.ytimg.com/vi/4T4aAu2oWJY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ritual Minimal Jazz — Inner Threshold | Deep Experimental Jazz for Focus & Night Listening</span>
-                <span class="video-dur">1:01:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YJQKwCtZYMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/YJQKwCtZYMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz Vol. V — Inner Fire | Deep Ritual Jazz for Focus & Night Listening</span>
-                <span class="video-dur">1:41:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XaNfESHOphI" target="_blank">
-            <img src="https://i.ytimg.com/vi/XaNfESHOphI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saudade Jazz - Fado infused Noir  Jazz — Intimate After Hours Jazz & Saudade Grooves</span>
-                <span class="video-dur">42:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EvQG1YFTz5g" target="_blank">
-            <img src="https://i.ytimg.com/vi/EvQG1YFTz5g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ethiopian Avant Jazz — After Hours Loft</span>
-                <span class="video-dur">48:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8WDyy0maBsY" target="_blank">
-            <img src="https://i.ytimg.com/vi/8WDyy0maBsY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz — Inner Circle | Deep Hypnotic Groove Session</span>
-                <span class="video-dur">1:10:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mi2s-OgJbwQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mi2s-OgJbwQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Jazz — Night Drive | Slow Nocturnal Jazz for Empty Highways</span>
-                <span class="video-dur">51:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ACvPVHKKP28" target="_blank">
-            <img src="https://i.ytimg.com/vi/ACvPVHKKP28/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Night Jazz – West African Infused Dark Jazz | Hypnotic Grooves for Late Night Focus & Flow</span>
-                <span class="video-dur">49:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ruDEXBelTgk" target="_blank">
-            <img src="https://i.ytimg.com/vi/ruDEXBelTgk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Latin Noir Jazz Vol. II — Slow Cumbia Grooves & Dark Cinematic Jazz</span>
-                <span class="video-dur">48:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i7Sx2_O6xb0" target="_blank">
-            <img src="https://i.ytimg.com/vi/i7Sx2_O6xb0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz Vol. IV — Deep Ritual Grooves | After Hours Lounge Jazz</span>
-                <span class="video-dur">1:02:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TyDMEw823VQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/TyDMEw823VQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Noir Jazz | After the Last Drink - Jazz for Empty Bars & Late Nights</span>
-                <span class="video-dur">51:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sknQYWw7dos" target="_blank">
-            <img src="https://i.ytimg.com/vi/sknQYWw7dos/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ATO Studies I — Bone Jazz Ritual</span>
-                <span class="video-dur">32:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u9z72DcxYAo" target="_blank">
-            <img src="https://i.ytimg.com/vi/u9z72DcxYAo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz Vol. III – Sacred Grooves | After Hours Lounge Jazz for Focus & Night Work</span>
-                <span class="video-dur">42:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qi4WCF9iVUE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qi4WCF9iVUE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Jazz — Midnight Train | After Hours Jazz for Focus, Night Work & Thinking</span>
-                <span class="video-dur">47:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=f_h4bRHsZ98" target="_blank">
-            <img src="https://i.ytimg.com/vi/f_h4bRHsZ98/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz – Late Bar Ritual | Smoky Underground Jazz & Tribal Grooves (After Hours Session)</span>
-                <span class="video-dur">55:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0726k3m6MZM" target="_blank">
-            <img src="https://i.ytimg.com/vi/0726k3m6MZM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Christmas Jazz Session – Midnight Bells Cozy Late Night Jazz Mix</span>
-                <span class="video-dur">33:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iXJn7AQrMK8" target="_blank">
-            <img src="https://i.ytimg.com/vi/iXJn7AQrMK8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz Vol. II – Night Rituals | Dark Jazz • Lounge • Ritual Ambient</span>
-                <span class="video-dur">54:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=elHnUl9CmsU" target="_blank">
-            <img src="https://i.ytimg.com/vi/elHnUl9CmsU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Latin Noir Jazz — Cinematic Grooves (Full Album)</span>
-                <span class="video-dur">48:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Y6QgyrLRtA4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Y6QgyrLRtA4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SODA NEGRA – No Es Personal, Es Ruido - Mexican Punk Funk / Early 2000s Alternative Rock Album.</span>
-                <span class="video-dur">24:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cy4nR6KWAZY" target="_blank">
-            <img src="https://i.ytimg.com/vi/cy4nR6KWAZY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Borderlands: Caribbean Jazz Grooves — Full Album</span>
-                <span class="video-dur">1:00:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dUUlrCOSWaM" target="_blank">
-            <img src="https://i.ytimg.com/vi/dUUlrCOSWaM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nico Jara — Lo que no dije cuando pude (EP completo | Rap emocional · Pop alternativo · Lo-fi)</span>
-                <span class="video-dur">8:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1DjzFRFug5U" target="_blank">
-            <img src="https://i.ytimg.com/vi/1DjzFRFug5U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Tenement — Gritty Hard Bop Jazz from the Streets (Full Session)</span>
-                <span class="video-dur">51:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EpgH8dffTR0" target="_blank">
-            <img src="https://i.ytimg.com/vi/EpgH8dffTR0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ESPIRAL (1969) — Latin Psychedelic Acid Rock Album | Mandala Solar</span>
-                <span class="video-dur">31:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ngrEo8tofqg" target="_blank">
-            <img src="https://i.ytimg.com/vi/ngrEo8tofqg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Andean Borderlands: Northern Argentina Folk Jazz Fusion  (Full Album)</span>
-                <span class="video-dur">53:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FUQCiPBd0m4" target="_blank">
-            <img src="https://i.ytimg.com/vi/FUQCiPBd0m4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Unnamed Atlas: Celestial Jazz for Exploring Invisible Skies</span>
-                <span class="video-dur">33:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GsHnGHx6_Ec" target="_blank">
-            <img src="https://i.ytimg.com/vi/GsHnGHx6_Ec/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Pampas de Fuego: Argentine Folk Jazz Fusion — 8-Track Concept Suite</span>
-                <span class="video-dur">58:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WF0fT3x3KI0" target="_blank">
-            <img src="https://i.ytimg.com/vi/WF0fT3x3KI0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Astral Cartography:  Celestial Jazz for Mapping Invisible Constellations</span>
-                <span class="video-dur">1:11:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CLKg6QFN6W0" target="_blank">
-            <img src="https://i.ytimg.com/vi/CLKg6QFN6W0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Geometry of Chaos: Math-Jazz Patterns Mix to fall into the cosmos</span>
-                <span class="video-dur">55:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MoFJh9NoYvY" target="_blank">
-            <img src="https://i.ytimg.com/vi/MoFJh9NoYvY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Shadow Funk Tapes  (Full EP) - Funk, Ambient, Noir, Soul, Hiphop Fusion.</span>
-                <span class="video-dur">12:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZN1AbnVxUes" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZN1AbnVxUes/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mexican Romantic Night Songs for the Brokenhearted - Antes de Que Amanezca (Full Album) 1 hr Loop</span>
-                <span class="video-dur">57:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X1uyjJ5JjRQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/X1uyjJ5JjRQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz (B Side) - Abstract Fusion Grooves</span>
-                <span class="video-dur">50:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZunR8C4IvXE" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZunR8C4IvXE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz — A Warm Fusion Journey of Lounge Jazz With Tribal Instruments</span>
-                <span class="video-dur">46:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T6jMenltGm8" target="_blank">
-            <img src="https://i.ytimg.com/vi/T6jMenltGm8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Clair de Mort - 5 Track Piano Lounge (The Last Light of Debussy) EP</span>
-                <span class="video-dur">14:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QLyfCM9x5tY" target="_blank">
-            <img src="https://i.ytimg.com/vi/QLyfCM9x5tY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Lantern Festival 🏮 | Oriental Ambient for Focus & Calm (Full Album)</span>
-                <span class="video-dur">1:11:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=md16kJd16LQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/md16kJd16LQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Medieval Autumn 🍂 | Fantasy Folk Ambience for Writing or Relaxation</span>
-                <span class="video-dur">1:13:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5594uCp3dPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/5594uCp3dPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">MIDNIGHT PUMPKIN RADIO | A Halloween Lo-Fi Jazz & Ambient Broadcast (Full Album)</span>
-                <span class="video-dur">42:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cmotV3p_TsA" target="_blank">
-            <img src="https://i.ytimg.com/vi/cmotV3p_TsA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Room That Breathes - ATO (Ambient Sound Story • Full Experience)</span>
-                <span class="video-dur">16:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JtFp_ZNZ89Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/JtFp_ZNZ89Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Amphibian Jazz Club – Experimental Swamp Jazz (Full Album) | ato.</span>
-                <span class="video-dur">37:40</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "ato.";
+const VIDEOS = [{"id": "tdNpXGIdcd4", "title": "Uptown Soul — Nuyorican Salsa Jazz & Gospel-Influenced Grooves", "thumb": "https://i.ytimg.com/vi/tdNpXGIdcd4/mqdefault.jpg", "dur": "1:15:18"}, {"id": "voTuiWoazGo", "title": "Puerto Rican Jazz — The Cuatro Sessions | Jíbaro Folk Grooves", "thumb": "https://i.ytimg.com/vi/voTuiWoazGo/mqdefault.jpg", "dur": "58:17"}, {"id": "U_nCCcXaU50", "title": "Havana Lounge Jazz Vol. II — Qué Volá? | Smooth Cuban Jazz", "thumb": "https://i.ytimg.com/vi/U_nCCcXaU50/mqdefault.jpg", "dur": "1:11:37"}, {"id": "IFQCjq5yc6w", "title": "Iranian Jazz Vol. II — Shiraz Rose Night | Romantic Persian Night Groove", "thumb": "https://i.ytimg.com/vi/IFQCjq5yc6w/mqdefault.jpg", "dur": "1:01:26"}, {"id": "Td5iBWirQjo", "title": "Puerto Rican Jazz Vol. VI — Santurce Blue Hour | Afro-Caribbean Jazz Groove", "thumb": "https://i.ytimg.com/vi/Td5iBWirQjo/mqdefault.jpg", "dur": "1:08:23"}, {"id": "IQpIYQhARw0", "title": "Mediterranean Noir — Sicilian Jazz & Underworld Lounge Grooves", "thumb": "https://i.ytimg.com/vi/IQpIYQhARw0/mqdefault.jpg", "dur": "1:12:11"}, {"id": "JMbTCswuAXg", "title": "Salsa Lounge Jazz Vol. V — Rooftop Rumba Society | Smooth Latin Jazz Groove", "thumb": "https://i.ytimg.com/vi/JMbTCswuAXg/mqdefault.jpg", "dur": "1:09:26"}, {"id": "QGJsZ7R4YYc", "title": "Metro Japanese Jazz Vol. V — Last Train Through Shibuya | Neon Urban Jazz Fusion", "thumb": "https://i.ytimg.com/vi/QGJsZ7R4YYc/mqdefault.jpg", "dur": "1:12:56"}, {"id": "4vWWizbyYsU", "title": "Bossa Lounge Jazz — Sunset in Ipanema | Smooth Brazilian Lounge Groove", "thumb": "https://i.ytimg.com/vi/4vWWizbyYsU/mqdefault.jpg", "dur": "48:18"}, {"id": "79UF3U8hRm8", "title": "Puerto Rican Jazz — 5 hour Latin Jazz Mix | Jazz Day Special", "thumb": "https://i.ytimg.com/vi/79UF3U8hRm8/mqdefault.jpg", "dur": "5:32:36"}, {"id": "GudvVGHk_LQ", "title": "Havana Lounge Jazz — Brass & Rum in the Club | Smooth Cuban Jazz", "thumb": "https://i.ytimg.com/vi/GudvVGHk_LQ/mqdefault.jpg", "dur": "1:12:33"}, {"id": "w1Chg-9ZvUQ", "title": "Salsa Lounge Jazz Vol. IV — Candlelight & Congas | Smooth Latin Jazz Groove", "thumb": "https://i.ytimg.com/vi/w1Chg-9ZvUQ/mqdefault.jpg", "dur": "1:08:17"}, {"id": "V-4hkINAXuQ", "title": "Puerto Rican Jazz Vol. V — Boricua Moonfire", "thumb": "https://i.ytimg.com/vi/V-4hkINAXuQ/mqdefault.jpg", "dur": "1:18:42"}, {"id": "-Rg7xtuatz0", "title": "Flamenco Jazz – After Hours in Sevilla", "thumb": "https://i.ytimg.com/vi/-Rg7xtuatz0/mqdefault.jpg", "dur": "1:04:16"}, {"id": "RadU-RXRiUs", "title": "JAZZHOP Vol. 1 |  Oud Boom Bap | Jazzhop & Late Night Oud Beats", "thumb": "https://i.ytimg.com/vi/RadU-RXRiUs/mqdefault.jpg", "dur": "1:12:57"}, {"id": "QZhdqu_8DzQ", "title": "PSYCHEDELIC JUNGLE JAZZ Vol. III — Hypnotic Tribal Groove | Tribal Psychedelic Jazz Mix", "thumb": "https://i.ytimg.com/vi/QZhdqu_8DzQ/mqdefault.jpg", "dur": "1:43:48"}, {"id": "WDz15eyw1hA", "title": "Puerto Rican Jazz Vol. IV – Boricua After Hours | Salsa Jazz Groove", "thumb": "https://i.ytimg.com/vi/WDz15eyw1hA/mqdefault.jpg", "dur": "1:03:01"}, {"id": "ljoe_MpgCCE", "title": "ARABIAN MIDNIGHT JAZZ — Dark Oud & Brass Nights | Arabic Jazz Fusion Mix", "thumb": "https://i.ytimg.com/vi/ljoe_MpgCCE/mqdefault.jpg", "dur": "57:54"}, {"id": "2JnypF82yHA", "title": "Tribal Lounge Jazz – Original Flame | Deep Night Groove", "thumb": "https://i.ytimg.com/vi/2JnypF82yHA/mqdefault.jpg", "dur": "1:18:11"}, {"id": "jqI2-rlv_28", "title": "Salsa Lounge Jazz — Golden Conga Nights | Tropical Latin Groove", "thumb": "https://i.ytimg.com/vi/jqI2-rlv_28/mqdefault.jpg", "dur": "59:23"}, {"id": "fb4QmZ18bB8", "title": "Metro Japanese Jazz - Neon Sleepless Express | Vol. IV", "thumb": "https://i.ytimg.com/vi/fb4QmZ18bB8/mqdefault.jpg", "dur": "53:23"}, {"id": "36ryjYeprMI", "title": "Lounge Mariachi Jazz – Velvet Tequila Nights | Mexican After Hours", "thumb": "https://i.ytimg.com/vi/36ryjYeprMI/mqdefault.jpg", "dur": "52:28"}, {"id": "dna_qwm2Ieo", "title": "Ranchero Mex Jazz – Midnight Cantina Groove | Mexican After Hours", "thumb": "https://i.ytimg.com/vi/dna_qwm2Ieo/mqdefault.jpg", "dur": "39:10"}, {"id": "yuMCg5ogAnM", "title": "Puerto Rican Jazz Vol. III – Caribbean Velvet Nights | Salsa Jazz Groove", "thumb": "https://i.ytimg.com/vi/yuMCg5ogAnM/mqdefault.jpg", "dur": "59:16"}, {"id": "eJCScOR1qe4", "title": "Space Cowboy Jazz — Orbital Frontier Groove | Cosmic Western Instrumental", "thumb": "https://i.ytimg.com/vi/eJCScOR1qe4/mqdefault.jpg", "dur": "1:00:14"}, {"id": "YMQEleTVYw8", "title": "Salsa Lounge Jazz Vol. II – Noche en San Juan | Tropical After Hours", "thumb": "https://i.ytimg.com/vi/YMQEleTVYw8/mqdefault.jpg", "dur": "45:29"}, {"id": "Mbds3N28acE", "title": "Iranian Jazz – Tehran After Midnight | Romantic Persian Night Groove", "thumb": "https://i.ytimg.com/vi/Mbds3N28acE/mqdefault.jpg", "dur": "57:13"}, {"id": "KS4uSwY0Ehc", "title": "Amazon Jungle Jazz — Rainforest Groove & Tribal Jazz Instrumental Mix", "thumb": "https://i.ytimg.com/vi/KS4uSwY0Ehc/mqdefault.jpg", "dur": "1:04:56"}, {"id": "7W8sbWZXw7U", "title": "Havana Lounge Jazz — Cuban Midnight Jazz | Smooth Latin Instrumental Mix", "thumb": "https://i.ytimg.com/vi/7W8sbWZXw7U/mqdefault.jpg", "dur": "1:07:26"}, {"id": "RsryaOpQMQw", "title": "Puerto Rican Jazz Vol. II – San Juan After Midnight | Salsa Jazz Groove", "thumb": "https://i.ytimg.com/vi/RsryaOpQMQw/mqdefault.jpg", "dur": "1:08:05"}, {"id": "yNSbWJDtmSc", "title": "Metro Japanese Jazz Vol. III — Tokyo Night Jazz | Urban Instrumental Groove Mix", "thumb": "https://i.ytimg.com/vi/yNSbWJDtmSc/mqdefault.jpg", "dur": "1:03:33"}, {"id": "wtVEFiqCxf4", "title": "Tribal Lounge Jazz — The Big One (Complete 5 Hour Collection)", "thumb": "https://i.ytimg.com/vi/wtVEFiqCxf4/mqdefault.jpg", "dur": "4:57:58"}, {"id": "DSst9lIO8rg", "title": "Spiritual Ethio-Jazz Fusion — Ethiopian Avant Jazz Vol. III | 90 Min Deep Instrumental", "thumb": "https://i.ytimg.com/vi/DSst9lIO8rg/mqdefault.jpg", "dur": "1:29:28"}, {"id": "GRLEdVlpNyg", "title": "Psychedelic Jungle Jazz Vol. II — Jungle Funk Fusion Mix | High-Energy Instrumental Groove", "thumb": "https://i.ytimg.com/vi/GRLEdVlpNyg/mqdefault.jpg", "dur": "1:02:29"}, {"id": "p5QpjEFEssc", "title": "Salsa Lounge Jazz — Calle Habanera Sessions | Late Night Latin Groove", "thumb": "https://i.ytimg.com/vi/p5QpjEFEssc/mqdefault.jpg", "dur": "1:03:44"}, {"id": "GrQh-HAe784", "title": "Tribal Lounge Jazz Vol. VI — Obsidian Ceremony | Deep Midnight Ritual Groove", "thumb": "https://i.ytimg.com/vi/GrQh-HAe784/mqdefault.jpg", "dur": "54:42"}, {"id": "ouWGLlJtg34", "title": "ATO STUDIES II — Botánica Mariachi Jazz | Dark Mexican Fusion Playlist", "thumb": "https://i.ytimg.com/vi/ouWGLlJtg34/mqdefault.jpg", "dur": "54:49"}, {"id": "4XzhEMe5zbk", "title": "Sacred Desert Jazz - Egyptian Inspired Experimental Jazz | Cinematic Instrumental Groove", "thumb": "https://i.ytimg.com/vi/4XzhEMe5zbk/mqdefault.jpg", "dur": "57:17"}, {"id": "9TlAlNi5vPY", "title": "Metro Japanese Jazz (B-Side): Hidden Platform Sessions | Late Night Tokyo Smooth Jazz Groove", "thumb": "https://i.ytimg.com/vi/9TlAlNi5vPY/mqdefault.jpg", "dur": "1:02:32"}, {"id": "yfdVMrAFcpA", "title": "Metro Japanese Jazz Vol. II – Tokyo After Midnight | Urban Night Groove", "thumb": "https://i.ytimg.com/vi/yfdVMrAFcpA/mqdefault.jpg", "dur": "44:49"}, {"id": "5cY2jUjG584", "title": "Puerto Rican Jazz – Caribbean Night Groove | Salsa Jazz & Afro-Boricua Vibes", "thumb": "https://i.ytimg.com/vi/5cY2jUjG584/mqdefault.jpg", "dur": "52:38"}, {"id": "iuclcns5ZE8", "title": "Psychedelic Jungle Jazz — Deep Ritual Groove", "thumb": "https://i.ytimg.com/vi/iuclcns5ZE8/mqdefault.jpg", "dur": "52:37"}, {"id": "kfyTsk2RSuo", "title": "Metro Japanese Jazz Vol. I — Nocturnal Urban Jazz from Tokyo Subway Lines", "thumb": "https://i.ytimg.com/vi/kfyTsk2RSuo/mqdefault.jpg", "dur": "1:11:55"}, {"id": "KHW7gz81mwY", "title": "Tribal Lounge Jazz — Nocturnal Ancestral Club | Deep ritual grooves & after-hours jazz", "thumb": "https://i.ytimg.com/vi/KHW7gz81mwY/mqdefault.jpg", "dur": "48:32"}, {"id": "gL2QnQbry90", "title": "Ethiopian Avant Jazz Vol. II — After Hours Loft", "thumb": "https://i.ytimg.com/vi/gL2QnQbry90/mqdefault.jpg", "dur": "45:05"}, {"id": "qf6qP8_0FNI", "title": "Afro Night Jazz | West African Grooves", "thumb": "https://i.ytimg.com/vi/qf6qP8_0FNI/mqdefault.jpg", "dur": "52:41"}, {"id": "4T4aAu2oWJY", "title": "Ritual Minimal Jazz — Inner Threshold | Deep Experimental Jazz for Focus & Night Listening", "thumb": "https://i.ytimg.com/vi/4T4aAu2oWJY/mqdefault.jpg", "dur": "1:01:40"}, {"id": "YJQKwCtZYMs", "title": "Tribal Lounge Jazz Vol. V — Inner Fire | Deep Ritual Jazz for Focus & Night Listening", "thumb": "https://i.ytimg.com/vi/YJQKwCtZYMs/mqdefault.jpg", "dur": "1:41:21"}, {"id": "XaNfESHOphI", "title": "Saudade Jazz - Fado infused Noir  Jazz — Intimate After Hours Jazz & Saudade Grooves", "thumb": "https://i.ytimg.com/vi/XaNfESHOphI/mqdefault.jpg", "dur": "42:42"}, {"id": "EvQG1YFTz5g", "title": "Ethiopian Avant Jazz — After Hours Loft", "thumb": "https://i.ytimg.com/vi/EvQG1YFTz5g/mqdefault.jpg", "dur": "48:40"}, {"id": "8WDyy0maBsY", "title": "Tribal Lounge Jazz — Inner Circle | Deep Hypnotic Groove Session", "thumb": "https://i.ytimg.com/vi/8WDyy0maBsY/mqdefault.jpg", "dur": "1:10:30"}, {"id": "Mi2s-OgJbwQ", "title": "Dark Jazz — Night Drive | Slow Nocturnal Jazz for Empty Highways", "thumb": "https://i.ytimg.com/vi/Mi2s-OgJbwQ/mqdefault.jpg", "dur": "51:05"}, {"id": "ACvPVHKKP28", "title": "Afro Night Jazz – West African Infused Dark Jazz | Hypnotic Grooves for Late Night Focus & Flow", "thumb": "https://i.ytimg.com/vi/ACvPVHKKP28/mqdefault.jpg", "dur": "49:52"}, {"id": "ruDEXBelTgk", "title": "Latin Noir Jazz Vol. II — Slow Cumbia Grooves & Dark Cinematic Jazz", "thumb": "https://i.ytimg.com/vi/ruDEXBelTgk/mqdefault.jpg", "dur": "48:04"}, {"id": "i7Sx2_O6xb0", "title": "Tribal Lounge Jazz Vol. IV — Deep Ritual Grooves | After Hours Lounge Jazz", "thumb": "https://i.ytimg.com/vi/i7Sx2_O6xb0/mqdefault.jpg", "dur": "1:02:09"}, {"id": "TyDMEw823VQ", "title": "Noir Jazz | After the Last Drink - Jazz for Empty Bars & Late Nights", "thumb": "https://i.ytimg.com/vi/TyDMEw823VQ/mqdefault.jpg", "dur": "51:07"}, {"id": "sknQYWw7dos", "title": "ATO Studies I — Bone Jazz Ritual", "thumb": "https://i.ytimg.com/vi/sknQYWw7dos/mqdefault.jpg", "dur": "32:47"}, {"id": "u9z72DcxYAo", "title": "Tribal Lounge Jazz Vol. III – Sacred Grooves | After Hours Lounge Jazz for Focus & Night Work", "thumb": "https://i.ytimg.com/vi/u9z72DcxYAo/mqdefault.jpg", "dur": "42:13"}, {"id": "Qi4WCF9iVUE", "title": "Dark Jazz — Midnight Train | After Hours Jazz for Focus, Night Work & Thinking", "thumb": "https://i.ytimg.com/vi/Qi4WCF9iVUE/mqdefault.jpg", "dur": "47:41"}, {"id": "f_h4bRHsZ98", "title": "Tribal Lounge Jazz – Late Bar Ritual | Smoky Underground Jazz & Tribal Grooves (After Hours Session)", "thumb": "https://i.ytimg.com/vi/f_h4bRHsZ98/mqdefault.jpg", "dur": "55:51"}, {"id": "0726k3m6MZM", "title": "Christmas Jazz Session – Midnight Bells Cozy Late Night Jazz Mix", "thumb": "https://i.ytimg.com/vi/0726k3m6MZM/mqdefault.jpg", "dur": "33:44"}, {"id": "iXJn7AQrMK8", "title": "Tribal Lounge Jazz Vol. II – Night Rituals | Dark Jazz • Lounge • Ritual Ambient", "thumb": "https://i.ytimg.com/vi/iXJn7AQrMK8/mqdefault.jpg", "dur": "54:48"}, {"id": "elHnUl9CmsU", "title": "Latin Noir Jazz — Cinematic Grooves (Full Album)", "thumb": "https://i.ytimg.com/vi/elHnUl9CmsU/mqdefault.jpg", "dur": "48:39"}, {"id": "Y6QgyrLRtA4", "title": "SODA NEGRA – No Es Personal, Es Ruido - Mexican Punk Funk / Early 2000s Alternative Rock Album.", "thumb": "https://i.ytimg.com/vi/Y6QgyrLRtA4/mqdefault.jpg", "dur": "24:00"}, {"id": "cy4nR6KWAZY", "title": "Tropical Borderlands: Caribbean Jazz Grooves — Full Album", "thumb": "https://i.ytimg.com/vi/cy4nR6KWAZY/mqdefault.jpg", "dur": "1:00:35"}, {"id": "dUUlrCOSWaM", "title": "Nico Jara — Lo que no dije cuando pude (EP completo | Rap emocional · Pop alternativo · Lo-fi)", "thumb": "https://i.ytimg.com/vi/dUUlrCOSWaM/mqdefault.jpg", "dur": "8:07"}, {"id": "1DjzFRFug5U", "title": "Midnight Tenement — Gritty Hard Bop Jazz from the Streets (Full Session)", "thumb": "https://i.ytimg.com/vi/1DjzFRFug5U/mqdefault.jpg", "dur": "51:04"}, {"id": "EpgH8dffTR0", "title": "ESPIRAL (1969) — Latin Psychedelic Acid Rock Album | Mandala Solar", "thumb": "https://i.ytimg.com/vi/EpgH8dffTR0/mqdefault.jpg", "dur": "31:56"}, {"id": "ngrEo8tofqg", "title": "Andean Borderlands: Northern Argentina Folk Jazz Fusion  (Full Album)", "thumb": "https://i.ytimg.com/vi/ngrEo8tofqg/mqdefault.jpg", "dur": "53:30"}, {"id": "FUQCiPBd0m4", "title": "The Unnamed Atlas: Celestial Jazz for Exploring Invisible Skies", "thumb": "https://i.ytimg.com/vi/FUQCiPBd0m4/mqdefault.jpg", "dur": "33:06"}, {"id": "GsHnGHx6_Ec", "title": "Pampas de Fuego: Argentine Folk Jazz Fusion — 8-Track Concept Suite", "thumb": "https://i.ytimg.com/vi/GsHnGHx6_Ec/mqdefault.jpg", "dur": "58:44"}, {"id": "WF0fT3x3KI0", "title": "Astral Cartography:  Celestial Jazz for Mapping Invisible Constellations", "thumb": "https://i.ytimg.com/vi/WF0fT3x3KI0/mqdefault.jpg", "dur": "1:11:18"}, {"id": "CLKg6QFN6W0", "title": "Geometry of Chaos: Math-Jazz Patterns Mix to fall into the cosmos", "thumb": "https://i.ytimg.com/vi/CLKg6QFN6W0/mqdefault.jpg", "dur": "55:59"}, {"id": "MoFJh9NoYvY", "title": "Shadow Funk Tapes  (Full EP) - Funk, Ambient, Noir, Soul, Hiphop Fusion.", "thumb": "https://i.ytimg.com/vi/MoFJh9NoYvY/mqdefault.jpg", "dur": "12:17"}, {"id": "ZN1AbnVxUes", "title": "Mexican Romantic Night Songs for the Brokenhearted - Antes de Que Amanezca (Full Album) 1 hr Loop", "thumb": "https://i.ytimg.com/vi/ZN1AbnVxUes/mqdefault.jpg", "dur": "57:36"}, {"id": "X1uyjJ5JjRQ", "title": "Tribal Lounge Jazz (B Side) - Abstract Fusion Grooves", "thumb": "https://i.ytimg.com/vi/X1uyjJ5JjRQ/mqdefault.jpg", "dur": "50:27"}, {"id": "ZunR8C4IvXE", "title": "Tribal Lounge Jazz — A Warm Fusion Journey of Lounge Jazz With Tribal Instruments", "thumb": "https://i.ytimg.com/vi/ZunR8C4IvXE/mqdefault.jpg", "dur": "46:07"}, {"id": "T6jMenltGm8", "title": "Clair de Mort - 5 Track Piano Lounge (The Last Light of Debussy) EP", "thumb": "https://i.ytimg.com/vi/T6jMenltGm8/mqdefault.jpg", "dur": "14:58"}, {"id": "QLyfCM9x5tY", "title": "The Lantern Festival 🏮 | Oriental Ambient for Focus & Calm (Full Album)", "thumb": "https://i.ytimg.com/vi/QLyfCM9x5tY/mqdefault.jpg", "dur": "1:11:10"}, {"id": "md16kJd16LQ", "title": "Medieval Autumn 🍂 | Fantasy Folk Ambience for Writing or Relaxation", "thumb": "https://i.ytimg.com/vi/md16kJd16LQ/mqdefault.jpg", "dur": "1:13:02"}, {"id": "5594uCp3dPc", "title": "MIDNIGHT PUMPKIN RADIO | A Halloween Lo-Fi Jazz & Ambient Broadcast (Full Album)", "thumb": "https://i.ytimg.com/vi/5594uCp3dPc/mqdefault.jpg", "dur": "42:25"}, {"id": "cmotV3p_TsA", "title": "The Room That Breathes - ATO (Ambient Sound Story • Full Experience)", "thumb": "https://i.ytimg.com/vi/cmotV3p_TsA/mqdefault.jpg", "dur": "16:38"}, {"id": "JtFp_ZNZ89Q", "title": "Amphibian Jazz Club – Experimental Swamp Jazz (Full Album) | ato.", "thumb": "https://i.ytimg.com/vi/JtFp_ZNZ89Q/mqdefault.jpg", "dur": "37:40"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

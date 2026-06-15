@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@frenchiegroove -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,874 +51,97 @@
       <div class="channel-count">124 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZD58CO1x5uo" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZD58CO1x5uo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident walk | Vol.92 | Best Mix for Work | Stylish, Lofi, 2026 | Success</span>
-                <span class="video-dur">1:26:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2BKhIQyeYM8" target="_blank">
-            <img src="https://i.ytimg.com/vi/2BKhIQyeYM8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | urban chill | Vol.91 | Best Mix for Work | Casual, Lofi, 2026 | Success</span>
-                <span class="video-dur">1:34:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9__kY4a5_qI" target="_blank">
-            <img src="https://i.ytimg.com/vi/9__kY4a5_qI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | casual vibe | Vol.90 | Best Mix for Work | Stylish, Lofi, 2026 | Success</span>
-                <span class="video-dur">1:44:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9vHI2L0ik8Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/9vHI2L0ik8Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident walk | Vol.89 | Best Mix for Work | Stylish, Lofi, 2026 | Success</span>
-                <span class="video-dur">1:33:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9iPI1TPBQj4" target="_blank">
-            <img src="https://i.ytimg.com/vi/9iPI1TPBQj4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | cozy weekend | Vol.88 | Best Mix for Relax | Casual, Lofi, Coffee, 2026 | Peace</span>
-                <span class="video-dur">1:24:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wRWaLLtAb1g" target="_blank">
-            <img src="https://i.ytimg.com/vi/wRWaLLtAb1g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | golden hour | Vol.87 | Best Mix for Relax | Warm, Lofi, 2026 | Success</span>
-                <span class="video-dur">2:06:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ih7mO79tGaY" target="_blank">
-            <img src="https://i.ytimg.com/vi/ih7mO79tGaY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | cozy mood | Vol.86 | Best Smooth Mix for Relax | Warm, Lofi, 2026 | Peace</span>
-                <span class="video-dur">2:43:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xMV-KEvUjDc" target="_blank">
-            <img src="https://i.ytimg.com/vi/xMV-KEvUjDc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | casual vibe | Vol.85 | Best Mix for Work | Street, Denim, Lofi, 2026 | Success</span>
-                <span class="video-dur">3:02:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rD--5IAZMM4" target="_blank">
-            <img src="https://i.ytimg.com/vi/rD--5IAZMM4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE | urban cool | Vol.84 | Best Mix for Work & Coding Beats, Night, All Black, Minimalist, 2026</span>
-                <span class="video-dur">3:05:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=604-o_Ld6YE" target="_blank">
-            <img src="https://i.ytimg.com/vi/604-o_Ld6YE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident mood | Vol.83 | Best Mix for Work | Casual, Lofi, 2026 | Success</span>
-                <span class="video-dur">3:03:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NO4X-SCsKco" target="_blank">
-            <img src="https://i.ytimg.com/vi/NO4X-SCsKco/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | sunset vibe | Vol.82 | Best Smooth Mix for Chill | Sunset, Lofi, 2026</span>
-                <span class="video-dur">1:25:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XfaNOPMQQ4E" target="_blank">
-            <img src="https://i.ytimg.com/vi/XfaNOPMQQ4E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident mood | Vol.81 | Best Mix for Work | Lofi, Coffee, Relax, 2026 | Success</span>
-                <span class="video-dur">1:47:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dDw9WvXrygU" target="_blank">
-            <img src="https://i.ytimg.com/vi/dDw9WvXrygU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | relaxed vibe | Vol.81 | Best Smooth Mix for Study & Chill | 2026 | Calm</span>
-                <span class="video-dur">1:32:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5eLB-K2-TNY" target="_blank">
-            <img src="https://i.ytimg.com/vi/5eLB-K2-TNY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Luxury Chillout Lounge Groove 🎧 Smooth Essential R&B & Soul Mix</span>
-                <span class="video-dur">1:35:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aDFngu3pxMI" target="_blank">
-            <img src="https://i.ytimg.com/vi/aDFngu3pxMI/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Frenchie Groove | Downtown Chill Radio [Live 24/7] 🎧 Deep House / Jazz / Midnight Vibes</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bSNtwDbnSIQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/bSNtwDbnSIQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Positive Energy Groove 🎧 Soul Funk & Essential R&B Mix</span>
-                <span class="video-dur">1:33:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=btQqFPJq200" target="_blank">
-            <img src="https://i.ytimg.com/vi/btQqFPJq200/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Luxury Chillout Lounge Groove 🎧 Smooth Essential R&B & Soul Mix</span>
-                <span class="video-dur">1:48:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_-kCcxEFAIQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/_-kCcxEFAIQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Positive Energy Groove 🎧 Future Funk Nonstop Mix | R&B, Soul</span>
-                <span class="video-dur">1:52:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fcDkhI1TjBQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/fcDkhI1TjBQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Positive Energy Groove 🎧 Smooth Essential R&B & Soul Mix | Funk</span>
-                <span class="video-dur">1:54:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RjsAOtjIU30" target="_blank">
-            <img src="https://i.ytimg.com/vi/RjsAOtjIU30/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Best Fresh Street Groove & Summer Funk 🎧 Feel Good Vibes | Vol.74 | Funk, R&B, Pop</span>
-                <span class="video-dur">2:04:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=igoXYwUHDus" target="_blank">
-            <img src="https://i.ytimg.com/vi/igoXYwUHDus/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Best Chill Jazz-Hop & R&B to Vibe to Now 🎧 Top Tier Mood | Hip Hop, R&B, Pop /groove</span>
-                <span class="video-dur">2:02:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MTFPl70vRe0" target="_blank">
-            <img src="https://i.ytimg.com/vi/MTFPl70vRe0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Deep Groove: Hip Hop & R&B 🎧 Perfect Background Mix | Hip Hop, R&B, Pop</span>
-                <span class="video-dur">2:10:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=z_j7Ja2-5gc" target="_blank">
-            <img src="https://i.ytimg.com/vi/z_j7Ja2-5gc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Playlist | Get Lost in the Groove: Hip Hop & R&B 🎧 Just Press Play | Hip Hop, R&B, Pop</span>
-                <span class="video-dur">2:08:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JvqzHWZg4Fw" target="_blank">
-            <img src="https://i.ytimg.com/vi/JvqzHWZg4Fw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | ultimate chill vibe | Vol.70 | Best Neo Soul Vocal Mix | 2026 | R&B</span>
-                <span class="video-dur">1:42:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yYfy78hRc4Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/yYfy78hRc4Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Feel Good Vibes 🎧 Upbeat Neo Soul & Groove DJ Mix | Vol.69 | 2026 | R&B</span>
-                <span class="video-dur">1:44:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QidUzw21TxI" target="_blank">
-            <img src="https://i.ytimg.com/vi/QidUzw21TxI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | smooth lounge vibe | Vol.68 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">2:33:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zz8GBjevD0M" target="_blank">
-            <img src="https://i.ytimg.com/vi/zz8GBjevD0M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | classic red vibe | Vol.67 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">2:33:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=n6-2TNWfdsU" target="_blank">
-            <img src="https://i.ytimg.com/vi/n6-2TNWfdsU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | golden hour vibe | Vol.66 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:48:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ye2QjBmy4uw" target="_blank">
-            <img src="https://i.ytimg.com/vi/ye2QjBmy4uw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | midnight vibe | Vol.65 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:42:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zPnMO_G1A78" target="_blank">
-            <img src="https://i.ytimg.com/vi/zPnMO_G1A78/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | late night vibe | Vol.64 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:45:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VSKj0kZrLUM" target="_blank">
-            <img src="https://i.ytimg.com/vi/VSKj0kZrLUM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | cool blue vibe | Vol.63 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:40:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UVn_KbN6zag" target="_blank">
-            <img src="https://i.ytimg.com/vi/UVn_KbN6zag/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | vintage soul | Vol.62 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:10:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Lb64xkr6maE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Lb64xkr6maE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | west coast vibe | Vol.61 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">2:22:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AV6YSFfGBFY" target="_blank">
-            <img src="https://i.ytimg.com/vi/AV6YSFfGBFY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | sharp & dapper | Vol.60 | Best Classic Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">1:52:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6kQ2mplgBB4" target="_blank">
-            <img src="https://i.ytimg.com/vi/6kQ2mplgBB4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | old school vibe | Vol.59 | Best Smooth R&B Vocal Mix to Unwind | 2026 | Funk</span>
-                <span class="video-dur">1:55:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ogtCCPo4IcU" target="_blank">
-            <img src="https://i.ytimg.com/vi/ogtCCPo4IcU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | stylish walk | Vol.58 | Best Smooth Vocal Mix to Unwind | 2026 | R&B Vibe</span>
-                <span class="video-dur">1:45:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Hlr1eVVPe7Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/Hlr1eVVPe7Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | classy walk | Vol.57 | Best Premium Vocal Mix to Unwind | 2026 | R&B Vibe</span>
-                <span class="video-dur">1:43:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=maJu3K9IMME" target="_blank">
-            <img src="https://i.ytimg.com/vi/maJu3K9IMME/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | golden era | Vol.56 | Best Old School Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">2:10:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mpCdBs8-WV8" target="_blank">
-            <img src="https://i.ytimg.com/vi/mpCdBs8-WV8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | sunset chill | Vol.55 | Best Vocal Mix to Unwind | 2026</span>
-                <span class="video-dur">1:27:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MGtnyexLsZM" target="_blank">
-            <img src="https://i.ytimg.com/vi/MGtnyexLsZM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | uptown boss | Vol.54 | Best Classic Vocal Mix to Unwind | 2026 | R&B</span>
-                <span class="video-dur">2:33:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aArU8YVC5Nc" target="_blank">
-            <img src="https://i.ytimg.com/vi/aArU8YVC5Nc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | bold focus | Vol.40 | Best Premium Mix for Motivation & Work | 2026 | Vibe</span>
-                <span class="video-dur">0:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i46Lthd3oLw" target="_blank">
-            <img src="https://i.ytimg.com/vi/i46Lthd3oLw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | urban confident | Vol.53 | Best City Mix to Unwind & Relax | 2026 | Night</span>
-                <span class="video-dur">1:42:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yq-WunbHAxE" target="_blank">
-            <img src="https://i.ytimg.com/vi/yq-WunbHAxE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | smooth luxury | Vol.39 | Best Premium Mix for Creative Work | 2026 | Focus</span>
-                <span class="video-dur">0:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=I5XSuuE_L5Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/I5XSuuE_L5Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | confident chill | Vol.52 | Best Mix to Unwind & Relax | 2026 | Vibe</span>
-                <span class="video-dur">3:24:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RscgGn6S4lU" target="_blank">
-            <img src="https://i.ytimg.com/vi/RscgGn6S4lU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | off duty | Vol.51 | Best Premium Mix to Unwind After Work | 2026 | Chill</span>
-                <span class="video-dur">3:16:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RHcUvDP92Ro" target="_blank">
-            <img src="https://i.ytimg.com/vi/RHcUvDP92Ro/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | retro vibe | Vol.50 | Best Classic Mix to Unwind | 2026 | Chill</span>
-                <span class="video-dur">1:38:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lIOj5b-qoNQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/lIOj5b-qoNQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | vibrant chill | Vol.49 | Best Funky Mix to Unwind & Relax | 2026 | Vibe</span>
-                <span class="video-dur">1:37:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4ioWSSsbwEQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/4ioWSSsbwEQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | mellow chill | Vol.48 | Best Soft Mix to Unwind & Relax | 2026 | Vibe</span>
-                <span class="video-dur">3:00:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KGiE9CF8wOE" target="_blank">
-            <img src="https://i.ytimg.com/vi/KGiE9CF8wOE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classic vibe | Vol.47 | Best Premium Vinyl Mix to Unwind | 2026 | Relax</span>
-                <span class="video-dur">1:57:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2zEp6Sd-OvY" target="_blank">
-            <img src="https://i.ytimg.com/vi/2zEp6Sd-OvY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | pure focus | Vol.38 | Best Elegant Mix to Clear Your Mind | 2026 | Work</span>
-                <span class="video-dur">0:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u_oOnNED-4A" target="_blank">
-            <img src="https://i.ytimg.com/vi/u_oOnNED-4A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classy chill | Vol.46 | Best Laid-back Mix to Unwind | 2026 | Dinner</span>
-                <span class="video-dur">2:50:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qwFG9fD4nyM" target="_blank">
-            <img src="https://i.ytimg.com/vi/qwFG9fD4nyM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classy chill | Vol.37 | Best Laid-back Mix for Weekend | 2026 | Vibe</span>
-                <span class="video-dur">0:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UD1nmyPXIro" target="_blank">
-            <img src="https://i.ytimg.com/vi/UD1nmyPXIro/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | boss vibe | Vol.45 | Best Premium Mix for Work & Motivation | 2026 | Vibe</span>
-                <span class="video-dur">4:16:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aEIgn8K0ork" target="_blank">
-            <img src="https://i.ytimg.com/vi/aEIgn8K0ork/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | premium vibe | Vol.36 | Best Smooth Mix for Work & Deep Focus | 2026 | Luxury</span>
-                <span class="video-dur">0:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YdedwC4bIok" target="_blank">
-            <img src="https://i.ytimg.com/vi/YdedwC4bIok/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | classic vibe | Vol.35 | Best Elegant Mix for Work & Focus | 2026 | Lounge</span>
-                <span class="video-dur">0:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=p8OH09AalwE" target="_blank">
-            <img src="https://i.ytimg.com/vi/p8OH09AalwE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | deep focus | Vol.44 | Best Premium Mix for Work & Motivation | 2026 | Vibe</span>
-                <span class="video-dur">2:10:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cNHQn18gdho" target="_blank">
-            <img src="https://i.ytimg.com/vi/cNHQn18gdho/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classy vibe | Vol.34 | Best Premium Mix for Work & Focus | 2026</span>
-                <span class="video-dur">0:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5vHERW4Q_Tw" target="_blank">
-            <img src="https://i.ytimg.com/vi/5vHERW4Q_Tw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | fresh chill | Vol.43 | Best Premium Mix to Unwind & Relax | 2026 | Vibe</span>
-                <span class="video-dur">3:29:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Aax76FJ015Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/Aax76FJ015Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | boss vibe | Vol.42 | Best Premium Mix to Unwind | 2026 | Night Lounge</span>
-                <span class="video-dur">2:10:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1GxTXmCowz4" target="_blank">
-            <img src="https://i.ytimg.com/vi/1GxTXmCowz4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | weekend vibe | Vol.33 | Instant Weekend Vibe Chill Playlist | 2026</span>
-                <span class="video-dur">0:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=f3dXrn8gjuM" target="_blank">
-            <img src="https://i.ytimg.com/vi/f3dXrn8gjuM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | golden vibe | Vol.41 | Best Warm Mix for Morning Work | 2026 | Focus</span>
-                <span class="video-dur">2:00:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=84eMAFVbcak" target="_blank">
-            <img src="https://i.ytimg.com/vi/84eMAFVbcak/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | clear mind | Vol.32 | Best Chill Mix to Reset & Focus | 2026 | Relax</span>
-                <span class="video-dur">0:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ts8SwEKozfQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/ts8SwEKozfQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | bold focus | Vol.40 | Best Premium Mix for Motivation & Work | 2026 | Vibe</span>
-                <span class="video-dur">1:50:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6HNnQ89iTLc" target="_blank">
-            <img src="https://i.ytimg.com/vi/6HNnQ89iTLc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident mood | Vol.31| Best Smooth Mix for Work & Focus | 2026 | Success</span>
-                <span class="video-dur">0:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5wqV0NRTiBo" target="_blank">
-            <img src="https://i.ytimg.com/vi/5wqV0NRTiBo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | smooth luxury | Vol.39 | Best Premium Mix for Creative Work | 2026 | Focus</span>
-                <span class="video-dur">2:33:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WDoxGLLBpvo" target="_blank">
-            <img src="https://i.ytimg.com/vi/WDoxGLLBpvo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.30 | Best Chill Mix for Work & Study | 2026 | Relax</span>
-                <span class="video-dur">0:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cA9VU9QSqjY" target="_blank">
-            <img src="https://i.ytimg.com/vi/cA9VU9QSqjY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | pure focus | Vol.38 | Best Elegant Mix to Clear Your Mind | 2026 | Work</span>
-                <span class="video-dur">1:33:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kn3OOtWRaXQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/kn3OOtWRaXQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & CHILL | deep focus | Vol.29 | Best Chill Mix for Reading & Study | 2026 | Vibe</span>
-                <span class="video-dur">0:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=P7UTPLzc42o" target="_blank">
-            <img src="https://i.ytimg.com/vi/P7UTPLzc42o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classy chill | Vol.37 | Best Laid-back Mix for Weekend | 2026 | Vibe</span>
-                <span class="video-dur">1:33:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-zXV9GOTCC0" target="_blank">
-            <img src="https://i.ytimg.com/vi/-zXV9GOTCC0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.28 | Best Chill Mix for Work & Study | 2026 | Relax</span>
-                <span class="video-dur">0:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RwhkFg5W0h0" target="_blank">
-            <img src="https://i.ytimg.com/vi/RwhkFg5W0h0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | weekend vibe | Vol.27 | Instant Weekend Vibe Chill Playlist | 2026 | Walk</span>
-                <span class="video-dur">0:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qjjb8STK85Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qjjb8STK85Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | premium vibe | Vol.36 | Best Smooth Mix for Work & Deep Focus | 2026 | Luxury</span>
-                <span class="video-dur">1:31:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oEi42JhSMYk" target="_blank">
-            <img src="https://i.ytimg.com/vi/oEi42JhSMYk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | classic vibe | Vol.35 | Best Elegant Mix for Work & Focus | 2026 | Lounge</span>
-                <span class="video-dur">1:30:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GJIzqSmCXHs" target="_blank">
-            <img src="https://i.ytimg.com/vi/GJIzqSmCXHs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & FUNK | walk | Vol.26 | Best Upbeat Mix to Start Your Day | 2026</span>
-                <span class="video-dur">0:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9y20OLMulIA" target="_blank">
-            <img src="https://i.ytimg.com/vi/9y20OLMulIA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | classy vibe | Vol.34 | Best Premium Mix for Work & Focus | 2026</span>
-                <span class="video-dur">2:16:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LEWe5ibyDJE" target="_blank">
-            <img src="https://i.ytimg.com/vi/LEWe5ibyDJE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & FUNK | confident mood | Vol.25 | Best Upbeat Mix to Boost Your Confidence | 2026</span>
-                <span class="video-dur">0:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=y2TclnafWaU" target="_blank">
-            <img src="https://i.ytimg.com/vi/y2TclnafWaU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SMOOTH FUNK | weekend vibe | Vol.33 | Instant Weekend Vibe Chill Playlist | 2026</span>
-                <span class="video-dur">1:26:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VVfk1ixJGQY" target="_blank">
-            <img src="https://i.ytimg.com/vi/VVfk1ixJGQY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | clear mind | Vol.32 | Best Chill Mix to Reset & Focus | 2026 | Relax</span>
-                <span class="video-dur">2:24:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OxY3UebB4sI" target="_blank">
-            <img src="https://i.ytimg.com/vi/OxY3UebB4sI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | confident mood | Vol.31| Best Smooth Mix for Work & Focus | 2026 | Success</span>
-                <span class="video-dur">1:43:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hDBqAJTuJfw" target="_blank">
-            <img src="https://i.ytimg.com/vi/hDBqAJTuJfw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.24 | Best Chill Mix for Reading & Study | 2026</span>
-                <span class="video-dur">0:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QIs9JuvzT8w" target="_blank">
-            <img src="https://i.ytimg.com/vi/QIs9JuvzT8w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.30 | Best Chill Mix for Work & Study | 2026 | Relax</span>
-                <span class="video-dur">2:16:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Rl7C3SPlEi0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Rl7C3SPlEi0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | laid-back | Vol.23 | Best Mellow Mix for a Chill Time | 2026 | Relax</span>
-                <span class="video-dur">0:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yXHWF5LqMR8" target="_blank">
-            <img src="https://i.ytimg.com/vi/yXHWF5LqMR8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & CHILL | deep focus | Vol.29 | Best Chill Mix for Reading & Study | 2026 | Vibe</span>
-                <span class="video-dur">2:07:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rXHfOmaPa1I" target="_blank">
-            <img src="https://i.ytimg.com/vi/rXHfOmaPa1I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.28 | Best Chill Mix for Work & Study | 2026 | Relax</span>
-                <span class="video-dur">2:18:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vfFGINAw33w" target="_blank">
-            <img src="https://i.ytimg.com/vi/vfFGINAw33w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | morning stroll | Vol.22 | Best Retro Mix for a Chill Walk | 2026 | Funk | Good Vibes</span>
-                <span class="video-dur">0:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Dqd8jDeibno" target="_blank">
-            <img src="https://i.ytimg.com/vi/Dqd8jDeibno/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & JAZZ | weekend vibe | Vol.27 | Instant Weekend Vibe Chill Playlist | 2026 | Walk</span>
-                <span class="video-dur">2:13:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VVt3h4th2o8" target="_blank">
-            <img src="https://i.ytimg.com/vi/VVt3h4th2o8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & FUNK | walk | Vol.26 | Best Upbeat Mix to Start Your Day | 2026</span>
-                <span class="video-dur">2:37:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=q_x1Udntupo" target="_blank">
-            <img src="https://i.ytimg.com/vi/q_x1Udntupo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & FUNK | confident mood | Vol.25 | Best Upbeat Mix to Boost Your Confidence | 2026</span>
-                <span class="video-dur">3:57:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4j_gW0B8YfU" target="_blank">
-            <img src="https://i.ytimg.com/vi/4j_gW0B8YfU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | stylish walk | Vol.21 | Best Funky Mix for a Confident Day | 2026 | City Pop | Funk</span>
-                <span class="video-dur">0:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=duIbaYbi9RI" target="_blank">
-            <img src="https://i.ytimg.com/vi/duIbaYbi9RI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | deep focus | Vol.24 | Best Chill Mix for Reading & Study | 2026</span>
-                <span class="video-dur">1:10:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dqXxD_7vwx8" target="_blank">
-            <img src="https://i.ytimg.com/vi/dqXxD_7vwx8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & LO-FI | laid-back | Vol.23 | Best Mellow Mix for a Chill Time | 2026 | Relax</span>
-                <span class="video-dur">54:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IRC6VmynntQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/IRC6VmynntQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & INDIE | lazy day | Vol.12 | Best Lazy Weekend Mix for Relaxing | 2026 | Chill | Vibes</span>
-                <span class="video-dur">0:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6Lz4DGORr0E" target="_blank">
-            <img src="https://i.ytimg.com/vi/6Lz4DGORr0E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | morning stroll | Vol.22 | Best Retro Mix for a Chill Walk | 2026 | Funk | Good Vibes</span>
-                <span class="video-dur">1:18:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YQn8QKNfdDQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/YQn8QKNfdDQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE & SOUL | stylish walk | Vol.21 | Best Funky Mix for a Confident Day | 2026 | City Pop | Funk</span>
-                <span class="video-dur">1:12:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4boOs9JyGAg" target="_blank">
-            <img src="https://i.ytimg.com/vi/4boOs9JyGAg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | dance mix | Vol.20 | Best Upbeat Mix for a Good Mood | 2026</span>
-                <span class="video-dur">1:03:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ODT3NbxMRz8" target="_blank">
-            <img src="https://i.ytimg.com/vi/ODT3NbxMRz8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | feel good | Vol.19 | Best Happy Mix for a Great Day | 2026</span>
-                <span class="video-dur">1:01:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FdY7BHtGvPI" target="_blank">
-            <img src="https://i.ytimg.com/vi/FdY7BHtGvPI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP | energetic | Vol.11 | Best High Energy Skate Mix | 2026 | City Pop | Workout</span>
-                <span class="video-dur">0:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CYsJ8pivCuw" target="_blank">
-            <img src="https://i.ytimg.com/vi/CYsJ8pivCuw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CHILL | morning walk | Vol.18 | Best Feel Good Mix | 2026 | City Pop</span>
-                <span class="video-dur">1:20:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g7_uE5gnXJs" target="_blank">
-            <img src="https://i.ytimg.com/vi/g7_uE5gnXJs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & LO-FI | laid-back | Vol.17 | Best Chill Mix to Take a Break | 2026 | Relax</span>
-                <span class="video-dur">1:23:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OqBFadU-fhQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/OqBFadU-fhQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & LO-FI | vinyl vibes | Vol.16 | Best Relaxing Mix for Study & Sleep | 2026</span>
-                <span class="video-dur">1:22:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-0AH3_WBlrQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/-0AH3_WBlrQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | walking | Vol.10 | Best Morning Walk Mix to Start Your Day | 2026 | City Pop</span>
-                <span class="video-dur">0:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7XpBPwvoYRE" target="_blank">
-            <img src="https://i.ytimg.com/vi/7XpBPwvoYRE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | morning routine | Vol.15 | Best Wake Up Mix to Start Your Day | 2026</span>
-                <span class="video-dur">1:23:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Cmcx82wOO3w" target="_blank">
-            <img src="https://i.ytimg.com/vi/Cmcx82wOO3w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & DISCO | party vibe | Vol.14 | Best Weekend Party Mix to Dance to | 2026 | Drive</span>
-                <span class="video-dur">1:22:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gfC_9B1p-L0" target="_blank">
-            <img src="https://i.ytimg.com/vi/gfC_9B1p-L0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & HIP HOP | confident | Vol.13 | Best Confidence Boosting Walk Mix | 2026 | City Pop</span>
-                <span class="video-dur">1:23:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2W39j30COa0" target="_blank">
-            <img src="https://i.ytimg.com/vi/2W39j30COa0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | jam session | Vol.9 | Best Funky Band Mix to Boost Your Mood | 2026 | City Pop</span>
-                <span class="video-dur">0:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UarPWrVWIVs" target="_blank">
-            <img src="https://i.ytimg.com/vi/UarPWrVWIVs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & INDIE | lazy day | Vol.12 | Best Lazy Weekend Mix for Relaxing | 2026 | Chill | Vibes</span>
-                <span class="video-dur">1:02:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DGHfC8eaIoM" target="_blank">
-            <img src="https://i.ytimg.com/vi/DGHfC8eaIoM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | walking | Vol.8 | Best Confidence Boosting Walk Mix | 2026 | City Pop | Commute</span>
-                <span class="video-dur">0:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mhIPkJRGqfc" target="_blank">
-            <img src="https://i.ytimg.com/vi/mhIPkJRGqfc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP | energetic | Vol.11 | Best High Energy Skate Mix | 2026 | City Pop | Workout</span>
-                <span class="video-dur">1:01:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=J_tDnSL1apg" target="_blank">
-            <img src="https://i.ytimg.com/vi/J_tDnSL1apg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | walking | Vol.10 | Best Morning Walk Mix to Start Your Day | 2026 | City Pop</span>
-                <span class="video-dur">1:01:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TyzDZheSh2Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/TyzDZheSh2Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | jam session | Vol.9 | Best Funky Band Mix to Boost Your Mood | 2026 | City Pop</span>
-                <span class="video-dur">1:41:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_O758DgCqc0" target="_blank">
-            <img src="https://i.ytimg.com/vi/_O758DgCqc0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & SOUL | luxury | Vol.7 | Best Classy Lounge Mix for Rich Vibes | 2026 | City Pop</span>
-                <span class="video-dur">0:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bkd6Krzalro" target="_blank">
-            <img src="https://i.ytimg.com/vi/bkd6Krzalro/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | walking | Vol.8 | Best Confidence Boosting Walk Mix | 2026 | City Pop | Commute</span>
-                <span class="video-dur">1:17:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EjTUOZyg_yk" target="_blank">
-            <img src="https://i.ytimg.com/vi/EjTUOZyg_yk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & HIP HOP | no skip | Vol.6 | Best No Skip DJ Mix for Work & Focus | City Pop</span>
-                <span class="video-dur">0:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RW9qOQFSVA0" target="_blank">
-            <img src="https://i.ytimg.com/vi/RW9qOQFSVA0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & SOUL | luxury | Vol.7 | Best Classy Lounge Mix for Rich Vibes | 2026 | City Pop</span>
-                <span class="video-dur">1:37:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ww1exg25IDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ww1exg25IDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CHILL | laid-back | Vol.5 |Relaxing Coffee Break Mix | 2026 | City Pop | Work | Vibes</span>
-                <span class="video-dur">0:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=z1b5oaBZWcU" target="_blank">
-            <img src="https://i.ytimg.com/vi/z1b5oaBZWcU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & HIP HOP | no skip | Vol.6 | Best No Skip DJ Mix for Work & Focus | City Pop</span>
-                <span class="video-dur">1:39:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ynaMG6i0EAM" target="_blank">
-            <img src="https://i.ytimg.com/vi/ynaMG6i0EAM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | energetic | Vol.4 | Best Uplifting Dance Mix | 2026 | City Pop | Work BGM</span>
-                <span class="video-dur">0:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=esHZjpIpwVU" target="_blank">
-            <img src="https://i.ytimg.com/vi/esHZjpIpwVU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CHILL | laid-back | Vol.5 |Relaxing Coffee Break Mix | 2026 | City Pop | Work | Vibes</span>
-                <span class="video-dur">56:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2F4YaU4izhA" target="_blank">
-            <img src="https://i.ytimg.com/vi/2F4YaU4izhA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & FUNK | energetic | Vol.4 | Best Uplifting Dance Mix | 2026 | City Pop | Work BGM</span>
-                <span class="video-dur">1:05:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GgWY6vfQBsk" target="_blank">
-            <img src="https://i.ytimg.com/vi/GgWY6vfQBsk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CITY POP | driving | Vol.3 | Best Uplifting Road Trip BGM | 2026 | Funk | Nu-Disco</span>
-                <span class="video-dur">0:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OzcC2WQnnO8" target="_blank">
-            <img src="https://i.ytimg.com/vi/OzcC2WQnnO8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CITY POP | driving | Vol.3 | Best Uplifting Road Trip BGM | 2026 | Funk | Nu-Disco</span>
-                <span class="video-dur">1:01:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WNfomSD6m84" target="_blank">
-            <img src="https://i.ytimg.com/vi/WNfomSD6m84/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">FUNKY GROOVE PARTY VOL.2 | Uplifting City Pop & Nu-Disco Mix 2026 | Driving & Work BGM | Playlist</span>
-                <span class="video-dur">0:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6T0nE_vhXxo" target="_blank">
-            <img src="https://i.ytimg.com/vi/6T0nE_vhXxo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">FUNKY GROOVE PARTY VOL.2 | Uplifting City Pop & Nu-Disco Mix 2026 | Driving & Work BGM | Playlist</span>
-                <span class="video-dur">1:16:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_rc7_45QGec" target="_blank">
-            <img src="https://i.ytimg.com/vi/_rc7_45QGec/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOVE POP & CITY POP | uplifting | Vol.1 | 気分を上げる最高のドライブBGM | 2026 | Funk | Nu Disco | 作業用BGM</span>
-                <span class="video-dur">2:35:14</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Frenchie Groove";
+const VIDEOS = [{"id": "ZD58CO1x5uo", "title": "GROOVE & JAZZ | confident walk | Vol.92 | Best Mix for Work | Stylish, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/ZD58CO1x5uo/mqdefault.jpg", "dur": "1:26:06"}, {"id": "2BKhIQyeYM8", "title": "GROOVE & JAZZ | urban chill | Vol.91 | Best Mix for Work | Casual, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/2BKhIQyeYM8/mqdefault.jpg", "dur": "1:34:19"}, {"id": "9__kY4a5_qI", "title": "GROOVE & JAZZ | casual vibe | Vol.90 | Best Mix for Work | Stylish, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/9__kY4a5_qI/mqdefault.jpg", "dur": "1:44:46"}, {"id": "9vHI2L0ik8Q", "title": "GROOVE & JAZZ | confident walk | Vol.89 | Best Mix for Work | Stylish, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/9vHI2L0ik8Q/mqdefault.jpg", "dur": "1:33:07"}, {"id": "9iPI1TPBQj4", "title": "GROOVE & JAZZ | cozy weekend | Vol.88 | Best Mix for Relax | Casual, Lofi, Coffee, 2026 | Peace", "thumb": "https://i.ytimg.com/vi/9iPI1TPBQj4/mqdefault.jpg", "dur": "1:24:17"}, {"id": "wRWaLLtAb1g", "title": "GROOVE & JAZZ | golden hour | Vol.87 | Best Mix for Relax | Warm, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/wRWaLLtAb1g/mqdefault.jpg", "dur": "2:06:22"}, {"id": "ih7mO79tGaY", "title": "GROOVE & JAZZ | cozy mood | Vol.86 | Best Smooth Mix for Relax | Warm, Lofi, 2026 | Peace", "thumb": "https://i.ytimg.com/vi/ih7mO79tGaY/mqdefault.jpg", "dur": "2:43:46"}, {"id": "xMV-KEvUjDc", "title": "GROOVE & JAZZ | casual vibe | Vol.85 | Best Mix for Work | Street, Denim, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/xMV-KEvUjDc/mqdefault.jpg", "dur": "3:02:13"}, {"id": "rD--5IAZMM4", "title": "GROOVE | urban cool | Vol.84 | Best Mix for Work & Coding Beats, Night, All Black, Minimalist, 2026", "thumb": "https://i.ytimg.com/vi/rD--5IAZMM4/mqdefault.jpg", "dur": "3:05:41"}, {"id": "604-o_Ld6YE", "title": "GROOVE & JAZZ | confident mood | Vol.83 | Best Mix for Work | Casual, Lofi, 2026 | Success", "thumb": "https://i.ytimg.com/vi/604-o_Ld6YE/mqdefault.jpg", "dur": "3:03:12"}, {"id": "NO4X-SCsKco", "title": "GROOVE & JAZZ | sunset vibe | Vol.82 | Best Smooth Mix for Chill | Sunset, Lofi, 2026", "thumb": "https://i.ytimg.com/vi/NO4X-SCsKco/mqdefault.jpg", "dur": "1:25:29"}, {"id": "XfaNOPMQQ4E", "title": "GROOVE & JAZZ | confident mood | Vol.81 | Best Mix for Work | Lofi, Coffee, Relax, 2026 | Success", "thumb": "https://i.ytimg.com/vi/XfaNOPMQQ4E/mqdefault.jpg", "dur": "1:47:00"}, {"id": "dDw9WvXrygU", "title": "GROOVE & JAZZ | relaxed vibe | Vol.81 | Best Smooth Mix for Study & Chill | 2026 | Calm", "thumb": "https://i.ytimg.com/vi/dDw9WvXrygU/mqdefault.jpg", "dur": "1:32:42"}, {"id": "5eLB-K2-TNY", "title": "Playlist | Luxury Chillout Lounge Groove 🎧 Smooth Essential R&B & Soul Mix", "thumb": "https://i.ytimg.com/vi/5eLB-K2-TNY/mqdefault.jpg", "dur": "1:35:02"}, {"id": "aDFngu3pxMI", "title": "Frenchie Groove | Downtown Chill Radio [Live 24/7] 🎧 Deep House / Jazz / Midnight Vibes", "thumb": "https://i.ytimg.com/vi/aDFngu3pxMI/mqdefault_live.jpg", "dur": ""}, {"id": "bSNtwDbnSIQ", "title": "Playlist | Positive Energy Groove 🎧 Soul Funk & Essential R&B Mix", "thumb": "https://i.ytimg.com/vi/bSNtwDbnSIQ/mqdefault.jpg", "dur": "1:33:32"}, {"id": "btQqFPJq200", "title": "Playlist | Luxury Chillout Lounge Groove 🎧 Smooth Essential R&B & Soul Mix", "thumb": "https://i.ytimg.com/vi/btQqFPJq200/mqdefault.jpg", "dur": "1:48:15"}, {"id": "_-kCcxEFAIQ", "title": "Playlist | Positive Energy Groove 🎧 Future Funk Nonstop Mix | R&B, Soul", "thumb": "https://i.ytimg.com/vi/_-kCcxEFAIQ/mqdefault.jpg", "dur": "1:52:58"}, {"id": "fcDkhI1TjBQ", "title": "Playlist | Positive Energy Groove 🎧 Smooth Essential R&B & Soul Mix | Funk", "thumb": "https://i.ytimg.com/vi/fcDkhI1TjBQ/mqdefault.jpg", "dur": "1:54:27"}, {"id": "RjsAOtjIU30", "title": "Playlist | Best Fresh Street Groove & Summer Funk 🎧 Feel Good Vibes | Vol.74 | Funk, R&B, Pop", "thumb": "https://i.ytimg.com/vi/RjsAOtjIU30/mqdefault.jpg", "dur": "2:04:31"}, {"id": "igoXYwUHDus", "title": "Playlist | Best Chill Jazz-Hop & R&B to Vibe to Now 🎧 Top Tier Mood | Hip Hop, R&B, Pop /groove", "thumb": "https://i.ytimg.com/vi/igoXYwUHDus/mqdefault.jpg", "dur": "2:02:11"}, {"id": "MTFPl70vRe0", "title": "Playlist | Deep Groove: Hip Hop & R&B 🎧 Perfect Background Mix | Hip Hop, R&B, Pop", "thumb": "https://i.ytimg.com/vi/MTFPl70vRe0/mqdefault.jpg", "dur": "2:10:29"}, {"id": "z_j7Ja2-5gc", "title": "Playlist | Get Lost in the Groove: Hip Hop & R&B 🎧 Just Press Play | Hip Hop, R&B, Pop", "thumb": "https://i.ytimg.com/vi/z_j7Ja2-5gc/mqdefault.jpg", "dur": "2:08:49"}, {"id": "JvqzHWZg4Fw", "title": "GROOVE & SOUL | ultimate chill vibe | Vol.70 | Best Neo Soul Vocal Mix | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/JvqzHWZg4Fw/mqdefault.jpg", "dur": "1:42:07"}, {"id": "yYfy78hRc4Y", "title": "Feel Good Vibes 🎧 Upbeat Neo Soul & Groove DJ Mix | Vol.69 | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/yYfy78hRc4Y/mqdefault.jpg", "dur": "1:44:37"}, {"id": "QidUzw21TxI", "title": "GROOVE & SOUL | smooth lounge vibe | Vol.68 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/QidUzw21TxI/mqdefault.jpg", "dur": "2:33:13"}, {"id": "zz8GBjevD0M", "title": "GROOVE & SOUL | classic red vibe | Vol.67 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/zz8GBjevD0M/mqdefault.jpg", "dur": "2:33:15"}, {"id": "n6-2TNWfdsU", "title": "GROOVE & SOUL | golden hour vibe | Vol.66 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/n6-2TNWfdsU/mqdefault.jpg", "dur": "1:48:34"}, {"id": "ye2QjBmy4uw", "title": "GROOVE & SOUL | midnight vibe | Vol.65 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/ye2QjBmy4uw/mqdefault.jpg", "dur": "1:42:13"}, {"id": "zPnMO_G1A78", "title": "GROOVE & SOUL | late night vibe | Vol.64 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/zPnMO_G1A78/mqdefault.jpg", "dur": "1:45:25"}, {"id": "VSKj0kZrLUM", "title": "GROOVE & SOUL | cool blue vibe | Vol.63 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/VSKj0kZrLUM/mqdefault.jpg", "dur": "1:40:04"}, {"id": "UVn_KbN6zag", "title": "GROOVE & SOUL | vintage soul | Vol.62 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/UVn_KbN6zag/mqdefault.jpg", "dur": "1:10:59"}, {"id": "Lb64xkr6maE", "title": "GROOVE & SOUL | west coast vibe | Vol.61 | Best Neo Soul Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/Lb64xkr6maE/mqdefault.jpg", "dur": "2:22:55"}, {"id": "AV6YSFfGBFY", "title": "GROOVE & SOUL | sharp & dapper | Vol.60 | Best Classic Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/AV6YSFfGBFY/mqdefault.jpg", "dur": "1:52:44"}, {"id": "6kQ2mplgBB4", "title": "GROOVE & SOUL | old school vibe | Vol.59 | Best Smooth R&B Vocal Mix to Unwind | 2026 | Funk", "thumb": "https://i.ytimg.com/vi/6kQ2mplgBB4/mqdefault.jpg", "dur": "1:55:48"}, {"id": "ogtCCPo4IcU", "title": "GROOVE & SOUL | stylish walk | Vol.58 | Best Smooth Vocal Mix to Unwind | 2026 | R&B Vibe", "thumb": "https://i.ytimg.com/vi/ogtCCPo4IcU/mqdefault.jpg", "dur": "1:45:03"}, {"id": "Hlr1eVVPe7Y", "title": "GROOVE & SOUL | classy walk | Vol.57 | Best Premium Vocal Mix to Unwind | 2026 | R&B Vibe", "thumb": "https://i.ytimg.com/vi/Hlr1eVVPe7Y/mqdefault.jpg", "dur": "1:43:17"}, {"id": "maJu3K9IMME", "title": "GROOVE & SOUL | golden era | Vol.56 | Best Old School Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/maJu3K9IMME/mqdefault.jpg", "dur": "2:10:43"}, {"id": "mpCdBs8-WV8", "title": "GROOVE & SOUL | sunset chill | Vol.55 | Best Vocal Mix to Unwind | 2026", "thumb": "https://i.ytimg.com/vi/mpCdBs8-WV8/mqdefault.jpg", "dur": "1:27:16"}, {"id": "MGtnyexLsZM", "title": "GROOVE & SOUL | uptown boss | Vol.54 | Best Classic Vocal Mix to Unwind | 2026 | R&B", "thumb": "https://i.ytimg.com/vi/MGtnyexLsZM/mqdefault.jpg", "dur": "2:33:22"}, {"id": "aArU8YVC5Nc", "title": "GROOVE & JAZZ | bold focus | Vol.40 | Best Premium Mix for Motivation & Work | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/aArU8YVC5Nc/mqdefault.jpg", "dur": "0:21"}, {"id": "i46Lthd3oLw", "title": "GROOVE & SMOOTH FUNK | urban confident | Vol.53 | Best City Mix to Unwind & Relax | 2026 | Night", "thumb": "https://i.ytimg.com/vi/i46Lthd3oLw/mqdefault.jpg", "dur": "1:42:55"}, {"id": "yq-WunbHAxE", "title": "GROOVE & SMOOTH FUNK | smooth luxury | Vol.39 | Best Premium Mix for Creative Work | 2026 | Focus", "thumb": "https://i.ytimg.com/vi/yq-WunbHAxE/mqdefault.jpg", "dur": "0:18"}, {"id": "I5XSuuE_L5Y", "title": "GROOVE & SMOOTH FUNK | confident chill | Vol.52 | Best Mix to Unwind & Relax | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/I5XSuuE_L5Y/mqdefault.jpg", "dur": "3:24:48"}, {"id": "RscgGn6S4lU", "title": "GROOVE & SMOOTH FUNK | off duty | Vol.51 | Best Premium Mix to Unwind After Work | 2026 | Chill", "thumb": "https://i.ytimg.com/vi/RscgGn6S4lU/mqdefault.jpg", "dur": "3:16:18"}, {"id": "RHcUvDP92Ro", "title": "GROOVE & SMOOTH FUNK | retro vibe | Vol.50 | Best Classic Mix to Unwind | 2026 | Chill", "thumb": "https://i.ytimg.com/vi/RHcUvDP92Ro/mqdefault.jpg", "dur": "1:38:17"}, {"id": "lIOj5b-qoNQ", "title": "GROOVE & SMOOTH FUNK | vibrant chill | Vol.49 | Best Funky Mix to Unwind & Relax | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/lIOj5b-qoNQ/mqdefault.jpg", "dur": "1:37:12"}, {"id": "4ioWSSsbwEQ", "title": "GROOVE & SMOOTH FUNK | mellow chill | Vol.48 | Best Soft Mix to Unwind & Relax | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/4ioWSSsbwEQ/mqdefault.jpg", "dur": "3:00:48"}, {"id": "KGiE9CF8wOE", "title": "GROOVE & SMOOTH FUNK | classic vibe | Vol.47 | Best Premium Vinyl Mix to Unwind | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/KGiE9CF8wOE/mqdefault.jpg", "dur": "1:57:48"}, {"id": "2zEp6Sd-OvY", "title": "GROOVE & JAZZ | pure focus | Vol.38 | Best Elegant Mix to Clear Your Mind | 2026 | Work", "thumb": "https://i.ytimg.com/vi/2zEp6Sd-OvY/mqdefault.jpg", "dur": "0:35"}, {"id": "u_oOnNED-4A", "title": "GROOVE & SMOOTH FUNK | classy chill | Vol.46 | Best Laid-back Mix to Unwind | 2026 | Dinner", "thumb": "https://i.ytimg.com/vi/u_oOnNED-4A/mqdefault.jpg", "dur": "2:50:22"}, {"id": "qwFG9fD4nyM", "title": "GROOVE & SMOOTH FUNK | classy chill | Vol.37 | Best Laid-back Mix for Weekend | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/qwFG9fD4nyM/mqdefault.jpg", "dur": "0:34"}, {"id": "UD1nmyPXIro", "title": "GROOVE & SMOOTH FUNK | boss vibe | Vol.45 | Best Premium Mix for Work & Motivation | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/UD1nmyPXIro/mqdefault.jpg", "dur": "4:16:54"}, {"id": "aEIgn8K0ork", "title": "GROOVE & JAZZ | premium vibe | Vol.36 | Best Smooth Mix for Work & Deep Focus | 2026 | Luxury", "thumb": "https://i.ytimg.com/vi/aEIgn8K0ork/mqdefault.jpg", "dur": "0:35"}, {"id": "YdedwC4bIok", "title": "GROOVE & JAZZ | classic vibe | Vol.35 | Best Elegant Mix for Work & Focus | 2026 | Lounge", "thumb": "https://i.ytimg.com/vi/YdedwC4bIok/mqdefault.jpg", "dur": "0:18"}, {"id": "p8OH09AalwE", "title": "GROOVE & JAZZ | deep focus | Vol.44 | Best Premium Mix for Work & Motivation | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/p8OH09AalwE/mqdefault.jpg", "dur": "2:10:59"}, {"id": "cNHQn18gdho", "title": "GROOVE & SMOOTH FUNK | classy vibe | Vol.34 | Best Premium Mix for Work & Focus | 2026", "thumb": "https://i.ytimg.com/vi/cNHQn18gdho/mqdefault.jpg", "dur": "0:18"}, {"id": "5vHERW4Q_Tw", "title": "GROOVE & SMOOTH FUNK | fresh chill | Vol.43 | Best Premium Mix to Unwind & Relax | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/5vHERW4Q_Tw/mqdefault.jpg", "dur": "3:29:03"}, {"id": "Aax76FJ015Y", "title": "GROOVE & SMOOTH FUNK | boss vibe | Vol.42 | Best Premium Mix to Unwind | 2026 | Night Lounge", "thumb": "https://i.ytimg.com/vi/Aax76FJ015Y/mqdefault.jpg", "dur": "2:10:40"}, {"id": "1GxTXmCowz4", "title": "GROOVE & SMOOTH FUNK | weekend vibe | Vol.33 | Instant Weekend Vibe Chill Playlist | 2026", "thumb": "https://i.ytimg.com/vi/1GxTXmCowz4/mqdefault.jpg", "dur": "0:22"}, {"id": "f3dXrn8gjuM", "title": "GROOVE & SMOOTH FUNK | golden vibe | Vol.41 | Best Warm Mix for Morning Work | 2026 | Focus", "thumb": "https://i.ytimg.com/vi/f3dXrn8gjuM/mqdefault.jpg", "dur": "2:00:57"}, {"id": "84eMAFVbcak", "title": "GROOVE & LO-FI | clear mind | Vol.32 | Best Chill Mix to Reset & Focus | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/84eMAFVbcak/mqdefault.jpg", "dur": "0:27"}, {"id": "ts8SwEKozfQ", "title": "GROOVE & JAZZ | bold focus | Vol.40 | Best Premium Mix for Motivation & Work | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/ts8SwEKozfQ/mqdefault.jpg", "dur": "1:50:25"}, {"id": "6HNnQ89iTLc", "title": "GROOVE & JAZZ | confident mood | Vol.31| Best Smooth Mix for Work & Focus | 2026 | Success", "thumb": "https://i.ytimg.com/vi/6HNnQ89iTLc/mqdefault.jpg", "dur": "0:27"}, {"id": "5wqV0NRTiBo", "title": "GROOVE & SMOOTH FUNK | smooth luxury | Vol.39 | Best Premium Mix for Creative Work | 2026 | Focus", "thumb": "https://i.ytimg.com/vi/5wqV0NRTiBo/mqdefault.jpg", "dur": "2:33:05"}, {"id": "WDoxGLLBpvo", "title": "GROOVE & LO-FI | deep focus | Vol.30 | Best Chill Mix for Work & Study | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/WDoxGLLBpvo/mqdefault.jpg", "dur": "0:27"}, {"id": "cA9VU9QSqjY", "title": "GROOVE & JAZZ | pure focus | Vol.38 | Best Elegant Mix to Clear Your Mind | 2026 | Work", "thumb": "https://i.ytimg.com/vi/cA9VU9QSqjY/mqdefault.jpg", "dur": "1:33:34"}, {"id": "kn3OOtWRaXQ", "title": "GROOVE & CHILL | deep focus | Vol.29 | Best Chill Mix for Reading & Study | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/kn3OOtWRaXQ/mqdefault.jpg", "dur": "0:20"}, {"id": "P7UTPLzc42o", "title": "GROOVE & SMOOTH FUNK | classy chill | Vol.37 | Best Laid-back Mix for Weekend | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/P7UTPLzc42o/mqdefault.jpg", "dur": "1:33:53"}, {"id": "-zXV9GOTCC0", "title": "GROOVE & LO-FI | deep focus | Vol.28 | Best Chill Mix for Work & Study | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/-zXV9GOTCC0/mqdefault.jpg", "dur": "0:23"}, {"id": "RwhkFg5W0h0", "title": "GROOVE & JAZZ | weekend vibe | Vol.27 | Instant Weekend Vibe Chill Playlist | 2026 | Walk", "thumb": "https://i.ytimg.com/vi/RwhkFg5W0h0/mqdefault.jpg", "dur": "0:21"}, {"id": "Qjjb8STK85Q", "title": "GROOVE & JAZZ | premium vibe | Vol.36 | Best Smooth Mix for Work & Deep Focus | 2026 | Luxury", "thumb": "https://i.ytimg.com/vi/Qjjb8STK85Q/mqdefault.jpg", "dur": "1:31:51"}, {"id": "oEi42JhSMYk", "title": "GROOVE & JAZZ | classic vibe | Vol.35 | Best Elegant Mix for Work & Focus | 2026 | Lounge", "thumb": "https://i.ytimg.com/vi/oEi42JhSMYk/mqdefault.jpg", "dur": "1:30:21"}, {"id": "GJIzqSmCXHs", "title": "GROOVE & FUNK | walk | Vol.26 | Best Upbeat Mix to Start Your Day | 2026", "thumb": "https://i.ytimg.com/vi/GJIzqSmCXHs/mqdefault.jpg", "dur": "0:32"}, {"id": "9y20OLMulIA", "title": "GROOVE & SMOOTH FUNK | classy vibe | Vol.34 | Best Premium Mix for Work & Focus | 2026", "thumb": "https://i.ytimg.com/vi/9y20OLMulIA/mqdefault.jpg", "dur": "2:16:48"}, {"id": "LEWe5ibyDJE", "title": "GROOVE & FUNK | confident mood | Vol.25 | Best Upbeat Mix to Boost Your Confidence | 2026", "thumb": "https://i.ytimg.com/vi/LEWe5ibyDJE/mqdefault.jpg", "dur": "0:33"}, {"id": "y2TclnafWaU", "title": "GROOVE & SMOOTH FUNK | weekend vibe | Vol.33 | Instant Weekend Vibe Chill Playlist | 2026", "thumb": "https://i.ytimg.com/vi/y2TclnafWaU/mqdefault.jpg", "dur": "1:26:23"}, {"id": "VVfk1ixJGQY", "title": "GROOVE & LO-FI | clear mind | Vol.32 | Best Chill Mix to Reset & Focus | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/VVfk1ixJGQY/mqdefault.jpg", "dur": "2:24:14"}, {"id": "OxY3UebB4sI", "title": "GROOVE & JAZZ | confident mood | Vol.31| Best Smooth Mix for Work & Focus | 2026 | Success", "thumb": "https://i.ytimg.com/vi/OxY3UebB4sI/mqdefault.jpg", "dur": "1:43:26"}, {"id": "hDBqAJTuJfw", "title": "GROOVE & LO-FI | deep focus | Vol.24 | Best Chill Mix for Reading & Study | 2026", "thumb": "https://i.ytimg.com/vi/hDBqAJTuJfw/mqdefault.jpg", "dur": "0:44"}, {"id": "QIs9JuvzT8w", "title": "GROOVE & LO-FI | deep focus | Vol.30 | Best Chill Mix for Work & Study | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/QIs9JuvzT8w/mqdefault.jpg", "dur": "2:16:39"}, {"id": "Rl7C3SPlEi0", "title": "GROOVE & LO-FI | laid-back | Vol.23 | Best Mellow Mix for a Chill Time | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/Rl7C3SPlEi0/mqdefault.jpg", "dur": "0:45"}, {"id": "yXHWF5LqMR8", "title": "GROOVE & CHILL | deep focus | Vol.29 | Best Chill Mix for Reading & Study | 2026 | Vibe", "thumb": "https://i.ytimg.com/vi/yXHWF5LqMR8/mqdefault.jpg", "dur": "2:07:30"}, {"id": "rXHfOmaPa1I", "title": "GROOVE & LO-FI | deep focus | Vol.28 | Best Chill Mix for Work & Study | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/rXHfOmaPa1I/mqdefault.jpg", "dur": "2:18:04"}, {"id": "vfFGINAw33w", "title": "GROOVE & SOUL | morning stroll | Vol.22 | Best Retro Mix for a Chill Walk | 2026 | Funk | Good Vibes", "thumb": "https://i.ytimg.com/vi/vfFGINAw33w/mqdefault.jpg", "dur": "0:38"}, {"id": "Dqd8jDeibno", "title": "GROOVE & JAZZ | weekend vibe | Vol.27 | Instant Weekend Vibe Chill Playlist | 2026 | Walk", "thumb": "https://i.ytimg.com/vi/Dqd8jDeibno/mqdefault.jpg", "dur": "2:13:18"}, {"id": "VVt3h4th2o8", "title": "GROOVE & FUNK | walk | Vol.26 | Best Upbeat Mix to Start Your Day | 2026", "thumb": "https://i.ytimg.com/vi/VVt3h4th2o8/mqdefault.jpg", "dur": "2:37:03"}, {"id": "q_x1Udntupo", "title": "GROOVE & FUNK | confident mood | Vol.25 | Best Upbeat Mix to Boost Your Confidence | 2026", "thumb": "https://i.ytimg.com/vi/q_x1Udntupo/mqdefault.jpg", "dur": "3:57:16"}, {"id": "4j_gW0B8YfU", "title": "GROOVE & SOUL | stylish walk | Vol.21 | Best Funky Mix for a Confident Day | 2026 | City Pop | Funk", "thumb": "https://i.ytimg.com/vi/4j_gW0B8YfU/mqdefault.jpg", "dur": "0:35"}, {"id": "duIbaYbi9RI", "title": "GROOVE & LO-FI | deep focus | Vol.24 | Best Chill Mix for Reading & Study | 2026", "thumb": "https://i.ytimg.com/vi/duIbaYbi9RI/mqdefault.jpg", "dur": "1:10:28"}, {"id": "dqXxD_7vwx8", "title": "GROOVE & LO-FI | laid-back | Vol.23 | Best Mellow Mix for a Chill Time | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/dqXxD_7vwx8/mqdefault.jpg", "dur": "54:41"}, {"id": "IRC6VmynntQ", "title": "GROOVE POP & INDIE | lazy day | Vol.12 | Best Lazy Weekend Mix for Relaxing | 2026 | Chill | Vibes", "thumb": "https://i.ytimg.com/vi/IRC6VmynntQ/mqdefault.jpg", "dur": "0:35"}, {"id": "6Lz4DGORr0E", "title": "GROOVE & SOUL | morning stroll | Vol.22 | Best Retro Mix for a Chill Walk | 2026 | Funk | Good Vibes", "thumb": "https://i.ytimg.com/vi/6Lz4DGORr0E/mqdefault.jpg", "dur": "1:18:57"}, {"id": "YQn8QKNfdDQ", "title": "GROOVE & SOUL | stylish walk | Vol.21 | Best Funky Mix for a Confident Day | 2026 | City Pop | Funk", "thumb": "https://i.ytimg.com/vi/YQn8QKNfdDQ/mqdefault.jpg", "dur": "1:12:54"}, {"id": "4boOs9JyGAg", "title": "GROOVE POP & FUNK | dance mix | Vol.20 | Best Upbeat Mix for a Good Mood | 2026", "thumb": "https://i.ytimg.com/vi/4boOs9JyGAg/mqdefault.jpg", "dur": "1:03:47"}, {"id": "ODT3NbxMRz8", "title": "GROOVE POP & FUNK | feel good | Vol.19 | Best Happy Mix for a Great Day | 2026", "thumb": "https://i.ytimg.com/vi/ODT3NbxMRz8/mqdefault.jpg", "dur": "1:01:51"}, {"id": "FdY7BHtGvPI", "title": "GROOVE POP | energetic | Vol.11 | Best High Energy Skate Mix | 2026 | City Pop | Workout", "thumb": "https://i.ytimg.com/vi/FdY7BHtGvPI/mqdefault.jpg", "dur": "0:36"}, {"id": "CYsJ8pivCuw", "title": "GROOVE POP & CHILL | morning walk | Vol.18 | Best Feel Good Mix | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/CYsJ8pivCuw/mqdefault.jpg", "dur": "1:20:13"}, {"id": "g7_uE5gnXJs", "title": "GROOVE POP & LO-FI | laid-back | Vol.17 | Best Chill Mix to Take a Break | 2026 | Relax", "thumb": "https://i.ytimg.com/vi/g7_uE5gnXJs/mqdefault.jpg", "dur": "1:23:49"}, {"id": "OqBFadU-fhQ", "title": "GROOVE POP & LO-FI | vinyl vibes | Vol.16 | Best Relaxing Mix for Study & Sleep | 2026", "thumb": "https://i.ytimg.com/vi/OqBFadU-fhQ/mqdefault.jpg", "dur": "1:22:31"}, {"id": "-0AH3_WBlrQ", "title": "GROOVE POP & FUNK | walking | Vol.10 | Best Morning Walk Mix to Start Your Day | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/-0AH3_WBlrQ/mqdefault.jpg", "dur": "0:37"}, {"id": "7XpBPwvoYRE", "title": "GROOVE POP & FUNK | morning routine | Vol.15 | Best Wake Up Mix to Start Your Day | 2026", "thumb": "https://i.ytimg.com/vi/7XpBPwvoYRE/mqdefault.jpg", "dur": "1:23:02"}, {"id": "Cmcx82wOO3w", "title": "GROOVE POP & DISCO | party vibe | Vol.14 | Best Weekend Party Mix to Dance to | 2026 | Drive", "thumb": "https://i.ytimg.com/vi/Cmcx82wOO3w/mqdefault.jpg", "dur": "1:22:36"}, {"id": "gfC_9B1p-L0", "title": "GROOVE POP & HIP HOP | confident | Vol.13 | Best Confidence Boosting Walk Mix | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/gfC_9B1p-L0/mqdefault.jpg", "dur": "1:23:22"}, {"id": "2W39j30COa0", "title": "GROOVE POP & FUNK | jam session | Vol.9 | Best Funky Band Mix to Boost Your Mood | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/2W39j30COa0/mqdefault.jpg", "dur": "0:38"}, {"id": "UarPWrVWIVs", "title": "GROOVE POP & INDIE | lazy day | Vol.12 | Best Lazy Weekend Mix for Relaxing | 2026 | Chill | Vibes", "thumb": "https://i.ytimg.com/vi/UarPWrVWIVs/mqdefault.jpg", "dur": "1:02:13"}, {"id": "DGHfC8eaIoM", "title": "GROOVE POP & FUNK | walking | Vol.8 | Best Confidence Boosting Walk Mix | 2026 | City Pop | Commute", "thumb": "https://i.ytimg.com/vi/DGHfC8eaIoM/mqdefault.jpg", "dur": "0:45"}, {"id": "mhIPkJRGqfc", "title": "GROOVE POP | energetic | Vol.11 | Best High Energy Skate Mix | 2026 | City Pop | Workout", "thumb": "https://i.ytimg.com/vi/mhIPkJRGqfc/mqdefault.jpg", "dur": "1:01:54"}, {"id": "J_tDnSL1apg", "title": "GROOVE POP & FUNK | walking | Vol.10 | Best Morning Walk Mix to Start Your Day | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/J_tDnSL1apg/mqdefault.jpg", "dur": "1:01:27"}, {"id": "TyzDZheSh2Q", "title": "GROOVE POP & FUNK | jam session | Vol.9 | Best Funky Band Mix to Boost Your Mood | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/TyzDZheSh2Q/mqdefault.jpg", "dur": "1:41:43"}, {"id": "_O758DgCqc0", "title": "GROOVE POP & SOUL | luxury | Vol.7 | Best Classy Lounge Mix for Rich Vibes | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/_O758DgCqc0/mqdefault.jpg", "dur": "0:30"}, {"id": "bkd6Krzalro", "title": "GROOVE POP & FUNK | walking | Vol.8 | Best Confidence Boosting Walk Mix | 2026 | City Pop | Commute", "thumb": "https://i.ytimg.com/vi/bkd6Krzalro/mqdefault.jpg", "dur": "1:17:01"}, {"id": "EjTUOZyg_yk", "title": "GROOVE POP & HIP HOP | no skip | Vol.6 | Best No Skip DJ Mix for Work & Focus | City Pop", "thumb": "https://i.ytimg.com/vi/EjTUOZyg_yk/mqdefault.jpg", "dur": "0:24"}, {"id": "RW9qOQFSVA0", "title": "GROOVE POP & SOUL | luxury | Vol.7 | Best Classy Lounge Mix for Rich Vibes | 2026 | City Pop", "thumb": "https://i.ytimg.com/vi/RW9qOQFSVA0/mqdefault.jpg", "dur": "1:37:19"}, {"id": "Ww1exg25IDA", "title": "GROOVE POP & CHILL | laid-back | Vol.5 |Relaxing Coffee Break Mix | 2026 | City Pop | Work | Vibes", "thumb": "https://i.ytimg.com/vi/Ww1exg25IDA/mqdefault.jpg", "dur": "0:36"}, {"id": "z1b5oaBZWcU", "title": "GROOVE POP & HIP HOP | no skip | Vol.6 | Best No Skip DJ Mix for Work & Focus | City Pop", "thumb": "https://i.ytimg.com/vi/z1b5oaBZWcU/mqdefault.jpg", "dur": "1:39:51"}, {"id": "ynaMG6i0EAM", "title": "GROOVE POP & FUNK | energetic | Vol.4 | Best Uplifting Dance Mix | 2026 | City Pop | Work BGM", "thumb": "https://i.ytimg.com/vi/ynaMG6i0EAM/mqdefault.jpg", "dur": "0:22"}, {"id": "esHZjpIpwVU", "title": "GROOVE POP & CHILL | laid-back | Vol.5 |Relaxing Coffee Break Mix | 2026 | City Pop | Work | Vibes", "thumb": "https://i.ytimg.com/vi/esHZjpIpwVU/mqdefault.jpg", "dur": "56:40"}, {"id": "2F4YaU4izhA", "title": "GROOVE POP & FUNK | energetic | Vol.4 | Best Uplifting Dance Mix | 2026 | City Pop | Work BGM", "thumb": "https://i.ytimg.com/vi/2F4YaU4izhA/mqdefault.jpg", "dur": "1:05:08"}, {"id": "GgWY6vfQBsk", "title": "GROOVE POP & CITY POP | driving | Vol.3 | Best Uplifting Road Trip BGM | 2026 | Funk | Nu-Disco", "thumb": "https://i.ytimg.com/vi/GgWY6vfQBsk/mqdefault.jpg", "dur": "0:55"}, {"id": "OzcC2WQnnO8", "title": "GROOVE POP & CITY POP | driving | Vol.3 | Best Uplifting Road Trip BGM | 2026 | Funk | Nu-Disco", "thumb": "https://i.ytimg.com/vi/OzcC2WQnnO8/mqdefault.jpg", "dur": "1:01:50"}, {"id": "WNfomSD6m84", "title": "FUNKY GROOVE PARTY VOL.2 | Uplifting City Pop & Nu-Disco Mix 2026 | Driving & Work BGM | Playlist", "thumb": "https://i.ytimg.com/vi/WNfomSD6m84/mqdefault.jpg", "dur": "0:29"}, {"id": "6T0nE_vhXxo", "title": "FUNKY GROOVE PARTY VOL.2 | Uplifting City Pop & Nu-Disco Mix 2026 | Driving & Work BGM | Playlist", "thumb": "https://i.ytimg.com/vi/6T0nE_vhXxo/mqdefault.jpg", "dur": "1:16:14"}, {"id": "_rc7_45QGec", "title": "GROOVE POP & CITY POP | uplifting | Vol.1 | 気分を上げる最高のドライブBGM | 2026 | Funk | Nu Disco | 作業用BGM", "thumb": "https://i.ytimg.com/vi/_rc7_45QGec/mqdefault.jpg", "dur": "2:35:14"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

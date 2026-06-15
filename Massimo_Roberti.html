@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@massimoroberti -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,736 +51,97 @@
       <div class="channel-count">104 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=oVDAan8atyU" target="_blank">
-            <img src="https://i.ytimg.com/vi/oVDAan8atyU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ed Sheeran BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration</span>
-                <span class="video-dur">50:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rnMnSRcB-XE" target="_blank">
-            <img src="https://i.ytimg.com/vi/rnMnSRcB-XE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beautiful Disney & Studio Ghibli Themes on Guitar | Relaxing Acoustic Collection</span>
-                <span class="video-dur">2:29:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Zt6y1oqWy34" target="_blank">
-            <img src="https://i.ytimg.com/vi/Zt6y1oqWy34/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Michael Jackson BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration</span>
-                <span class="video-dur">1:00:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2ualVKke3SE" target="_blank">
-            <img src="https://i.ytimg.com/vi/2ualVKke3SE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">40 Disney Songs | Acoustic Guitar Collection (Vol.2) | Relaxing Disney Instrumental Covers</span>
-                <span class="video-dur">1:48:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0uty5qL8CFM" target="_blank">
-            <img src="https://i.ytimg.com/vi/0uty5qL8CFM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Beatles “1” Album | Acoustic Guitar Collection</span>
-                <span class="video-dur">1:13:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1ekGAWrz6TU" target="_blank">
-            <img src="https://i.ytimg.com/vi/1ekGAWrz6TU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">25 Disney Songs Guitar Collection 🎸 | Relaxing Music for Study & Sleep</span>
-                <span class="video-dur">1:08:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=G4exCIxFgMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/G4exCIxFgMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">50 Greatest Hits Vol.3 (The Beatles, Michael Jackson, Elvis...) - BGM for Studying, Working, Reading</span>
-                <span class="video-dur">2:46:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IOockcj6Wew" target="_blank">
-            <img src="https://i.ytimg.com/vi/IOockcj6Wew/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">40 Disney Songs | Acoustic Guitar Collection (Vol.1) | Relaxing Disney Instrumental Covers</span>
-                <span class="video-dur">1:46:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cmj8psGoLTI" target="_blank">
-            <img src="https://i.ytimg.com/vi/cmj8psGoLTI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Songs in Gypsy Jazz 🎸 | Fast Swing Covers</span>
-                <span class="video-dur">24:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=U7mRCEK3nzg" target="_blank">
-            <img src="https://i.ytimg.com/vi/U7mRCEK3nzg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">80s Greatest Hits (Michael Jackson, Queen, Elton John...) - BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">1:20:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A9DfzIVgueQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/A9DfzIVgueQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney & More Cartoon Songs in Jazz | Soft Jazz Guitar Covers</span>
-                <span class="video-dur">1:38:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zzT6iVpUvtA" target="_blank">
-            <img src="https://i.ytimg.com/vi/zzT6iVpUvtA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxing Acoustic Guitar ☕ Michael Jackson, Bruno Mars & Pop Classics for Study & Coffee</span>
-                <span class="video-dur">2:11:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8Vs5PtnGYaU" target="_blank">
-            <img src="https://i.ytimg.com/vi/8Vs5PtnGYaU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">60s Greatest Hits (The Beatles, The Rolling Stones...) - BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">2:04:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e0CgNT-If2Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/e0CgNT-If2Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Christmas Classics on Guitar – 2 Hours of Relaxing Holiday Music (36 Songs) 🎄</span>
-                <span class="video-dur">2:20:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-52cREBzuFU" target="_blank">
-            <img src="https://i.ytimg.com/vi/-52cREBzuFU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">60 Disney Songs in Jazz ☕ 3-Hour Relaxing BGM for Studying, Working, Coffee Time (no interruptions)</span>
-                <span class="video-dur">3:09:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j6DY0uoRT3w" target="_blank">
-            <img src="https://i.ytimg.com/vi/j6DY0uoRT3w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Christmas Carols – Smooth Jazz Guitar Collection 🎄</span>
-                <span class="video-dur">1:22:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jIj_4nvXQZw" target="_blank">
-            <img src="https://i.ytimg.com/vi/jIj_4nvXQZw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best TV Series Themes – Soft Jazz Music for Relaxing & Studying</span>
-                <span class="video-dur">1:08:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3kCM4afknxA" target="_blank">
-            <img src="https://i.ytimg.com/vi/3kCM4afknxA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">110 Acoustic Guitar Covers – Relaxing & Study Music (6 Hours Playlist)</span>
-                <span class="video-dur">6:13:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SPdzHXrVxZw" target="_blank">
-            <img src="https://i.ytimg.com/vi/SPdzHXrVxZw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney PIXAR Jazz Covers | Relaxing Jazz Collection for Study & Chill</span>
-                <span class="video-dur">1:07:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FMpTWW4wyUY" target="_blank">
-            <img src="https://i.ytimg.com/vi/FMpTWW4wyUY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stevie Wonder BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration</span>
-                <span class="video-dur">1:07:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Xh1e-lr41js" target="_blank">
-            <img src="https://i.ytimg.com/vi/Xh1e-lr41js/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney 2000s Jazz Covers | Relaxing Jazz Collection for Study & Chill</span>
-                <span class="video-dur">1:17:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CHcovaiGy4U" target="_blank">
-            <img src="https://i.ytimg.com/vi/CHcovaiGy4U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Queen Greatest Hits | Acoustic Guitar Covers | Music for Relaxing, Studying, Working</span>
-                <span class="video-dur">1:07:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AxjTQnV-64U" target="_blank">
-            <img src="https://i.ytimg.com/vi/AxjTQnV-64U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Classic Songs ☕ Classical Guitar Covers | Relaxing Music for Study, Work & Sleep</span>
-                <span class="video-dur">3:04:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e_DTfMJOPbc" target="_blank">
-            <img src="https://i.ytimg.com/vi/e_DTfMJOPbc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">50 Greatest Hits Vol.2 (Ed Sheeran, Queen, Elton John...) - BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">2:50:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8t-7QMxCxPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/8t-7QMxCxPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Guitar Music | Acoustic Guitar Covers Alan Menken's Songs | Disney BGM for Study, Work, Sleep</span>
-                <span class="video-dur">1:02:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=k25i7x3aDt4" target="_blank">
-            <img src="https://i.ytimg.com/vi/k25i7x3aDt4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Bossa Nova on Guitar  | BGM Relaxing Music for Work & Study</span>
-                <span class="video-dur">1:00:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=p4q4GfdnZXc" target="_blank">
-            <img src="https://i.ytimg.com/vi/p4q4GfdnZXc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">TV Series Jazz Instrumental & Cartoon Theme Songs Jazz Cover | Relaxing BGM for Study & Work</span>
-                <span class="video-dur">32:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cHH5-3iUVy0" target="_blank">
-            <img src="https://i.ytimg.com/vi/cHH5-3iUVy0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best 30 DISNEY Songs | Guitar Covers - Relaxing Bossa Nova Music for Studying, Sleeping</span>
-                <span class="video-dur">1:39:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dnn12oCHO1E" target="_blank">
-            <img src="https://i.ytimg.com/vi/dnn12oCHO1E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova (Lounge & Relax) Vol.II | Relaxing Chill Music for Study & Work</span>
-                <span class="video-dur">43:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v7v1Y-Z4_Is" target="_blank">
-            <img src="https://i.ytimg.com/vi/v7v1Y-Z4_Is/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">30 Jazz Covers of Popular Songs - Relaxing BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">1:50:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aU_Ua8vyS4g" target="_blank">
-            <img src="https://i.ytimg.com/vi/aU_Ua8vyS4g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">8h+ Studio Ghibli Jazz Guitar BGM スタジオジブリ - Relaxing Music for Studying, Sleeping, Working</span>
-                <span class="video-dur">8:32:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XTVTYv9zwXE" target="_blank">
-            <img src="https://i.ytimg.com/vi/XTVTYv9zwXE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Michael Jackson – (Bossa Nova Style) Music for Relaxing, Reading, Studying</span>
-                <span class="video-dur">42:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_ZPaJzd9gC0" target="_blank">
-            <img src="https://i.ytimg.com/vi/_ZPaJzd9gC0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY BossaNova vol.3 ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">34:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ziw0yzYXnIQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ziw0yzYXnIQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best of Classical Music in Jazz - Relaxing Guitar BGM (Mozart, Beethoven, Bach, Chopin, Liszt)</span>
-                <span class="video-dur">2:01:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=G8QtvuCI-Zo" target="_blank">
-            <img src="https://i.ytimg.com/vi/G8QtvuCI-Zo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Greatest Movie Soundtracks 1h Guitar Collection 📚• Music for Stress Relief, Meditation, Studying</span>
-                <span class="video-dur">1:06:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=X7aKHWt2tvI" target="_blank">
-            <img src="https://i.ytimg.com/vi/X7aKHWt2tvI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">70s Greatest Hits (David Bowie, Queen, Elton John...) - BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">1:31:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ARZjzm3co1Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/ARZjzm3co1Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Bruno Mars - Music for Relaxing, Reading, Studying</span>
-                <span class="video-dur">1:02:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ckUAc09Qk5g" target="_blank">
-            <img src="https://i.ytimg.com/vi/ckUAc09Qk5g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hours of Jazz Covers from Disney Classics ☕ Relaxing Jazz Music for Studying, Working and Sleeping</span>
-                <span class="video-dur">3:21:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CaO0sO-X18c" target="_blank">
-            <img src="https://i.ytimg.com/vi/CaO0sO-X18c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">2h of Jazz Covers Classic Hits from the ‘70s & ‘80s | Music for Studying, Reading, Relaxation 📼</span>
-                <span class="video-dur">2:19:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=k_rf5XZFdKA" target="_blank">
-            <img src="https://i.ytimg.com/vi/k_rf5XZFdKA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibli Relaxing Guitar Music – 4 Hours BGM | スタジオジブリ 癒しのギターBGM 4時間</span>
-                <span class="video-dur">3:45:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=r-hBZh12478" target="_blank">
-            <img src="https://i.ytimg.com/vi/r-hBZh12478/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">70s 80s Jazz Music for Stress Relief, Focus, & Studying 📼 | 1 Hour Vintage Playlist</span>
-                <span class="video-dur">1:09:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZQP8Y_OOM8o" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZQP8Y_OOM8o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3h DISNEY Classic Songs | Guitar Covers ☕ Relaxing Guitar Music for Studying, Working and Sleeping</span>
-                <span class="video-dur">3:28:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0FEVmjeS6XM" target="_blank">
-            <img src="https://i.ytimg.com/vi/0FEVmjeS6XM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY 50 Jazz Covers from Disney Classics ☕ BGM Music for Studying & Working</span>
-                <span class="video-dur">2:42:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lH0Rc2SqjuI" target="_blank">
-            <img src="https://i.ytimg.com/vi/lH0Rc2SqjuI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Studio Ghibli スタジオジブリ Jazz Café - Relaxing Music for Studying, Sleeping, Working</span>
-                <span class="video-dur">56:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RTInYbT-amM" target="_blank">
-            <img src="https://i.ytimg.com/vi/RTInYbT-amM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">10 DISNEY Pixar Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping</span>
-                <span class="video-dur">25:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RPfnFpX1tjE" target="_blank">
-            <img src="https://i.ytimg.com/vi/RPfnFpX1tjE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">18 DISNEY Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping</span>
-                <span class="video-dur">53:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YX9FjIyv3dk" target="_blank">
-            <img src="https://i.ytimg.com/vi/YX9FjIyv3dk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Christmas Carols Radio 🎄 1h Relaxing Guitar Music for Studying/Sleeping</span>
-                <span class="video-dur">1:01:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=orhc_JVMve8" target="_blank">
-            <img src="https://i.ytimg.com/vi/orhc_JVMve8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Christmas Jazz Radio ☃️ Relaxing Guitar Music for Studying, Sleeping, Calming Down ❄️</span>
-                <span class="video-dur">1:00:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=U_D4wxi-6oo" target="_blank">
-            <img src="https://i.ytimg.com/vi/U_D4wxi-6oo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Classical Music (Acoustic Guitar Collection) -  Relaxing Music for Working/Studying/Reading</span>
-                <span class="video-dur">1:01:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wYfbNP9Cw90" target="_blank">
-            <img src="https://i.ytimg.com/vi/wYfbNP9Cw90/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Italian Jazz Radio ☕ BGM Vintage Music for Studying/Working</span>
-                <span class="video-dur">50:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JZORTwMlYlo" target="_blank">
-            <img src="https://i.ytimg.com/vi/JZORTwMlYlo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY BossaNova vol.2 ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">32:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cJ-mlJ67ZsY" target="_blank">
-            <img src="https://i.ytimg.com/vi/cJ-mlJ67ZsY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Jazz Music Radio Vol. 3 ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">1:27:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=q4kLTbYeexg" target="_blank">
-            <img src="https://i.ytimg.com/vi/q4kLTbYeexg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bossa Nova (Lounge & Relax) Vol.I | Relaxing Chill Music for Study & Work</span>
-                <span class="video-dur">1:03:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ro8q3_2E0ng" target="_blank">
-            <img src="https://i.ytimg.com/vi/ro8q3_2E0ng/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping</span>
-                <span class="video-dur">39:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2wXo8ZlMKBA" target="_blank">
-            <img src="https://i.ytimg.com/vi/2wXo8ZlMKBA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY BossaNova vol.1 ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">32:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SUIon6RkrP8" target="_blank">
-            <img src="https://i.ytimg.com/vi/SUIon6RkrP8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Jazz Music Radio Vol. 2 ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">1:10:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KyDgyZbvKGw" target="_blank">
-            <img src="https://i.ytimg.com/vi/KyDgyZbvKGw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Lullabies - 1h Relaxing Guitar Music</span>
-                <span class="video-dur">1:05:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=83jZ9Zw8yR0" target="_blank">
-            <img src="https://i.ytimg.com/vi/83jZ9Zw8yR0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best of Classical Music in Jazz - Relaxing Guitar BGM (Mozart, Beethoven, Bach, Chopin, Liszt)</span>
-                <span class="video-dur">1:00:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=F0Cvc3cRkyk" target="_blank">
-            <img src="https://i.ytimg.com/vi/F0Cvc3cRkyk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">PIXAR Acoustic Guitar Collection • 10 Songs for Relaxing/Studying/Reading</span>
-                <span class="video-dur">25:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e9Z9DyXpASQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/e9Z9DyXpASQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY & GHIBLI Jazz Music Radio ☕ Relaxing Guitar Collection for Studying/Working</span>
-                <span class="video-dur">1:13:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3o6L03aLt04" target="_blank">
-            <img src="https://i.ytimg.com/vi/3o6L03aLt04/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disco Music in Jazz Guitar – BGM Jazz Covers of '70s Disco Hits</span>
-                <span class="video-dur">37:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BUm0MLbepOw" target="_blank">
-            <img src="https://i.ytimg.com/vi/BUm0MLbepOw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">50 Greatest Hits Vol.1 (The Beatles, Clapton, Bee Gees..) - BGM Music for Studying, Working, Reading</span>
-                <span class="video-dur">2:52:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=y7gfL33XA70" target="_blank">
-            <img src="https://i.ytimg.com/vi/y7gfL33XA70/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM The Beatles in JAZZ 30  Greatest Hits - Relaxing Guitar Music for Studying, Working, Running</span>
-                <span class="video-dur">1:33:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1R8Uvshywh4" target="_blank">
-            <img src="https://i.ytimg.com/vi/1R8Uvshywh4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Michael Jackson - Music for Relaxing, Reading, Concentration</span>
-                <span class="video-dur">1:02:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HW5J_XDa18M" target="_blank">
-            <img src="https://i.ytimg.com/vi/HW5J_XDa18M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Greatest Jazz Swing Hits | Best Jazz Guitar Swing Collection | Music for Relaxing, Studying, Working</span>
-                <span class="video-dur">1:15:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fBS88Dvkqzw" target="_blank">
-            <img src="https://i.ytimg.com/vi/fBS88Dvkqzw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ennio Morricone Guitar Collection – Classical Guitar Covers for Studying, Working & Relaxing</span>
-                <span class="video-dur">51:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nJh7NHalX_g" target="_blank">
-            <img src="https://i.ytimg.com/vi/nJh7NHalX_g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibli (Guitar Collection) スタジオジブリ (ギターコレクション) • Relaxing BGM for Studying, Sleeping, Reading</span>
-                <span class="video-dur">1:11:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PvQMPFBb9F0" target="_blank">
-            <img src="https://i.ytimg.com/vi/PvQMPFBb9F0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ed Sheeran Greatest Hits - Relaxing Acoustic Guitar Music for Concentration</span>
-                <span class="video-dur">51:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T8-Azm_OR_Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/T8-Azm_OR_Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM The Beatles in JAZZ vol.2 - Relaxing Guitar Music for Studying, Concentration, Working</span>
-                <span class="video-dur">41:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zCSAR7-ZgA4" target="_blank">
-            <img src="https://i.ytimg.com/vi/zCSAR7-ZgA4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibli スタジオジブリ Calm Guitar • Relaxing Background Music for Studying, Sleeping</span>
-                <span class="video-dur">1:05:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bpNDuzk3aEU" target="_blank">
-            <img src="https://i.ytimg.com/vi/bpNDuzk3aEU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM Elton John Greatest Hits - Relaxing Acoustic Guitar Music for Concentration</span>
-                <span class="video-dur">54:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7rwwBystraw" target="_blank">
-            <img src="https://i.ytimg.com/vi/7rwwBystraw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM The Best of ABBA - Jazz Guitar Music for Studying, Concentration, Working</span>
-                <span class="video-dur">36:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2cFE423-954" target="_blank">
-            <img src="https://i.ytimg.com/vi/2cFE423-954/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BGM The Beatles in JAZZ - Relaxing Guitar Music for Studying, Concentration, Working</span>
-                <span class="video-dur">34:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=y9w5wSEl_ow" target="_blank">
-            <img src="https://i.ytimg.com/vi/y9w5wSEl_ow/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY A Royal Waltz Night | 10 Waltzes for Kids | Dance Collection</span>
-                <span class="video-dur">1:02:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7_WqkLZ-Tzc" target="_blank">
-            <img src="https://i.ytimg.com/vi/7_WqkLZ-Tzc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxing Guitar • 1h Chill Instrumental Music for Stress Relief, Meditation, Studying</span>
-                <span class="video-dur">1:02:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4vgWGx7RxAg" target="_blank">
-            <img src="https://i.ytimg.com/vi/4vgWGx7RxAg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Greatest Movie's Soundtracks 1h Guitar Collection 📚• Music for Stress Relief, Meditation, Studying</span>
-                <span class="video-dur">1:02:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rxJL98Tjh4U" target="_blank">
-            <img src="https://i.ytimg.com/vi/rxJL98Tjh4U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best of Bossa Nova - BMG Relaxing Happy Morning Guitar Music for Work, Study</span>
-                <span class="video-dur">1:01:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=daVbbrIGqTc" target="_blank">
-            <img src="https://i.ytimg.com/vi/daVbbrIGqTc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Classic Love Songs! Relaxing Acoustic Guitar Music for Studying, Sleeping and Reading</span>
-                <span class="video-dur">1:08:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GWzJlfQq6ew" target="_blank">
-            <img src="https://i.ytimg.com/vi/GWzJlfQq6ew/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nintendo Jazz Cafe (Super Mario Bros, Mario Kart, Animal Crossing) - BGM Relaxing Study Music</span>
-                <span class="video-dur">1:02:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QCG2taBIIH8" target="_blank">
-            <img src="https://i.ytimg.com/vi/QCG2taBIIH8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibli Jazz Cafe BGM (スタジオジブリ) - Relaxing Jazz & BGM for Studying, Sleeping, Working</span>
-                <span class="video-dur">1:21:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A5iHBoc1Daw" target="_blank">
-            <img src="https://i.ytimg.com/vi/A5iHBoc1Daw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Queen Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working</span>
-                <span class="video-dur">1:01:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8dGM2EpLKVk" target="_blank">
-            <img src="https://i.ytimg.com/vi/8dGM2EpLKVk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elvis Presley Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working</span>
-                <span class="video-dur">49:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hlBnPrVHRKw" target="_blank">
-            <img src="https://i.ytimg.com/vi/hlBnPrVHRKw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Princess Songs - 1h Relaxing Acoustic Guitar Music for Studying, Sleeping</span>
-                <span class="video-dur">1:08:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wpHHg4QseX4" target="_blank">
-            <img src="https://i.ytimg.com/vi/wpHHg4QseX4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best of The Beatles (50 Acoustic Guitar Covers) – Relaxing BGM for Studying and Working</span>
-                <span class="video-dur">2:19:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cFWc7DPvQ0s" target="_blank">
-            <img src="https://i.ytimg.com/vi/cFWc7DPvQ0s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bee Gees Greatest Hits 1h Acoustic Guitar - Relaxing Instrumental Music for Reading, Working</span>
-                <span class="video-dur">1:01:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=02QowjMt-yY" target="_blank">
-            <img src="https://i.ytimg.com/vi/02QowjMt-yY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibliスタジオジブリ Guitar Collection • 2h Relaxing Music for Studying/Sleeping</span>
-                <span class="video-dur">2:03:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UQCCwpiFEkI" target="_blank">
-            <img src="https://i.ytimg.com/vi/UQCCwpiFEkI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Jazz Music Radio ☕ Relaxing Guitar Covers – Study & Work Collection</span>
-                <span class="video-dur">1:40:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KxUReEYKHDQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/KxUReEYKHDQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Beatles Acoustic Guitar Collection Vol.2 - 1h Relaxing Music for Reading/Studying</span>
-                <span class="video-dur">1:02:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oi33ze_dQyg" target="_blank">
-            <img src="https://i.ytimg.com/vi/oi33ze_dQyg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best of Ennio Morricone and Nino Rota - Relaxing Guitar Film Music for Relax, Study, Reading</span>
-                <span class="video-dur">1:19:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MLs78PZIGlI" target="_blank">
-            <img src="https://i.ytimg.com/vi/MLs78PZIGlI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Jazz Cafe Vol. 3 ☕ BGM Instrumental Music for Studying, Working, Relaxing</span>
-                <span class="video-dur">34:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7v3vRciyKFQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/7v3vRciyKFQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Queen Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working</span>
-                <span class="video-dur">40:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M8eTZksAOLw" target="_blank">
-            <img src="https://i.ytimg.com/vi/M8eTZksAOLw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">7h Disney Guitar Music for Sleeping - 20 Relaxing Lullabies to Calm Down (No Mid-roll Ads)</span>
-                <span class="video-dur">7:02:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ii8ZSfFmu34" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ii8ZSfFmu34/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Jazz Cafe Vol. 2 ☕ BGM Instrumental Music for Studying, Working, Relaxing</span>
-                <span class="video-dur">31:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g98meck7-g8" target="_blank">
-            <img src="https://i.ytimg.com/vi/g98meck7-g8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best 70 DISNEY Songs  - 3h Relaxing Acoustic Guitar Covers for Studying, Sleeping</span>
-                <span class="video-dur">3:09:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e4e-tGvvpyE" target="_blank">
-            <img src="https://i.ytimg.com/vi/e4e-tGvvpyE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Studio Ghibli Guitar Music スタジオジブリ | 1H Relaxing BGM for Sleeping & Studying</span>
-                <span class="video-dur">1:02:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wQ8-JEaCBjA" target="_blank">
-            <img src="https://i.ytimg.com/vi/wQ8-JEaCBjA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3rd DISNEY Acoustic Guitar Collection • 1h relaxing/studying/reading music</span>
-                <span class="video-dur">1:02:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T-bJDxt7LmQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/T-bJDxt7LmQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Disney Jazz Cafe Vol. 1 ☕ BGM Instrumental Music for Studying, Working, Relaxing</span>
-                <span class="video-dur">35:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9fy1kaJD_6M" target="_blank">
-            <img src="https://i.ytimg.com/vi/9fy1kaJD_6M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">2nd DISNEY Acoustic Guitar Collection • 1h relaxing/studying/reading music</span>
-                <span class="video-dur">1:00:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KKL4VUCXKFA" target="_blank">
-            <img src="https://i.ytimg.com/vi/KKL4VUCXKFA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1h Acoustic Guitar Covers (Clapton, Bee Gees, Queen, The Beatles…)  Relaxing Guitar BGM for Studying</span>
-                <span class="video-dur">1:01:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vsqpZWVd_sk" target="_blank">
-            <img src="https://i.ytimg.com/vi/vsqpZWVd_sk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Beatles Acoustic Guitar Collection - 1h Relaxing Music for Reading/Studying</span>
-                <span class="video-dur">1:01:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=J9hVoDI3KRc" target="_blank">
-            <img src="https://i.ytimg.com/vi/J9hVoDI3KRc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mornin' Coffee (Calm Guitar Collection) - Relaxing Music for Stress Relief, Studying, Sleeping</span>
-                <span class="video-dur">1:00:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5fMzH603jzI" target="_blank">
-            <img src="https://i.ytimg.com/vi/5fMzH603jzI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DISNEY Acoustic Guitar Covers from Disney Classics • Relaxing Music for Study & Reading</span>
-                <span class="video-dur">1:01:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9GmdBFQ1nNk" target="_blank">
-            <img src="https://i.ytimg.com/vi/9GmdBFQ1nNk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BOSSA NOVA 1h Guitar collection • music to relax 🌸</span>
-                <span class="video-dur">1:01:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SPP1rqAiO1I" target="_blank">
-            <img src="https://i.ytimg.com/vi/SPP1rqAiO1I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Movie Soundtracks on Classical Guitar – 1 Hour Relaxing Music for Studying, Sleeping & Working</span>
-                <span class="video-dur">1:01:23</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Massimo Roberti";
+const VIDEOS = [{"id": "oVDAan8atyU", "title": "Ed Sheeran BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration", "thumb": "https://i.ytimg.com/vi/oVDAan8atyU/mqdefault.jpg", "dur": "50:02"}, {"id": "rnMnSRcB-XE", "title": "Beautiful Disney & Studio Ghibli Themes on Guitar | Relaxing Acoustic Collection", "thumb": "https://i.ytimg.com/vi/rnMnSRcB-XE/mqdefault.jpg", "dur": "2:29:05"}, {"id": "Zt6y1oqWy34", "title": "Michael Jackson BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration", "thumb": "https://i.ytimg.com/vi/Zt6y1oqWy34/mqdefault.jpg", "dur": "1:00:15"}, {"id": "2ualVKke3SE", "title": "40 Disney Songs | Acoustic Guitar Collection (Vol.2) | Relaxing Disney Instrumental Covers", "thumb": "https://i.ytimg.com/vi/2ualVKke3SE/mqdefault.jpg", "dur": "1:48:28"}, {"id": "0uty5qL8CFM", "title": "The Beatles “1” Album | Acoustic Guitar Collection", "thumb": "https://i.ytimg.com/vi/0uty5qL8CFM/mqdefault.jpg", "dur": "1:13:56"}, {"id": "1ekGAWrz6TU", "title": "25 Disney Songs Guitar Collection 🎸 | Relaxing Music for Study & Sleep", "thumb": "https://i.ytimg.com/vi/1ekGAWrz6TU/mqdefault.jpg", "dur": "1:08:21"}, {"id": "G4exCIxFgMs", "title": "50 Greatest Hits Vol.3 (The Beatles, Michael Jackson, Elvis...) - BGM for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/G4exCIxFgMs/mqdefault.jpg", "dur": "2:46:02"}, {"id": "IOockcj6Wew", "title": "40 Disney Songs | Acoustic Guitar Collection (Vol.1) | Relaxing Disney Instrumental Covers", "thumb": "https://i.ytimg.com/vi/IOockcj6Wew/mqdefault.jpg", "dur": "1:46:15"}, {"id": "cmj8psGoLTI", "title": "Disney Songs in Gypsy Jazz 🎸 | Fast Swing Covers", "thumb": "https://i.ytimg.com/vi/cmj8psGoLTI/mqdefault.jpg", "dur": "24:53"}, {"id": "U7mRCEK3nzg", "title": "80s Greatest Hits (Michael Jackson, Queen, Elton John...) - BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/U7mRCEK3nzg/mqdefault.jpg", "dur": "1:20:03"}, {"id": "A9DfzIVgueQ", "title": "Disney & More Cartoon Songs in Jazz | Soft Jazz Guitar Covers", "thumb": "https://i.ytimg.com/vi/A9DfzIVgueQ/mqdefault.jpg", "dur": "1:38:43"}, {"id": "zzT6iVpUvtA", "title": "Relaxing Acoustic Guitar ☕ Michael Jackson, Bruno Mars & Pop Classics for Study & Coffee", "thumb": "https://i.ytimg.com/vi/zzT6iVpUvtA/mqdefault.jpg", "dur": "2:11:54"}, {"id": "8Vs5PtnGYaU", "title": "60s Greatest Hits (The Beatles, The Rolling Stones...) - BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/8Vs5PtnGYaU/mqdefault.jpg", "dur": "2:04:04"}, {"id": "e0CgNT-If2Q", "title": "Christmas Classics on Guitar – 2 Hours of Relaxing Holiday Music (36 Songs) 🎄", "thumb": "https://i.ytimg.com/vi/e0CgNT-If2Q/mqdefault.jpg", "dur": "2:20:31"}, {"id": "-52cREBzuFU", "title": "60 Disney Songs in Jazz ☕ 3-Hour Relaxing BGM for Studying, Working, Coffee Time (no interruptions)", "thumb": "https://i.ytimg.com/vi/-52cREBzuFU/mqdefault.jpg", "dur": "3:09:21"}, {"id": "j6DY0uoRT3w", "title": "Christmas Carols – Smooth Jazz Guitar Collection 🎄", "thumb": "https://i.ytimg.com/vi/j6DY0uoRT3w/mqdefault.jpg", "dur": "1:22:46"}, {"id": "jIj_4nvXQZw", "title": "The Best TV Series Themes – Soft Jazz Music for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/jIj_4nvXQZw/mqdefault.jpg", "dur": "1:08:44"}, {"id": "3kCM4afknxA", "title": "110 Acoustic Guitar Covers – Relaxing & Study Music (6 Hours Playlist)", "thumb": "https://i.ytimg.com/vi/3kCM4afknxA/mqdefault.jpg", "dur": "6:13:18"}, {"id": "SPdzHXrVxZw", "title": "Disney PIXAR Jazz Covers | Relaxing Jazz Collection for Study & Chill", "thumb": "https://i.ytimg.com/vi/SPdzHXrVxZw/mqdefault.jpg", "dur": "1:07:38"}, {"id": "FMpTWW4wyUY", "title": "Stevie Wonder BGM (Instrumental Covers) | Relaxing Background Music for Reading & Concentration", "thumb": "https://i.ytimg.com/vi/FMpTWW4wyUY/mqdefault.jpg", "dur": "1:07:48"}, {"id": "Xh1e-lr41js", "title": "Disney 2000s Jazz Covers | Relaxing Jazz Collection for Study & Chill", "thumb": "https://i.ytimg.com/vi/Xh1e-lr41js/mqdefault.jpg", "dur": "1:17:04"}, {"id": "CHcovaiGy4U", "title": "Queen Greatest Hits | Acoustic Guitar Covers | Music for Relaxing, Studying, Working", "thumb": "https://i.ytimg.com/vi/CHcovaiGy4U/mqdefault.jpg", "dur": "1:07:52"}, {"id": "AxjTQnV-64U", "title": "Disney Classic Songs ☕ Classical Guitar Covers | Relaxing Music for Study, Work & Sleep", "thumb": "https://i.ytimg.com/vi/AxjTQnV-64U/mqdefault.jpg", "dur": "3:04:12"}, {"id": "e_DTfMJOPbc", "title": "50 Greatest Hits Vol.2 (Ed Sheeran, Queen, Elton John...) - BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/e_DTfMJOPbc/mqdefault.jpg", "dur": "2:50:53"}, {"id": "8t-7QMxCxPc", "title": "Disney Guitar Music | Acoustic Guitar Covers Alan Menken's Songs | Disney BGM for Study, Work, Sleep", "thumb": "https://i.ytimg.com/vi/8t-7QMxCxPc/mqdefault.jpg", "dur": "1:02:12"}, {"id": "k25i7x3aDt4", "title": "Best of Bossa Nova on Guitar  | BGM Relaxing Music for Work & Study", "thumb": "https://i.ytimg.com/vi/k25i7x3aDt4/mqdefault.jpg", "dur": "1:00:25"}, {"id": "p4q4GfdnZXc", "title": "TV Series Jazz Instrumental & Cartoon Theme Songs Jazz Cover | Relaxing BGM for Study & Work", "thumb": "https://i.ytimg.com/vi/p4q4GfdnZXc/mqdefault.jpg", "dur": "32:25"}, {"id": "cHH5-3iUVy0", "title": "The Best 30 DISNEY Songs | Guitar Covers - Relaxing Bossa Nova Music for Studying, Sleeping", "thumb": "https://i.ytimg.com/vi/cHH5-3iUVy0/mqdefault.jpg", "dur": "1:39:54"}, {"id": "dnn12oCHO1E", "title": "Bossa Nova (Lounge & Relax) Vol.II | Relaxing Chill Music for Study & Work", "thumb": "https://i.ytimg.com/vi/dnn12oCHO1E/mqdefault.jpg", "dur": "43:20"}, {"id": "v7v1Y-Z4_Is", "title": "30 Jazz Covers of Popular Songs - Relaxing BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/v7v1Y-Z4_Is/mqdefault.jpg", "dur": "1:50:09"}, {"id": "aU_Ua8vyS4g", "title": "8h+ Studio Ghibli Jazz Guitar BGM スタジオジブリ - Relaxing Music for Studying, Sleeping, Working", "thumb": "https://i.ytimg.com/vi/aU_Ua8vyS4g/mqdefault.jpg", "dur": "8:32:17"}, {"id": "XTVTYv9zwXE", "title": "BGM Michael Jackson – (Bossa Nova Style) Music for Relaxing, Reading, Studying", "thumb": "https://i.ytimg.com/vi/XTVTYv9zwXE/mqdefault.jpg", "dur": "42:26"}, {"id": "_ZPaJzd9gC0", "title": "DISNEY BossaNova vol.3 ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/_ZPaJzd9gC0/mqdefault.jpg", "dur": "34:02"}, {"id": "Ziw0yzYXnIQ", "title": "The Best of Classical Music in Jazz - Relaxing Guitar BGM (Mozart, Beethoven, Bach, Chopin, Liszt)", "thumb": "https://i.ytimg.com/vi/Ziw0yzYXnIQ/mqdefault.jpg", "dur": "2:01:56"}, {"id": "G8QtvuCI-Zo", "title": "Greatest Movie Soundtracks 1h Guitar Collection 📚• Music for Stress Relief, Meditation, Studying", "thumb": "https://i.ytimg.com/vi/G8QtvuCI-Zo/mqdefault.jpg", "dur": "1:06:29"}, {"id": "X7aKHWt2tvI", "title": "70s Greatest Hits (David Bowie, Queen, Elton John...) - BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/X7aKHWt2tvI/mqdefault.jpg", "dur": "1:31:14"}, {"id": "ARZjzm3co1Q", "title": "BGM Bruno Mars - Music for Relaxing, Reading, Studying", "thumb": "https://i.ytimg.com/vi/ARZjzm3co1Q/mqdefault.jpg", "dur": "1:02:45"}, {"id": "ckUAc09Qk5g", "title": "3 Hours of Jazz Covers from Disney Classics ☕ Relaxing Jazz Music for Studying, Working and Sleeping", "thumb": "https://i.ytimg.com/vi/ckUAc09Qk5g/mqdefault.jpg", "dur": "3:21:46"}, {"id": "CaO0sO-X18c", "title": "2h of Jazz Covers Classic Hits from the ‘70s & ‘80s | Music for Studying, Reading, Relaxation 📼", "thumb": "https://i.ytimg.com/vi/CaO0sO-X18c/mqdefault.jpg", "dur": "2:19:56"}, {"id": "k_rf5XZFdKA", "title": "Studio Ghibli Relaxing Guitar Music – 4 Hours BGM | スタジオジブリ 癒しのギターBGM 4時間", "thumb": "https://i.ytimg.com/vi/k_rf5XZFdKA/mqdefault.jpg", "dur": "3:45:27"}, {"id": "r-hBZh12478", "title": "70s 80s Jazz Music for Stress Relief, Focus, & Studying 📼 | 1 Hour Vintage Playlist", "thumb": "https://i.ytimg.com/vi/r-hBZh12478/mqdefault.jpg", "dur": "1:09:57"}, {"id": "ZQP8Y_OOM8o", "title": "3h DISNEY Classic Songs | Guitar Covers ☕ Relaxing Guitar Music for Studying, Working and Sleeping", "thumb": "https://i.ytimg.com/vi/ZQP8Y_OOM8o/mqdefault.jpg", "dur": "3:28:13"}, {"id": "0FEVmjeS6XM", "title": "DISNEY 50 Jazz Covers from Disney Classics ☕ BGM Music for Studying & Working", "thumb": "https://i.ytimg.com/vi/0FEVmjeS6XM/mqdefault.jpg", "dur": "2:42:42"}, {"id": "lH0Rc2SqjuI", "title": "BGM Studio Ghibli スタジオジブリ Jazz Café - Relaxing Music for Studying, Sleeping, Working", "thumb": "https://i.ytimg.com/vi/lH0Rc2SqjuI/mqdefault.jpg", "dur": "56:47"}, {"id": "RTInYbT-amM", "title": "10 DISNEY Pixar Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping", "thumb": "https://i.ytimg.com/vi/RTInYbT-amM/mqdefault.jpg", "dur": "25:53"}, {"id": "RPfnFpX1tjE", "title": "18 DISNEY Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping", "thumb": "https://i.ytimg.com/vi/RPfnFpX1tjE/mqdefault.jpg", "dur": "53:38"}, {"id": "YX9FjIyv3dk", "title": "BGM Christmas Carols Radio 🎄 1h Relaxing Guitar Music for Studying/Sleeping", "thumb": "https://i.ytimg.com/vi/YX9FjIyv3dk/mqdefault.jpg", "dur": "1:01:58"}, {"id": "orhc_JVMve8", "title": "BGM Christmas Jazz Radio ☃️ Relaxing Guitar Music for Studying, Sleeping, Calming Down ❄️", "thumb": "https://i.ytimg.com/vi/orhc_JVMve8/mqdefault.jpg", "dur": "1:00:15"}, {"id": "U_D4wxi-6oo", "title": "BGM Classical Music (Acoustic Guitar Collection) -  Relaxing Music for Working/Studying/Reading", "thumb": "https://i.ytimg.com/vi/U_D4wxi-6oo/mqdefault.jpg", "dur": "1:01:21"}, {"id": "wYfbNP9Cw90", "title": "Old Italian Jazz Radio ☕ BGM Vintage Music for Studying/Working", "thumb": "https://i.ytimg.com/vi/wYfbNP9Cw90/mqdefault.jpg", "dur": "50:52"}, {"id": "JZORTwMlYlo", "title": "DISNEY BossaNova vol.2 ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/JZORTwMlYlo/mqdefault.jpg", "dur": "32:57"}, {"id": "cJ-mlJ67ZsY", "title": "DISNEY Jazz Music Radio Vol. 3 ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/cJ-mlJ67ZsY/mqdefault.jpg", "dur": "1:27:14"}, {"id": "q4kLTbYeexg", "title": "Bossa Nova (Lounge & Relax) Vol.I | Relaxing Chill Music for Study & Work", "thumb": "https://i.ytimg.com/vi/q4kLTbYeexg/mqdefault.jpg", "dur": "1:03:13"}, {"id": "ro8q3_2E0ng", "title": "DISNEY Classic Songs ☕ Relaxing Guitar Music for Studying, Working and Sleeping", "thumb": "https://i.ytimg.com/vi/ro8q3_2E0ng/mqdefault.jpg", "dur": "39:17"}, {"id": "2wXo8ZlMKBA", "title": "DISNEY BossaNova vol.1 ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/2wXo8ZlMKBA/mqdefault.jpg", "dur": "32:56"}, {"id": "SUIon6RkrP8", "title": "DISNEY Jazz Music Radio Vol. 2 ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/SUIon6RkrP8/mqdefault.jpg", "dur": "1:10:06"}, {"id": "KyDgyZbvKGw", "title": "DISNEY Lullabies - 1h Relaxing Guitar Music", "thumb": "https://i.ytimg.com/vi/KyDgyZbvKGw/mqdefault.jpg", "dur": "1:05:24"}, {"id": "83jZ9Zw8yR0", "title": "The Best of Classical Music in Jazz - Relaxing Guitar BGM (Mozart, Beethoven, Bach, Chopin, Liszt)", "thumb": "https://i.ytimg.com/vi/83jZ9Zw8yR0/mqdefault.jpg", "dur": "1:00:58"}, {"id": "F0Cvc3cRkyk", "title": "PIXAR Acoustic Guitar Collection • 10 Songs for Relaxing/Studying/Reading", "thumb": "https://i.ytimg.com/vi/F0Cvc3cRkyk/mqdefault.jpg", "dur": "25:53"}, {"id": "e9Z9DyXpASQ", "title": "DISNEY & GHIBLI Jazz Music Radio ☕ Relaxing Guitar Collection for Studying/Working", "thumb": "https://i.ytimg.com/vi/e9Z9DyXpASQ/mqdefault.jpg", "dur": "1:13:38"}, {"id": "3o6L03aLt04", "title": "Disco Music in Jazz Guitar – BGM Jazz Covers of '70s Disco Hits", "thumb": "https://i.ytimg.com/vi/3o6L03aLt04/mqdefault.jpg", "dur": "37:26"}, {"id": "BUm0MLbepOw", "title": "50 Greatest Hits Vol.1 (The Beatles, Clapton, Bee Gees..) - BGM Music for Studying, Working, Reading", "thumb": "https://i.ytimg.com/vi/BUm0MLbepOw/mqdefault.jpg", "dur": "2:52:32"}, {"id": "y7gfL33XA70", "title": "BGM The Beatles in JAZZ 30  Greatest Hits - Relaxing Guitar Music for Studying, Working, Running", "thumb": "https://i.ytimg.com/vi/y7gfL33XA70/mqdefault.jpg", "dur": "1:33:40"}, {"id": "1R8Uvshywh4", "title": "BGM Michael Jackson - Music for Relaxing, Reading, Concentration", "thumb": "https://i.ytimg.com/vi/1R8Uvshywh4/mqdefault.jpg", "dur": "1:02:08"}, {"id": "HW5J_XDa18M", "title": "Greatest Jazz Swing Hits | Best Jazz Guitar Swing Collection | Music for Relaxing, Studying, Working", "thumb": "https://i.ytimg.com/vi/HW5J_XDa18M/mqdefault.jpg", "dur": "1:15:56"}, {"id": "fBS88Dvkqzw", "title": "Ennio Morricone Guitar Collection – Classical Guitar Covers for Studying, Working & Relaxing", "thumb": "https://i.ytimg.com/vi/fBS88Dvkqzw/mqdefault.jpg", "dur": "51:07"}, {"id": "nJh7NHalX_g", "title": "Studio Ghibli (Guitar Collection) スタジオジブリ (ギターコレクション) • Relaxing BGM for Studying, Sleeping, Reading", "thumb": "https://i.ytimg.com/vi/nJh7NHalX_g/mqdefault.jpg", "dur": "1:11:04"}, {"id": "PvQMPFBb9F0", "title": "Ed Sheeran Greatest Hits - Relaxing Acoustic Guitar Music for Concentration", "thumb": "https://i.ytimg.com/vi/PvQMPFBb9F0/mqdefault.jpg", "dur": "51:10"}, {"id": "T8-Azm_OR_Y", "title": "BGM The Beatles in JAZZ vol.2 - Relaxing Guitar Music for Studying, Concentration, Working", "thumb": "https://i.ytimg.com/vi/T8-Azm_OR_Y/mqdefault.jpg", "dur": "41:53"}, {"id": "zCSAR7-ZgA4", "title": "Studio Ghibli スタジオジブリ Calm Guitar • Relaxing Background Music for Studying, Sleeping", "thumb": "https://i.ytimg.com/vi/zCSAR7-ZgA4/mqdefault.jpg", "dur": "1:05:02"}, {"id": "bpNDuzk3aEU", "title": "BGM Elton John Greatest Hits - Relaxing Acoustic Guitar Music for Concentration", "thumb": "https://i.ytimg.com/vi/bpNDuzk3aEU/mqdefault.jpg", "dur": "54:04"}, {"id": "7rwwBystraw", "title": "BGM The Best of ABBA - Jazz Guitar Music for Studying, Concentration, Working", "thumb": "https://i.ytimg.com/vi/7rwwBystraw/mqdefault.jpg", "dur": "36:57"}, {"id": "2cFE423-954", "title": "BGM The Beatles in JAZZ - Relaxing Guitar Music for Studying, Concentration, Working", "thumb": "https://i.ytimg.com/vi/2cFE423-954/mqdefault.jpg", "dur": "34:24"}, {"id": "y9w5wSEl_ow", "title": "DISNEY A Royal Waltz Night | 10 Waltzes for Kids | Dance Collection", "thumb": "https://i.ytimg.com/vi/y9w5wSEl_ow/mqdefault.jpg", "dur": "1:02:17"}, {"id": "7_WqkLZ-Tzc", "title": "Relaxing Guitar • 1h Chill Instrumental Music for Stress Relief, Meditation, Studying", "thumb": "https://i.ytimg.com/vi/7_WqkLZ-Tzc/mqdefault.jpg", "dur": "1:02:01"}, {"id": "4vgWGx7RxAg", "title": "Greatest Movie's Soundtracks 1h Guitar Collection 📚• Music for Stress Relief, Meditation, Studying", "thumb": "https://i.ytimg.com/vi/4vgWGx7RxAg/mqdefault.jpg", "dur": "1:02:41"}, {"id": "rxJL98Tjh4U", "title": "Best of Bossa Nova - BMG Relaxing Happy Morning Guitar Music for Work, Study", "thumb": "https://i.ytimg.com/vi/rxJL98Tjh4U/mqdefault.jpg", "dur": "1:01:19"}, {"id": "daVbbrIGqTc", "title": "Classic Love Songs! Relaxing Acoustic Guitar Music for Studying, Sleeping and Reading", "thumb": "https://i.ytimg.com/vi/daVbbrIGqTc/mqdefault.jpg", "dur": "1:08:39"}, {"id": "GWzJlfQq6ew", "title": "Nintendo Jazz Cafe (Super Mario Bros, Mario Kart, Animal Crossing) - BGM Relaxing Study Music", "thumb": "https://i.ytimg.com/vi/GWzJlfQq6ew/mqdefault.jpg", "dur": "1:02:16"}, {"id": "QCG2taBIIH8", "title": "Studio Ghibli Jazz Cafe BGM (スタジオジブリ) - Relaxing Jazz & BGM for Studying, Sleeping, Working", "thumb": "https://i.ytimg.com/vi/QCG2taBIIH8/mqdefault.jpg", "dur": "1:21:42"}, {"id": "A5iHBoc1Daw", "title": "Queen Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working", "thumb": "https://i.ytimg.com/vi/A5iHBoc1Daw/mqdefault.jpg", "dur": "1:01:01"}, {"id": "8dGM2EpLKVk", "title": "Elvis Presley Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working", "thumb": "https://i.ytimg.com/vi/8dGM2EpLKVk/mqdefault.jpg", "dur": "49:29"}, {"id": "hlBnPrVHRKw", "title": "DISNEY Princess Songs - 1h Relaxing Acoustic Guitar Music for Studying, Sleeping", "thumb": "https://i.ytimg.com/vi/hlBnPrVHRKw/mqdefault.jpg", "dur": "1:08:25"}, {"id": "wpHHg4QseX4", "title": "The Best of The Beatles (50 Acoustic Guitar Covers) – Relaxing BGM for Studying and Working", "thumb": "https://i.ytimg.com/vi/wpHHg4QseX4/mqdefault.jpg", "dur": "2:19:08"}, {"id": "cFWc7DPvQ0s", "title": "Bee Gees Greatest Hits 1h Acoustic Guitar - Relaxing Instrumental Music for Reading, Working", "thumb": "https://i.ytimg.com/vi/cFWc7DPvQ0s/mqdefault.jpg", "dur": "1:01:01"}, {"id": "02QowjMt-yY", "title": "Studio Ghibliスタジオジブリ Guitar Collection • 2h Relaxing Music for Studying/Sleeping", "thumb": "https://i.ytimg.com/vi/02QowjMt-yY/mqdefault.jpg", "dur": "2:03:53"}, {"id": "UQCCwpiFEkI", "title": "DISNEY Jazz Music Radio ☕ Relaxing Guitar Covers – Study & Work Collection", "thumb": "https://i.ytimg.com/vi/UQCCwpiFEkI/mqdefault.jpg", "dur": "1:40:21"}, {"id": "KxUReEYKHDQ", "title": "The Beatles Acoustic Guitar Collection Vol.2 - 1h Relaxing Music for Reading/Studying", "thumb": "https://i.ytimg.com/vi/KxUReEYKHDQ/mqdefault.jpg", "dur": "1:02:18"}, {"id": "oi33ze_dQyg", "title": "The Best of Ennio Morricone and Nino Rota - Relaxing Guitar Film Music for Relax, Study, Reading", "thumb": "https://i.ytimg.com/vi/oi33ze_dQyg/mqdefault.jpg", "dur": "1:19:51"}, {"id": "MLs78PZIGlI", "title": "Disney Jazz Cafe Vol. 3 ☕ BGM Instrumental Music for Studying, Working, Relaxing", "thumb": "https://i.ytimg.com/vi/MLs78PZIGlI/mqdefault.jpg", "dur": "34:11"}, {"id": "7v3vRciyKFQ", "title": "Queen Greatest Hits - Acoustic Guitar - Instrumental Music for Relaxing, Studying, Working", "thumb": "https://i.ytimg.com/vi/7v3vRciyKFQ/mqdefault.jpg", "dur": "40:27"}, {"id": "M8eTZksAOLw", "title": "7h Disney Guitar Music for Sleeping - 20 Relaxing Lullabies to Calm Down (No Mid-roll Ads)", "thumb": "https://i.ytimg.com/vi/M8eTZksAOLw/mqdefault.jpg", "dur": "7:02:55"}, {"id": "Ii8ZSfFmu34", "title": "Disney Jazz Cafe Vol. 2 ☕ BGM Instrumental Music for Studying, Working, Relaxing", "thumb": "https://i.ytimg.com/vi/Ii8ZSfFmu34/mqdefault.jpg", "dur": "31:32"}, {"id": "g98meck7-g8", "title": "The Best 70 DISNEY Songs  - 3h Relaxing Acoustic Guitar Covers for Studying, Sleeping", "thumb": "https://i.ytimg.com/vi/g98meck7-g8/mqdefault.jpg", "dur": "3:09:41"}, {"id": "e4e-tGvvpyE", "title": "Studio Ghibli Guitar Music スタジオジブリ | 1H Relaxing BGM for Sleeping & Studying", "thumb": "https://i.ytimg.com/vi/e4e-tGvvpyE/mqdefault.jpg", "dur": "1:02:15"}, {"id": "wQ8-JEaCBjA", "title": "3rd DISNEY Acoustic Guitar Collection • 1h relaxing/studying/reading music", "thumb": "https://i.ytimg.com/vi/wQ8-JEaCBjA/mqdefault.jpg", "dur": "1:02:19"}, {"id": "T-bJDxt7LmQ", "title": "Disney Jazz Cafe Vol. 1 ☕ BGM Instrumental Music for Studying, Working, Relaxing", "thumb": "https://i.ytimg.com/vi/T-bJDxt7LmQ/mqdefault.jpg", "dur": "35:03"}, {"id": "9fy1kaJD_6M", "title": "2nd DISNEY Acoustic Guitar Collection • 1h relaxing/studying/reading music", "thumb": "https://i.ytimg.com/vi/9fy1kaJD_6M/mqdefault.jpg", "dur": "1:00:03"}, {"id": "KKL4VUCXKFA", "title": "1h Acoustic Guitar Covers (Clapton, Bee Gees, Queen, The Beatles…)  Relaxing Guitar BGM for Studying", "thumb": "https://i.ytimg.com/vi/KKL4VUCXKFA/mqdefault.jpg", "dur": "1:01:28"}, {"id": "vsqpZWVd_sk", "title": "The Beatles Acoustic Guitar Collection - 1h Relaxing Music for Reading/Studying", "thumb": "https://i.ytimg.com/vi/vsqpZWVd_sk/mqdefault.jpg", "dur": "1:01:13"}, {"id": "J9hVoDI3KRc", "title": "Mornin' Coffee (Calm Guitar Collection) - Relaxing Music for Stress Relief, Studying, Sleeping", "thumb": "https://i.ytimg.com/vi/J9hVoDI3KRc/mqdefault.jpg", "dur": "1:00:56"}, {"id": "5fMzH603jzI", "title": "DISNEY Acoustic Guitar Covers from Disney Classics • Relaxing Music for Study & Reading", "thumb": "https://i.ytimg.com/vi/5fMzH603jzI/mqdefault.jpg", "dur": "1:01:54"}, {"id": "9GmdBFQ1nNk", "title": "BOSSA NOVA 1h Guitar collection • music to relax 🌸", "thumb": "https://i.ytimg.com/vi/9GmdBFQ1nNk/mqdefault.jpg", "dur": "1:01:16"}, {"id": "SPP1rqAiO1I", "title": "Movie Soundtracks on Classical Guitar – 1 Hour Relaxing Music for Studying, Sleeping & Working", "thumb": "https://i.ytimg.com/vi/SPP1rqAiO1I/mqdefault.jpg", "dur": "1:01:23"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

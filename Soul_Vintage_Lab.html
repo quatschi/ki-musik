@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Soul Vintage Lab</title>
 <!-- categories: Lounge, Soul -->
+<!-- channel-id:  -->
 <!-- channel-url: https://www.youtube.com/@soulvintagelab -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
   .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -16,13 +17,26 @@
   .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -37,216 +51,97 @@
       <div class="channel-count">30 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=TAxpfqgso1c" target="_blank">
-            <img src="https://i.ytimg.com/vi/TAxpfqgso1c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Classic Vintage Soul Funk 🌙 Warm Groove for Late Nights</span>
-                <span class="video-dur">1:11:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tqcC_Y1XuRI" target="_blank">
-            <img src="https://i.ytimg.com/vi/tqcC_Y1XuRI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Retro Soul Funk Mix 🎷 Classic Groove for Relax & Focus</span>
-                <span class="video-dur">1:11:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nDqcn0i_9Oo" target="_blank">
-            <img src="https://i.ytimg.com/vi/nDqcn0i_9Oo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Soul Funk Lounge 🌙 Smooth Analog Groove & Chill</span>
-                <span class="video-dur">1:00:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j56k75tAv8k" target="_blank">
-            <img src="https://i.ytimg.com/vi/j56k75tAv8k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Vintage Soul Funk 🎧 Elegant Groove & Lounge Vibes</span>
-                <span class="video-dur">1:01:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EOsHlzyrBfs" target="_blank">
-            <img src="https://i.ytimg.com/vi/EOsHlzyrBfs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Classic Soul Funk Groove 🎷 Midnight Vibes That Stay With You</span>
-                <span class="video-dur">59:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OjvyMdYLTO0" target="_blank">
-            <img src="https://i.ytimg.com/vi/OjvyMdYLTO0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Soul Funk 🔥 Late Night Groove You Won’t Skip</span>
-                <span class="video-dur">1:10:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=052DMGkkckk" target="_blank">
-            <img src="https://i.ytimg.com/vi/052DMGkkckk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Funky Vintage Nights 🌙 Soul Groove That Keeps You Hooked</span>
-                <span class="video-dur">1:01:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bL9-vf3wjz0" target="_blank">
-            <img src="https://i.ytimg.com/vi/bL9-vf3wjz0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Soul Funk Mix 🎧 Groove So Smooth It’s Addictive</span>
-                <span class="video-dur">1:09:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FYaXb5egMVI" target="_blank">
-            <img src="https://i.ytimg.com/vi/FYaXb5egMVI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old School Soul Funk 🔥 Warm Analog Groove That Feels Alive</span>
-                <span class="video-dur">1:08:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sMRGyOe6q5Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/sMRGyOe6q5Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Vintage Soul Funk 🌙 Midnight Lounge You’ll Get Lost In</span>
-                <span class="video-dur">1:00:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FDcktEtigUQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/FDcktEtigUQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smooth Vintage Soul Funk 🔥 Timeless Groove You’ll Replay All Night</span>
-                <span class="video-dur">1:01:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fHrtoN1nUgU" target="_blank">
-            <img src="https://i.ytimg.com/vi/fHrtoN1nUgU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Soul Funk Groove 🎷 Analog Vibes for Late Nights</span>
-                <span class="video-dur">1:12:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eP78Iw-00wg" target="_blank">
-            <img src="https://i.ytimg.com/vi/eP78Iw-00wg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Addictive Vintage Soul Funk 🔥 Classic Groove You Can’t Stop Playing</span>
-                <span class="video-dur">1:10:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DUT3wRImBU8" target="_blank">
-            <img src="https://i.ytimg.com/vi/DUT3wRImBU8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old School Soul Funk Groove 🎧 Deep Rare Groove You’ve Been Looking For</span>
-                <span class="video-dur">1:09:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HrJLJvFR9Wo" target="_blank">
-            <img src="https://i.ytimg.com/vi/HrJLJvFR9Wo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Don’t Skip This Groove… Trust Me 🎧 Ultimate Old School Soul Funk Groove 🎧</span>
-                <span class="video-dur">1:10:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=15I-JP17ppU" target="_blank">
-            <img src="https://i.ytimg.com/vi/15I-JP17ppU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Groove You Can’t Let Go Of…🔥 Old School Groove & Deep Soul Vibes</span>
-                <span class="video-dur">1:10:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pzkNCQpv2aQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/pzkNCQpv2aQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">⚡Vintage Soul Funk That Just Feels Right 🎧 Ultra Dry, Tight & Hypnotic</span>
-                <span class="video-dur">1:11:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ix8ZktJSPJI" target="_blank">
-            <img src="https://i.ytimg.com/vi/ix8ZktJSPJI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥 Vintage Soul Funk Playlist 2026   Deep Groove ✨ chill vibes</span>
-                <span class="video-dur">59:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cVyphwe8anY" target="_blank">
-            <img src="https://i.ytimg.com/vi/cVyphwe8anY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥 Vintage 70s Soul Funk Groove   Raw, Deep & Ultra Dry Vibes 🎧 relaxing music</span>
-                <span class="video-dur">1:00:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uJKhxOzVwkA" target="_blank">
-            <img src="https://i.ytimg.com/vi/uJKhxOzVwkA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🌃 Late Night Soul Streets   Vintage Soul Funk 🚗 night drive vibes</span>
-                <span class="video-dur">1:02:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nDduo0aXAcE" target="_blank">
-            <img src="https://i.ytimg.com/vi/nDduo0aXAcE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes</span>
-                <span class="video-dur">58:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Of_rBxxrV1c" target="_blank">
-            <img src="https://i.ytimg.com/vi/Of_rBxxrV1c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old School Soul Funk That Still Hits Hard</span>
-                <span class="video-dur">1:11:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DtsNRt0nko4" target="_blank">
-            <img src="https://i.ytimg.com/vi/DtsNRt0nko4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ultimate Rare Soul Funk Mix | Deep Pocket Groove</span>
-                <span class="video-dur">1:10:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GYf_DD84bGk" target="_blank">
-            <img src="https://i.ytimg.com/vi/GYf_DD84bGk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">⚡Vintage Soul Funk That Just Feels Right | Ultra-Dry, Tight & Hypnotic</span>
-                <span class="video-dur">1:02:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gD_WIeMRwGQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/gD_WIeMRwGQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Funk & Old School 70s Soul</span>
-                <span class="video-dur">1:10:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UKmBXSKWSMI" target="_blank">
-            <img src="https://i.ytimg.com/vi/UKmBXSKWSMI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes</span>
-                <span class="video-dur">1:11:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qJ-_g03BYh4" target="_blank">
-            <img src="https://i.ytimg.com/vi/qJ-_g03BYh4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Locks You in the Groove 🎧 Vintage Soul Funk Vibes</span>
-                <span class="video-dur">59:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Z6nAhsLGXbc" target="_blank">
-            <img src="https://i.ytimg.com/vi/Z6nAhsLGXbc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Raw 70s Soul Funk 🎧 Deep Rhythm & Clean Vibes</span>
-                <span class="video-dur">1:09:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=27c3kunm7Ps" target="_blank">
-            <img src="https://i.ytimg.com/vi/27c3kunm7Ps/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🌃Late Night Rhythm from the Old Soul Streets | Vintage Soul Funk</span>
-                <span class="video-dur">1:09:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=13Zz7EQaOX0" target="_blank">
-            <img src="https://i.ytimg.com/vi/13Zz7EQaOX0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥 Vintage Soul Funk Playlist 2026 | Deep Groove & Retro Funk Vibes</span>
-                <span class="video-dur">1:08:59</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Soul Vintage Lab";
+const VIDEOS = [{"id": "TAxpfqgso1c", "title": "Classic Vintage Soul Funk 🌙 Warm Groove for Late Nights", "thumb": "https://i.ytimg.com/vi/TAxpfqgso1c/mqdefault.jpg", "dur": "1:11:54"}, {"id": "tqcC_Y1XuRI", "title": "Retro Soul Funk Mix 🎷 Classic Groove for Relax & Focus", "thumb": "https://i.ytimg.com/vi/tqcC_Y1XuRI/mqdefault.jpg", "dur": "1:11:41"}, {"id": "nDqcn0i_9Oo", "title": "Vintage Soul Funk Lounge 🌙 Smooth Analog Groove & Chill", "thumb": "https://i.ytimg.com/vi/nDqcn0i_9Oo/mqdefault.jpg", "dur": "1:00:12"}, {"id": "j56k75tAv8k", "title": "Timeless Vintage Soul Funk 🎧 Elegant Groove & Lounge Vibes", "thumb": "https://i.ytimg.com/vi/j56k75tAv8k/mqdefault.jpg", "dur": "1:01:20"}, {"id": "EOsHlzyrBfs", "title": "Classic Soul Funk Groove 🎷 Midnight Vibes That Stay With You", "thumb": "https://i.ytimg.com/vi/EOsHlzyrBfs/mqdefault.jpg", "dur": "59:33"}, {"id": "OjvyMdYLTO0", "title": "Vintage Soul Funk 🔥 Late Night Groove You Won’t Skip", "thumb": "https://i.ytimg.com/vi/OjvyMdYLTO0/mqdefault.jpg", "dur": "1:10:35"}, {"id": "052DMGkkckk", "title": "Funky Vintage Nights 🌙 Soul Groove That Keeps You Hooked", "thumb": "https://i.ytimg.com/vi/052DMGkkckk/mqdefault.jpg", "dur": "1:01:26"}, {"id": "bL9-vf3wjz0", "title": "Vintage Soul Funk Mix 🎧 Groove So Smooth It’s Addictive", "thumb": "https://i.ytimg.com/vi/bL9-vf3wjz0/mqdefault.jpg", "dur": "1:09:35"}, {"id": "FYaXb5egMVI", "title": "Old School Soul Funk 🔥 Warm Analog Groove That Feels Alive", "thumb": "https://i.ytimg.com/vi/FYaXb5egMVI/mqdefault.jpg", "dur": "1:08:27"}, {"id": "sMRGyOe6q5Y", "title": "Deep Vintage Soul Funk 🌙 Midnight Lounge You’ll Get Lost In", "thumb": "https://i.ytimg.com/vi/sMRGyOe6q5Y/mqdefault.jpg", "dur": "1:00:05"}, {"id": "FDcktEtigUQ", "title": "Smooth Vintage Soul Funk 🔥 Timeless Groove You’ll Replay All Night", "thumb": "https://i.ytimg.com/vi/FDcktEtigUQ/mqdefault.jpg", "dur": "1:01:05"}, {"id": "fHrtoN1nUgU", "title": "Vintage Soul Funk Groove 🎷 Analog Vibes for Late Nights", "thumb": "https://i.ytimg.com/vi/fHrtoN1nUgU/mqdefault.jpg", "dur": "1:12:07"}, {"id": "eP78Iw-00wg", "title": "Addictive Vintage Soul Funk 🔥 Classic Groove You Can’t Stop Playing", "thumb": "https://i.ytimg.com/vi/eP78Iw-00wg/mqdefault.jpg", "dur": "1:10:29"}, {"id": "DUT3wRImBU8", "title": "Old School Soul Funk Groove 🎧 Deep Rare Groove You’ve Been Looking For", "thumb": "https://i.ytimg.com/vi/DUT3wRImBU8/mqdefault.jpg", "dur": "1:09:40"}, {"id": "HrJLJvFR9Wo", "title": "Don’t Skip This Groove… Trust Me 🎧 Ultimate Old School Soul Funk Groove 🎧", "thumb": "https://i.ytimg.com/vi/HrJLJvFR9Wo/mqdefault.jpg", "dur": "1:10:36"}, {"id": "15I-JP17ppU", "title": "A Groove You Can’t Let Go Of…🔥 Old School Groove & Deep Soul Vibes", "thumb": "https://i.ytimg.com/vi/15I-JP17ppU/mqdefault.jpg", "dur": "1:10:25"}, {"id": "pzkNCQpv2aQ", "title": "⚡Vintage Soul Funk That Just Feels Right 🎧 Ultra Dry, Tight & Hypnotic", "thumb": "https://i.ytimg.com/vi/pzkNCQpv2aQ/mqdefault.jpg", "dur": "1:11:02"}, {"id": "ix8ZktJSPJI", "title": "🔥 Vintage Soul Funk Playlist 2026   Deep Groove ✨ chill vibes", "thumb": "https://i.ytimg.com/vi/ix8ZktJSPJI/mqdefault.jpg", "dur": "59:17"}, {"id": "cVyphwe8anY", "title": "🔥 Vintage 70s Soul Funk Groove   Raw, Deep & Ultra Dry Vibes 🎧 relaxing music", "thumb": "https://i.ytimg.com/vi/cVyphwe8anY/mqdefault.jpg", "dur": "1:00:50"}, {"id": "uJKhxOzVwkA", "title": "🌃 Late Night Soul Streets   Vintage Soul Funk 🚗 night drive vibes", "thumb": "https://i.ytimg.com/vi/uJKhxOzVwkA/mqdefault.jpg", "dur": "1:02:43"}, {"id": "nDduo0aXAcE", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes", "thumb": "https://i.ytimg.com/vi/nDduo0aXAcE/mqdefault.jpg", "dur": "58:54"}, {"id": "Of_rBxxrV1c", "title": "Old School Soul Funk That Still Hits Hard", "thumb": "https://i.ytimg.com/vi/Of_rBxxrV1c/mqdefault.jpg", "dur": "1:11:10"}, {"id": "DtsNRt0nko4", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/DtsNRt0nko4/mqdefault.jpg", "dur": "1:10:33"}, {"id": "GYf_DD84bGk", "title": "⚡Vintage Soul Funk That Just Feels Right | Ultra-Dry, Tight & Hypnotic", "thumb": "https://i.ytimg.com/vi/GYf_DD84bGk/mqdefault.jpg", "dur": "1:02:41"}, {"id": "gD_WIeMRwGQ", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Funk & Old School 70s Soul", "thumb": "https://i.ytimg.com/vi/gD_WIeMRwGQ/mqdefault.jpg", "dur": "1:10:34"}, {"id": "UKmBXSKWSMI", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes", "thumb": "https://i.ytimg.com/vi/UKmBXSKWSMI/mqdefault.jpg", "dur": "1:11:56"}, {"id": "qJ-_g03BYh4", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/qJ-_g03BYh4/mqdefault.jpg", "dur": "59:53"}, {"id": "Z6nAhsLGXbc", "title": "Raw 70s Soul Funk 🎧 Deep Rhythm & Clean Vibes", "thumb": "https://i.ytimg.com/vi/Z6nAhsLGXbc/mqdefault.jpg", "dur": "1:09:45"}, {"id": "27c3kunm7Ps", "title": "🌃Late Night Rhythm from the Old Soul Streets | Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/27c3kunm7Ps/mqdefault.jpg", "dur": "1:09:54"}, {"id": "13Zz7EQaOX0", "title": "🔥 Vintage Soul Funk Playlist 2026 | Deep Groove & Retro Funk Vibes", "thumb": "https://i.ytimg.com/vi/13Zz7EQaOX0/mqdefault.jpg", "dur": "1:08:59"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

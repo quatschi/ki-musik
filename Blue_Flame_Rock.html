@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@blueflamerock -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,351 +51,97 @@
       <div class="channel-count">49 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=Enlbr_h8IRo" target="_blank">
-            <img src="https://i.ytimg.com/vi/Enlbr_h8IRo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, Eric Clapton, ZZ Top, Led Zeppelin – Classic Rock Blues Guitar Energy</span>
-                <span class="video-dur">1:12:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ExO5RwnItCw" target="_blank">
-            <img src="https://i.ytimg.com/vi/ExO5RwnItCw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SRV, Eric Clapton, Jimi Hendrix, ZZ Top – Powerful Blues Rock Guitar & Deep Vocals</span>
-                <span class="video-dur">1:13:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ATWzzHoDQ7g" target="_blank">
-            <img src="https://i.ytimg.com/vi/ATWzzHoDQ7g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ZZ Top, SRV, Eric Clapton, Jimi Hendrix – Vintage Blues Rock Guitar & Strong Vocals</span>
-                <span class="video-dur">1:13:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=y0L-AFVqBOI" target="_blank">
-            <img src="https://i.ytimg.com/vi/y0L-AFVqBOI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, Eric Clapton, ZZ Top, Led Zeppelin – Classic Rock Blues Guitar Energy</span>
-                <span class="video-dur">1:13:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WU2JRNtgnD8" target="_blank">
-            <img src="https://i.ytimg.com/vi/WU2JRNtgnD8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SRV, ZZ Top, Jimi Hendrix, Eric Clapton – Classic Blues Rock Power Riffs & Vocals</span>
-                <span class="video-dur">1:13:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L8YMtLeGZ8E" target="_blank">
-            <img src="https://i.ytimg.com/vi/L8YMtLeGZ8E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, Eric Clapton, Jimi Hendrix, SRV – Timeless Blues Rock Guitar & Voices</span>
-                <span class="video-dur">1:12:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=N-7AjnaUp3k" target="_blank">
-            <img src="https://i.ytimg.com/vi/N-7AjnaUp3k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, Jimi Hendrix, Eric Clapton, ZZ Top – Classic Blues Rock Guitar Legends</span>
-                <span class="video-dur">1:14:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2vc9RMd2O6w" target="_blank">
-            <img src="https://i.ytimg.com/vi/2vc9RMd2O6w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ZZ Top, SRV, Eric Clapton, Jimi Hendrix – Vintage Blues Rock Guitar & Strong Vocals</span>
-                <span class="video-dur">1:13:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aL9H50W9wfU" target="_blank">
-            <img src="https://i.ytimg.com/vi/aL9H50W9wfU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, Eric Clapton, SRV – Classic Blues Rock Legends Full Playlist</span>
-                <span class="video-dur">1:13:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GLzkmh-IMMI" target="_blank">
-            <img src="https://i.ytimg.com/vi/GLzkmh-IMMI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ZZ Top, Buddy Guy, Albert King – Classic Blues Rock with Heavy Guitar Groove</span>
-                <span class="video-dur">1:13:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=l3RwoO4Yz0E" target="_blank">
-            <img src="https://i.ytimg.com/vi/l3RwoO4Yz0E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BB King, Clapton, Muddy Waters – Best Blues Rock Legends for Relaxing Nights</span>
-                <span class="video-dur">1:15:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AuB0-uKG9gc" target="_blank">
-            <img src="https://i.ytimg.com/vi/AuB0-uKG9gc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stevie Ray Vaughan, Hendrix, Buddy Guy – Powerful Blues Rock Guitar Anthems</span>
-                <span class="video-dur">1:14:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bbSHzlV3wJw" target="_blank">
-            <img src="https://i.ytimg.com/vi/bbSHzlV3wJw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Eric Clapton, ZZ Top, BB King – Classic Rock Blues with Strong Vocal Energy</span>
-                <span class="video-dur">1:12:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Cr52N5hqxd0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Cr52N5hqxd0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Muddy Waters, Clapton, Albert King – Legendary Blues Rock Guitar & Vocal Mix</span>
-                <span class="video-dur">1:14:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wA03ZWavwnA" target="_blank">
-            <img src="https://i.ytimg.com/vi/wA03ZWavwnA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ZZ Top, Buddy Guy, Albert King – Classic Blues Rock with Heavy Guitar Groove</span>
-                <span class="video-dur">1:13:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cztkCmH5WXE" target="_blank">
-            <img src="https://i.ytimg.com/vi/cztkCmH5WXE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, Buddy Guy, Clapton – Electric Blues Rock Guitar Heroes Collection</span>
-                <span class="video-dur">1:12:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1LwohaMlzFs" target="_blank">
-            <img src="https://i.ytimg.com/vi/1LwohaMlzFs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stevie Ray Vaughan, Hendrix, Buddy Guy – Powerful Blues Rock Guitar Anthems</span>
-                <span class="video-dur">1:13:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0s781EZAN7c" target="_blank">
-            <img src="https://i.ytimg.com/vi/0s781EZAN7c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Eric Clapton, ZZ Top, BB King – Classic Rock Blues with Strong Vocal Energy</span>
-                <span class="video-dur">1:12:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gpFxBVvKTKI" target="_blank">
-            <img src="https://i.ytimg.com/vi/gpFxBVvKTKI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Power Blues Rock Guitar Riffs 🎸🔥 | Janis Joplin, ZZ Top, Led Zeppelin Style Playlist</span>
-                <span class="video-dur">1:12:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mhfp2OI5Hrs" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mhfp2OI5Hrs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits</span>
-                <span class="video-dur">1:14:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bz5wtmdW6JU" target="_blank">
-            <img src="https://i.ytimg.com/vi/bz5wtmdW6JU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:13:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-61uBC-ETuw" target="_blank">
-            <img src="https://i.ytimg.com/vi/-61uBC-ETuw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits</span>
-                <span class="video-dur">1:13:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZdkR0cNogIk" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZdkR0cNogIk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:13:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cIcVWd9S-ps" target="_blank">
-            <img src="https://i.ytimg.com/vi/cIcVWd9S-ps/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Amy Winehouse 🎤 Riff Gitar Rock Blues Lambat | Whiskey Blues</span>
-                <span class="video-dur">1:12:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Pi4r5Vhq9kY" target="_blank">
-            <img src="https://i.ytimg.com/vi/Pi4r5Vhq9kY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Etta James, Amy Winehouse, Janis Joplin Style 🎸 Slow Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:14:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XLII5JIAp3M" target="_blank">
-            <img src="https://i.ytimg.com/vi/XLII5JIAp3M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Led Zeppelin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:06:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iBCmO-9-5YM" target="_blank">
-            <img src="https://i.ytimg.com/vi/iBCmO-9-5YM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Amy Winehouse, Janis Joplin, Etta James Style 🎤 Slow Blues Rock Guitar Riffs | Lonely Whiskey Blues</span>
-                <span class="video-dur">1:16:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HT54oDp1RPA" target="_blank">
-            <img src="https://i.ytimg.com/vi/HT54oDp1RPA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs | Whiskey Night Vibes</span>
-                <span class="video-dur">1:17:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zXGX1a11xvw" target="_blank">
-            <img src="https://i.ytimg.com/vi/zXGX1a11xvw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:16:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ls76RqvPdsk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ls76RqvPdsk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Power Blues Rock Guitar Riffs 🎸🔥 | Janis Joplin, ZZ Top, Led Zeppelin Style Playlist</span>
-                <span class="video-dur">1:17:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xxsbDq5r4cY" target="_blank">
-            <img src="https://i.ytimg.com/vi/xxsbDq5r4cY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix</span>
-                <span class="video-dur">1:18:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KjislhrS-O8" target="_blank">
-            <img src="https://i.ytimg.com/vi/KjislhrS-O8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits</span>
-                <span class="video-dur">1:16:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yWDFabyeTsY" target="_blank">
-            <img src="https://i.ytimg.com/vi/yWDFabyeTsY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs | Whiskey Night Vibes</span>
-                <span class="video-dur">1:17:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TchH-F7RFqE" target="_blank">
-            <img src="https://i.ytimg.com/vi/TchH-F7RFqE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs</span>
-                <span class="video-dur">1:13:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PzfmNEUIshc" target="_blank">
-            <img src="https://i.ytimg.com/vi/PzfmNEUIshc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Led Zeppelin, Amy Winehouse Style 🎸 Deep Blues Rock Guitar Session</span>
-                <span class="video-dur">1:13:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BGAyGP9PlDQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/BGAyGP9PlDQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix</span>
-                <span class="video-dur">1:13:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=N_kIkTCan9Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/N_kIkTCan9Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Amy Winehouse, Janis Joplin, Etta James Inspired 🎸 Slow Blues Rock Guitar Session</span>
-                <span class="video-dur">1:13:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=o3Gku3Fj8Vk" target="_blank">
-            <img src="https://i.ytimg.com/vi/o3Gku3Fj8Vk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 Slow Blues Rock Vibes</span>
-                <span class="video-dur">1:13:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5SvhjgdNz20" target="_blank">
-            <img src="https://i.ytimg.com/vi/5SvhjgdNz20/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Janis Joplin, Etta James, Amy Winehouse Style 🎸 Blues Rock Guitar Night Vibes</span>
-                <span class="video-dur">1:13:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8z9oFMoQ5ZE" target="_blank">
-            <img src="https://i.ytimg.com/vi/8z9oFMoQ5ZE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Etta James, Amy Winehouse, Janis Joplin Style 🎸 Deep Blues Rock Guitar Vibes</span>
-                <span class="video-dur">1:14:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hTWyEMmVUZY" target="_blank">
-            <img src="https://i.ytimg.com/vi/hTWyEMmVUZY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix</span>
-                <span class="video-dur">1:13:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qWlY4OqTvTU" target="_blank">
-            <img src="https://i.ytimg.com/vi/qWlY4OqTvTU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy</span>
-                <span class="video-dur">1:21:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qDYhXGKDC-k" target="_blank">
-            <img src="https://i.ytimg.com/vi/qDYhXGKDC-k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AC/DC, ZZ Top, Stevie Ray Vaughan – Blues Rock Energy & Heavy Guitar Legends</span>
-                <span class="video-dur">1:21:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pquogUVvRo4" target="_blank">
-            <img src="https://i.ytimg.com/vi/pquogUVvRo4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy</span>
-                <span class="video-dur">1:20:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Z10k4BvPenQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/Z10k4BvPenQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, AC/DC, Led Zeppelin – Timeless Blues Rock Guitar Heroes & Raspy Voices</span>
-                <span class="video-dur">1:23:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=asUBxfTvWxA" target="_blank">
-            <img src="https://i.ytimg.com/vi/asUBxfTvWxA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AC/DC, ZZ Top, Stevie Ray Vaughan – Blues Rock Energy & Heavy Guitar Legends</span>
-                <span class="video-dur">1:23:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ewnayt0nljg" target="_blank">
-            <img src="https://i.ytimg.com/vi/ewnayt0nljg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Eric Clapton, Led Zeppelin, Jimi Hendrix – Classic Blues Rock Hits & Powerful Guitar Vibes</span>
-                <span class="video-dur">1:22:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Zsnips49HjI" target="_blank">
-            <img src="https://i.ytimg.com/vi/Zsnips49HjI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy</span>
-                <span class="video-dur">1:23:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qn-uZAyCNZA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qn-uZAyCNZA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jimi Hendrix, AC/DC, Led Zeppelin – Timeless Blues Rock Guitar Heroes & Raspy Voices</span>
-                <span class="video-dur">1:22:22</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Blue Flame Rock";
+const VIDEOS = [{"id": "Enlbr_h8IRo", "title": "Jimi Hendrix, Eric Clapton, ZZ Top, Led Zeppelin – Classic Rock Blues Guitar Energy", "thumb": "https://i.ytimg.com/vi/Enlbr_h8IRo/mqdefault.jpg", "dur": "1:12:47"}, {"id": "ExO5RwnItCw", "title": "SRV, Eric Clapton, Jimi Hendrix, ZZ Top – Powerful Blues Rock Guitar & Deep Vocals", "thumb": "https://i.ytimg.com/vi/ExO5RwnItCw/mqdefault.jpg", "dur": "1:13:30"}, {"id": "ATWzzHoDQ7g", "title": "ZZ Top, SRV, Eric Clapton, Jimi Hendrix – Vintage Blues Rock Guitar & Strong Vocals", "thumb": "https://i.ytimg.com/vi/ATWzzHoDQ7g/mqdefault.jpg", "dur": "1:13:20"}, {"id": "y0L-AFVqBOI", "title": "Jimi Hendrix, Eric Clapton, ZZ Top, Led Zeppelin – Classic Rock Blues Guitar Energy", "thumb": "https://i.ytimg.com/vi/y0L-AFVqBOI/mqdefault.jpg", "dur": "1:13:02"}, {"id": "WU2JRNtgnD8", "title": "SRV, ZZ Top, Jimi Hendrix, Eric Clapton – Classic Blues Rock Power Riffs & Vocals", "thumb": "https://i.ytimg.com/vi/WU2JRNtgnD8/mqdefault.jpg", "dur": "1:13:48"}, {"id": "L8YMtLeGZ8E", "title": "Led Zeppelin, Eric Clapton, Jimi Hendrix, SRV – Timeless Blues Rock Guitar & Voices", "thumb": "https://i.ytimg.com/vi/L8YMtLeGZ8E/mqdefault.jpg", "dur": "1:12:23"}, {"id": "N-7AjnaUp3k", "title": "Led Zeppelin, Jimi Hendrix, Eric Clapton, ZZ Top – Classic Blues Rock Guitar Legends", "thumb": "https://i.ytimg.com/vi/N-7AjnaUp3k/mqdefault.jpg", "dur": "1:14:13"}, {"id": "2vc9RMd2O6w", "title": "ZZ Top, SRV, Eric Clapton, Jimi Hendrix – Vintage Blues Rock Guitar & Strong Vocals", "thumb": "https://i.ytimg.com/vi/2vc9RMd2O6w/mqdefault.jpg", "dur": "1:13:46"}, {"id": "aL9H50W9wfU", "title": "Jimi Hendrix, Eric Clapton, SRV – Classic Blues Rock Legends Full Playlist", "thumb": "https://i.ytimg.com/vi/aL9H50W9wfU/mqdefault.jpg", "dur": "1:13:12"}, {"id": "GLzkmh-IMMI", "title": "ZZ Top, Buddy Guy, Albert King – Classic Blues Rock with Heavy Guitar Groove", "thumb": "https://i.ytimg.com/vi/GLzkmh-IMMI/mqdefault.jpg", "dur": "1:13:17"}, {"id": "l3RwoO4Yz0E", "title": "BB King, Clapton, Muddy Waters – Best Blues Rock Legends for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/l3RwoO4Yz0E/mqdefault.jpg", "dur": "1:15:01"}, {"id": "AuB0-uKG9gc", "title": "Stevie Ray Vaughan, Hendrix, Buddy Guy – Powerful Blues Rock Guitar Anthems", "thumb": "https://i.ytimg.com/vi/AuB0-uKG9gc/mqdefault.jpg", "dur": "1:14:11"}, {"id": "bbSHzlV3wJw", "title": "Eric Clapton, ZZ Top, BB King – Classic Rock Blues with Strong Vocal Energy", "thumb": "https://i.ytimg.com/vi/bbSHzlV3wJw/mqdefault.jpg", "dur": "1:12:50"}, {"id": "Cr52N5hqxd0", "title": "Muddy Waters, Clapton, Albert King – Legendary Blues Rock Guitar & Vocal Mix", "thumb": "https://i.ytimg.com/vi/Cr52N5hqxd0/mqdefault.jpg", "dur": "1:14:22"}, {"id": "wA03ZWavwnA", "title": "ZZ Top, Buddy Guy, Albert King – Classic Blues Rock with Heavy Guitar Groove", "thumb": "https://i.ytimg.com/vi/wA03ZWavwnA/mqdefault.jpg", "dur": "1:13:12"}, {"id": "cztkCmH5WXE", "title": "Jimi Hendrix, Buddy Guy, Clapton – Electric Blues Rock Guitar Heroes Collection", "thumb": "https://i.ytimg.com/vi/cztkCmH5WXE/mqdefault.jpg", "dur": "1:12:48"}, {"id": "1LwohaMlzFs", "title": "Stevie Ray Vaughan, Hendrix, Buddy Guy – Powerful Blues Rock Guitar Anthems", "thumb": "https://i.ytimg.com/vi/1LwohaMlzFs/mqdefault.jpg", "dur": "1:13:48"}, {"id": "0s781EZAN7c", "title": "Eric Clapton, ZZ Top, BB King – Classic Rock Blues with Strong Vocal Energy", "thumb": "https://i.ytimg.com/vi/0s781EZAN7c/mqdefault.jpg", "dur": "1:12:07"}, {"id": "gpFxBVvKTKI", "title": "Best Power Blues Rock Guitar Riffs 🎸🔥 | Janis Joplin, ZZ Top, Led Zeppelin Style Playlist", "thumb": "https://i.ytimg.com/vi/gpFxBVvKTKI/mqdefault.jpg", "dur": "1:12:57"}, {"id": "Mhfp2OI5Hrs", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/Mhfp2OI5Hrs/mqdefault.jpg", "dur": "1:14:39"}, {"id": "bz5wtmdW6JU", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/bz5wtmdW6JU/mqdefault.jpg", "dur": "1:13:16"}, {"id": "-61uBC-ETuw", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/-61uBC-ETuw/mqdefault.jpg", "dur": "1:13:29"}, {"id": "ZdkR0cNogIk", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/ZdkR0cNogIk/mqdefault.jpg", "dur": "1:13:21"}, {"id": "cIcVWd9S-ps", "title": "Janis Joplin, Etta James, Amy Winehouse 🎤 Riff Gitar Rock Blues Lambat | Whiskey Blues", "thumb": "https://i.ytimg.com/vi/cIcVWd9S-ps/mqdefault.jpg", "dur": "1:12:56"}, {"id": "Pi4r5Vhq9kY", "title": "Etta James, Amy Winehouse, Janis Joplin Style 🎸 Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/Pi4r5Vhq9kY/mqdefault.jpg", "dur": "1:14:02"}, {"id": "XLII5JIAp3M", "title": "Janis Joplin, Led Zeppelin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/XLII5JIAp3M/mqdefault.jpg", "dur": "1:06:01"}, {"id": "iBCmO-9-5YM", "title": "Amy Winehouse, Janis Joplin, Etta James Style 🎤 Slow Blues Rock Guitar Riffs | Lonely Whiskey Blues", "thumb": "https://i.ytimg.com/vi/iBCmO-9-5YM/mqdefault.jpg", "dur": "1:16:51"}, {"id": "HT54oDp1RPA", "title": "Janis Joplin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs | Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/HT54oDp1RPA/mqdefault.jpg", "dur": "1:17:42"}, {"id": "zXGX1a11xvw", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/zXGX1a11xvw/mqdefault.jpg", "dur": "1:16:53"}, {"id": "Ls76RqvPdsk", "title": "Best Power Blues Rock Guitar Riffs 🎸🔥 | Janis Joplin, ZZ Top, Led Zeppelin Style Playlist", "thumb": "https://i.ytimg.com/vi/Ls76RqvPdsk/mqdefault.jpg", "dur": "1:17:48"}, {"id": "xxsbDq5r4cY", "title": "Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix", "thumb": "https://i.ytimg.com/vi/xxsbDq5r4cY/mqdefault.jpg", "dur": "1:18:17"}, {"id": "KjislhrS-O8", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/KjislhrS-O8/mqdefault.jpg", "dur": "1:16:17"}, {"id": "yWDFabyeTsY", "title": "Janis Joplin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs | Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/yWDFabyeTsY/mqdefault.jpg", "dur": "1:17:12"}, {"id": "TchH-F7RFqE", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/TchH-F7RFqE/mqdefault.jpg", "dur": "1:13:47"}, {"id": "PzfmNEUIshc", "title": "Janis Joplin, Led Zeppelin, Amy Winehouse Style 🎸 Deep Blues Rock Guitar Session", "thumb": "https://i.ytimg.com/vi/PzfmNEUIshc/mqdefault.jpg", "dur": "1:13:27"}, {"id": "BGAyGP9PlDQ", "title": "Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix", "thumb": "https://i.ytimg.com/vi/BGAyGP9PlDQ/mqdefault.jpg", "dur": "1:13:59"}, {"id": "N_kIkTCan9Q", "title": "Amy Winehouse, Janis Joplin, Etta James Inspired 🎸 Slow Blues Rock Guitar Session", "thumb": "https://i.ytimg.com/vi/N_kIkTCan9Q/mqdefault.jpg", "dur": "1:13:14"}, {"id": "o3Gku3Fj8Vk", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 Slow Blues Rock Vibes", "thumb": "https://i.ytimg.com/vi/o3Gku3Fj8Vk/mqdefault.jpg", "dur": "1:13:50"}, {"id": "5SvhjgdNz20", "title": "Janis Joplin, Etta James, Amy Winehouse Style 🎸 Blues Rock Guitar Night Vibes", "thumb": "https://i.ytimg.com/vi/5SvhjgdNz20/mqdefault.jpg", "dur": "1:13:30"}, {"id": "8z9oFMoQ5ZE", "title": "Etta James, Amy Winehouse, Janis Joplin Style 🎸 Deep Blues Rock Guitar Vibes", "thumb": "https://i.ytimg.com/vi/8z9oFMoQ5ZE/mqdefault.jpg", "dur": "1:14:37"}, {"id": "hTWyEMmVUZY", "title": "Led Zeppelin, Janis Joplin, Amy Winehouse Style 🎸 Smooth Blues Rock Guitar Mix", "thumb": "https://i.ytimg.com/vi/hTWyEMmVUZY/mqdefault.jpg", "dur": "1:13:25"}, {"id": "qWlY4OqTvTU", "title": "Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy", "thumb": "https://i.ytimg.com/vi/qWlY4OqTvTU/mqdefault.jpg", "dur": "1:21:18"}, {"id": "qDYhXGKDC-k", "title": "AC/DC, ZZ Top, Stevie Ray Vaughan – Blues Rock Energy & Heavy Guitar Legends", "thumb": "https://i.ytimg.com/vi/qDYhXGKDC-k/mqdefault.jpg", "dur": "1:21:29"}, {"id": "pquogUVvRo4", "title": "Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy", "thumb": "https://i.ytimg.com/vi/pquogUVvRo4/mqdefault.jpg", "dur": "1:20:57"}, {"id": "Z10k4BvPenQ", "title": "Jimi Hendrix, AC/DC, Led Zeppelin – Timeless Blues Rock Guitar Heroes & Raspy Voices", "thumb": "https://i.ytimg.com/vi/Z10k4BvPenQ/mqdefault.jpg", "dur": "1:23:40"}, {"id": "asUBxfTvWxA", "title": "AC/DC, ZZ Top, Stevie Ray Vaughan – Blues Rock Energy & Heavy Guitar Legends", "thumb": "https://i.ytimg.com/vi/asUBxfTvWxA/mqdefault.jpg", "dur": "1:23:07"}, {"id": "ewnayt0nljg", "title": "Eric Clapton, Led Zeppelin, Jimi Hendrix – Classic Blues Rock Hits & Powerful Guitar Vibes", "thumb": "https://i.ytimg.com/vi/ewnayt0nljg/mqdefault.jpg", "dur": "1:22:23"}, {"id": "Zsnips49HjI", "title": "Led Zeppelin, AC/DC, Stevie Ray Vaughan – Blues Rock Power Guitar & Raw Vocal Energy", "thumb": "https://i.ytimg.com/vi/Zsnips49HjI/mqdefault.jpg", "dur": "1:23:00"}, {"id": "Qn-uZAyCNZA", "title": "Jimi Hendrix, AC/DC, Led Zeppelin – Timeless Blues Rock Guitar Heroes & Raspy Voices", "thumb": "https://i.ytimg.com/vi/Qn-uZAyCNZA/mqdefault.jpg", "dur": "1:22:22"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

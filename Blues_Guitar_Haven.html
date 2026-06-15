@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@BluesGuitarHaven -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,169 +51,97 @@
       <div class="channel-count">23 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=LGPD1glVvb4" target="_blank">
-            <img src="https://i.ytimg.com/vi/LGPD1glVvb4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3AM Midnight Lonely Blues 🌙 Deep Emotional Slow Blues Guitar - Heart Healing 1 Hour</span>
-                <span class="video-dur">1:07:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4Ghj0brrdgM" target="_blank">
-            <img src="https://i.ytimg.com/vi/4Ghj0brrdgM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3AM Deep Emotional Slow Blues Guitar | Whiskey Tears Late Night Lounge - Heart Healing Instrumental</span>
-                <span class="video-dur">1:05:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LzXtwdn_zPU" target="_blank">
-            <img src="https://i.ytimg.com/vi/LzXtwdn_zPU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rainy Night Heartbreak Blues Guitar | Deep Emotional Slow Blues Instrumental for Lonely Souls 2026</span>
-                <span class="video-dur">1:06:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_frRJ1XURrc" target="_blank">
-            <img src="https://i.ytimg.com/vi/_frRJ1XURrc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🔥 Fireplace Whiskey Blues 🔥 Deep Emotional Slow Blues Guitar | Blues Guitar Haven</span>
-                <span class="video-dur">1:06:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hMD3D5mauhg" target="_blank">
-            <img src="https://i.ytimg.com/vi/hMD3D5mauhg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hands of Heartbreak 💔 Deep Emotional Slow Blues Guitar - Lonely Night Healing Instrumental 1 Hour</span>
-                <span class="video-dur">1:00:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4ob7saIEQDk" target="_blank">
-            <img src="https://i.ytimg.com/vi/4ob7saIEQDk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey Smoke Bar 🌫️ Deep Emotional Slow Blues Guitar - Lonely Night Healing Instrumental 1 Hour</span>
-                <span class="video-dur">1:07:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Zs_hJb0Ga60" target="_blank">
-            <img src="https://i.ytimg.com/vi/Zs_hJb0Ga60/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3AM Whiskey Tears 🌧️ Deep Emotional Slow Blues Guitar - Heart Healing Instrumental 1 Hour</span>
-                <span class="video-dur">1:06:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1Zm4mUMj8Eg" target="_blank">
-            <img src="https://i.ytimg.com/vi/1Zm4mUMj8Eg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 2026 🌧️ Whiskey Blues Healing</span>
-                <span class="video-dur">59:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AONaO5rEi48" target="_blank">
-            <img src="https://i.ytimg.com/vi/AONaO5rEi48/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Warm Blues for Lonely Nights | Healing Old Memories - 1 Hours Instrumental</span>
-                <span class="video-dur">1:04:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eMUa3dfyBI8" target="_blank">
-            <img src="https://i.ytimg.com/vi/eMUa3dfyBI8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Neon Rainy Night Blues Guitar | Whiskey Tears Blues Alley (1 Hour) | Blues Guitar Haven</span>
-                <span class="video-dur">1:03:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tZBL8-9vAkc" target="_blank">
-            <img src="https://i.ytimg.com/vi/tZBL8-9vAkc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rainy Night Slow Blues Guitar | Whiskey Tears & Heart Healing Instrumental | Blues Guitar Haven</span>
-                <span class="video-dur">1:06:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MgINHX2Avb8" target="_blank">
-            <img src="https://i.ytimg.com/vi/MgINHX2Avb8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 1 Hour 🌙 Neon Midnight Tears & Heart Healing Instrumental 2026</span>
-                <span class="video-dur">1:06:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cNdH0L0MSJk" target="_blank">
-            <img src="https://i.ytimg.com/vi/cNdH0L0MSJk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">🎸 Midnight Blues Guitar | Deep Emotional Slow Blues for Lonely Nights & Relaxation</span>
-                <span class="video-dur">1:02:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FcY0TAsgnks" target="_blank">
-            <img src="https://i.ytimg.com/vi/FcY0TAsgnks/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Blues Guitar Lounge🌙 Late Night Relaxing Music for Focus & Driving</span>
-                <span class="video-dur">1:05:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=C_hc83tpf24" target="_blank">
-            <img src="https://i.ytimg.com/vi/C_hc83tpf24/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 1 Hour 🌙 Live Stage Heart Healing Instrumental 2026</span>
-                <span class="video-dur">1:01:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LGqgnqJqLIw" target="_blank">
-            <img src="https://i.ytimg.com/vi/LGqgnqJqLIw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 1 Hour 🌙 3 AM Lonely Heart Healing Instrumental 2026</span>
-                <span class="video-dur">1:02:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LufpdD3t9JA" target="_blank">
-            <img src="https://i.ytimg.com/vi/LufpdD3t9JA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Calm Blues Guitar for Quiet Evenings & Inner Stillness</span>
-                <span class="video-dur">1:02:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=45k0eqeOJQA" target="_blank">
-            <img src="https://i.ytimg.com/vi/45k0eqeOJQA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 🌙 Midnight Lonely Blues 2026</span>
-                <span class="video-dur">1:11:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EmirvKY1G7M" target="_blank">
-            <img src="https://i.ytimg.com/vi/EmirvKY1G7M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Slow Blues Guitar 🌧️ 1 Hour Rainy Night Healing Music</span>
-                <span class="video-dur">1:01:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YrHZ_vqDZp0" target="_blank">
-            <img src="https://i.ytimg.com/vi/YrHZ_vqDZp0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deeply Emotional Blues Guitar Vol. 1 🌙 Slow Blues Instrumental for Lonely Nights & Heart Healing</span>
-                <span class="video-dur">1:06:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=chFypX1fHX0" target="_blank">
-            <img src="https://i.ytimg.com/vi/chFypX1fHX0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Whiskey Blues 2026 🌙 1 Hour Deep Emotional Slow Blues Guitar Instrumental for Healing Soul</span>
-                <span class="video-dur">1:06:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rYCanELp5vQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/rYCanELp5vQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deeply Emotional Blues Guitar 26 - Slow Blues | The Fading Glow of a Warm Vacuum Tube at 3 AM</span>
-                <span class="video-dur">1:04:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tsQvtNrTt_o" target="_blank">
-            <img src="https://i.ytimg.com/vi/tsQvtNrTt_o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deeply Emotional Blues Guitar | Blues Echoes in a Silent Alley</span>
-                <span class="video-dur">1:03:59</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Blues Guitar Haven";
+const VIDEOS = [{"id": "LGPD1glVvb4", "title": "3AM Midnight Lonely Blues 🌙 Deep Emotional Slow Blues Guitar - Heart Healing 1 Hour", "thumb": "https://i.ytimg.com/vi/LGPD1glVvb4/mqdefault.jpg", "dur": "1:07:21"}, {"id": "4Ghj0brrdgM", "title": "3AM Deep Emotional Slow Blues Guitar | Whiskey Tears Late Night Lounge - Heart Healing Instrumental", "thumb": "https://i.ytimg.com/vi/4Ghj0brrdgM/mqdefault.jpg", "dur": "1:05:27"}, {"id": "LzXtwdn_zPU", "title": "Rainy Night Heartbreak Blues Guitar | Deep Emotional Slow Blues Instrumental for Lonely Souls 2026", "thumb": "https://i.ytimg.com/vi/LzXtwdn_zPU/mqdefault.jpg", "dur": "1:06:41"}, {"id": "_frRJ1XURrc", "title": "🔥 Fireplace Whiskey Blues 🔥 Deep Emotional Slow Blues Guitar | Blues Guitar Haven", "thumb": "https://i.ytimg.com/vi/_frRJ1XURrc/mqdefault.jpg", "dur": "1:06:07"}, {"id": "hMD3D5mauhg", "title": "Hands of Heartbreak 💔 Deep Emotional Slow Blues Guitar - Lonely Night Healing Instrumental 1 Hour", "thumb": "https://i.ytimg.com/vi/hMD3D5mauhg/mqdefault.jpg", "dur": "1:00:16"}, {"id": "4ob7saIEQDk", "title": "Whiskey Smoke Bar 🌫️ Deep Emotional Slow Blues Guitar - Lonely Night Healing Instrumental 1 Hour", "thumb": "https://i.ytimg.com/vi/4ob7saIEQDk/mqdefault.jpg", "dur": "1:07:34"}, {"id": "Zs_hJb0Ga60", "title": "3AM Whiskey Tears 🌧️ Deep Emotional Slow Blues Guitar - Heart Healing Instrumental 1 Hour", "thumb": "https://i.ytimg.com/vi/Zs_hJb0Ga60/mqdefault.jpg", "dur": "1:06:33"}, {"id": "1Zm4mUMj8Eg", "title": "Deep Emotional Slow Blues Guitar 2026 🌧️ Whiskey Blues Healing", "thumb": "https://i.ytimg.com/vi/1Zm4mUMj8Eg/mqdefault.jpg", "dur": "59:40"}, {"id": "AONaO5rEi48", "title": "Deep Warm Blues for Lonely Nights | Healing Old Memories - 1 Hours Instrumental", "thumb": "https://i.ytimg.com/vi/AONaO5rEi48/mqdefault.jpg", "dur": "1:04:05"}, {"id": "eMUa3dfyBI8", "title": "Neon Rainy Night Blues Guitar | Whiskey Tears Blues Alley (1 Hour) | Blues Guitar Haven", "thumb": "https://i.ytimg.com/vi/eMUa3dfyBI8/mqdefault.jpg", "dur": "1:03:45"}, {"id": "tZBL8-9vAkc", "title": "Rainy Night Slow Blues Guitar | Whiskey Tears & Heart Healing Instrumental | Blues Guitar Haven", "thumb": "https://i.ytimg.com/vi/tZBL8-9vAkc/mqdefault.jpg", "dur": "1:06:43"}, {"id": "MgINHX2Avb8", "title": "Deep Emotional Slow Blues Guitar 1 Hour 🌙 Neon Midnight Tears & Heart Healing Instrumental 2026", "thumb": "https://i.ytimg.com/vi/MgINHX2Avb8/mqdefault.jpg", "dur": "1:06:08"}, {"id": "cNdH0L0MSJk", "title": "🎸 Midnight Blues Guitar | Deep Emotional Slow Blues for Lonely Nights & Relaxation", "thumb": "https://i.ytimg.com/vi/cNdH0L0MSJk/mqdefault.jpg", "dur": "1:02:14"}, {"id": "FcY0TAsgnks", "title": "Slow Blues Guitar Lounge🌙 Late Night Relaxing Music for Focus & Driving", "thumb": "https://i.ytimg.com/vi/FcY0TAsgnks/mqdefault.jpg", "dur": "1:05:14"}, {"id": "C_hc83tpf24", "title": "Deep Emotional Slow Blues Guitar 1 Hour 🌙 Live Stage Heart Healing Instrumental 2026", "thumb": "https://i.ytimg.com/vi/C_hc83tpf24/mqdefault.jpg", "dur": "1:01:21"}, {"id": "LGqgnqJqLIw", "title": "Deep Emotional Slow Blues Guitar 1 Hour 🌙 3 AM Lonely Heart Healing Instrumental 2026", "thumb": "https://i.ytimg.com/vi/LGqgnqJqLIw/mqdefault.jpg", "dur": "1:02:46"}, {"id": "LufpdD3t9JA", "title": "Calm Blues Guitar for Quiet Evenings & Inner Stillness", "thumb": "https://i.ytimg.com/vi/LufpdD3t9JA/mqdefault.jpg", "dur": "1:02:19"}, {"id": "45k0eqeOJQA", "title": "Deep Emotional Slow Blues Guitar 🌙 Midnight Lonely Blues 2026", "thumb": "https://i.ytimg.com/vi/45k0eqeOJQA/mqdefault.jpg", "dur": "1:11:56"}, {"id": "EmirvKY1G7M", "title": "Deep Emotional Slow Blues Guitar 🌧️ 1 Hour Rainy Night Healing Music", "thumb": "https://i.ytimg.com/vi/EmirvKY1G7M/mqdefault.jpg", "dur": "1:01:27"}, {"id": "YrHZ_vqDZp0", "title": "Deeply Emotional Blues Guitar Vol. 1 🌙 Slow Blues Instrumental for Lonely Nights & Heart Healing", "thumb": "https://i.ytimg.com/vi/YrHZ_vqDZp0/mqdefault.jpg", "dur": "1:06:14"}, {"id": "chFypX1fHX0", "title": "Midnight Whiskey Blues 2026 🌙 1 Hour Deep Emotional Slow Blues Guitar Instrumental for Healing Soul", "thumb": "https://i.ytimg.com/vi/chFypX1fHX0/mqdefault.jpg", "dur": "1:06:01"}, {"id": "rYCanELp5vQ", "title": "Deeply Emotional Blues Guitar 26 - Slow Blues | The Fading Glow of a Warm Vacuum Tube at 3 AM", "thumb": "https://i.ytimg.com/vi/rYCanELp5vQ/mqdefault.jpg", "dur": "1:04:48"}, {"id": "tsQvtNrTt_o", "title": "Deeply Emotional Blues Guitar | Blues Echoes in a Silent Alley", "thumb": "https://i.ytimg.com/vi/tsQvtNrTt_o/mqdefault.jpg", "dur": "1:03:59"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

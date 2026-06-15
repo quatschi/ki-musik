@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@saxoelegant-hw2pn -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,652 +51,97 @@
       <div class="channel-count">92 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=tfMzgW7QY5Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/tfMzgW7QY5Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxing Saxophone Therapy | SMOOTH LOUNGE JAZZ WITH NATURE |Deep Calm Music for Stress Relief</span>
-                <span class="video-dur">4:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YMohCpS4Cl4" target="_blank">
-            <img src="https://i.ytimg.com/vi/YMohCpS4Cl4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">PLAYLIST SMOOTH LOUNGE JAZZ WITH NATURE | Relaxing Saxophone Therapy | Calm Music for Stress Relief</span>
-                <span class="video-dur">1:09:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9jLNy00cFoQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/9jLNy00cFoQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH LOUNGE JAZZ WITH NATURE | Relaxing Saxophone Therapy | Deep Calm Music for Stress Relief</span>
-                <span class="video-dur">4:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cjSYEejZ71E" target="_blank">
-            <img src="https://i.ytimg.com/vi/cjSYEejZ71E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Chill Lounge - Deep Relax Jazz Therapy - Vibes Luxury Chill Music for Relaxation</span>
-                <span class="video-dur">2:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=31BHuhx5fGg" target="_blank">
-            <img src="https://i.ytimg.com/vi/31BHuhx5fGg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Relax Jazz Therapy with Saxophone Lounge - Vibes Luxury Chill Music for Stress Relief</span>
-                <span class="video-dur">3:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rliR3d2mJHI" target="_blank">
-            <img src="https://i.ytimg.com/vi/rliR3d2mJHI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Chillout Lounge 2026 | Saxophone Romantic Instrumental - Deep Calm Music for Stress Relief</span>
-                <span class="video-dur">1:03:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JF_2RfNO2kM" target="_blank">
-            <img src="https://i.ytimg.com/vi/JF_2RfNO2kM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Relax Jazz Therapy - Vibes Luxury Chill Music for Relaxation | Saxophone Lounge</span>
-                <span class="video-dur">2:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cLq1XTF1UeE" target="_blank">
-            <img src="https://i.ytimg.com/vi/cLq1XTF1UeE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ambient Chillout & Beach Vibes for Ultimate Mind Relaxation Relax - Saxophone Jazz Lounge Music</span>
-                <span class="video-dur">3:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AgNoG1He7TQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/AgNoG1He7TQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Jazz Lounge Music | Chillout Music & Beach Vibes for Ultimate Mind Relaxation Relax</span>
-                <span class="video-dur">3:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Mms6hi9L-_M" target="_blank">
-            <img src="https://i.ytimg.com/vi/Mms6hi9L-_M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH LOUNGE JAZZ | Relaxing Therapy with beautiful nature | Deep Calm Music for Stress Relief</span>
-                <span class="video-dur">3:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NWAmhmQgie4" target="_blank">
-            <img src="https://i.ytimg.com/vi/NWAmhmQgie4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH LOUNGE JAZZ | Relaxing Saxophone  music & Smooth Deep Chill Vibes for Stress Relief</span>
-                <span class="video-dur">3:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=B_ghy8mZOb0" target="_blank">
-            <img src="https://i.ytimg.com/vi/B_ghy8mZOb0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">5-MINUTE RESET CHILLOUT MUSIC ESCAPE / Relaxing Saxophone Therapy  for Stress Relief</span>
-                <span class="video-dur">4:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tPnFo7ZNjt8" target="_blank">
-            <img src="https://i.ytimg.com/vi/tPnFo7ZNjt8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">make me cry / Relaxing Saxophone Therapy for Stress Relief & Anxiety, Depressive States</span>
-                <span class="video-dur">3:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PqgIfPboFUw" target="_blank">
-            <img src="https://i.ytimg.com/vi/PqgIfPboFUw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH LOUNGE JAZZ | Relaxing Saxophone Therapy | Deep Calm Music for Stress Relief</span>
-                <span class="video-dur">3:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7LSPzUtov38" target="_blank">
-            <img src="https://i.ytimg.com/vi/7LSPzUtov38/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Instrumental Saxophone Lounge Mix | Premium Chillout Music  2026</span>
-                <span class="video-dur">3:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kgC87OzvgZ0" target="_blank">
-            <img src="https://i.ytimg.com/vi/kgC87OzvgZ0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nice day / New Song #5 - Music Jazz Saxophone  / CHILLOUT MUSIC ESCAPE WITH NATURE</span>
-                <span class="video-dur">3:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PVNgFKUSazU" target="_blank">
-            <img src="https://i.ytimg.com/vi/PVNgFKUSazU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH LOUNGE JAZZ  | Saxophone Melodies 2026🎷Collection Calm Jazz for Mind & Relaxation</span>
-                <span class="video-dur">1:10:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SiVS6v9qo-0" target="_blank">
-            <img src="https://i.ytimg.com/vi/SiVS6v9qo-0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">New Song #4 : Sing my Song  - Music Jazz Saxophone  / CHILLOUT MUSIC ESCAPE WITH NATURE</span>
-                <span class="video-dur">3:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7zqpLIonKWs" target="_blank">
-            <img src="https://i.ytimg.com/vi/7zqpLIonKWs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">New Song #3  :  Love of life  - Music Jazz Saxophone  / 5-MINUTE RESET</span>
-                <span class="video-dur">3:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9m71F6jKSgA" target="_blank">
-            <img src="https://i.ytimg.com/vi/9m71F6jKSgA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">New Song #2  :  YOU FIRST  - Jazz /  Relax Therapy with Healing Saxophone</span>
-                <span class="video-dur">3:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lnX9NsND8bg" target="_blank">
-            <img src="https://i.ytimg.com/vi/lnX9NsND8bg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">New Song #1  :  CHERISHED AFFECTION - Jazz /  Relax Therapy with Healing Saxophone</span>
-                <span class="video-dur">3:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-sULSENmoYk" target="_blank">
-            <img src="https://i.ytimg.com/vi/-sULSENmoYk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">New Song : Amber Pasture / Deep Relax Jazz Therapy with Healing Saxophone</span>
-                <span class="video-dur">4:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-CzbHyFwD_Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/-CzbHyFwD_Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 HOURS CHILL SAX THERAPY | Relaxing Saxophone Jazz Music for Stress Relief | Best of Kenny G 2026</span>
-                <span class="video-dur">1:07:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=C8MDljfInck" target="_blank">
-            <img src="https://i.ytimg.com/vi/C8MDljfInck/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">CHILL SAX THERAPY | Relaxing Saxophone Jazz Music for Stress Relief | The Best of Kenny G</span>
-                <span class="video-dur">1:06:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cF-V3RMtUU0" target="_blank">
-            <img src="https://i.ytimg.com/vi/cF-V3RMtUU0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Relax Jazz Therapy | Healing Saxophone Music for Calm Mind, Stress Relief</span>
-                <span class="video-dur">1:06:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ok65794ZBFA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ok65794ZBFA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour  SMOOTH LOUNGE JAZZ | Sunset Luxury Chillout | Relaxing Saxophone Melodies</span>
-                <span class="video-dur">1:02:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fIMIxJmqCCo" target="_blank">
-            <img src="https://i.ytimg.com/vi/fIMIxJmqCCo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Relax Jazz Therapy | Healing Saxophone Music for Calm Mind - Playlist Saxophone of Kenny G 2026</span>
-                <span class="video-dur">1:03:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s9QdnNzVksg" target="_blank">
-            <img src="https://i.ytimg.com/vi/s9QdnNzVksg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smooth Jazz Saxophone Instrumental 2026🎷 Collection Calm Jazz for Night & Relaxation</span>
-                <span class="video-dur">1:07:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Z_2Uatyyxew" target="_blank">
-            <img src="https://i.ytimg.com/vi/Z_2Uatyyxew/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart / Saxophone Collection 2024</span>
-                <span class="video-dur">3:06:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ScK3_5jSNAk" target="_blank">
-            <img src="https://i.ytimg.com/vi/ScK3_5jSNAk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beautiful Romantic Saxophone Love Songs - The Very Best Of Saxophone Instrumental</span>
-                <span class="video-dur">2:30:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v53ZGOXYIm8" target="_blank">
-            <img src="https://i.ytimg.com/vi/v53ZGOXYIm8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Instrumental Love Songs Ever / The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:04:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aTpo4532pJA" target="_blank">
-            <img src="https://i.ytimg.com/vi/aTpo4532pJA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Romantic Instrumental Melodies With Saxophone. The Best Saxo Songs</span>
-                <span class="video-dur">3:03:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=84TeJ6NznIE" target="_blank">
-            <img src="https://i.ytimg.com/vi/84TeJ6NznIE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Saxophone Love Songs - Best Relaxing Saxophone Songs Ever - Instrumental Music Collection</span>
-                <span class="video-dur">2:08:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZmLzAfvKHMc" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZmLzAfvKHMc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart / Saxophone Love Songs Instrumental 2024</span>
-                <span class="video-dur">3:04:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=al5GbJVt6nU" target="_blank">
-            <img src="https://i.ytimg.com/vi/al5GbJVt6nU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart - Best Saxophone Instrumental Love Songs  Ever</span>
-                <span class="video-dur">3:04:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eduxbCsQMm8" target="_blank">
-            <img src="https://i.ytimg.com/vi/eduxbCsQMm8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Music 🎷 Relaxing and Romantic Music - Saxophone  Collection 2024</span>
-                <span class="video-dur">2:22:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oTPLmjW-Muw" target="_blank">
-            <img src="https://i.ytimg.com/vi/oTPLmjW-Muw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Love Making Music: Romantic Saxophone Music, Sensual Saxophone to Make Love</span>
-                <span class="video-dur">2:01:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=m6Cl164ZjYg" target="_blank">
-            <img src="https://i.ytimg.com/vi/m6Cl164ZjYg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Love Songs Instrumental 2024 / The Best Relaxing Music in the World For Your Heart</span>
-                <span class="video-dur">3:01:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=u9FQtUdPRcs" target="_blank">
-            <img src="https://i.ytimg.com/vi/u9FQtUdPRcs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxing Jazz Saxophone Music for Studying, Sleep, Reading 3 Hours  / Saxophone Collection 2024</span>
-                <span class="video-dur">3:05:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0kN-bmjBBbo" target="_blank">
-            <img src="https://i.ytimg.com/vi/0kN-bmjBBbo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Very Best Of Beautiful Romantic Saxophone Love Songs - Best Saxophone Collection 2024</span>
-                <span class="video-dur">3:05:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L2hDMaTYarw" target="_blank">
-            <img src="https://i.ytimg.com/vi/L2hDMaTYarw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The best instrumental music in the world 🎷The best romantic music for saxophone 2024</span>
-                <span class="video-dur">3:06:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=whjvIKdpoFk" target="_blank">
-            <img src="https://i.ytimg.com/vi/whjvIKdpoFk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hour of Relaxing Romantic Saxophone Love Songs Instrumental | Great Saxophone Hits</span>
-                <span class="video-dur">3:10:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QASndA27uys" target="_blank">
-            <img src="https://i.ytimg.com/vi/QASndA27uys/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Saxophone Music 2024 - Best Saxophone Instrumental Love Songs Ever / Saxophone Collection</span>
-                <span class="video-dur">3:11:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=H4m1GAW5n50" target="_blank">
-            <img src="https://i.ytimg.com/vi/H4m1GAW5n50/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Music - The Very Best Of Smooth Jazz Saxophone / Saxophone Collection 2024</span>
-                <span class="video-dur">3:12:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=G26Uj2yn3vA" target="_blank">
-            <img src="https://i.ytimg.com/vi/G26Uj2yn3vA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Love Songs Instrumental 2024 / The Most Beautiful Music in the World For Heart</span>
-                <span class="video-dur">3:08:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9Ilk0xHW9ns" target="_blank">
-            <img src="https://i.ytimg.com/vi/9Ilk0xHW9ns/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart - Saxophone Instrumental Music 2024</span>
-                <span class="video-dur">3:09:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aZlec85AqDg" target="_blank">
-            <img src="https://i.ytimg.com/vi/aZlec85AqDg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hour Saxophone Instrumental Love Songs / Beautiful Music in the World For Your Heart on Saxophone</span>
-                <span class="video-dur">3:05:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=K78HSlo_M5Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/K78HSlo_M5Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Instrumental Music - The Most Beautiful Music in the World For Your Heart on Saxophone</span>
-                <span class="video-dur">3:06:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uV3wdzwUaBQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/uV3wdzwUaBQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soft Relaxing Romantic Saxofon Music / The Very Best Collection Saxophone 2024</span>
-                <span class="video-dur">3:10:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yqxDvWnUqBo" target="_blank">
-            <img src="https://i.ytimg.com/vi/yqxDvWnUqBo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Relaxing Saxophone Music for Stress Relief, Calm, Study|Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:08:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lbQW4ngrRw0" target="_blank">
-            <img src="https://i.ytimg.com/vi/lbQW4ngrRw0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone 2024 | Romantic Relaxing Saxophone Music ♫ Best Saxophone Love Songs</span>
-                <span class="video-dur">3:04:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jPpHt3YUYaQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/jPpHt3YUYaQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Very Best Of Beautiful Romantic Saxophone Love Songs -Saxophone Collection 2024</span>
-                <span class="video-dur">3:07:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Wl67Jp-uyGA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Wl67Jp-uyGA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Collection Saxophone Love Songs 2024 / The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:14:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_fwGsEmH3M0" target="_blank">
-            <img src="https://i.ytimg.com/vi/_fwGsEmH3M0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Very Best Of Beautiful Romantic Saxophone Love Songs - Best Saxophone Collection 2024</span>
-                <span class="video-dur">3:10:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-7Y8X5OtG4s" target="_blank">
-            <img src="https://i.ytimg.com/vi/-7Y8X5OtG4s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best Love Songs 70's 80's 90's - TOP 200 INSPIRING ROMANTIC SAXOPHONE MUSIC/Saxophone Collection</span>
-                <span class="video-dur">3:01:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YymsLbm3Jp0" target="_blank">
-            <img src="https://i.ytimg.com/vi/YymsLbm3Jp0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Melodies In The World For Love / Collection of sweet love songs 2024</span>
-                <span class="video-dur">3:11:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CRMeIK84dJ4" target="_blank">
-            <img src="https://i.ytimg.com/vi/CRMeIK84dJ4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Greatest 200 Romantic Saxophone Love Songs / The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:07:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Cs3k0fajRHE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Cs3k0fajRHE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart / Top 200 Saxophone Collection 2024</span>
-                <span class="video-dur">3:01:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=n2vkSk6q-SA" target="_blank">
-            <img src="https://i.ytimg.com/vi/n2vkSk6q-SA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Elegant Saxophone Concertos In The World ️ For Your Heart💓 Best Melodies 2024</span>
-                <span class="video-dur">3:01:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BHyuVtO4cQE" target="_blank">
-            <img src="https://i.ytimg.com/vi/BHyuVtO4cQE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Collection Saxophone - Music for Stress Relief, WONDERFUL ROMANTIC SAXOPHONE MUSIC 2024</span>
-                <span class="video-dur">3:20:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S5IB4A1b1RI" target="_blank">
-            <img src="https://i.ytimg.com/vi/S5IB4A1b1RI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Wonderful ROMANTIC SAXOPHONE MUSIC - Instrumental Relaxing - Saxophone Love Songs Acoustic</span>
-                <span class="video-dur">3:16:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=liGd4mXM7Ow" target="_blank">
-            <img src="https://i.ytimg.com/vi/liGd4mXM7Ow/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Collection 2024 - The Most Beautiful And Emotive  in the World For Your Heart</span>
-                <span class="video-dur">3:27:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=q0DB9X9F5Ow" target="_blank">
-            <img src="https://i.ytimg.com/vi/q0DB9X9F5Ow/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hours of Inspirational Instrumental Music / The Best Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:16:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8tQ-cJKMRy0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8tQ-cJKMRy0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Relaxing Saxophone Music 2024 - Best Saxophone Instrumental - Soft Background Music</span>
-                <span class="video-dur">3:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OVkBh6SrOAk" target="_blank">
-            <img src="https://i.ytimg.com/vi/OVkBh6SrOAk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top Saxophone Love Songs Melodies  /  Saxophone Instrumental Music for Relaxing</span>
-                <span class="video-dur">3:01:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Pib3D7u9Rx4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Pib3D7u9Rx4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hour Saxophone Collection  - The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:00:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9wHqlcUqad0" target="_blank">
-            <img src="https://i.ytimg.com/vi/9wHqlcUqad0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Collection of sweet love songs 2024 - Saxophone Melodies Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:03:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bQsmMqh-rNo" target="_blank">
-            <img src="https://i.ytimg.com/vi/bQsmMqh-rNo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Music For When You Need A Break From The World -  Best Saxophone Music, Saxophone Jazz Music</span>
-                <span class="video-dur">3:08:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rNctCdsTC5A" target="_blank">
-            <img src="https://i.ytimg.com/vi/rNctCdsTC5A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Popular Songs \ Music That Is No Longer Heard On The Radio #saxophonemusic #autumn</span>
-                <span class="video-dur">3:04:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ov8NaXy7Tio" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ov8NaXy7Tio/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">MOST BEAUTIFUL SAXOPHONE SONG YOU'VE NEVER HEARD - Saxophone Collection 2024</span>
-                <span class="video-dur">3:03:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1vdsGpEZnCA" target="_blank">
-            <img src="https://i.ytimg.com/vi/1vdsGpEZnCA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Melodies 2024 / The Most Beautiful Music in the World For Your Heart With Saxophone</span>
-                <span class="video-dur">3:09:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R6ul8FB4Dhw" target="_blank">
-            <img src="https://i.ytimg.com/vi/R6ul8FB4Dhw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 200 Jazz Artists of All Time / Saxophone Collection 2024 In The World</span>
-                <span class="video-dur">3:05:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=saiQSALStNY" target="_blank">
-            <img src="https://i.ytimg.com/vi/saiQSALStNY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxofón 2024  - The Most Beautiful Music in the World For Your Heart on Saxophone</span>
-                <span class="video-dur">3:15:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aby-jiHRNHI" target="_blank">
-            <img src="https://i.ytimg.com/vi/aby-jiHRNHI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hours The Most Beautiful Music in the World For Your Heart /  Greatest Hits 80s music</span>
-                <span class="video-dur">3:06:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6Zi73OuW0VE" target="_blank">
-            <img src="https://i.ytimg.com/vi/6Zi73OuW0VE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Melodies 2024 - Romantic Relaxing Saxophone Music For Your Heart</span>
-                <span class="video-dur">3:15:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6rOFTUGSQsw" target="_blank">
-            <img src="https://i.ytimg.com/vi/6rOFTUGSQsw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Collection 2024 - The Most Beautiful Music in the World For Your Soul</span>
-                <span class="video-dur">3:11:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v1xQlVznmj4" target="_blank">
-            <img src="https://i.ytimg.com/vi/v1xQlVznmj4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Saxophone Popular Songs 2024, The Most Beautiful Orchestrated Melodies on Saxophone</span>
-                <span class="video-dur">3:16:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=W6Nr_nHfQ58" target="_blank">
-            <img src="https://i.ytimg.com/vi/W6Nr_nHfQ58/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">TOP 200 ROMANTIC Saxophone LOVE SONGS - The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">3:19:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sYhvbd-cHIg" target="_blank">
-            <img src="https://i.ytimg.com/vi/sYhvbd-cHIg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">(3 Hours of Soft Jazz Saxophone Music)Saxofon Collection 2024/Luxury Music, Beautiful Romantic Music</span>
-                <span class="video-dur">3:19:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kIp-5hCX6yc" target="_blank">
-            <img src="https://i.ytimg.com/vi/kIp-5hCX6yc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hour Of Romantic Saxophone Playlist -  Greatest Hits Full Album - Kenny G Best Collection</span>
-                <span class="video-dur">3:15:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NtT3XZcc9Lk" target="_blank">
-            <img src="https://i.ytimg.com/vi/NtT3XZcc9Lk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Most Famous Beautiful SAXO Love Songs Of All Time - Best Relaxing Saxophone Instrumental Love Songs</span>
-                <span class="video-dur">6:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WRRiP8f1sVQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/WRRiP8f1sVQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">100 Most Beautiful Romantic Music - Music That Bring Back Sweet Memories - Saxophone Collection 2024</span>
-                <span class="video-dur">3:12:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Pjq6wNObNEc" target="_blank">
-            <img src="https://i.ytimg.com/vi/Pjq6wNObNEc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Masterpieces - The Best Of Relaxing Instrumental Music</span>
-                <span class="video-dur">6:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-ejkYTdT5aM" target="_blank">
-            <img src="https://i.ytimg.com/vi/-ejkYTdT5aM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Legendary Saxophone Melodies That You Will Never Get Tired Of Listening To🎷Saxophone Collection 2024</span>
-                <span class="video-dur">3:12:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v7M1jcfnsRk" target="_blank">
-            <img src="https://i.ytimg.com/vi/v7M1jcfnsRk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Luxury Saxophone Jazz Music in Cozy Bar Ambience🍷Kenny G | Saxophone 2024 |</span>
-                <span class="video-dur">3:10:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=txFXf8O9_Ik" target="_blank">
-            <img src="https://i.ytimg.com/vi/txFXf8O9_Ik/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Most Beautiful Music in the World For Your Heart 3 hour Saxophone Collection 2024</span>
-                <span class="video-dur">3:09:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=p_RGDtNDKZo" target="_blank">
-            <img src="https://i.ytimg.com/vi/p_RGDtNDKZo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Collection 2024 - The Most Beautiful Music in the World For Your Heart #1</span>
-                <span class="video-dur">3:10:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AYr9KdgpQ9Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/AYr9KdgpQ9Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Greatest  Romantic Saxophone Love Songs - Best Relaxing Saxophone Songs Ever</span>
-                <span class="video-dur">6:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JRMiD6u0fPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/JRMiD6u0fPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Instrumental Hits🎷 The 100 Most Beautiful Tunes In Saxophone History</span>
-                <span class="video-dur">3:08:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uZ2TX22aR1Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/uZ2TX22aR1Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxophone Collection  2024 - The Most Beautiful Music in the World For Your Heart</span>
-                <span class="video-dur">5:59:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=P0C2-EjvU60" target="_blank">
-            <img src="https://i.ytimg.com/vi/P0C2-EjvU60/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">200 Romantic Saxophone Love Songs 🎷 Best Relaxing Saxophone Instrumental Music Songs Ever</span>
-                <span class="video-dur">3:01:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qZiLRMMlIeE" target="_blank">
-            <img src="https://i.ytimg.com/vi/qZiLRMMlIeE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Top 100 Saxophone Love Songs Instrumental 2024 🎷 Best Relaxing Instrumental Music 2024</span>
-                <span class="video-dur">3:02:09</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Saxo Elegant";
+const VIDEOS = [{"id": "tfMzgW7QY5Y", "title": "Relaxing Saxophone Therapy | SMOOTH LOUNGE JAZZ WITH NATURE |Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/tfMzgW7QY5Y/mqdefault.jpg", "dur": "4:47"}, {"id": "YMohCpS4Cl4", "title": "PLAYLIST SMOOTH LOUNGE JAZZ WITH NATURE | Relaxing Saxophone Therapy | Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/YMohCpS4Cl4/mqdefault.jpg", "dur": "1:09:43"}, {"id": "9jLNy00cFoQ", "title": "SMOOTH LOUNGE JAZZ WITH NATURE | Relaxing Saxophone Therapy | Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/9jLNy00cFoQ/mqdefault.jpg", "dur": "4:02"}, {"id": "cjSYEejZ71E", "title": "Saxophone Chill Lounge - Deep Relax Jazz Therapy - Vibes Luxury Chill Music for Relaxation", "thumb": "https://i.ytimg.com/vi/cjSYEejZ71E/mqdefault.jpg", "dur": "2:55"}, {"id": "31BHuhx5fGg", "title": "Deep Relax Jazz Therapy with Saxophone Lounge - Vibes Luxury Chill Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/31BHuhx5fGg/mqdefault.jpg", "dur": "3:41"}, {"id": "rliR3d2mJHI", "title": "Saxophone Chillout Lounge 2026 | Saxophone Romantic Instrumental - Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/rliR3d2mJHI/mqdefault.jpg", "dur": "1:03:25"}, {"id": "JF_2RfNO2kM", "title": "Deep Relax Jazz Therapy - Vibes Luxury Chill Music for Relaxation | Saxophone Lounge", "thumb": "https://i.ytimg.com/vi/JF_2RfNO2kM/mqdefault.jpg", "dur": "2:45"}, {"id": "cLq1XTF1UeE", "title": "Ambient Chillout & Beach Vibes for Ultimate Mind Relaxation Relax - Saxophone Jazz Lounge Music", "thumb": "https://i.ytimg.com/vi/cLq1XTF1UeE/mqdefault.jpg", "dur": "3:01"}, {"id": "AgNoG1He7TQ", "title": "Saxophone Jazz Lounge Music | Chillout Music & Beach Vibes for Ultimate Mind Relaxation Relax", "thumb": "https://i.ytimg.com/vi/AgNoG1He7TQ/mqdefault.jpg", "dur": "3:51"}, {"id": "Mms6hi9L-_M", "title": "SMOOTH LOUNGE JAZZ | Relaxing Therapy with beautiful nature | Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/Mms6hi9L-_M/mqdefault.jpg", "dur": "3:51"}, {"id": "NWAmhmQgie4", "title": "SMOOTH LOUNGE JAZZ | Relaxing Saxophone  music & Smooth Deep Chill Vibes for Stress Relief", "thumb": "https://i.ytimg.com/vi/NWAmhmQgie4/mqdefault.jpg", "dur": "3:14"}, {"id": "B_ghy8mZOb0", "title": "5-MINUTE RESET CHILLOUT MUSIC ESCAPE / Relaxing Saxophone Therapy  for Stress Relief", "thumb": "https://i.ytimg.com/vi/B_ghy8mZOb0/mqdefault.jpg", "dur": "4:02"}, {"id": "tPnFo7ZNjt8", "title": "make me cry / Relaxing Saxophone Therapy for Stress Relief & Anxiety, Depressive States", "thumb": "https://i.ytimg.com/vi/tPnFo7ZNjt8/mqdefault.jpg", "dur": "3:15"}, {"id": "PqgIfPboFUw", "title": "SMOOTH LOUNGE JAZZ | Relaxing Saxophone Therapy | Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/PqgIfPboFUw/mqdefault.jpg", "dur": "3:21"}, {"id": "7LSPzUtov38", "title": "Instrumental Saxophone Lounge Mix | Premium Chillout Music  2026", "thumb": "https://i.ytimg.com/vi/7LSPzUtov38/mqdefault.jpg", "dur": "3:32"}, {"id": "kgC87OzvgZ0", "title": "Nice day / New Song #5 - Music Jazz Saxophone  / CHILLOUT MUSIC ESCAPE WITH NATURE", "thumb": "https://i.ytimg.com/vi/kgC87OzvgZ0/mqdefault.jpg", "dur": "3:42"}, {"id": "PVNgFKUSazU", "title": "SMOOTH LOUNGE JAZZ  | Saxophone Melodies 2026🎷Collection Calm Jazz for Mind & Relaxation", "thumb": "https://i.ytimg.com/vi/PVNgFKUSazU/mqdefault.jpg", "dur": "1:10:32"}, {"id": "SiVS6v9qo-0", "title": "New Song #4 : Sing my Song  - Music Jazz Saxophone  / CHILLOUT MUSIC ESCAPE WITH NATURE", "thumb": "https://i.ytimg.com/vi/SiVS6v9qo-0/mqdefault.jpg", "dur": "3:08"}, {"id": "7zqpLIonKWs", "title": "New Song #3  :  Love of life  - Music Jazz Saxophone  / 5-MINUTE RESET", "thumb": "https://i.ytimg.com/vi/7zqpLIonKWs/mqdefault.jpg", "dur": "3:15"}, {"id": "9m71F6jKSgA", "title": "New Song #2  :  YOU FIRST  - Jazz /  Relax Therapy with Healing Saxophone", "thumb": "https://i.ytimg.com/vi/9m71F6jKSgA/mqdefault.jpg", "dur": "3:01"}, {"id": "lnX9NsND8bg", "title": "New Song #1  :  CHERISHED AFFECTION - Jazz /  Relax Therapy with Healing Saxophone", "thumb": "https://i.ytimg.com/vi/lnX9NsND8bg/mqdefault.jpg", "dur": "3:08"}, {"id": "-sULSENmoYk", "title": "New Song : Amber Pasture / Deep Relax Jazz Therapy with Healing Saxophone", "thumb": "https://i.ytimg.com/vi/-sULSENmoYk/mqdefault.jpg", "dur": "4:40"}, {"id": "-CzbHyFwD_Q", "title": "1 HOURS CHILL SAX THERAPY | Relaxing Saxophone Jazz Music for Stress Relief | Best of Kenny G 2026", "thumb": "https://i.ytimg.com/vi/-CzbHyFwD_Q/mqdefault.jpg", "dur": "1:07:15"}, {"id": "C8MDljfInck", "title": "CHILL SAX THERAPY | Relaxing Saxophone Jazz Music for Stress Relief | The Best of Kenny G", "thumb": "https://i.ytimg.com/vi/C8MDljfInck/mqdefault.jpg", "dur": "1:06:09"}, {"id": "cF-V3RMtUU0", "title": "Deep Relax Jazz Therapy | Healing Saxophone Music for Calm Mind, Stress Relief", "thumb": "https://i.ytimg.com/vi/cF-V3RMtUU0/mqdefault.jpg", "dur": "1:06:14"}, {"id": "Ok65794ZBFA", "title": "1 Hour  SMOOTH LOUNGE JAZZ | Sunset Luxury Chillout | Relaxing Saxophone Melodies", "thumb": "https://i.ytimg.com/vi/Ok65794ZBFA/mqdefault.jpg", "dur": "1:02:54"}, {"id": "fIMIxJmqCCo", "title": "Deep Relax Jazz Therapy | Healing Saxophone Music for Calm Mind - Playlist Saxophone of Kenny G 2026", "thumb": "https://i.ytimg.com/vi/fIMIxJmqCCo/mqdefault.jpg", "dur": "1:03:04"}, {"id": "s9QdnNzVksg", "title": "Smooth Jazz Saxophone Instrumental 2026🎷 Collection Calm Jazz for Night & Relaxation", "thumb": "https://i.ytimg.com/vi/s9QdnNzVksg/mqdefault.jpg", "dur": "1:07:11"}, {"id": "Z_2Uatyyxew", "title": "The Most Beautiful Music in the World For Your Heart / Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/Z_2Uatyyxew/mqdefault.jpg", "dur": "3:06:49"}, {"id": "ScK3_5jSNAk", "title": "Beautiful Romantic Saxophone Love Songs - The Very Best Of Saxophone Instrumental", "thumb": "https://i.ytimg.com/vi/ScK3_5jSNAk/mqdefault.jpg", "dur": "2:30:27"}, {"id": "v53ZGOXYIm8", "title": "Best Saxophone Instrumental Love Songs Ever / The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/v53ZGOXYIm8/mqdefault.jpg", "dur": "3:04:34"}, {"id": "aTpo4532pJA", "title": "The Most Romantic Instrumental Melodies With Saxophone. The Best Saxo Songs", "thumb": "https://i.ytimg.com/vi/aTpo4532pJA/mqdefault.jpg", "dur": "3:03:38"}, {"id": "84TeJ6NznIE", "title": "Romantic Saxophone Love Songs - Best Relaxing Saxophone Songs Ever - Instrumental Music Collection", "thumb": "https://i.ytimg.com/vi/84TeJ6NznIE/mqdefault.jpg", "dur": "2:08:26"}, {"id": "ZmLzAfvKHMc", "title": "The Most Beautiful Music in the World For Your Heart / Saxophone Love Songs Instrumental 2024", "thumb": "https://i.ytimg.com/vi/ZmLzAfvKHMc/mqdefault.jpg", "dur": "3:04:33"}, {"id": "al5GbJVt6nU", "title": "The Most Beautiful Music in the World For Your Heart - Best Saxophone Instrumental Love Songs  Ever", "thumb": "https://i.ytimg.com/vi/al5GbJVt6nU/mqdefault.jpg", "dur": "3:04:07"}, {"id": "eduxbCsQMm8", "title": "Best Saxophone Music 🎷 Relaxing and Romantic Music - Saxophone  Collection 2024", "thumb": "https://i.ytimg.com/vi/eduxbCsQMm8/mqdefault.jpg", "dur": "2:22:49"}, {"id": "oTPLmjW-Muw", "title": "Love Making Music: Romantic Saxophone Music, Sensual Saxophone to Make Love", "thumb": "https://i.ytimg.com/vi/oTPLmjW-Muw/mqdefault.jpg", "dur": "2:01:17"}, {"id": "m6Cl164ZjYg", "title": "Saxophone Love Songs Instrumental 2024 / The Best Relaxing Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/m6Cl164ZjYg/mqdefault.jpg", "dur": "3:01:50"}, {"id": "u9FQtUdPRcs", "title": "Relaxing Jazz Saxophone Music for Studying, Sleep, Reading 3 Hours  / Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/u9FQtUdPRcs/mqdefault.jpg", "dur": "3:05:12"}, {"id": "0kN-bmjBBbo", "title": "The Very Best Of Beautiful Romantic Saxophone Love Songs - Best Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/0kN-bmjBBbo/mqdefault.jpg", "dur": "3:05:29"}, {"id": "L2hDMaTYarw", "title": "The best instrumental music in the world 🎷The best romantic music for saxophone 2024", "thumb": "https://i.ytimg.com/vi/L2hDMaTYarw/mqdefault.jpg", "dur": "3:06:49"}, {"id": "whjvIKdpoFk", "title": "3 Hour of Relaxing Romantic Saxophone Love Songs Instrumental | Great Saxophone Hits", "thumb": "https://i.ytimg.com/vi/whjvIKdpoFk/mqdefault.jpg", "dur": "3:10:43"}, {"id": "QASndA27uys", "title": "Romantic Saxophone Music 2024 - Best Saxophone Instrumental Love Songs Ever / Saxophone Collection", "thumb": "https://i.ytimg.com/vi/QASndA27uys/mqdefault.jpg", "dur": "3:11:18"}, {"id": "H4m1GAW5n50", "title": "Saxophone Music - The Very Best Of Smooth Jazz Saxophone / Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/H4m1GAW5n50/mqdefault.jpg", "dur": "3:12:33"}, {"id": "G26Uj2yn3vA", "title": "Saxophone Love Songs Instrumental 2024 / The Most Beautiful Music in the World For Heart", "thumb": "https://i.ytimg.com/vi/G26Uj2yn3vA/mqdefault.jpg", "dur": "3:08:22"}, {"id": "9Ilk0xHW9ns", "title": "The Most Beautiful Music in the World For Your Heart - Saxophone Instrumental Music 2024", "thumb": "https://i.ytimg.com/vi/9Ilk0xHW9ns/mqdefault.jpg", "dur": "3:09:15"}, {"id": "aZlec85AqDg", "title": "3 Hour Saxophone Instrumental Love Songs / Beautiful Music in the World For Your Heart on Saxophone", "thumb": "https://i.ytimg.com/vi/aZlec85AqDg/mqdefault.jpg", "dur": "3:05:53"}, {"id": "K78HSlo_M5Y", "title": "Romantic Instrumental Music - The Most Beautiful Music in the World For Your Heart on Saxophone", "thumb": "https://i.ytimg.com/vi/K78HSlo_M5Y/mqdefault.jpg", "dur": "3:06:18"}, {"id": "uV3wdzwUaBQ", "title": "Soft Relaxing Romantic Saxofon Music / The Very Best Collection Saxophone 2024", "thumb": "https://i.ytimg.com/vi/uV3wdzwUaBQ/mqdefault.jpg", "dur": "3:10:09"}, {"id": "yqxDvWnUqBo", "title": "Relaxing Saxophone Music for Stress Relief, Calm, Study|Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/yqxDvWnUqBo/mqdefault.jpg", "dur": "3:08:42"}, {"id": "lbQW4ngrRw0", "title": "Saxophone 2024 | Romantic Relaxing Saxophone Music ♫ Best Saxophone Love Songs", "thumb": "https://i.ytimg.com/vi/lbQW4ngrRw0/mqdefault.jpg", "dur": "3:04:35"}, {"id": "jPpHt3YUYaQ", "title": "The Very Best Of Beautiful Romantic Saxophone Love Songs -Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/jPpHt3YUYaQ/mqdefault.jpg", "dur": "3:07:25"}, {"id": "Wl67Jp-uyGA", "title": "Collection Saxophone Love Songs 2024 / The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/Wl67Jp-uyGA/mqdefault.jpg", "dur": "3:14:47"}, {"id": "_fwGsEmH3M0", "title": "The Very Best Of Beautiful Romantic Saxophone Love Songs - Best Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/_fwGsEmH3M0/mqdefault.jpg", "dur": "3:10:43"}, {"id": "-7Y8X5OtG4s", "title": "The Best Love Songs 70's 80's 90's - TOP 200 INSPIRING ROMANTIC SAXOPHONE MUSIC/Saxophone Collection", "thumb": "https://i.ytimg.com/vi/-7Y8X5OtG4s/mqdefault.jpg", "dur": "3:01:07"}, {"id": "YymsLbm3Jp0", "title": "Best Saxophone Melodies In The World For Love / Collection of sweet love songs 2024", "thumb": "https://i.ytimg.com/vi/YymsLbm3Jp0/mqdefault.jpg", "dur": "3:11:03"}, {"id": "CRMeIK84dJ4", "title": "Greatest 200 Romantic Saxophone Love Songs / The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/CRMeIK84dJ4/mqdefault.jpg", "dur": "3:07:58"}, {"id": "Cs3k0fajRHE", "title": "The Most Beautiful Music in the World For Your Heart / Top 200 Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/Cs3k0fajRHE/mqdefault.jpg", "dur": "3:01:37"}, {"id": "n2vkSk6q-SA", "title": "The Most Elegant Saxophone Concertos In The World ️ For Your Heart💓 Best Melodies 2024", "thumb": "https://i.ytimg.com/vi/n2vkSk6q-SA/mqdefault.jpg", "dur": "3:01:36"}, {"id": "BHyuVtO4cQE", "title": "Collection Saxophone - Music for Stress Relief, WONDERFUL ROMANTIC SAXOPHONE MUSIC 2024", "thumb": "https://i.ytimg.com/vi/BHyuVtO4cQE/mqdefault.jpg", "dur": "3:20:33"}, {"id": "S5IB4A1b1RI", "title": "Wonderful ROMANTIC SAXOPHONE MUSIC - Instrumental Relaxing - Saxophone Love Songs Acoustic", "thumb": "https://i.ytimg.com/vi/S5IB4A1b1RI/mqdefault.jpg", "dur": "3:16:28"}, {"id": "liGd4mXM7Ow", "title": "Saxophone Collection 2024 - The Most Beautiful And Emotive  in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/liGd4mXM7Ow/mqdefault.jpg", "dur": "3:27:58"}, {"id": "q0DB9X9F5Ow", "title": "3 Hours of Inspirational Instrumental Music / The Best Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/q0DB9X9F5Ow/mqdefault.jpg", "dur": "3:16:06"}, {"id": "8tQ-cJKMRy0", "title": "Romantic Relaxing Saxophone Music 2024 - Best Saxophone Instrumental - Soft Background Music", "thumb": "https://i.ytimg.com/vi/8tQ-cJKMRy0/mqdefault.jpg", "dur": "3:00:46"}, {"id": "OVkBh6SrOAk", "title": "Top Saxophone Love Songs Melodies  /  Saxophone Instrumental Music for Relaxing", "thumb": "https://i.ytimg.com/vi/OVkBh6SrOAk/mqdefault.jpg", "dur": "3:01:42"}, {"id": "Pib3D7u9Rx4", "title": "3 Hour Saxophone Collection  - The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/Pib3D7u9Rx4/mqdefault.jpg", "dur": "3:00:37"}, {"id": "9wHqlcUqad0", "title": "Collection of sweet love songs 2024 - Saxophone Melodies Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/9wHqlcUqad0/mqdefault.jpg", "dur": "3:03:33"}, {"id": "bQsmMqh-rNo", "title": "Music For When You Need A Break From The World -  Best Saxophone Music, Saxophone Jazz Music", "thumb": "https://i.ytimg.com/vi/bQsmMqh-rNo/mqdefault.jpg", "dur": "3:08:17"}, {"id": "rNctCdsTC5A", "title": "Saxophone Popular Songs \\ Music That Is No Longer Heard On The Radio #saxophonemusic #autumn", "thumb": "https://i.ytimg.com/vi/rNctCdsTC5A/mqdefault.jpg", "dur": "3:04:29"}, {"id": "Ov8NaXy7Tio", "title": "MOST BEAUTIFUL SAXOPHONE SONG YOU'VE NEVER HEARD - Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/Ov8NaXy7Tio/mqdefault.jpg", "dur": "3:03:33"}, {"id": "1vdsGpEZnCA", "title": "Best Saxophone Melodies 2024 / The Most Beautiful Music in the World For Your Heart With Saxophone", "thumb": "https://i.ytimg.com/vi/1vdsGpEZnCA/mqdefault.jpg", "dur": "3:09:38"}, {"id": "R6ul8FB4Dhw", "title": "Top 200 Jazz Artists of All Time / Saxophone Collection 2024 In The World", "thumb": "https://i.ytimg.com/vi/R6ul8FB4Dhw/mqdefault.jpg", "dur": "3:05:49"}, {"id": "saiQSALStNY", "title": "Saxofón 2024  - The Most Beautiful Music in the World For Your Heart on Saxophone", "thumb": "https://i.ytimg.com/vi/saiQSALStNY/mqdefault.jpg", "dur": "3:15:01"}, {"id": "aby-jiHRNHI", "title": "3 Hours The Most Beautiful Music in the World For Your Heart /  Greatest Hits 80s music", "thumb": "https://i.ytimg.com/vi/aby-jiHRNHI/mqdefault.jpg", "dur": "3:06:04"}, {"id": "6Zi73OuW0VE", "title": "Best Saxophone Melodies 2024 - Romantic Relaxing Saxophone Music For Your Heart", "thumb": "https://i.ytimg.com/vi/6Zi73OuW0VE/mqdefault.jpg", "dur": "3:15:02"}, {"id": "6rOFTUGSQsw", "title": "Best Saxophone Collection 2024 - The Most Beautiful Music in the World For Your Soul", "thumb": "https://i.ytimg.com/vi/6rOFTUGSQsw/mqdefault.jpg", "dur": "3:11:14"}, {"id": "v1xQlVznmj4", "title": "Best Saxophone Popular Songs 2024, The Most Beautiful Orchestrated Melodies on Saxophone", "thumb": "https://i.ytimg.com/vi/v1xQlVznmj4/mqdefault.jpg", "dur": "3:16:10"}, {"id": "W6Nr_nHfQ58", "title": "TOP 200 ROMANTIC Saxophone LOVE SONGS - The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/W6Nr_nHfQ58/mqdefault.jpg", "dur": "3:19:14"}, {"id": "sYhvbd-cHIg", "title": "(3 Hours of Soft Jazz Saxophone Music)Saxofon Collection 2024/Luxury Music, Beautiful Romantic Music", "thumb": "https://i.ytimg.com/vi/sYhvbd-cHIg/mqdefault.jpg", "dur": "3:19:15"}, {"id": "kIp-5hCX6yc", "title": "3 Hour Of Romantic Saxophone Playlist -  Greatest Hits Full Album - Kenny G Best Collection", "thumb": "https://i.ytimg.com/vi/kIp-5hCX6yc/mqdefault.jpg", "dur": "3:15:10"}, {"id": "NtT3XZcc9Lk", "title": "Most Famous Beautiful SAXO Love Songs Of All Time - Best Relaxing Saxophone Instrumental Love Songs", "thumb": "https://i.ytimg.com/vi/NtT3XZcc9Lk/mqdefault.jpg", "dur": "6:02"}, {"id": "WRRiP8f1sVQ", "title": "100 Most Beautiful Romantic Music - Music That Bring Back Sweet Memories - Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/WRRiP8f1sVQ/mqdefault.jpg", "dur": "3:12:49"}, {"id": "Pjq6wNObNEc", "title": "Saxophone Masterpieces - The Best Of Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/Pjq6wNObNEc/mqdefault.jpg", "dur": "6:26"}, {"id": "-ejkYTdT5aM", "title": "Legendary Saxophone Melodies That You Will Never Get Tired Of Listening To🎷Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/-ejkYTdT5aM/mqdefault.jpg", "dur": "3:12:30"}, {"id": "v7M1jcfnsRk", "title": "Luxury Saxophone Jazz Music in Cozy Bar Ambience🍷Kenny G | Saxophone 2024 |", "thumb": "https://i.ytimg.com/vi/v7M1jcfnsRk/mqdefault.jpg", "dur": "3:10:02"}, {"id": "txFXf8O9_Ik", "title": "The Most Beautiful Music in the World For Your Heart 3 hour Saxophone Collection 2024", "thumb": "https://i.ytimg.com/vi/txFXf8O9_Ik/mqdefault.jpg", "dur": "3:09:49"}, {"id": "p_RGDtNDKZo", "title": "Saxophone Collection 2024 - The Most Beautiful Music in the World For Your Heart #1", "thumb": "https://i.ytimg.com/vi/p_RGDtNDKZo/mqdefault.jpg", "dur": "3:10:23"}, {"id": "AYr9KdgpQ9Y", "title": "Greatest  Romantic Saxophone Love Songs - Best Relaxing Saxophone Songs Ever", "thumb": "https://i.ytimg.com/vi/AYr9KdgpQ9Y/mqdefault.jpg", "dur": "6:27"}, {"id": "JRMiD6u0fPc", "title": "Instrumental Hits🎷 The 100 Most Beautiful Tunes In Saxophone History", "thumb": "https://i.ytimg.com/vi/JRMiD6u0fPc/mqdefault.jpg", "dur": "3:08:52"}, {"id": "uZ2TX22aR1Q", "title": "Saxophone Collection  2024 - The Most Beautiful Music in the World For Your Heart", "thumb": "https://i.ytimg.com/vi/uZ2TX22aR1Q/mqdefault.jpg", "dur": "5:59:33"}, {"id": "P0C2-EjvU60", "title": "200 Romantic Saxophone Love Songs 🎷 Best Relaxing Saxophone Instrumental Music Songs Ever", "thumb": "https://i.ytimg.com/vi/P0C2-EjvU60/mqdefault.jpg", "dur": "3:01:59"}, {"id": "qZiLRMMlIeE", "title": "Top 100 Saxophone Love Songs Instrumental 2024 🎷 Best Relaxing Instrumental Music 2024", "thumb": "https://i.ytimg.com/vi/qZiLRMMlIeE/mqdefault.jpg", "dur": "3:02:09"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

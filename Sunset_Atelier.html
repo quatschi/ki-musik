@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@thesunsetatelier -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,134 +51,97 @@
       <div class="channel-count">18 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=nZ9QouaMrKM" target="_blank">
-            <img src="https://i.ytimg.com/vi/nZ9QouaMrKM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Last Song Before Midnight” - Open Air Jazz House Mix | Summer Nights & Rooftop Grooves</span>
-                <span class="video-dur">1:15:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uXy9jLGBYjA" target="_blank">
-            <img src="https://i.ytimg.com/vi/uXy9jLGBYjA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Beach club in Saint-Tropez” - Morning Jazz House Mix | Soft Sun & Sea Breeze</span>
-                <span class="video-dur">1:02:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9z1Lyj4Mm8M" target="_blank">
-            <img src="https://i.ytimg.com/vi/9z1Lyj4Mm8M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Late Checkout in Amalfi” - Sunset Jazz House Mix | Citrus Air, Sea Light & Slow Romance</span>
-                <span class="video-dur">1:03:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yhN46x7MOoY" target="_blank">
-            <img src="https://i.ytimg.com/vi/yhN46x7MOoY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“After Tennis in Marbella” - Sunset Jazz House Mix | Golden Hour & Quiet Luxury</span>
-                <span class="video-dur">1:12:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=r-7GzEWlfqc" target="_blank">
-            <img src="https://i.ytimg.com/vi/r-7GzEWlfqc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“No Rush Today” - Dark Jazz Lounge Mix | Whiskey, Cigars & Slow Afternoons</span>
-                <span class="video-dur">1:02:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=W9xszZvAkDw" target="_blank">
-            <img src="https://i.ytimg.com/vi/W9xszZvAkDw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Night Drive With No Destination” - Dark Jazz Trip Hop Mix | Neon Rain & Empty Streets</span>
-                <span class="video-dur">57:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=t7-A3R2ubRA" target="_blank">
-            <img src="https://i.ytimg.com/vi/t7-A3R2ubRA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Afternoons in Ibiza” — Jazz House Mix | Salt Air & Slow Rhythm</span>
-                <span class="video-dur">1:18:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6L3Avs0FciY" target="_blank">
-            <img src="https://i.ytimg.com/vi/6L3Avs0FciY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Mornings Above Positano” - Jazz House Mix | Citrus Air & Slow Living</span>
-                <span class="video-dur">1:06:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AIBWHEXDvas" target="_blank">
-            <img src="https://i.ytimg.com/vi/AIBWHEXDvas/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Monte Carlo After the Race” — Sunset Jazz House Mix | Yacht Lights & Slow Luxury</span>
-                <span class="video-dur">1:07:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h4Hy4RVJSUU" target="_blank">
-            <img src="https://i.ytimg.com/vi/h4Hy4RVJSUU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Coffee Before the Heat” - Morning Jazz House Mix | Ocean Air & Slow Starts</span>
-                <span class="video-dur">1:10:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4Ye4pVcBKCs" target="_blank">
-            <img src="https://i.ytimg.com/vi/4Ye4pVcBKCs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“A Slow Evening Somewhere in Europe” - Sunset Jazz House Mix | Golden Hour & Quiet Streets</span>
-                <span class="video-dur">1:02:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JKrpa5JgcAo" target="_blank">
-            <img src="https://i.ytimg.com/vi/JKrpa5JgcAo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Coffee & Vinyl Above The City” - Afternoon Lounge Jazz House Mix | Warm Focus</span>
-                <span class="video-dur">1:05:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=15pFhoLNS_I" target="_blank">
-            <img src="https://i.ytimg.com/vi/15pFhoLNS_I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“A Quiet Night in Paris” — Smooth Jazz House Mix | Coffee, Vinyl & Rain</span>
-                <span class="video-dur">1:04:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eWx8TjDgwuI" target="_blank">
-            <img src="https://i.ytimg.com/vi/eWx8TjDgwuI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Breakfast in Amalfi” — Morning Jazz House Mix | Sea Air & Slow Luxury</span>
-                <span class="video-dur">1:02:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-VvZLpNfg5w" target="_blank">
-            <img src="https://i.ytimg.com/vi/-VvZLpNfg5w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Rain on the Balcony” — Night Jazz House Mix | City Lights & Quiet Evenings</span>
-                <span class="video-dur">1:03:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=O6nuQoChDOI" target="_blank">
-            <img src="https://i.ytimg.com/vi/O6nuQoChDOI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Last Morning in Lisbon” — Jazz House Mix | Soft Light & Slow Goodbyes</span>
-                <span class="video-dur">59:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2ZhihxkNGPs" target="_blank">
-            <img src="https://i.ytimg.com/vi/2ZhihxkNGPs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“Nothing to Do Today” — Chill Jazz House Mix | Soft Days & Open Time</span>
-                <span class="video-dur">1:01:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=H7-nJFxji-c" target="_blank">
-            <img src="https://i.ytimg.com/vi/H7-nJFxji-c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">“One Last Drink Before Sunset” — Sunset Jazz House Mix | Golden Hours & Slow Evenings</span>
-                <span class="video-dur">1:00:35</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Sunset Atelier";
+const VIDEOS = [{"id": "nZ9QouaMrKM", "title": "“Last Song Before Midnight” - Open Air Jazz House Mix | Summer Nights & Rooftop Grooves", "thumb": "https://i.ytimg.com/vi/nZ9QouaMrKM/mqdefault.jpg", "dur": "1:15:08"}, {"id": "uXy9jLGBYjA", "title": "“Beach club in Saint-Tropez” - Morning Jazz House Mix | Soft Sun & Sea Breeze", "thumb": "https://i.ytimg.com/vi/uXy9jLGBYjA/mqdefault.jpg", "dur": "1:02:47"}, {"id": "9z1Lyj4Mm8M", "title": "“Late Checkout in Amalfi” - Sunset Jazz House Mix | Citrus Air, Sea Light & Slow Romance", "thumb": "https://i.ytimg.com/vi/9z1Lyj4Mm8M/mqdefault.jpg", "dur": "1:03:39"}, {"id": "yhN46x7MOoY", "title": "“After Tennis in Marbella” - Sunset Jazz House Mix | Golden Hour & Quiet Luxury", "thumb": "https://i.ytimg.com/vi/yhN46x7MOoY/mqdefault.jpg", "dur": "1:12:45"}, {"id": "r-7GzEWlfqc", "title": "“No Rush Today” - Dark Jazz Lounge Mix | Whiskey, Cigars & Slow Afternoons", "thumb": "https://i.ytimg.com/vi/r-7GzEWlfqc/mqdefault.jpg", "dur": "1:02:39"}, {"id": "W9xszZvAkDw", "title": "“Night Drive With No Destination” - Dark Jazz Trip Hop Mix | Neon Rain & Empty Streets", "thumb": "https://i.ytimg.com/vi/W9xszZvAkDw/mqdefault.jpg", "dur": "57:57"}, {"id": "t7-A3R2ubRA", "title": "“Afternoons in Ibiza” — Jazz House Mix | Salt Air & Slow Rhythm", "thumb": "https://i.ytimg.com/vi/t7-A3R2ubRA/mqdefault.jpg", "dur": "1:18:12"}, {"id": "6L3Avs0FciY", "title": "“Mornings Above Positano” - Jazz House Mix | Citrus Air & Slow Living", "thumb": "https://i.ytimg.com/vi/6L3Avs0FciY/mqdefault.jpg", "dur": "1:06:34"}, {"id": "AIBWHEXDvas", "title": "“Monte Carlo After the Race” — Sunset Jazz House Mix | Yacht Lights & Slow Luxury", "thumb": "https://i.ytimg.com/vi/AIBWHEXDvas/mqdefault.jpg", "dur": "1:07:20"}, {"id": "h4Hy4RVJSUU", "title": "“Coffee Before the Heat” - Morning Jazz House Mix | Ocean Air & Slow Starts", "thumb": "https://i.ytimg.com/vi/h4Hy4RVJSUU/mqdefault.jpg", "dur": "1:10:12"}, {"id": "4Ye4pVcBKCs", "title": "“A Slow Evening Somewhere in Europe” - Sunset Jazz House Mix | Golden Hour & Quiet Streets", "thumb": "https://i.ytimg.com/vi/4Ye4pVcBKCs/mqdefault.jpg", "dur": "1:02:28"}, {"id": "JKrpa5JgcAo", "title": "“Coffee & Vinyl Above The City” - Afternoon Lounge Jazz House Mix | Warm Focus", "thumb": "https://i.ytimg.com/vi/JKrpa5JgcAo/mqdefault.jpg", "dur": "1:05:51"}, {"id": "15pFhoLNS_I", "title": "“A Quiet Night in Paris” — Smooth Jazz House Mix | Coffee, Vinyl & Rain", "thumb": "https://i.ytimg.com/vi/15pFhoLNS_I/mqdefault.jpg", "dur": "1:04:58"}, {"id": "eWx8TjDgwuI", "title": "“Breakfast in Amalfi” — Morning Jazz House Mix | Sea Air & Slow Luxury", "thumb": "https://i.ytimg.com/vi/eWx8TjDgwuI/mqdefault.jpg", "dur": "1:02:08"}, {"id": "-VvZLpNfg5w", "title": "“Rain on the Balcony” — Night Jazz House Mix | City Lights & Quiet Evenings", "thumb": "https://i.ytimg.com/vi/-VvZLpNfg5w/mqdefault.jpg", "dur": "1:03:23"}, {"id": "O6nuQoChDOI", "title": "“Last Morning in Lisbon” — Jazz House Mix | Soft Light & Slow Goodbyes", "thumb": "https://i.ytimg.com/vi/O6nuQoChDOI/mqdefault.jpg", "dur": "59:06"}, {"id": "2ZhihxkNGPs", "title": "“Nothing to Do Today” — Chill Jazz House Mix | Soft Days & Open Time", "thumb": "https://i.ytimg.com/vi/2ZhihxkNGPs/mqdefault.jpg", "dur": "1:01:12"}, {"id": "H7-nJFxji-c", "title": "“One Last Drink Before Sunset” — Sunset Jazz House Mix | Golden Hours & Slow Evenings", "thumb": "https://i.ytimg.com/vi/H7-nJFxji-c/mqdefault.jpg", "dur": "1:00:35"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@AfroJazzSessions -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,316 +51,97 @@
       <div class="channel-count">44 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=gVDJjszXQqE" target="_blank">
-            <img src="https://i.ytimg.com/vi/gVDJjszXQqE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best Smooth Instrumental mix | Afro Jazz Mix 2026</span>
-                <span class="video-dur">2:45:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PJfIr6LAsi8" target="_blank">
-            <img src="https://i.ytimg.com/vi/PJfIr6LAsi8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SMOOTH SPANISH INSTRUMENTAL MIX</span>
-                <span class="video-dur">3:07:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v-6oi6Y0N2Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/v-6oi6Y0N2Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best South African Afro Jazz Session Vol 4</span>
-                <span class="video-dur">2:53:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fm6ChNuh7aw" target="_blank">
-            <img src="https://i.ytimg.com/vi/fm6ChNuh7aw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST SMOOTH JAZZ INSTRUMENTAL | AFRO JAZZ SESSIONS</span>
-                <span class="video-dur">2:50:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rQ8oX47oLzk" target="_blank">
-            <img src="https://i.ytimg.com/vi/rQ8oX47oLzk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Aro Jazz Sessions 2026 Mix | Deep Melodic Groove | The Best South African Afro Jazz</span>
-                <span class="video-dur">3:01:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IzwNIsFaFw4" target="_blank">
-            <img src="https://i.ytimg.com/vi/IzwNIsFaFw4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST JAZZ MIX OF ALL TIME|AFRO JAZZ SESSIONS</span>
-                <span class="video-dur">2:09:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L_ZE9m9_aj0" target="_blank">
-            <img src="https://i.ytimg.com/vi/L_ZE9m9_aj0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST EAST AFRICAN AFRO JAZZ|INSTRUMENTAL</span>
-                <span class="video-dur">1:39:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yu-IesB0jkY" target="_blank">
-            <img src="https://i.ytimg.com/vi/yu-IesB0jkY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best Instrumental For Relaxation|Afro Jazz Session 2026</span>
-                <span class="video-dur">2:42:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8IOPKnbXFH0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8IOPKnbXFH0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Best Spanish Afro Jazz Mix 2026</span>
-                <span class="video-dur">1:55:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1u_7yFlJqHY" target="_blank">
-            <img src="https://i.ytimg.com/vi/1u_7yFlJqHY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SENSATIONAL ARABIAN AFRO JAZZ MIX</span>
-                <span class="video-dur">2:13:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w2bPLuWbraE" target="_blank">
-            <img src="https://i.ytimg.com/vi/w2bPLuWbraE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">RELAXING AFRO JAZZ MUSIC FOR STRESS RELIEF||AFRO JAZZ SESSION</span>
-                <span class="video-dur">2:29:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QAAO-m_jjaw" target="_blank">
-            <img src="https://i.ytimg.com/vi/QAAO-m_jjaw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST ARABIAN AFRO JAZZ MIX 2026||AFRO JAZZ SESSION</span>
-                <span class="video-dur">2:10:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3_SHrPkp_MY" target="_blank">
-            <img src="https://i.ytimg.com/vi/3_SHrPkp_MY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">RELAXING AFRICAN JAZZ MIX 2026</span>
-                <span class="video-dur">2:14:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0kdry-jbcCo" target="_blank">
-            <img src="https://i.ytimg.com/vi/0kdry-jbcCo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST GOSPEL AFRO JAZZ MIX 2026</span>
-                <span class="video-dur">1:23:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T2oAlw1Y2QU" target="_blank">
-            <img src="https://i.ytimg.com/vi/T2oAlw1Y2QU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST SOUTH AFRICAN AFRO JAZZ 2026 VOL 3</span>
-                <span class="video-dur">2:14:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8nH_GiTI2Xw" target="_blank">
-            <img src="https://i.ytimg.com/vi/8nH_GiTI2Xw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST JAZZ PERFORMANCE OF ALL TIME||AFRO JAZZ SESSION</span>
-                <span class="video-dur">2:17:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g1gVoLF970E" target="_blank">
-            <img src="https://i.ytimg.com/vi/g1gVoLF970E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST MEDITATION AFRO JAZZ MIX||AFRO JAZZ SESSION</span>
-                <span class="video-dur">1:17:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AzCRY2-HPW0" target="_blank">
-            <img src="https://i.ytimg.com/vi/AzCRY2-HPW0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST CARIBBEAN AFRO JAZZ MIX</span>
-                <span class="video-dur">24:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qz-7ZnBqhHc" target="_blank">
-            <img src="https://i.ytimg.com/vi/qz-7ZnBqhHc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST AFRO JAZZ TRUMPET SESSION 2026</span>
-                <span class="video-dur">1:37:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HfS-V-jmd9c" target="_blank">
-            <img src="https://i.ytimg.com/vi/HfS-V-jmd9c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST RELAXING AFRO JAZZ SESSION||2026</span>
-                <span class="video-dur">2:20:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tJxObn-lHuQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/tJxObn-lHuQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BEST RELAXING AFRO JAZZ MIX||AFRO JAZZ SESSION</span>
-                <span class="video-dur">2:51:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=enqik0HHnsg" target="_blank">
-            <img src="https://i.ytimg.com/vi/enqik0HHnsg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">EVENING RELAXING JAZZ MIX|AFRO JAZZ SESSION</span>
-                <span class="video-dur">3:15:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gMdbK20j8D0" target="_blank">
-            <img src="https://i.ytimg.com/vi/gMdbK20j8D0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">TRENDING SMOOTH JAZZ FUSION||AFRO JAZZ SESSIONS</span>
-                <span class="video-dur">2:44:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w2Vt87jbhTo" target="_blank">
-            <img src="https://i.ytimg.com/vi/w2Vt87jbhTo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AMERICAN AFRO JAZZ – Smooth Retro Playlist 1940s Nostalgia Bar</span>
-                <span class="video-dur">2:37:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sC-TDP5oljU" target="_blank">
-            <img src="https://i.ytimg.com/vi/sC-TDP5oljU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ONE IRRESISTABLE SOUTH AFRICAN JAM||AFRO JAZZ SESSIONS</span>
-                <span class="video-dur">2:03:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SRy2jwPJBkM" target="_blank">
-            <img src="https://i.ytimg.com/vi/SRy2jwPJBkM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE  BEST SOUTH AFRICA AFRO JAZZ 2026||VOL 2</span>
-                <span class="video-dur">2:40:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JfIvPT6O6Cs" target="_blank">
-            <img src="https://i.ytimg.com/vi/JfIvPT6O6Cs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">RELAXING ROMANTIC LOVE SONGS||AFRO JAZZ SESSIONS</span>
-                <span class="video-dur">2:49:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=r3TDimWumpc" target="_blank">
-            <img src="https://i.ytimg.com/vi/r3TDimWumpc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSIONS | RELAXING MUSIC FOR STRESS</span>
-                <span class="video-dur">2:39:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zw3cZW6hmro" target="_blank">
-            <img src="https://i.ytimg.com/vi/zw3cZW6hmro/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST SOUTH AFRICAN AFRO JAZZ 2026</span>
-                <span class="video-dur">2:09:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jYBN-NM7LOw" target="_blank">
-            <img src="https://i.ytimg.com/vi/jYBN-NM7LOw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSION || BREATH TAKING GROOVE</span>
-                <span class="video-dur">1:32:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QIw-UZsyKeY" target="_blank">
-            <img src="https://i.ytimg.com/vi/QIw-UZsyKeY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE BEST AFRO JAZZ FUSION MIX</span>
-                <span class="video-dur">2:06:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Lq9YfsZg7ss" target="_blank">
-            <img src="https://i.ytimg.com/vi/Lq9YfsZg7ss/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSIONS || UNWINDING RHYTHMS</span>
-                <span class="video-dur">1:19:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QWHKhBBWdko" target="_blank">
-            <img src="https://i.ytimg.com/vi/QWHKhBBWdko/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ARO JAZZ SESSIONS|| THE ULTIMATE GROOVE</span>
-                <span class="video-dur">2:29:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=De07oYJN8oU" target="_blank">
-            <img src="https://i.ytimg.com/vi/De07oYJN8oU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSIONS|| ElECTRIFYING AFRO JAZZ FUSION</span>
-                <span class="video-dur">2:30:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lr3CYUsjMkQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/lr3CYUsjMkQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSIONS || GOLDEN HOUR JAZZ</span>
-                <span class="video-dur">1:26:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JZn-ExzgKzM" target="_blank">
-            <img src="https://i.ytimg.com/vi/JZn-ExzgKzM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">ULTIMATE AFRO JAZZ SESSION RELAXING LIVE BAND</span>
-                <span class="video-dur">55:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hifg_ehBszU" target="_blank">
-            <img src="https://i.ytimg.com/vi/hifg_ehBszU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">RELAXING AFRO JAZZ GROOVE FOR PRODUCTIVE DAYS</span>
-                <span class="video-dur">48:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QjS1GoDbYgs" target="_blank">
-            <img src="https://i.ytimg.com/vi/QjS1GoDbYgs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THIS AFRO JAZZ SESSION HITS DIFFERENT</span>
-                <span class="video-dur">1:59:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Bw_26SNuVA0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Bw_26SNuVA0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BEST AFRO JAZZ SESSION MIX</span>
-                <span class="video-dur">1:08:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=awuHIPZSmS0" target="_blank">
-            <img src="https://i.ytimg.com/vi/awuHIPZSmS0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BEST AFRO JAZZ SAXOPHONE MIX FOR WORK AND RELAXATION</span>
-                <span class="video-dur">1:08:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZMt9anNevW0" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZMt9anNevW0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE MOST INCREDIBLE AFRO JAZZ PERFORMANCE</span>
-                <span class="video-dur">1:31:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mZ13XBuNyLw" target="_blank">
-            <img src="https://i.ytimg.com/vi/mZ13XBuNyLw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Jazz: The Funkiest Genre You've Never Heard Of</span>
-                <span class="video-dur">1:36:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oxgXGkNbjMw" target="_blank">
-            <img src="https://i.ytimg.com/vi/oxgXGkNbjMw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">AFRO JAZZ SESSIONS|| WHERE AFRICAN BEATS MEETS JAZZ EXPRESSIONS</span>
-                <span class="video-dur">1:40:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KVAMY15V80E" target="_blank">
-            <img src="https://i.ytimg.com/vi/KVAMY15V80E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE MOST UNIQUE AFRO JAZZ EXPERIENCE EVER</span>
-                <span class="video-dur">1:42:47</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Afro Jazz Sessions";
+const VIDEOS = [{"id": "gVDJjszXQqE", "title": "The Best Smooth Instrumental mix | Afro Jazz Mix 2026", "thumb": "https://i.ytimg.com/vi/gVDJjszXQqE/mqdefault.jpg", "dur": "2:45:20"}, {"id": "PJfIr6LAsi8", "title": "SMOOTH SPANISH INSTRUMENTAL MIX", "thumb": "https://i.ytimg.com/vi/PJfIr6LAsi8/mqdefault.jpg", "dur": "3:07:37"}, {"id": "v-6oi6Y0N2Y", "title": "The Best South African Afro Jazz Session Vol 4", "thumb": "https://i.ytimg.com/vi/v-6oi6Y0N2Y/mqdefault.jpg", "dur": "2:53:14"}, {"id": "fm6ChNuh7aw", "title": "THE BEST SMOOTH JAZZ INSTRUMENTAL | AFRO JAZZ SESSIONS", "thumb": "https://i.ytimg.com/vi/fm6ChNuh7aw/mqdefault.jpg", "dur": "2:50:21"}, {"id": "rQ8oX47oLzk", "title": "Aro Jazz Sessions 2026 Mix | Deep Melodic Groove | The Best South African Afro Jazz", "thumb": "https://i.ytimg.com/vi/rQ8oX47oLzk/mqdefault.jpg", "dur": "3:01:53"}, {"id": "IzwNIsFaFw4", "title": "THE BEST JAZZ MIX OF ALL TIME|AFRO JAZZ SESSIONS", "thumb": "https://i.ytimg.com/vi/IzwNIsFaFw4/mqdefault.jpg", "dur": "2:09:44"}, {"id": "L_ZE9m9_aj0", "title": "THE BEST EAST AFRICAN AFRO JAZZ|INSTRUMENTAL", "thumb": "https://i.ytimg.com/vi/L_ZE9m9_aj0/mqdefault.jpg", "dur": "1:39:00"}, {"id": "yu-IesB0jkY", "title": "The Best Instrumental For Relaxation|Afro Jazz Session 2026", "thumb": "https://i.ytimg.com/vi/yu-IesB0jkY/mqdefault.jpg", "dur": "2:42:07"}, {"id": "8IOPKnbXFH0", "title": "The Best Spanish Afro Jazz Mix 2026", "thumb": "https://i.ytimg.com/vi/8IOPKnbXFH0/mqdefault.jpg", "dur": "1:55:33"}, {"id": "1u_7yFlJqHY", "title": "SENSATIONAL ARABIAN AFRO JAZZ MIX", "thumb": "https://i.ytimg.com/vi/1u_7yFlJqHY/mqdefault.jpg", "dur": "2:13:11"}, {"id": "w2bPLuWbraE", "title": "RELAXING AFRO JAZZ MUSIC FOR STRESS RELIEF||AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/w2bPLuWbraE/mqdefault.jpg", "dur": "2:29:09"}, {"id": "QAAO-m_jjaw", "title": "THE BEST ARABIAN AFRO JAZZ MIX 2026||AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/QAAO-m_jjaw/mqdefault.jpg", "dur": "2:10:41"}, {"id": "3_SHrPkp_MY", "title": "RELAXING AFRICAN JAZZ MIX 2026", "thumb": "https://i.ytimg.com/vi/3_SHrPkp_MY/mqdefault.jpg", "dur": "2:14:16"}, {"id": "0kdry-jbcCo", "title": "THE BEST GOSPEL AFRO JAZZ MIX 2026", "thumb": "https://i.ytimg.com/vi/0kdry-jbcCo/mqdefault.jpg", "dur": "1:23:46"}, {"id": "T2oAlw1Y2QU", "title": "THE BEST SOUTH AFRICAN AFRO JAZZ 2026 VOL 3", "thumb": "https://i.ytimg.com/vi/T2oAlw1Y2QU/mqdefault.jpg", "dur": "2:14:25"}, {"id": "8nH_GiTI2Xw", "title": "THE BEST JAZZ PERFORMANCE OF ALL TIME||AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/8nH_GiTI2Xw/mqdefault.jpg", "dur": "2:17:55"}, {"id": "g1gVoLF970E", "title": "THE BEST MEDITATION AFRO JAZZ MIX||AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/g1gVoLF970E/mqdefault.jpg", "dur": "1:17:48"}, {"id": "AzCRY2-HPW0", "title": "THE BEST CARIBBEAN AFRO JAZZ MIX", "thumb": "https://i.ytimg.com/vi/AzCRY2-HPW0/mqdefault.jpg", "dur": "24:12"}, {"id": "qz-7ZnBqhHc", "title": "THE BEST AFRO JAZZ TRUMPET SESSION 2026", "thumb": "https://i.ytimg.com/vi/qz-7ZnBqhHc/mqdefault.jpg", "dur": "1:37:43"}, {"id": "HfS-V-jmd9c", "title": "THE BEST RELAXING AFRO JAZZ SESSION||2026", "thumb": "https://i.ytimg.com/vi/HfS-V-jmd9c/mqdefault.jpg", "dur": "2:20:37"}, {"id": "tJxObn-lHuQ", "title": "BEST RELAXING AFRO JAZZ MIX||AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/tJxObn-lHuQ/mqdefault.jpg", "dur": "2:51:12"}, {"id": "enqik0HHnsg", "title": "EVENING RELAXING JAZZ MIX|AFRO JAZZ SESSION", "thumb": "https://i.ytimg.com/vi/enqik0HHnsg/mqdefault.jpg", "dur": "3:15:57"}, {"id": "gMdbK20j8D0", "title": "TRENDING SMOOTH JAZZ FUSION||AFRO JAZZ SESSIONS", "thumb": "https://i.ytimg.com/vi/gMdbK20j8D0/mqdefault.jpg", "dur": "2:44:41"}, {"id": "w2Vt87jbhTo", "title": "AMERICAN AFRO JAZZ – Smooth Retro Playlist 1940s Nostalgia Bar", "thumb": "https://i.ytimg.com/vi/w2Vt87jbhTo/mqdefault.jpg", "dur": "2:37:20"}, {"id": "sC-TDP5oljU", "title": "ONE IRRESISTABLE SOUTH AFRICAN JAM||AFRO JAZZ SESSIONS", "thumb": "https://i.ytimg.com/vi/sC-TDP5oljU/mqdefault.jpg", "dur": "2:03:08"}, {"id": "SRy2jwPJBkM", "title": "THE  BEST SOUTH AFRICA AFRO JAZZ 2026||VOL 2", "thumb": "https://i.ytimg.com/vi/SRy2jwPJBkM/mqdefault.jpg", "dur": "2:40:15"}, {"id": "JfIvPT6O6Cs", "title": "RELAXING ROMANTIC LOVE SONGS||AFRO JAZZ SESSIONS", "thumb": "https://i.ytimg.com/vi/JfIvPT6O6Cs/mqdefault.jpg", "dur": "2:49:12"}, {"id": "r3TDimWumpc", "title": "AFRO JAZZ SESSIONS | RELAXING MUSIC FOR STRESS", "thumb": "https://i.ytimg.com/vi/r3TDimWumpc/mqdefault.jpg", "dur": "2:39:21"}, {"id": "zw3cZW6hmro", "title": "THE BEST SOUTH AFRICAN AFRO JAZZ 2026", "thumb": "https://i.ytimg.com/vi/zw3cZW6hmro/mqdefault.jpg", "dur": "2:09:33"}, {"id": "jYBN-NM7LOw", "title": "AFRO JAZZ SESSION || BREATH TAKING GROOVE", "thumb": "https://i.ytimg.com/vi/jYBN-NM7LOw/mqdefault.jpg", "dur": "1:32:57"}, {"id": "QIw-UZsyKeY", "title": "THE BEST AFRO JAZZ FUSION MIX", "thumb": "https://i.ytimg.com/vi/QIw-UZsyKeY/mqdefault.jpg", "dur": "2:06:10"}, {"id": "Lq9YfsZg7ss", "title": "AFRO JAZZ SESSIONS || UNWINDING RHYTHMS", "thumb": "https://i.ytimg.com/vi/Lq9YfsZg7ss/mqdefault.jpg", "dur": "1:19:29"}, {"id": "QWHKhBBWdko", "title": "ARO JAZZ SESSIONS|| THE ULTIMATE GROOVE", "thumb": "https://i.ytimg.com/vi/QWHKhBBWdko/mqdefault.jpg", "dur": "2:29:12"}, {"id": "De07oYJN8oU", "title": "AFRO JAZZ SESSIONS|| ElECTRIFYING AFRO JAZZ FUSION", "thumb": "https://i.ytimg.com/vi/De07oYJN8oU/mqdefault.jpg", "dur": "2:30:26"}, {"id": "lr3CYUsjMkQ", "title": "AFRO JAZZ SESSIONS || GOLDEN HOUR JAZZ", "thumb": "https://i.ytimg.com/vi/lr3CYUsjMkQ/mqdefault.jpg", "dur": "1:26:17"}, {"id": "JZn-ExzgKzM", "title": "ULTIMATE AFRO JAZZ SESSION RELAXING LIVE BAND", "thumb": "https://i.ytimg.com/vi/JZn-ExzgKzM/mqdefault.jpg", "dur": "55:33"}, {"id": "hifg_ehBszU", "title": "RELAXING AFRO JAZZ GROOVE FOR PRODUCTIVE DAYS", "thumb": "https://i.ytimg.com/vi/hifg_ehBszU/mqdefault.jpg", "dur": "48:52"}, {"id": "QjS1GoDbYgs", "title": "THIS AFRO JAZZ SESSION HITS DIFFERENT", "thumb": "https://i.ytimg.com/vi/QjS1GoDbYgs/mqdefault.jpg", "dur": "1:59:41"}, {"id": "Bw_26SNuVA0", "title": "BEST AFRO JAZZ SESSION MIX", "thumb": "https://i.ytimg.com/vi/Bw_26SNuVA0/mqdefault.jpg", "dur": "1:08:26"}, {"id": "awuHIPZSmS0", "title": "BEST AFRO JAZZ SAXOPHONE MIX FOR WORK AND RELAXATION", "thumb": "https://i.ytimg.com/vi/awuHIPZSmS0/mqdefault.jpg", "dur": "1:08:51"}, {"id": "ZMt9anNevW0", "title": "THE MOST INCREDIBLE AFRO JAZZ PERFORMANCE", "thumb": "https://i.ytimg.com/vi/ZMt9anNevW0/mqdefault.jpg", "dur": "1:31:01"}, {"id": "mZ13XBuNyLw", "title": "Afro Jazz: The Funkiest Genre You've Never Heard Of", "thumb": "https://i.ytimg.com/vi/mZ13XBuNyLw/mqdefault.jpg", "dur": "1:36:56"}, {"id": "oxgXGkNbjMw", "title": "AFRO JAZZ SESSIONS|| WHERE AFRICAN BEATS MEETS JAZZ EXPRESSIONS", "thumb": "https://i.ytimg.com/vi/oxgXGkNbjMw/mqdefault.jpg", "dur": "1:40:18"}, {"id": "KVAMY15V80E", "title": "THE MOST UNIQUE AFRO JAZZ EXPERIENCE EVER", "thumb": "https://i.ytimg.com/vi/KVAMY15V80E/mqdefault.jpg", "dur": "1:42:47"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

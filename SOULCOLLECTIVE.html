@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@thesoul.collective -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,643 +51,97 @@
       <div class="channel-count">91 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=-Wp_L2YDTvE" target="_blank">
-            <img src="https://i.ytimg.com/vi/-Wp_L2YDTvE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro House Jazz You Were Meant to Find — 90 Minutes Session</span>
-                <span class="video-dur">1:30:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L1AD7rJxvhI" target="_blank">
-            <img src="https://i.ytimg.com/vi/L1AD7rJxvhI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">2 Hours of Jazz House — Mediterranean Vibes, Coastal Nights & Sophisticated Rhythm</span>
-                <span class="video-dur">2:04:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Thx41rskAdk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Thx41rskAdk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mediterranean Jazz House — Coastal Nights, Salt Air & Sophisticated Groove (90 Minutes Mix)</span>
-                <span class="video-dur">1:35:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bQju8dGdHAQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/bQju8dGdHAQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Jazz House Until Sunrise | Sophisticated Rhythm for Rooftops & Late Nights (1 Hour Mix)</span>
-                <span class="video-dur">1:06:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tbwDPVFzpFc" target="_blank">
-            <img src="https://i.ytimg.com/vi/tbwDPVFzpFc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz + House Therapy — Elegant Sound for Overthinking, Late Nights & Deep Relaxation</span>
-                <span class="video-dur">1:04:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LMhhiuZSvJM" target="_blank">
-            <img src="https://i.ytimg.com/vi/LMhhiuZSvJM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz + Coffee House — A New Sound for Slow Mornings & Refined Relaxation</span>
-                <span class="video-dur">1:21:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pXB63CMTONc" target="_blank">
-            <img src="https://i.ytimg.com/vi/pXB63CMTONc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Friday Chill Afro House Vibes — Smooth Rhythm, Good Energy & Late Night Flow (2 Hours Mix)</span>
-                <span class="video-dur">2:05:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nQ_nqRu9ELA" target="_blank">
-            <img src="https://i.ytimg.com/vi/nQ_nqRu9ELA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro House for Coffee Shops — Jazz Grooves, Slow Mornings & Refined Energy (1 Hour Mix)</span>
-                <span class="video-dur">1:04:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KiBVKps4HXU" target="_blank">
-            <img src="https://i.ytimg.com/vi/KiBVKps4HXU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House Is All You Need 🎷 #jazzhouse #jazzmix #relaxmusic #loungemusic #chillvibes #loungemusic</span>
-                <span class="video-dur">0:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Y026ldmK81Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/Y026ldmK81Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz + House — The Kind of Music You Discover at 1:43 AM</span>
-                <span class="video-dur">1:01:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hJ-i1fGBUo8" target="_blank">
-            <img src="https://i.ytimg.com/vi/hJ-i1fGBUo8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz + House — Not Too Deep, Not Too Chill | Just Perfect Energy</span>
-                <span class="video-dur">1:08:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8JR1-2xe2Zc" target="_blank">
-            <img src="https://i.ytimg.com/vi/8JR1-2xe2Zc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill & Dancing — Jazz House for Feel-Good Movement, Smooth Energy & Elegant Nights</span>
-                <span class="video-dur">1:09:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6uItuEtbCk0" target="_blank">
-            <img src="https://i.ytimg.com/vi/6uItuEtbCk0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Good Jazz House Always Hits Different 🎷✨ #Shorts #jazzhouse #chillvibes #jazzmix #loungemusic</span>
-                <span class="video-dur">0:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NjDjLjZhByQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/NjDjLjZhByQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Night Jazz House — Deep Culture, Elegant Energy & Late Night Flow (90 Minute Session)</span>
-                <span class="video-dur">1:31:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Wp4BtEUYT7g" target="_blank">
-            <img src="https://i.ytimg.com/vi/Wp4BtEUYT7g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Friday Chill House — Jazz Grooves for Smooth Nights, Good Energy & Weekend Mood</span>
-                <span class="video-dur">1:08:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8RK9L5H23K4" target="_blank">
-            <img src="https://i.ytimg.com/vi/8RK9L5H23K4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Midnight Jazz House Club — Deep Lounge Energy & Timeless Groove</span>
-                <span class="video-dur">1:04:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tUwXETBzTPk" target="_blank">
-            <img src="https://i.ytimg.com/vi/tUwXETBzTPk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Latin Jazz House Like You’ve Never Heard Before.. #jazzhouse #chillvibes #jazzmix #relaxmusic</span>
-                <span class="video-dur">0:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cWj888DqpU0" target="_blank">
-            <img src="https://i.ytimg.com/vi/cWj888DqpU0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Luxury Latin Jazz House — Elegant Grooves for Rooftops, Lounges & Golden Nights</span>
-                <span class="video-dur">1:02:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sF4IShCXtXU" target="_blank">
-            <img src="https://i.ytimg.com/vi/sF4IShCXtXU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">From Afro House to Jazz Nights — Sophisticated Beats for Relaxation & Style</span>
-                <span class="video-dur">1:02:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OOYiWM82BXA" target="_blank">
-            <img src="https://i.ytimg.com/vi/OOYiWM82BXA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Afro Jazz Grooves for Slow Living — Elegant House Rhythms & Calm Flow</span>
-                <span class="video-dur">1:04:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GlUJvhHIcDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/GlUJvhHIcDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Afro House & Jazz — Deep Rhythm, Warm Soul & Sunset Energy</span>
-                <span class="video-dur">1:04:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ozhkqrHdfIs" target="_blank">
-            <img src="https://i.ytimg.com/vi/ozhkqrHdfIs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Afro Jazz House — Deep Rhythm, Warm Soul & Elegant Vibes</span>
-                <span class="video-dur">1:01:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rWdvOG224c0" target="_blank">
-            <img src="https://i.ytimg.com/vi/rWdvOG224c0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Classy Night Jazz — Elegant Evenings & Sophisticated Groove</span>
-                <span class="video-dur">1:02:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rYIcBc4yZTE" target="_blank">
-            <img src="https://i.ytimg.com/vi/rYIcBc4yZTE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ever Since That Night — Elegant Jazz House & Unspoken Feelings</span>
-                <span class="video-dur">1:18:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tw27DySCYOY" target="_blank">
-            <img src="https://i.ytimg.com/vi/tw27DySCYOY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House in Concert — Live Elegance | Sophisticated Rhythm & Timeless Energy</span>
-                <span class="video-dur">59:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zp9iq-bnBto" target="_blank">
-            <img src="https://i.ytimg.com/vi/zp9iq-bnBto/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Thinking About You — Romantic Jazz House | Elegant Nights & Quiet Devotion</span>
-                <span class="video-dur">1:11:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FeZrPJpzQB0" target="_blank">
-            <img src="https://i.ytimg.com/vi/FeZrPJpzQB0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Red Nights & Jazz House — Warm Lights, Smoky Rooms & Refined Rhythm</span>
-                <span class="video-dur">1:03:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=O0kZVOAuMzw" target="_blank">
-            <img src="https://i.ytimg.com/vi/O0kZVOAuMzw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Unique Afro Jazz House for Open Minds | A Different Sound for True Jazz Souls</span>
-                <span class="video-dur">1:11:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vWG1qlQ-gNc" target="_blank">
-            <img src="https://i.ytimg.com/vi/vWG1qlQ-gNc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">So This Is How Jazz Feels 🎷✨ #jazzhouse #jazzmix #chillvibes #afrohouse #relaxmusic #loungemusic</span>
-                <span class="video-dur">0:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qkIYo1E9g4k" target="_blank">
-            <img src="https://i.ytimg.com/vi/qkIYo1E9g4k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House Remedy — Elegant Sound Therapy | Relax, Reset & Breathe</span>
-                <span class="video-dur">1:24:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yXQnW2VjXrU" target="_blank">
-            <img src="https://i.ytimg.com/vi/yXQnW2VjXrU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House in New York — Rooftop Evenings, Deep Grooves & Urban Elegance</span>
-                <span class="video-dur">1:15:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=V4v0Z2Y0Sx8" target="_blank">
-            <img src="https://i.ytimg.com/vi/V4v0Z2Y0Sx8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">This Jazz Hits Different 🎷✨ | Smooth Vibes You Didn’t Know You Needed #Shorts #JazzHouse #jazzmix</span>
-                <span class="video-dur">0:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wpS9igjoxwQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/wpS9igjoxwQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Different Kind of Afro Jazz House | Sophisticated Sound for True Jazz Souls</span>
-                <span class="video-dur">1:08:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SCjueHeDOmw" target="_blank">
-            <img src="https://i.ytimg.com/vi/SCjueHeDOmw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Latin Jazz House for Rooftops & Refined Spaces | The Latin House You Were Missing</span>
-                <span class="video-dur">1:12:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=n6A_k8TVYHU" target="_blank">
-            <img src="https://i.ytimg.com/vi/n6A_k8TVYHU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Refined Jazz House for Lounges & Late Nights | When the Skyline Slows Down (1 Hour Mix)</span>
-                <span class="video-dur">1:12:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=58bj5sm1DrQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/58bj5sm1DrQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">House, But Jazz — Smooth & Elegant Chill Vibes | Lounge & Relax Mood</span>
-                <span class="video-dur">1:13:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i9MDFI7yePI" target="_blank">
-            <img src="https://i.ytimg.com/vi/i9MDFI7yePI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">She Loved the Music, Then She Danced — Chill Elegant Jazz House</span>
-                <span class="video-dur">1:00:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MTCVMsRsmHw" target="_blank">
-            <img src="https://i.ytimg.com/vi/MTCVMsRsmHw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">We Talked All Night, Still Strangers — Elegant Jazz House Mix</span>
-                <span class="video-dur">59:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=J2CquLbVy4s" target="_blank">
-            <img src="https://i.ytimg.com/vi/J2CquLbVy4s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House Mornings — Slow Start, Clear Mind | Smooth Coffee & Focus Vibes ☕🎷</span>
-                <span class="video-dur">1:15:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L15C7alf-qA" target="_blank">
-            <img src="https://i.ytimg.com/vi/L15C7alf-qA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Elegant Grooves — Jazz House | Warm & Refined Lounge Vibes 🌴🎷</span>
-                <span class="video-dur">1:06:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w4okKdQBle4" target="_blank">
-            <img src="https://i.ytimg.com/vi/w4okKdQBle4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cozy Bossa Jazz House — Coastal Breeze | Smooth & Relaxing Vibes 🌴🎷</span>
-                <span class="video-dur">1:05:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WFrz7-FN5Z8" target="_blank">
-            <img src="https://i.ytimg.com/vi/WFrz7-FN5Z8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">No Stress, Just Jazz ✨ — Jazz House Vibes 🎷 | Chill & Relax</span>
-                <span class="video-dur">0:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=38ddO0NfzWg" target="_blank">
-            <img src="https://i.ytimg.com/vi/38ddO0NfzWg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Jazz House — A Different Pace | Chill & Sophisticated Vibes</span>
-                <span class="video-dur">1:20:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NQ9jO9x-pEk" target="_blank">
-            <img src="https://i.ytimg.com/vi/NQ9jO9x-pEk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Luxury Mood — Soul Jazz House | Refined Rhythm & Elegant Lounge Vibes</span>
-                <span class="video-dur">1:26:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JneZRFZsSVg" target="_blank">
-            <img src="https://i.ytimg.com/vi/JneZRFZsSVg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Sunlit Grooves — Jazz House | Warm Energy & Feel-Good Vibes</span>
-                <span class="video-dur">1:30:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KO-ysr4OH6U" target="_blank">
-            <img src="https://i.ytimg.com/vi/KO-ysr4OH6U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Friday Jazz House — Deep Grooves & Smooth Night Energy 🌙 | Soul Collective</span>
-                <span class="video-dur">1:15:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DZXwh81YFEc" target="_blank">
-            <img src="https://i.ytimg.com/vi/DZXwh81YFEc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">it’s more than sound… it’s a feeling ✨ #jazzhouse #jazzmix #chilljazz #deephouse #latenightjazz</span>
-                <span class="video-dur">0:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uZkAZUq_w5k" target="_blank">
-            <img src="https://i.ytimg.com/vi/uZkAZUq_w5k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Groove & Jazz House — Stay Moving | Chill & Relax Vibes</span>
-                <span class="video-dur">1:18:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1NNNmIjUy5A" target="_blank">
-            <img src="https://i.ytimg.com/vi/1NNNmIjUy5A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mood: Jazz House — Stay Present | Chill & Relax Vibes</span>
-                <span class="video-dur">1:17:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i0DPAw-9rv0" target="_blank">
-            <img src="https://i.ytimg.com/vi/i0DPAw-9rv0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House Escape — No Noise | Relax & Breathe</span>
-                <span class="video-dur">1:11:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3Z1O0LhBoKw" target="_blank">
-            <img src="https://i.ytimg.com/vi/3Z1O0LhBoKw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Work Mode: Jazz House — Stay Light | Smooth & Productive Vibes</span>
-                <span class="video-dur">1:27:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=c6WNVVy1G50" target="_blank">
-            <img src="https://i.ytimg.com/vi/c6WNVVy1G50/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House Therapy — Slow Down | Relaxing Lounge Mood</span>
-                <span class="video-dur">1:16:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vow7xrz0eHc" target="_blank">
-            <img src="https://i.ytimg.com/vi/vow7xrz0eHc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House & Chill — Soft Evenings, No Distractions | Elegant Relax Vibes</span>
-                <span class="video-dur">1:16:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YDPpf2ajVGY" target="_blank">
-            <img src="https://i.ytimg.com/vi/YDPpf2ajVGY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">You, Me & Jazz — Slow Nights & Quiet Energy | Elegant Chill Jazz House</span>
-                <span class="video-dur">1:23:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7jlPwDwz3Rs" target="_blank">
-            <img src="https://i.ytimg.com/vi/7jlPwDwz3Rs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz House for Two — Elegant Chill & Relax | 1 Hour Mix</span>
-                <span class="video-dur">1:32:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9nNxPV4Jteg" target="_blank">
-            <img src="https://i.ytimg.com/vi/9nNxPV4Jteg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Evenings — Elegant Jazz House for Chill & Relax | Luxury Hotel Lounge Vibes</span>
-                <span class="video-dur">1:25:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IxNZe1b_P3s" target="_blank">
-            <img src="https://i.ytimg.com/vi/IxNZe1b_P3s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Jazz House | Static Silence at 2AM (1 Hour Mix)</span>
-                <span class="video-dur">1:17:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jqA_YLqDoAE" target="_blank">
-            <img src="https://i.ytimg.com/vi/jqA_YLqDoAE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Latin Jazz House for Rooms & Hotels | The City Breathes After Midnight (1 Hour Mix)</span>
-                <span class="video-dur">1:16:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FjNP6ylA4EM" target="_blank">
-            <img src="https://i.ytimg.com/vi/FjNP6ylA4EM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Night Jazz House | After Hours Pulse (1 Hour Mix)</span>
-                <span class="video-dur">1:42:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yoYgs5ulKwU" target="_blank">
-            <img src="https://i.ytimg.com/vi/yoYgs5ulKwU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Static Bloom — Modern Jazz House for Focus & Slow Living (Jazz House Mix)</span>
-                <span class="video-dur">1:38:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_O64urRqyuQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/_O64urRqyuQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Last Table Still Breathing — Jazz House for 2:17 AM (Jazz House Mix)</span>
-                <span class="video-dur">1:34:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3jTBHlJrpM0" target="_blank">
-            <img src="https://i.ytimg.com/vi/3jTBHlJrpM0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Between Two A.M. | Smooth Jazz House | Jazz House Mix</span>
-                <span class="video-dur">1:19:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FYDvA9XPgCs" target="_blank">
-            <img src="https://i.ytimg.com/vi/FYDvA9XPgCs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Jazz House | Midnight Mood (1 Hour Mix)</span>
-                <span class="video-dur">1:18:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g3j1FxebuK4" target="_blank">
-            <img src="https://i.ytimg.com/vi/g3j1FxebuK4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cigarettes & Silence — A Jazz House Confession</span>
-                <span class="video-dur">1:04:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bK1qLKXrK00" target="_blank">
-            <img src="https://i.ytimg.com/vi/bK1qLKXrK00/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Floating Jazz House — Dreamy Ambient Mix (1 Hour)</span>
-                <span class="video-dur">1:03:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eYRj_TmYrYA" target="_blank">
-            <img src="https://i.ytimg.com/vi/eYRj_TmYrYA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smoke & Jazz House — Deep Ambient Session (1 Hour Mix)</span>
-                <span class="video-dur">1:08:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yHVVQCwFjiI" target="_blank">
-            <img src="https://i.ytimg.com/vi/yHVVQCwFjiI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cozy Night Jazz House — Deep & Ambient Session 1 Hour Mix</span>
-                <span class="video-dur">1:09:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3XQh_Y2CyKE" target="_blank">
-            <img src="https://i.ytimg.com/vi/3XQh_Y2CyKE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnigh Ambient Jazz House — Smooth Ambient Grooves (1 Hour Mix)</span>
-                <span class="video-dur">1:04:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tG0d3zWotHY" target="_blank">
-            <img src="https://i.ytimg.com/vi/tG0d3zWotHY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Smooth Jazz 🎷✨ #jazz #chilljazz #music #smoothjazz90s #latenightjazz</span>
-                <span class="video-dur">0:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5Q7yeJgE4SI" target="_blank">
-            <img src="https://i.ytimg.com/vi/5Q7yeJgE4SI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Smooth Jazz 🎷 | Soul Collective #chilljazz #jazz #funkyjazz  #music  #latenightjazz</span>
-                <span class="video-dur">0:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=avR5bXMDi2I" target="_blank">
-            <img src="https://i.ytimg.com/vi/avR5bXMDi2I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Romantic Smooth Jazz – Soft Saxophone & Relaxing Jazz Instrumental</span>
-                <span class="video-dur">1:02:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kkIrbnayUqs" target="_blank">
-            <img src="https://i.ytimg.com/vi/kkIrbnayUqs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smooth Jazz Saxophone Nights – Relaxing Instrumental Jazz</span>
-                <span class="video-dur">1:07:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UGzjCk8bwM4" target="_blank">
-            <img src="https://i.ytimg.com/vi/UGzjCk8bwM4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Burn | Romantic Jazz Nights</span>
-                <span class="video-dur">1:03:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NCDDj1_LG2o" target="_blank">
-            <img src="https://i.ytimg.com/vi/NCDDj1_LG2o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Desire | Sensual Jazz Grooves</span>
-                <span class="video-dur">45:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lXEZYrCXuic" target="_blank">
-            <img src="https://i.ytimg.com/vi/lXEZYrCXuic/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Soul Energy ✨</span>
-                <span class="video-dur">0:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ynjbHkX1OOQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/ynjbHkX1OOQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Candlelight Soul Jazz | Midnight Grooves for Intimate Moments</span>
-                <span class="video-dur">41:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xTGOLdizNro" target="_blank">
-            <img src="https://i.ytimg.com/vi/xTGOLdizNro/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Candlelight Soul Jazz | Smooth Grooves for Lovers</span>
-                <span class="video-dur">1:03:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=C_6AKe1zB4g" target="_blank">
-            <img src="https://i.ytimg.com/vi/C_6AKe1zB4g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">After Dark Soul Jazz | Deep, Warm & Magnetic</span>
-                <span class="video-dur">1:07:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PSYWUTsD6zA" target="_blank">
-            <img src="https://i.ytimg.com/vi/PSYWUTsD6zA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Soul Jazz | Intimate Grooves for Two</span>
-                <span class="video-dur">1:07:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vv38aRSF5bU" target="_blank">
-            <img src="https://i.ytimg.com/vi/vv38aRSF5bU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Amor Mio | Soulful Jazz Heat | Sensual Latin Mood Session</span>
-                <span class="video-dur">31:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TNOJe5GZWlU" target="_blank">
-            <img src="https://i.ytimg.com/vi/TNOJe5GZWlU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Golden Hour Latin Jazz  | Soul.Collective | Elegant House Jazz Frame</span>
-                <span class="video-dur">1:11:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tS0ZXfYf17w" target="_blank">
-            <img src="https://i.ytimg.com/vi/tS0ZXfYf17w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Soul Groove 🌙🔥 | Soul.Collective #jazzlounge  #soulmusic #jazzvibes</span>
-                <span class="video-dur">0:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XXzirdxPwSg" target="_blank">
-            <img src="https://i.ytimg.com/vi/XXzirdxPwSg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">This Latin Jazz Groove Hits Different 🎶🔥#LatinJazz #SmoothJazz #JazzShorts #YouTubeShorts</span>
-                <span class="video-dur">0:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=N6LPahbCiQY" target="_blank">
-            <img src="https://i.ytimg.com/vi/N6LPahbCiQY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Sabor A Mi | Havana Midnight | Classic Latin Jazz</span>
-                <span class="video-dur">1:22:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M6okXooOC28" target="_blank">
-            <img src="https://i.ytimg.com/vi/M6okXooOC28/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gardenias | Rio Afterglow | Bossa & Latin Jazz</span>
-                <span class="video-dur">1:15:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ys5tZIm2hwY" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ys5tZIm2hwY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SOUL.COLLECTIVE | An Elegant Escape  #chilljazz #hotelmusic #groove #cafemusic</span>
-                <span class="video-dur">0:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=l-nXMDplaRU" target="_blank">
-            <img src="https://i.ytimg.com/vi/l-nXMDplaRU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Welcome to Soul.Collective #chilljazz #instrumentaljazz #groove #cafemusic</span>
-                <span class="video-dur">0:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6OyQHR8fShM" target="_blank">
-            <img src="https://i.ytimg.com/vi/6OyQHR8fShM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Groovelle | An Elegant Evening Escape | Smooth Jazz & Neo Soul</span>
-                <span class="video-dur">35:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gvAEuyCtrsM" target="_blank">
-            <img src="https://i.ytimg.com/vi/gvAEuyCtrsM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bluvora | An Elegant Evening Escape | Smooth Jazz & Neo Soul</span>
-                <span class="video-dur">1:00:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5kakP0KWIis" target="_blank">
-            <img src="https://i.ytimg.com/vi/5kakP0KWIis/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Noctaire | An Elegant Evening Escape | Smooth Jazz & Neo Soul</span>
-                <span class="video-dur">1:00:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CPfn_oZdyE8" target="_blank">
-            <img src="https://i.ytimg.com/vi/CPfn_oZdyE8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Saxelle | An Elegant Evening Escape | Smooth Jazz & Neo Soul</span>
-                <span class="video-dur">1:00:15</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "SOUL.COLLECTIVE";
+const VIDEOS = [{"id": "-Wp_L2YDTvE", "title": "Afro House Jazz You Were Meant to Find — 90 Minutes Session", "thumb": "https://i.ytimg.com/vi/-Wp_L2YDTvE/mqdefault.jpg", "dur": "1:30:10"}, {"id": "L1AD7rJxvhI", "title": "2 Hours of Jazz House — Mediterranean Vibes, Coastal Nights & Sophisticated Rhythm", "thumb": "https://i.ytimg.com/vi/L1AD7rJxvhI/mqdefault.jpg", "dur": "2:04:22"}, {"id": "Thx41rskAdk", "title": "Mediterranean Jazz House — Coastal Nights, Salt Air & Sophisticated Groove (90 Minutes Mix)", "thumb": "https://i.ytimg.com/vi/Thx41rskAdk/mqdefault.jpg", "dur": "1:35:24"}, {"id": "bQju8dGdHAQ", "title": "Afro Jazz House Until Sunrise | Sophisticated Rhythm for Rooftops & Late Nights (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/bQju8dGdHAQ/mqdefault.jpg", "dur": "1:06:03"}, {"id": "tbwDPVFzpFc", "title": "Jazz + House Therapy — Elegant Sound for Overthinking, Late Nights & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/tbwDPVFzpFc/mqdefault.jpg", "dur": "1:04:45"}, {"id": "LMhhiuZSvJM", "title": "Jazz + Coffee House — A New Sound for Slow Mornings & Refined Relaxation", "thumb": "https://i.ytimg.com/vi/LMhhiuZSvJM/mqdefault.jpg", "dur": "1:21:10"}, {"id": "pXB63CMTONc", "title": "Friday Chill Afro House Vibes — Smooth Rhythm, Good Energy & Late Night Flow (2 Hours Mix)", "thumb": "https://i.ytimg.com/vi/pXB63CMTONc/mqdefault.jpg", "dur": "2:05:39"}, {"id": "nQ_nqRu9ELA", "title": "Afro House for Coffee Shops — Jazz Grooves, Slow Mornings & Refined Energy (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/nQ_nqRu9ELA/mqdefault.jpg", "dur": "1:04:49"}, {"id": "KiBVKps4HXU", "title": "Jazz House Is All You Need 🎷 #jazzhouse #jazzmix #relaxmusic #loungemusic #chillvibes #loungemusic", "thumb": "https://i.ytimg.com/vi/KiBVKps4HXU/mqdefault.jpg", "dur": "0:22"}, {"id": "Y026ldmK81Q", "title": "Jazz + House — The Kind of Music You Discover at 1:43 AM", "thumb": "https://i.ytimg.com/vi/Y026ldmK81Q/mqdefault.jpg", "dur": "1:01:48"}, {"id": "hJ-i1fGBUo8", "title": "Jazz + House — Not Too Deep, Not Too Chill | Just Perfect Energy", "thumb": "https://i.ytimg.com/vi/hJ-i1fGBUo8/mqdefault.jpg", "dur": "1:08:34"}, {"id": "8JR1-2xe2Zc", "title": "Chill & Dancing — Jazz House for Feel-Good Movement, Smooth Energy & Elegant Nights", "thumb": "https://i.ytimg.com/vi/8JR1-2xe2Zc/mqdefault.jpg", "dur": "1:09:17"}, {"id": "6uItuEtbCk0", "title": "Good Jazz House Always Hits Different 🎷✨ #Shorts #jazzhouse #chillvibes #jazzmix #loungemusic", "thumb": "https://i.ytimg.com/vi/6uItuEtbCk0/mqdefault.jpg", "dur": "0:29"}, {"id": "NjDjLjZhByQ", "title": "Afro Night Jazz House — Deep Culture, Elegant Energy & Late Night Flow (90 Minute Session)", "thumb": "https://i.ytimg.com/vi/NjDjLjZhByQ/mqdefault.jpg", "dur": "1:31:48"}, {"id": "Wp4BtEUYT7g", "title": "Friday Chill House — Jazz Grooves for Smooth Nights, Good Energy & Weekend Mood", "thumb": "https://i.ytimg.com/vi/Wp4BtEUYT7g/mqdefault.jpg", "dur": "1:08:06"}, {"id": "8RK9L5H23K4", "title": "The Midnight Jazz House Club — Deep Lounge Energy & Timeless Groove", "thumb": "https://i.ytimg.com/vi/8RK9L5H23K4/mqdefault.jpg", "dur": "1:04:44"}, {"id": "tUwXETBzTPk", "title": "Latin Jazz House Like You’ve Never Heard Before.. #jazzhouse #chillvibes #jazzmix #relaxmusic", "thumb": "https://i.ytimg.com/vi/tUwXETBzTPk/mqdefault.jpg", "dur": "0:25"}, {"id": "cWj888DqpU0", "title": "Luxury Latin Jazz House — Elegant Grooves for Rooftops, Lounges & Golden Nights", "thumb": "https://i.ytimg.com/vi/cWj888DqpU0/mqdefault.jpg", "dur": "1:02:17"}, {"id": "sF4IShCXtXU", "title": "From Afro House to Jazz Nights — Sophisticated Beats for Relaxation & Style", "thumb": "https://i.ytimg.com/vi/sF4IShCXtXU/mqdefault.jpg", "dur": "1:02:35"}, {"id": "OOYiWM82BXA", "title": "Afro Jazz Grooves for Slow Living — Elegant House Rhythms & Calm Flow", "thumb": "https://i.ytimg.com/vi/OOYiWM82BXA/mqdefault.jpg", "dur": "1:04:09"}, {"id": "GlUJvhHIcDA", "title": "Chill Afro House & Jazz — Deep Rhythm, Warm Soul & Sunset Energy", "thumb": "https://i.ytimg.com/vi/GlUJvhHIcDA/mqdefault.jpg", "dur": "1:04:09"}, {"id": "ozhkqrHdfIs", "title": "Chill Afro Jazz House — Deep Rhythm, Warm Soul & Elegant Vibes", "thumb": "https://i.ytimg.com/vi/ozhkqrHdfIs/mqdefault.jpg", "dur": "1:01:47"}, {"id": "rWdvOG224c0", "title": "Chill Classy Night Jazz — Elegant Evenings & Sophisticated Groove", "thumb": "https://i.ytimg.com/vi/rWdvOG224c0/mqdefault.jpg", "dur": "1:02:03"}, {"id": "rYIcBc4yZTE", "title": "Ever Since That Night — Elegant Jazz House & Unspoken Feelings", "thumb": "https://i.ytimg.com/vi/rYIcBc4yZTE/mqdefault.jpg", "dur": "1:18:48"}, {"id": "tw27DySCYOY", "title": "Jazz House in Concert — Live Elegance | Sophisticated Rhythm & Timeless Energy", "thumb": "https://i.ytimg.com/vi/tw27DySCYOY/mqdefault.jpg", "dur": "59:24"}, {"id": "zp9iq-bnBto", "title": "Thinking About You — Romantic Jazz House | Elegant Nights & Quiet Devotion", "thumb": "https://i.ytimg.com/vi/zp9iq-bnBto/mqdefault.jpg", "dur": "1:11:37"}, {"id": "FeZrPJpzQB0", "title": "Red Nights & Jazz House — Warm Lights, Smoky Rooms & Refined Rhythm", "thumb": "https://i.ytimg.com/vi/FeZrPJpzQB0/mqdefault.jpg", "dur": "1:03:07"}, {"id": "O0kZVOAuMzw", "title": "Unique Afro Jazz House for Open Minds | A Different Sound for True Jazz Souls", "thumb": "https://i.ytimg.com/vi/O0kZVOAuMzw/mqdefault.jpg", "dur": "1:11:43"}, {"id": "vWG1qlQ-gNc", "title": "So This Is How Jazz Feels 🎷✨ #jazzhouse #jazzmix #chillvibes #afrohouse #relaxmusic #loungemusic", "thumb": "https://i.ytimg.com/vi/vWG1qlQ-gNc/mqdefault.jpg", "dur": "0:18"}, {"id": "qkIYo1E9g4k", "title": "Jazz House Remedy — Elegant Sound Therapy | Relax, Reset & Breathe", "thumb": "https://i.ytimg.com/vi/qkIYo1E9g4k/mqdefault.jpg", "dur": "1:24:04"}, {"id": "yXQnW2VjXrU", "title": "Jazz House in New York — Rooftop Evenings, Deep Grooves & Urban Elegance", "thumb": "https://i.ytimg.com/vi/yXQnW2VjXrU/mqdefault.jpg", "dur": "1:15:08"}, {"id": "V4v0Z2Y0Sx8", "title": "This Jazz Hits Different 🎷✨ | Smooth Vibes You Didn’t Know You Needed #Shorts #JazzHouse #jazzmix", "thumb": "https://i.ytimg.com/vi/V4v0Z2Y0Sx8/mqdefault.jpg", "dur": "0:17"}, {"id": "wpS9igjoxwQ", "title": "A Different Kind of Afro Jazz House | Sophisticated Sound for True Jazz Souls", "thumb": "https://i.ytimg.com/vi/wpS9igjoxwQ/mqdefault.jpg", "dur": "1:08:30"}, {"id": "SCjueHeDOmw", "title": "Elegant Latin Jazz House for Rooftops & Refined Spaces | The Latin House You Were Missing", "thumb": "https://i.ytimg.com/vi/SCjueHeDOmw/mqdefault.jpg", "dur": "1:12:16"}, {"id": "n6A_k8TVYHU", "title": "Refined Jazz House for Lounges & Late Nights | When the Skyline Slows Down (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/n6A_k8TVYHU/mqdefault.jpg", "dur": "1:12:36"}, {"id": "58bj5sm1DrQ", "title": "House, But Jazz — Smooth & Elegant Chill Vibes | Lounge & Relax Mood", "thumb": "https://i.ytimg.com/vi/58bj5sm1DrQ/mqdefault.jpg", "dur": "1:13:54"}, {"id": "i9MDFI7yePI", "title": "She Loved the Music, Then She Danced — Chill Elegant Jazz House", "thumb": "https://i.ytimg.com/vi/i9MDFI7yePI/mqdefault.jpg", "dur": "1:00:31"}, {"id": "MTCVMsRsmHw", "title": "We Talked All Night, Still Strangers — Elegant Jazz House Mix", "thumb": "https://i.ytimg.com/vi/MTCVMsRsmHw/mqdefault.jpg", "dur": "59:48"}, {"id": "J2CquLbVy4s", "title": "Jazz House Mornings — Slow Start, Clear Mind | Smooth Coffee & Focus Vibes ☕🎷", "thumb": "https://i.ytimg.com/vi/J2CquLbVy4s/mqdefault.jpg", "dur": "1:15:21"}, {"id": "L15C7alf-qA", "title": "Tropical Elegant Grooves — Jazz House | Warm & Refined Lounge Vibes 🌴🎷", "thumb": "https://i.ytimg.com/vi/L15C7alf-qA/mqdefault.jpg", "dur": "1:06:16"}, {"id": "w4okKdQBle4", "title": "Cozy Bossa Jazz House — Coastal Breeze | Smooth & Relaxing Vibes 🌴🎷", "thumb": "https://i.ytimg.com/vi/w4okKdQBle4/mqdefault.jpg", "dur": "1:05:43"}, {"id": "WFrz7-FN5Z8", "title": "No Stress, Just Jazz ✨ — Jazz House Vibes 🎷 | Chill & Relax", "thumb": "https://i.ytimg.com/vi/WFrz7-FN5Z8/mqdefault.jpg", "dur": "0:19"}, {"id": "38ddO0NfzWg", "title": "The Jazz House — A Different Pace | Chill & Sophisticated Vibes", "thumb": "https://i.ytimg.com/vi/38ddO0NfzWg/mqdefault.jpg", "dur": "1:20:37"}, {"id": "NQ9jO9x-pEk", "title": "Luxury Mood — Soul Jazz House | Refined Rhythm & Elegant Lounge Vibes", "thumb": "https://i.ytimg.com/vi/NQ9jO9x-pEk/mqdefault.jpg", "dur": "1:26:53"}, {"id": "JneZRFZsSVg", "title": "Sunlit Grooves — Jazz House | Warm Energy & Feel-Good Vibes", "thumb": "https://i.ytimg.com/vi/JneZRFZsSVg/mqdefault.jpg", "dur": "1:30:05"}, {"id": "KO-ysr4OH6U", "title": "Friday Jazz House — Deep Grooves & Smooth Night Energy 🌙 | Soul Collective", "thumb": "https://i.ytimg.com/vi/KO-ysr4OH6U/mqdefault.jpg", "dur": "1:15:48"}, {"id": "DZXwh81YFEc", "title": "it’s more than sound… it’s a feeling ✨ #jazzhouse #jazzmix #chilljazz #deephouse #latenightjazz", "thumb": "https://i.ytimg.com/vi/DZXwh81YFEc/mqdefault.jpg", "dur": "0:20"}, {"id": "uZkAZUq_w5k", "title": "Groove & Jazz House — Stay Moving | Chill & Relax Vibes", "thumb": "https://i.ytimg.com/vi/uZkAZUq_w5k/mqdefault.jpg", "dur": "1:18:44"}, {"id": "1NNNmIjUy5A", "title": "Mood: Jazz House — Stay Present | Chill & Relax Vibes", "thumb": "https://i.ytimg.com/vi/1NNNmIjUy5A/mqdefault.jpg", "dur": "1:17:31"}, {"id": "i0DPAw-9rv0", "title": "Jazz House Escape — No Noise | Relax & Breathe", "thumb": "https://i.ytimg.com/vi/i0DPAw-9rv0/mqdefault.jpg", "dur": "1:11:54"}, {"id": "3Z1O0LhBoKw", "title": "Work Mode: Jazz House — Stay Light | Smooth & Productive Vibes", "thumb": "https://i.ytimg.com/vi/3Z1O0LhBoKw/mqdefault.jpg", "dur": "1:27:17"}, {"id": "c6WNVVy1G50", "title": "Jazz House Therapy — Slow Down | Relaxing Lounge Mood", "thumb": "https://i.ytimg.com/vi/c6WNVVy1G50/mqdefault.jpg", "dur": "1:16:51"}, {"id": "vow7xrz0eHc", "title": "Jazz House & Chill — Soft Evenings, No Distractions | Elegant Relax Vibes", "thumb": "https://i.ytimg.com/vi/vow7xrz0eHc/mqdefault.jpg", "dur": "1:16:51"}, {"id": "YDPpf2ajVGY", "title": "You, Me & Jazz — Slow Nights & Quiet Energy | Elegant Chill Jazz House", "thumb": "https://i.ytimg.com/vi/YDPpf2ajVGY/mqdefault.jpg", "dur": "1:23:12"}, {"id": "7jlPwDwz3Rs", "title": "Jazz House for Two — Elegant Chill & Relax | 1 Hour Mix", "thumb": "https://i.ytimg.com/vi/7jlPwDwz3Rs/mqdefault.jpg", "dur": "1:32:10"}, {"id": "9nNxPV4Jteg", "title": "Evenings — Elegant Jazz House for Chill & Relax | Luxury Hotel Lounge Vibes", "thumb": "https://i.ytimg.com/vi/9nNxPV4Jteg/mqdefault.jpg", "dur": "1:25:16"}, {"id": "IxNZe1b_P3s", "title": "Elegant Jazz House | Static Silence at 2AM (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/IxNZe1b_P3s/mqdefault.jpg", "dur": "1:17:15"}, {"id": "jqA_YLqDoAE", "title": "Elegant Latin Jazz House for Rooms & Hotels | The City Breathes After Midnight (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/jqA_YLqDoAE/mqdefault.jpg", "dur": "1:16:14"}, {"id": "FjNP6ylA4EM", "title": "Elegant Night Jazz House | After Hours Pulse (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/FjNP6ylA4EM/mqdefault.jpg", "dur": "1:42:08"}, {"id": "yoYgs5ulKwU", "title": "Static Bloom — Modern Jazz House for Focus & Slow Living (Jazz House Mix)", "thumb": "https://i.ytimg.com/vi/yoYgs5ulKwU/mqdefault.jpg", "dur": "1:38:20"}, {"id": "_O64urRqyuQ", "title": "The Last Table Still Breathing — Jazz House for 2:17 AM (Jazz House Mix)", "thumb": "https://i.ytimg.com/vi/_O64urRqyuQ/mqdefault.jpg", "dur": "1:34:11"}, {"id": "3jTBHlJrpM0", "title": "Between Two A.M. | Smooth Jazz House | Jazz House Mix", "thumb": "https://i.ytimg.com/vi/3jTBHlJrpM0/mqdefault.jpg", "dur": "1:19:17"}, {"id": "FYDvA9XPgCs", "title": "Elegant Jazz House | Midnight Mood (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/FYDvA9XPgCs/mqdefault.jpg", "dur": "1:18:29"}, {"id": "g3j1FxebuK4", "title": "Cigarettes & Silence — A Jazz House Confession", "thumb": "https://i.ytimg.com/vi/g3j1FxebuK4/mqdefault.jpg", "dur": "1:04:25"}, {"id": "bK1qLKXrK00", "title": "Floating Jazz House — Dreamy Ambient Mix (1 Hour)", "thumb": "https://i.ytimg.com/vi/bK1qLKXrK00/mqdefault.jpg", "dur": "1:03:04"}, {"id": "eYRj_TmYrYA", "title": "Smoke & Jazz House — Deep Ambient Session (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/eYRj_TmYrYA/mqdefault.jpg", "dur": "1:08:07"}, {"id": "yHVVQCwFjiI", "title": "Cozy Night Jazz House — Deep & Ambient Session 1 Hour Mix", "thumb": "https://i.ytimg.com/vi/yHVVQCwFjiI/mqdefault.jpg", "dur": "1:09:20"}, {"id": "3XQh_Y2CyKE", "title": "Midnigh Ambient Jazz House — Smooth Ambient Grooves (1 Hour Mix)", "thumb": "https://i.ytimg.com/vi/3XQh_Y2CyKE/mqdefault.jpg", "dur": "1:04:30"}, {"id": "tG0d3zWotHY", "title": "Late Night Smooth Jazz 🎷✨ #jazz #chilljazz #music #smoothjazz90s #latenightjazz", "thumb": "https://i.ytimg.com/vi/tG0d3zWotHY/mqdefault.jpg", "dur": "0:33"}, {"id": "5Q7yeJgE4SI", "title": "Romantic Smooth Jazz 🎷 | Soul Collective #chilljazz #jazz #funkyjazz  #music  #latenightjazz", "thumb": "https://i.ytimg.com/vi/5Q7yeJgE4SI/mqdefault.jpg", "dur": "0:33"}, {"id": "avR5bXMDi2I", "title": "Romantic Smooth Jazz – Soft Saxophone & Relaxing Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/avR5bXMDi2I/mqdefault.jpg", "dur": "1:02:40"}, {"id": "kkIrbnayUqs", "title": "Smooth Jazz Saxophone Nights – Relaxing Instrumental Jazz", "thumb": "https://i.ytimg.com/vi/kkIrbnayUqs/mqdefault.jpg", "dur": "1:07:54"}, {"id": "UGzjCk8bwM4", "title": "Slow Burn | Romantic Jazz Nights", "thumb": "https://i.ytimg.com/vi/UGzjCk8bwM4/mqdefault.jpg", "dur": "1:03:52"}, {"id": "NCDDj1_LG2o", "title": "Midnight Desire | Sensual Jazz Grooves", "thumb": "https://i.ytimg.com/vi/NCDDj1_LG2o/mqdefault.jpg", "dur": "45:12"}, {"id": "lXEZYrCXuic", "title": "Midnight Soul Energy ✨", "thumb": "https://i.ytimg.com/vi/lXEZYrCXuic/mqdefault.jpg", "dur": "0:30"}, {"id": "ynjbHkX1OOQ", "title": "Candlelight Soul Jazz | Midnight Grooves for Intimate Moments", "thumb": "https://i.ytimg.com/vi/ynjbHkX1OOQ/mqdefault.jpg", "dur": "41:01"}, {"id": "xTGOLdizNro", "title": "Candlelight Soul Jazz | Smooth Grooves for Lovers", "thumb": "https://i.ytimg.com/vi/xTGOLdizNro/mqdefault.jpg", "dur": "1:03:28"}, {"id": "C_6AKe1zB4g", "title": "After Dark Soul Jazz | Deep, Warm & Magnetic", "thumb": "https://i.ytimg.com/vi/C_6AKe1zB4g/mqdefault.jpg", "dur": "1:07:28"}, {"id": "PSYWUTsD6zA", "title": "Midnight Soul Jazz | Intimate Grooves for Two", "thumb": "https://i.ytimg.com/vi/PSYWUTsD6zA/mqdefault.jpg", "dur": "1:07:53"}, {"id": "vv38aRSF5bU", "title": "Amor Mio | Soulful Jazz Heat | Sensual Latin Mood Session", "thumb": "https://i.ytimg.com/vi/vv38aRSF5bU/mqdefault.jpg", "dur": "31:22"}, {"id": "TNOJe5GZWlU", "title": "Golden Hour Latin Jazz  | Soul.Collective | Elegant House Jazz Frame", "thumb": "https://i.ytimg.com/vi/TNOJe5GZWlU/mqdefault.jpg", "dur": "1:11:18"}, {"id": "tS0ZXfYf17w", "title": "Midnight Soul Groove 🌙🔥 | Soul.Collective #jazzlounge  #soulmusic #jazzvibes", "thumb": "https://i.ytimg.com/vi/tS0ZXfYf17w/mqdefault.jpg", "dur": "0:30"}, {"id": "XXzirdxPwSg", "title": "This Latin Jazz Groove Hits Different 🎶🔥#LatinJazz #SmoothJazz #JazzShorts #YouTubeShorts", "thumb": "https://i.ytimg.com/vi/XXzirdxPwSg/mqdefault.jpg", "dur": "0:31"}, {"id": "N6LPahbCiQY", "title": "Sabor A Mi | Havana Midnight | Classic Latin Jazz", "thumb": "https://i.ytimg.com/vi/N6LPahbCiQY/mqdefault.jpg", "dur": "1:22:37"}, {"id": "M6okXooOC28", "title": "Gardenias | Rio Afterglow | Bossa & Latin Jazz", "thumb": "https://i.ytimg.com/vi/M6okXooOC28/mqdefault.jpg", "dur": "1:15:24"}, {"id": "Ys5tZIm2hwY", "title": "SOUL.COLLECTIVE | An Elegant Escape  #chilljazz #hotelmusic #groove #cafemusic", "thumb": "https://i.ytimg.com/vi/Ys5tZIm2hwY/mqdefault.jpg", "dur": "0:31"}, {"id": "l-nXMDplaRU", "title": "Welcome to Soul.Collective #chilljazz #instrumentaljazz #groove #cafemusic", "thumb": "https://i.ytimg.com/vi/l-nXMDplaRU/mqdefault.jpg", "dur": "0:27"}, {"id": "6OyQHR8fShM", "title": "Groovelle | An Elegant Evening Escape | Smooth Jazz & Neo Soul", "thumb": "https://i.ytimg.com/vi/6OyQHR8fShM/mqdefault.jpg", "dur": "35:23"}, {"id": "gvAEuyCtrsM", "title": "Bluvora | An Elegant Evening Escape | Smooth Jazz & Neo Soul", "thumb": "https://i.ytimg.com/vi/gvAEuyCtrsM/mqdefault.jpg", "dur": "1:00:13"}, {"id": "5kakP0KWIis", "title": "Noctaire | An Elegant Evening Escape | Smooth Jazz & Neo Soul", "thumb": "https://i.ytimg.com/vi/5kakP0KWIis/mqdefault.jpg", "dur": "1:00:07"}, {"id": "CPfn_oZdyE8", "title": "Saxelle | An Elegant Evening Escape | Smooth Jazz & Neo Soul", "thumb": "https://i.ytimg.com/vi/CPfn_oZdyE8/mqdefault.jpg", "dur": "1:00:15"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@myblues-t7e -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,615 +51,97 @@
       <div class="channel-count">87 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=UG_A7uT8S_k" target="_blank">
-            <img src="https://i.ytimg.com/vi/UG_A7uT8S_k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Raw Blues Guitar at 2AM | Live Soul Instrumental Experience 🎸🔥</span>
-                <span class="video-dur">1:01:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ily0Kw4hm1M" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ily0Kw4hm1M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Raw Blues Instrumental | Deep Soul Guitar for Midnight Loneliness 🎸🌙</span>
-                <span class="video-dur">1:01:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zPdiita1AiM" target="_blank">
-            <img src="https://i.ytimg.com/vi/zPdiita1AiM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let Her Go – Passenger || Soul Blues Version (2012)</span>
-                <span class="video-dur">6:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Jf9Vo6yGGgc" target="_blank">
-            <img src="https://i.ytimg.com/vi/Jf9Vo6yGGgc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moving On – Kodaline || Soul Blues Version (2015)</span>
-                <span class="video-dur">5:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fDfd82UqVV8" target="_blank">
-            <img src="https://i.ytimg.com/vi/fDfd82UqVV8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chicago Midnight Blues | Soulful Guitar Through the Windy City Nights 🎷</span>
-                <span class="video-dur">1:00:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R3ggAdXRioM" target="_blank">
-            <img src="https://i.ytimg.com/vi/R3ggAdXRioM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights</span>
-                <span class="video-dur">1:01:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KtZWeFCClBY" target="_blank">
-            <img src="https://i.ytimg.com/vi/KtZWeFCClBY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">2AM Blues Train Through the Rain | Deep Emotional Blues Guitar for Lonely Nights</span>
-                <span class="video-dur">1:00:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T6exbXaRrPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/T6exbXaRrPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stand By Me – Ben E. King || Soul Blues Version (1961)</span>
-                <span class="video-dur">4:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8n1mY6FfHPA" target="_blank">
-            <img src="https://i.ytimg.com/vi/8n1mY6FfHPA/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Crying Blues Guitar at 2AM | Deep Soul Instrumental for Lonely Nights 🎸</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=izyQ4qVvmMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/izyQ4qVvmMs/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soul of the Midnight Guitar | Deep Blues Instrumental for Lonely Nights 🎸🌙</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FAm_2F26RNM" target="_blank">
-            <img src="https://i.ytimg.com/vi/FAm_2F26RNM/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whiskey & Midnight Blues | Soul Guitar for Lonely Souls at 2AM 🥃🎷</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M3xSbkT7c9Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/M3xSbkT7c9Q/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oOD7_1uWSJ4" target="_blank">
-            <img src="https://i.ytimg.com/vi/oOD7_1uWSJ4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Yesterday – The Beatles || Soul Blues Version (1965)</span>
-                <span class="video-dur">4:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VH-bmkGERP8" target="_blank">
-            <img src="https://i.ytimg.com/vi/VH-bmkGERP8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Faithfully – Journey || Soul Blues Version (1983)</span>
-                <span class="video-dur">4:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hi5cbtjGhy8" target="_blank">
-            <img src="https://i.ytimg.com/vi/hi5cbtjGhy8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hotel California – Eagles || Soul Blues Version (1976)</span>
-                <span class="video-dur">6:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VxlMVkS_tUA" target="_blank">
-            <img src="https://i.ytimg.com/vi/VxlMVkS_tUA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beautiful Things – Benson Boone || Soul Blues Version (2024)</span>
-                <span class="video-dur">4:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1bVVURoibn0" target="_blank">
-            <img src="https://i.ytimg.com/vi/1bVVURoibn0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Day of My Life – American Authors || Soul Blues Version (2014)</span>
-                <span class="video-dur">3:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Y4Rx1yxln2c" target="_blank">
-            <img src="https://i.ytimg.com/vi/Y4Rx1yxln2c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Can’t Take My Eyes Off You – Frankie Valli || Soul Blues Version (1967)</span>
-                <span class="video-dur">4:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iTudOYiE3Ic" target="_blank">
-            <img src="https://i.ytimg.com/vi/iTudOYiE3Ic/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Don’t Matter – Akon || Soul Blues Version (2006)</span>
-                <span class="video-dur">4:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IpO_fkHorJE" target="_blank">
-            <img src="https://i.ytimg.com/vi/IpO_fkHorJE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Love of My Life – Queen || Soul Blues Version (1975)</span>
-                <span class="video-dur">3:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=38LxYtt_Ez0" target="_blank">
-            <img src="https://i.ytimg.com/vi/38LxYtt_Ez0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Fix You – Coldplay || Soul Blues Version (2005)</span>
-                <span class="video-dur">4:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lKiRx01beNM" target="_blank">
-            <img src="https://i.ytimg.com/vi/lKiRx01beNM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Die on This Hill – Sienna Spiro || Soul Blues Version (2024)</span>
-                <span class="video-dur">4:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kxxfZCU25_U" target="_blank">
-            <img src="https://i.ytimg.com/vi/kxxfZCU25_U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dancing in the Moonlight – Toploader || Soul Blues Version (2000)</span>
-                <span class="video-dur">4:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_-290yKecwA" target="_blank">
-            <img src="https://i.ytimg.com/vi/_-290yKecwA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Attention – Charlie Puth || Soul Blues Version (2017)</span>
-                <span class="video-dur">4:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Dbigov-0Lzk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Dbigov-0Lzk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Just the Two of Us – Bill Withers || Soul Blues Version (1981)</span>
-                <span class="video-dur">4:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JrNo74UWDy8" target="_blank">
-            <img src="https://i.ytimg.com/vi/JrNo74UWDy8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">If I Die Young – The Band Perry || Soul Blues Version (2010)</span>
-                <span class="video-dur">4:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pA0KnT0z_IY" target="_blank">
-            <img src="https://i.ytimg.com/vi/pA0KnT0z_IY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Don’t Want to Miss a Thing – Aerosmith || Soul Blues Version (1998)</span>
-                <span class="video-dur">3:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S9jyZct_IZA" target="_blank">
-            <img src="https://i.ytimg.com/vi/S9jyZct_IZA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Can’t Make You Love Me – Bonnie Raitt || Soul Blues Version (1991)</span>
-                <span class="video-dur">6:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rnlGQLGolZA" target="_blank">
-            <img src="https://i.ytimg.com/vi/rnlGQLGolZA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Halo – Beyoncé || Soul Blues Version (2008)</span>
-                <span class="video-dur">3:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jhwSc7qmQ9s" target="_blank">
-            <img src="https://i.ytimg.com/vi/jhwSc7qmQ9s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Girls Like You – Maroon 5 ft. Cardi B || Soul Blues Version (2018)</span>
-                <span class="video-dur">4:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NelcIdKlujk" target="_blank">
-            <img src="https://i.ytimg.com/vi/NelcIdKlujk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Billie Jean – Michael Jackson || Soul Blues Version (1983)</span>
-                <span class="video-dur">4:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eCsOOcRgYEI" target="_blank">
-            <img src="https://i.ytimg.com/vi/eCsOOcRgYEI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Because You Loved Me – Celine Dion || Soul Blues Version (1996)</span>
-                <span class="video-dur">5:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IqayEdsjZZA" target="_blank">
-            <img src="https://i.ytimg.com/vi/IqayEdsjZZA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">August – Taylor Swift || Soul Blues Version (2020)</span>
-                <span class="video-dur">4:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IT67OzqK_UE" target="_blank">
-            <img src="https://i.ytimg.com/vi/IT67OzqK_UE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">At My Worst – Pink Sweat$ || Soul Blues Version (2020)</span>
-                <span class="video-dur">3:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lmMsvwTY-QQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/lmMsvwTY-QQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Made You Look – Meghan Trainor || Soul Blues Version (2022)</span>
-                <span class="video-dur">3:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mQXdc8Hs1QM" target="_blank">
-            <img src="https://i.ytimg.com/vi/mQXdc8Hs1QM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let Her Go – Passenger || Soul Blues Version (2012)</span>
-                <span class="video-dur">6:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=OQ-6MvsHZa0" target="_blank">
-            <img src="https://i.ytimg.com/vi/OQ-6MvsHZa0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I’m a Believer – The Monkees || Soul Blues Version (1966)</span>
-                <span class="video-dur">5:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Cipf8XLfyC4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Cipf8XLfyC4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">If Tomorrow Never Comes – Ronan Keating || Soul Blues Version (2002)</span>
-                <span class="video-dur">5:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gpqOfCbNofY" target="_blank">
-            <img src="https://i.ytimg.com/vi/gpqOfCbNofY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Live My Life for You – FireHouse || Soul Blues Version (1995)</span>
-                <span class="video-dur">4:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5Ebjht7FOXk" target="_blank">
-            <img src="https://i.ytimg.com/vi/5Ebjht7FOXk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bleeding Love – Leona Lewis || Soul Blues Version (2007)</span>
-                <span class="video-dur">5:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=V4EwCei3d0k" target="_blank">
-            <img src="https://i.ytimg.com/vi/V4EwCei3d0k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Before You Go – Lewis Capaldi || Soul Blues Version (2019)</span>
-                <span class="video-dur">4:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pcn28a4a2ok" target="_blank">
-            <img src="https://i.ytimg.com/vi/pcn28a4a2ok/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Angels – Robbie Williams || Soul Blues Version (1997)</span>
-                <span class="video-dur">5:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uqfJN5dzoT4" target="_blank">
-            <img src="https://i.ytimg.com/vi/uqfJN5dzoT4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moving On – Kodaline || Soul Blues Version (2015)</span>
-                <span class="video-dur">5:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NqwJW4HD3K4" target="_blank">
-            <img src="https://i.ytimg.com/vi/NqwJW4HD3K4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beautiful in White – Shane Filan || Soul Blues Version (2017)</span>
-                <span class="video-dur">4:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_MYUnE3UBdo" target="_blank">
-            <img src="https://i.ytimg.com/vi/_MYUnE3UBdo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jar of Hearts – Christina Perri || Soul Blues Version (2010)</span>
-                <span class="video-dur">5:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VBVGh8HdOnM" target="_blank">
-            <img src="https://i.ytimg.com/vi/VBVGh8HdOnM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Yellow – Coldplay || Soul Blues Version (2000)</span>
-                <span class="video-dur">5:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qg_9N0tUlcg" target="_blank">
-            <img src="https://i.ytimg.com/vi/qg_9N0tUlcg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Wonderwall – Oasis || Soul Blues Version (1995)</span>
-                <span class="video-dur">4:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iTZ9Rbvg10o" target="_blank">
-            <img src="https://i.ytimg.com/vi/iTZ9Rbvg10o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">All of Me – John Legend || Soul Blues Version (2013)</span>
-                <span class="video-dur">5:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Sp7b8DYmFMw" target="_blank">
-            <img src="https://i.ytimg.com/vi/Sp7b8DYmFMw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Best Part – H.E.R. ft. Daniel Caesar || Soul Blues Version (2017)</span>
-                <span class="video-dur">3:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AXnlO8QR5ZU" target="_blank">
-            <img src="https://i.ytimg.com/vi/AXnlO8QR5ZU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">If I Ain’t Got You – Alicia Keys || Soul Blues Version (2003)</span>
-                <span class="video-dur">4:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RLd7hwm0QBk" target="_blank">
-            <img src="https://i.ytimg.com/vi/RLd7hwm0QBk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Like I’m Gonna Lose You – Meghan Trainor || Soul Blues Version (2015)</span>
-                <span class="video-dur">4:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ICxeseUz_gE" target="_blank">
-            <img src="https://i.ytimg.com/vi/ICxeseUz_gE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Memories – Maroon 5 || Soul Blues Version (2019)</span>
-                <span class="video-dur">3:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FxF4VVMRVzc" target="_blank">
-            <img src="https://i.ytimg.com/vi/FxF4VVMRVzc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Officially Missing You – Tamia || Soul Blues Version (2003)</span>
-                <span class="video-dur">6:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MlaKvkw22CU" target="_blank">
-            <img src="https://i.ytimg.com/vi/MlaKvkw22CU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Weak – SWV || Soul Blues Version (1992)</span>
-                <span class="video-dur">4:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=utLS3NytUbo" target="_blank">
-            <img src="https://i.ytimg.com/vi/utLS3NytUbo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Yesterday – The Beatles || Soul Blues Version (1965)</span>
-                <span class="video-dur">4:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Jlb17LNcqx4" target="_blank">
-            <img src="https://i.ytimg.com/vi/Jlb17LNcqx4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ain’t No Sunshine – Bill Withers || Soul Blues Version (1971)</span>
-                <span class="video-dur">6:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HQsg9ysIuiA" target="_blank">
-            <img src="https://i.ytimg.com/vi/HQsg9ysIuiA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dear God – Avenged Sevenfold || Soul Blues Version (2007)</span>
-                <span class="video-dur">4:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hsWxxPmsrW0" target="_blank">
-            <img src="https://i.ytimg.com/vi/hsWxxPmsrW0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Englishman in New York – Sting || Soul Blues Version (1987)</span>
-                <span class="video-dur">5:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JysiwWKELTU" target="_blank">
-            <img src="https://i.ytimg.com/vi/JysiwWKELTU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Faithfully – Journey || Soul Blues Version (1983)</span>
-                <span class="video-dur">4:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1gRmS_yg2jU" target="_blank">
-            <img src="https://i.ytimg.com/vi/1gRmS_yg2jU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Will Always Love You – Whitney Houston || Soul Blues Version (1992)</span>
-                <span class="video-dur">5:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nAYCgTjo240" target="_blank">
-            <img src="https://i.ytimg.com/vi/nAYCgTjo240/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">In the Blood – John Mayer || Soul Blues Version (2017)</span>
-                <span class="video-dur">4:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AGl7xViVesI" target="_blank">
-            <img src="https://i.ytimg.com/vi/AGl7xViVesI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">One Call Away – Charlie Puth || Soul Blues Version (2015)</span>
-                <span class="video-dur">4:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-D83kZI0ThM" target="_blank">
-            <img src="https://i.ytimg.com/vi/-D83kZI0ThM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stand by Me – Ben E. King || Soul Blues Version (1961)</span>
-                <span class="video-dur">4:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yI3RlWZ82kQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/yI3RlWZ82kQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">All I Want – Kodaline || Soul Blues Version (2013)</span>
-                <span class="video-dur">4:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v4EMXYuMMaU" target="_blank">
-            <img src="https://i.ytimg.com/vi/v4EMXYuMMaU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Supermarket Flowers – Ed Sheeran || Soul Blues Version (2017)</span>
-                <span class="video-dur">4:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RsGCSBn9uXg" target="_blank">
-            <img src="https://i.ytimg.com/vi/RsGCSBn9uXg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Wherever You Will Go – The Calling (2001) || Soul Blues Version</span>
-                <span class="video-dur">4:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bHI2-Cd4YXM" target="_blank">
-            <img src="https://i.ytimg.com/vi/bHI2-Cd4YXM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">7 Years – Lukas Graham || Soul Blues Version (2015)</span>
-                <span class="video-dur">6:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9uhkAwEPv6U" target="_blank">
-            <img src="https://i.ytimg.com/vi/9uhkAwEPv6U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hey Jude – The Beatles || Soul Blues Version (1968)</span>
-                <span class="video-dur">4:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hArViv5Cgx8" target="_blank">
-            <img src="https://i.ytimg.com/vi/hArViv5Cgx8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hey There Delilah – Plain White T’s || Soul Blues Version (2006)</span>
-                <span class="video-dur">6:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T26c0biuqNo" target="_blank">
-            <img src="https://i.ytimg.com/vi/T26c0biuqNo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hotel California – Eagles || Soul Blues Version (1976)</span>
-                <span class="video-dur">6:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=o7cH4KZq2m8" target="_blank">
-            <img src="https://i.ytimg.com/vi/o7cH4KZq2m8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">My Heart Will Go On – Celine Dion || Soul Blues Version (1997)</span>
-                <span class="video-dur">5:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0sIae1f8u7Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/0sIae1f8u7Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Never Enough – Loren Allred || Soul Blues Version (2017)</span>
-                <span class="video-dur">4:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0pUGUi7hVMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/0pUGUi7hVMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Climb – Miley Cyrus || Soul Blues Version (2009)</span>
-                <span class="video-dur">4:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NqYajsoQwWo" target="_blank">
-            <img src="https://i.ytimg.com/vi/NqYajsoQwWo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Flowers – Miley Cyrus || Soul Blues Version</span>
-                <span class="video-dur">3:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1hU0kND13PQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/1hU0kND13PQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Live My Life for You – FireHouse || Soul Blues Version</span>
-                <span class="video-dur">4:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vE1C-EhUdQE" target="_blank">
-            <img src="https://i.ytimg.com/vi/vE1C-EhUdQE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">If Tomorrow Never Comes – Ronan Keating || Soul Blues Version</span>
-                <span class="video-dur">5:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R23XyFfzUdk" target="_blank">
-            <img src="https://i.ytimg.com/vi/R23XyFfzUdk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">You Are the Reason – Calum Scott || Soul Blues Version</span>
-                <span class="video-dur">4:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8i-wUTHlrYc" target="_blank">
-            <img src="https://i.ytimg.com/vi/8i-wUTHlrYc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let Her Go – Passenger || Soul Blues Version</span>
-                <span class="video-dur">4:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0OWLuJaFpwk" target="_blank">
-            <img src="https://i.ytimg.com/vi/0OWLuJaFpwk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Girls Like You – Maroon 5 || Soul Blues Version</span>
-                <span class="video-dur">4:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=f7RT2hQ1bGQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/f7RT2hQ1bGQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Bleeding Love – Leona Lewis || Soul Blues Version</span>
-                <span class="video-dur">3:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=i06VOr-kQk0" target="_blank">
-            <img src="https://i.ytimg.com/vi/i06VOr-kQk0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">See You Again – Charlie Puth (Soul Blues Version)</span>
-                <span class="video-dur">4:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QqRE4NKCUu4" target="_blank">
-            <img src="https://i.ytimg.com/vi/QqRE4NKCUu4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Every Breath You Take – The Police (Soul Blues Version)</span>
-                <span class="video-dur">4:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g0pTOqY52ak" target="_blank">
-            <img src="https://i.ytimg.com/vi/g0pTOqY52ak/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I Don't Want to Miss a Thing – Aerosmith (Soul Blues Version)</span>
-                <span class="video-dur">3:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j-5DeOckGYE" target="_blank">
-            <img src="https://i.ytimg.com/vi/j-5DeOckGYE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Perfect – Ed Sheeran (Soul Blues Version)</span>
-                <span class="video-dur">5:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tkpX7qVsRW0" target="_blank">
-            <img src="https://i.ytimg.com/vi/tkpX7qVsRW0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">I'm Yours – Jason Mraz (Soul Blues Version)</span>
-                <span class="video-dur">3:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=T2Rtds1wrCc" target="_blank">
-            <img src="https://i.ytimg.com/vi/T2Rtds1wrCc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">One in a Million – Ne-Yo | Soul Blues Cover</span>
-                <span class="video-dur">3:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hlva_uw7jDU" target="_blank">
-            <img src="https://i.ytimg.com/vi/hlva_uw7jDU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Yesterday – The Beatles | Soul Blues Cover</span>
-                <span class="video-dur">4:20</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "My Blues";
+const VIDEOS = [{"id": "UG_A7uT8S_k", "title": "Raw Blues Guitar at 2AM | Live Soul Instrumental Experience 🎸🔥", "thumb": "https://i.ytimg.com/vi/UG_A7uT8S_k/mqdefault.jpg", "dur": "1:01:01"}, {"id": "Ily0Kw4hm1M", "title": "Raw Blues Instrumental | Deep Soul Guitar for Midnight Loneliness 🎸🌙", "thumb": "https://i.ytimg.com/vi/Ily0Kw4hm1M/mqdefault.jpg", "dur": "1:01:14"}, {"id": "zPdiita1AiM", "title": "Let Her Go – Passenger || Soul Blues Version (2012)", "thumb": "https://i.ytimg.com/vi/zPdiita1AiM/mqdefault.jpg", "dur": "6:45"}, {"id": "Jf9Vo6yGGgc", "title": "Moving On – Kodaline || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/Jf9Vo6yGGgc/mqdefault.jpg", "dur": "5:04"}, {"id": "fDfd82UqVV8", "title": "Chicago Midnight Blues | Soulful Guitar Through the Windy City Nights 🎷", "thumb": "https://i.ytimg.com/vi/fDfd82UqVV8/mqdefault.jpg", "dur": "1:00:48"}, {"id": "R3ggAdXRioM", "title": "Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights", "thumb": "https://i.ytimg.com/vi/R3ggAdXRioM/mqdefault.jpg", "dur": "1:01:06"}, {"id": "KtZWeFCClBY", "title": "2AM Blues Train Through the Rain | Deep Emotional Blues Guitar for Lonely Nights", "thumb": "https://i.ytimg.com/vi/KtZWeFCClBY/mqdefault.jpg", "dur": "1:00:56"}, {"id": "T6exbXaRrPc", "title": "Stand By Me – Ben E. King || Soul Blues Version (1961)", "thumb": "https://i.ytimg.com/vi/T6exbXaRrPc/mqdefault.jpg", "dur": "4:09"}, {"id": "8n1mY6FfHPA", "title": "Crying Blues Guitar at 2AM | Deep Soul Instrumental for Lonely Nights 🎸", "thumb": "https://i.ytimg.com/vi/8n1mY6FfHPA/mqdefault_live.jpg", "dur": ""}, {"id": "izyQ4qVvmMs", "title": "Soul of the Midnight Guitar | Deep Blues Instrumental for Lonely Nights 🎸🌙", "thumb": "https://i.ytimg.com/vi/izyQ4qVvmMs/mqdefault_live.jpg", "dur": ""}, {"id": "FAm_2F26RNM", "title": "Whiskey & Midnight Blues | Soul Guitar for Lonely Souls at 2AM 🥃🎷", "thumb": "https://i.ytimg.com/vi/FAm_2F26RNM/mqdefault_live.jpg", "dur": ""}, {"id": "M3xSbkT7c9Q", "title": "Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights", "thumb": "https://i.ytimg.com/vi/M3xSbkT7c9Q/mqdefault_live.jpg", "dur": ""}, {"id": "oOD7_1uWSJ4", "title": "Yesterday – The Beatles || Soul Blues Version (1965)", "thumb": "https://i.ytimg.com/vi/oOD7_1uWSJ4/mqdefault.jpg", "dur": "4:59"}, {"id": "VH-bmkGERP8", "title": "Faithfully – Journey || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/VH-bmkGERP8/mqdefault.jpg", "dur": "4:37"}, {"id": "hi5cbtjGhy8", "title": "Hotel California – Eagles || Soul Blues Version (1976)", "thumb": "https://i.ytimg.com/vi/hi5cbtjGhy8/mqdefault.jpg", "dur": "6:52"}, {"id": "VxlMVkS_tUA", "title": "Beautiful Things – Benson Boone || Soul Blues Version (2024)", "thumb": "https://i.ytimg.com/vi/VxlMVkS_tUA/mqdefault.jpg", "dur": "4:03"}, {"id": "1bVVURoibn0", "title": "Best Day of My Life – American Authors || Soul Blues Version (2014)", "thumb": "https://i.ytimg.com/vi/1bVVURoibn0/mqdefault.jpg", "dur": "3:54"}, {"id": "Y4Rx1yxln2c", "title": "Can’t Take My Eyes Off You – Frankie Valli || Soul Blues Version (1967)", "thumb": "https://i.ytimg.com/vi/Y4Rx1yxln2c/mqdefault.jpg", "dur": "4:13"}, {"id": "iTudOYiE3Ic", "title": "Don’t Matter – Akon || Soul Blues Version (2006)", "thumb": "https://i.ytimg.com/vi/iTudOYiE3Ic/mqdefault.jpg", "dur": "4:03"}, {"id": "IpO_fkHorJE", "title": "Love of My Life – Queen || Soul Blues Version (1975)", "thumb": "https://i.ytimg.com/vi/IpO_fkHorJE/mqdefault.jpg", "dur": "3:45"}, {"id": "38LxYtt_Ez0", "title": "Fix You – Coldplay || Soul Blues Version (2005)", "thumb": "https://i.ytimg.com/vi/38LxYtt_Ez0/mqdefault.jpg", "dur": "4:55"}, {"id": "lKiRx01beNM", "title": "Die on This Hill – Sienna Spiro || Soul Blues Version (2024)", "thumb": "https://i.ytimg.com/vi/lKiRx01beNM/mqdefault.jpg", "dur": "4:54"}, {"id": "kxxfZCU25_U", "title": "Dancing in the Moonlight – Toploader || Soul Blues Version (2000)", "thumb": "https://i.ytimg.com/vi/kxxfZCU25_U/mqdefault.jpg", "dur": "4:14"}, {"id": "_-290yKecwA", "title": "Attention – Charlie Puth || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/_-290yKecwA/mqdefault.jpg", "dur": "4:10"}, {"id": "Dbigov-0Lzk", "title": "Just the Two of Us – Bill Withers || Soul Blues Version (1981)", "thumb": "https://i.ytimg.com/vi/Dbigov-0Lzk/mqdefault.jpg", "dur": "4:33"}, {"id": "JrNo74UWDy8", "title": "If I Die Young – The Band Perry || Soul Blues Version (2010)", "thumb": "https://i.ytimg.com/vi/JrNo74UWDy8/mqdefault.jpg", "dur": "4:20"}, {"id": "pA0KnT0z_IY", "title": "I Don’t Want to Miss a Thing – Aerosmith || Soul Blues Version (1998)", "thumb": "https://i.ytimg.com/vi/pA0KnT0z_IY/mqdefault.jpg", "dur": "3:39"}, {"id": "S9jyZct_IZA", "title": "I Can’t Make You Love Me – Bonnie Raitt || Soul Blues Version (1991)", "thumb": "https://i.ytimg.com/vi/S9jyZct_IZA/mqdefault.jpg", "dur": "6:34"}, {"id": "rnlGQLGolZA", "title": "Halo – Beyoncé || Soul Blues Version (2008)", "thumb": "https://i.ytimg.com/vi/rnlGQLGolZA/mqdefault.jpg", "dur": "3:23"}, {"id": "jhwSc7qmQ9s", "title": "Girls Like You – Maroon 5 ft. Cardi B || Soul Blues Version (2018)", "thumb": "https://i.ytimg.com/vi/jhwSc7qmQ9s/mqdefault.jpg", "dur": "4:51"}, {"id": "NelcIdKlujk", "title": "Billie Jean – Michael Jackson || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/NelcIdKlujk/mqdefault.jpg", "dur": "4:28"}, {"id": "eCsOOcRgYEI", "title": "Because You Loved Me – Celine Dion || Soul Blues Version (1996)", "thumb": "https://i.ytimg.com/vi/eCsOOcRgYEI/mqdefault.jpg", "dur": "5:25"}, {"id": "IqayEdsjZZA", "title": "August – Taylor Swift || Soul Blues Version (2020)", "thumb": "https://i.ytimg.com/vi/IqayEdsjZZA/mqdefault.jpg", "dur": "4:53"}, {"id": "IT67OzqK_UE", "title": "At My Worst – Pink Sweat$ || Soul Blues Version (2020)", "thumb": "https://i.ytimg.com/vi/IT67OzqK_UE/mqdefault.jpg", "dur": "3:24"}, {"id": "lmMsvwTY-QQ", "title": "Made You Look – Meghan Trainor || Soul Blues Version (2022)", "thumb": "https://i.ytimg.com/vi/lmMsvwTY-QQ/mqdefault.jpg", "dur": "3:35"}, {"id": "mQXdc8Hs1QM", "title": "Let Her Go – Passenger || Soul Blues Version (2012)", "thumb": "https://i.ytimg.com/vi/mQXdc8Hs1QM/mqdefault.jpg", "dur": "6:45"}, {"id": "OQ-6MvsHZa0", "title": "I’m a Believer – The Monkees || Soul Blues Version (1966)", "thumb": "https://i.ytimg.com/vi/OQ-6MvsHZa0/mqdefault.jpg", "dur": "5:19"}, {"id": "Cipf8XLfyC4", "title": "If Tomorrow Never Comes – Ronan Keating || Soul Blues Version (2002)", "thumb": "https://i.ytimg.com/vi/Cipf8XLfyC4/mqdefault.jpg", "dur": "5:12"}, {"id": "gpqOfCbNofY", "title": "I Live My Life for You – FireHouse || Soul Blues Version (1995)", "thumb": "https://i.ytimg.com/vi/gpqOfCbNofY/mqdefault.jpg", "dur": "4:09"}, {"id": "5Ebjht7FOXk", "title": "Bleeding Love – Leona Lewis || Soul Blues Version (2007)", "thumb": "https://i.ytimg.com/vi/5Ebjht7FOXk/mqdefault.jpg", "dur": "5:30"}, {"id": "V4EwCei3d0k", "title": "Before You Go – Lewis Capaldi || Soul Blues Version (2019)", "thumb": "https://i.ytimg.com/vi/V4EwCei3d0k/mqdefault.jpg", "dur": "4:40"}, {"id": "pcn28a4a2ok", "title": "Angels – Robbie Williams || Soul Blues Version (1997)", "thumb": "https://i.ytimg.com/vi/pcn28a4a2ok/mqdefault.jpg", "dur": "5:15"}, {"id": "uqfJN5dzoT4", "title": "Moving On – Kodaline || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/uqfJN5dzoT4/mqdefault.jpg", "dur": "5:00"}, {"id": "NqwJW4HD3K4", "title": "Beautiful in White – Shane Filan || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/NqwJW4HD3K4/mqdefault.jpg", "dur": "4:21"}, {"id": "_MYUnE3UBdo", "title": "Jar of Hearts – Christina Perri || Soul Blues Version (2010)", "thumb": "https://i.ytimg.com/vi/_MYUnE3UBdo/mqdefault.jpg", "dur": "5:05"}, {"id": "VBVGh8HdOnM", "title": "Yellow – Coldplay || Soul Blues Version (2000)", "thumb": "https://i.ytimg.com/vi/VBVGh8HdOnM/mqdefault.jpg", "dur": "5:15"}, {"id": "qg_9N0tUlcg", "title": "Wonderwall – Oasis || Soul Blues Version (1995)", "thumb": "https://i.ytimg.com/vi/qg_9N0tUlcg/mqdefault.jpg", "dur": "4:18"}, {"id": "iTZ9Rbvg10o", "title": "All of Me – John Legend || Soul Blues Version (2013)", "thumb": "https://i.ytimg.com/vi/iTZ9Rbvg10o/mqdefault.jpg", "dur": "5:35"}, {"id": "Sp7b8DYmFMw", "title": "Best Part – H.E.R. ft. Daniel Caesar || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/Sp7b8DYmFMw/mqdefault.jpg", "dur": "3:40"}, {"id": "AXnlO8QR5ZU", "title": "If I Ain’t Got You – Alicia Keys || Soul Blues Version (2003)", "thumb": "https://i.ytimg.com/vi/AXnlO8QR5ZU/mqdefault.jpg", "dur": "4:46"}, {"id": "RLd7hwm0QBk", "title": "Like I’m Gonna Lose You – Meghan Trainor || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/RLd7hwm0QBk/mqdefault.jpg", "dur": "4:00"}, {"id": "ICxeseUz_gE", "title": "Memories – Maroon 5 || Soul Blues Version (2019)", "thumb": "https://i.ytimg.com/vi/ICxeseUz_gE/mqdefault.jpg", "dur": "3:19"}, {"id": "FxF4VVMRVzc", "title": "Officially Missing You – Tamia || Soul Blues Version (2003)", "thumb": "https://i.ytimg.com/vi/FxF4VVMRVzc/mqdefault.jpg", "dur": "6:43"}, {"id": "MlaKvkw22CU", "title": "Weak – SWV || Soul Blues Version (1992)", "thumb": "https://i.ytimg.com/vi/MlaKvkw22CU/mqdefault.jpg", "dur": "4:28"}, {"id": "utLS3NytUbo", "title": "Yesterday – The Beatles || Soul Blues Version (1965)", "thumb": "https://i.ytimg.com/vi/utLS3NytUbo/mqdefault.jpg", "dur": "4:09"}, {"id": "Jlb17LNcqx4", "title": "Ain’t No Sunshine – Bill Withers || Soul Blues Version (1971)", "thumb": "https://i.ytimg.com/vi/Jlb17LNcqx4/mqdefault.jpg", "dur": "6:52"}, {"id": "HQsg9ysIuiA", "title": "Dear God – Avenged Sevenfold || Soul Blues Version (2007)", "thumb": "https://i.ytimg.com/vi/HQsg9ysIuiA/mqdefault.jpg", "dur": "4:20"}, {"id": "hsWxxPmsrW0", "title": "Englishman in New York – Sting || Soul Blues Version (1987)", "thumb": "https://i.ytimg.com/vi/hsWxxPmsrW0/mqdefault.jpg", "dur": "5:42"}, {"id": "JysiwWKELTU", "title": "Faithfully – Journey || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/JysiwWKELTU/mqdefault.jpg", "dur": "4:42"}, {"id": "1gRmS_yg2jU", "title": "I Will Always Love You – Whitney Houston || Soul Blues Version (1992)", "thumb": "https://i.ytimg.com/vi/1gRmS_yg2jU/mqdefault.jpg", "dur": "5:11"}, {"id": "nAYCgTjo240", "title": "In the Blood – John Mayer || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/nAYCgTjo240/mqdefault.jpg", "dur": "4:29"}, {"id": "AGl7xViVesI", "title": "One Call Away – Charlie Puth || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/AGl7xViVesI/mqdefault.jpg", "dur": "4:37"}, {"id": "-D83kZI0ThM", "title": "Stand by Me – Ben E. King || Soul Blues Version (1961)", "thumb": "https://i.ytimg.com/vi/-D83kZI0ThM/mqdefault.jpg", "dur": "4:19"}, {"id": "yI3RlWZ82kQ", "title": "All I Want – Kodaline || Soul Blues Version (2013)", "thumb": "https://i.ytimg.com/vi/yI3RlWZ82kQ/mqdefault.jpg", "dur": "4:30"}, {"id": "v4EMXYuMMaU", "title": "Supermarket Flowers – Ed Sheeran || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/v4EMXYuMMaU/mqdefault.jpg", "dur": "4:29"}, {"id": "RsGCSBn9uXg", "title": "Wherever You Will Go – The Calling (2001) || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/RsGCSBn9uXg/mqdefault.jpg", "dur": "4:29"}, {"id": "bHI2-Cd4YXM", "title": "7 Years – Lukas Graham || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/bHI2-Cd4YXM/mqdefault.jpg", "dur": "6:36"}, {"id": "9uhkAwEPv6U", "title": "Hey Jude – The Beatles || Soul Blues Version (1968)", "thumb": "https://i.ytimg.com/vi/9uhkAwEPv6U/mqdefault.jpg", "dur": "4:55"}, {"id": "hArViv5Cgx8", "title": "Hey There Delilah – Plain White T’s || Soul Blues Version (2006)", "thumb": "https://i.ytimg.com/vi/hArViv5Cgx8/mqdefault.jpg", "dur": "6:14"}, {"id": "T26c0biuqNo", "title": "Hotel California – Eagles || Soul Blues Version (1976)", "thumb": "https://i.ytimg.com/vi/T26c0biuqNo/mqdefault.jpg", "dur": "6:52"}, {"id": "o7cH4KZq2m8", "title": "My Heart Will Go On – Celine Dion || Soul Blues Version (1997)", "thumb": "https://i.ytimg.com/vi/o7cH4KZq2m8/mqdefault.jpg", "dur": "5:29"}, {"id": "0sIae1f8u7Y", "title": "Never Enough – Loren Allred || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/0sIae1f8u7Y/mqdefault.jpg", "dur": "4:10"}, {"id": "0pUGUi7hVMs", "title": "The Climb – Miley Cyrus || Soul Blues Version (2009)", "thumb": "https://i.ytimg.com/vi/0pUGUi7hVMs/mqdefault.jpg", "dur": "4:50"}, {"id": "NqYajsoQwWo", "title": "Flowers – Miley Cyrus || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/NqYajsoQwWo/mqdefault.jpg", "dur": "3:31"}, {"id": "1hU0kND13PQ", "title": "I Live My Life for You – FireHouse || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/1hU0kND13PQ/mqdefault.jpg", "dur": "4:34"}, {"id": "vE1C-EhUdQE", "title": "If Tomorrow Never Comes – Ronan Keating || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/vE1C-EhUdQE/mqdefault.jpg", "dur": "5:18"}, {"id": "R23XyFfzUdk", "title": "You Are the Reason – Calum Scott || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/R23XyFfzUdk/mqdefault.jpg", "dur": "4:43"}, {"id": "8i-wUTHlrYc", "title": "Let Her Go – Passenger || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/8i-wUTHlrYc/mqdefault.jpg", "dur": "4:34"}, {"id": "0OWLuJaFpwk", "title": "Girls Like You – Maroon 5 || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/0OWLuJaFpwk/mqdefault.jpg", "dur": "4:32"}, {"id": "f7RT2hQ1bGQ", "title": "Bleeding Love – Leona Lewis || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/f7RT2hQ1bGQ/mqdefault.jpg", "dur": "3:48"}, {"id": "i06VOr-kQk0", "title": "See You Again – Charlie Puth (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/i06VOr-kQk0/mqdefault.jpg", "dur": "4:10"}, {"id": "QqRE4NKCUu4", "title": "Every Breath You Take – The Police (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/QqRE4NKCUu4/mqdefault.jpg", "dur": "4:00"}, {"id": "g0pTOqY52ak", "title": "I Don't Want to Miss a Thing – Aerosmith (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/g0pTOqY52ak/mqdefault.jpg", "dur": "3:32"}, {"id": "j-5DeOckGYE", "title": "Perfect – Ed Sheeran (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/j-5DeOckGYE/mqdefault.jpg", "dur": "5:05"}, {"id": "tkpX7qVsRW0", "title": "I'm Yours – Jason Mraz (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/tkpX7qVsRW0/mqdefault.jpg", "dur": "3:41"}, {"id": "T2Rtds1wrCc", "title": "One in a Million – Ne-Yo | Soul Blues Cover", "thumb": "https://i.ytimg.com/vi/T2Rtds1wrCc/mqdefault.jpg", "dur": "3:09"}, {"id": "hlva_uw7jDU", "title": "Yesterday – The Beatles | Soul Blues Cover", "thumb": "https://i.ytimg.com/vi/hlva_uw7jDU/mqdefault.jpg", "dur": "4:20"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

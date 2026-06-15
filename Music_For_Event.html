@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@musicforevent -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,272 +51,97 @@
       <div class="channel-count">38 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=C4Z2r_M9i_g" target="_blank">
-            <img src="https://i.ytimg.com/vi/C4Z2r_M9i_g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Symphony of Legends</span>
-                <span class="video-dur">24:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pI9XSFANblA" target="_blank">
-            <img src="https://i.ytimg.com/vi/pI9XSFANblA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Fusion Overdrive</span>
-                <span class="video-dur">33:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=XHai9Fn-sEw" target="_blank">
-            <img src="https://i.ytimg.com/vi/XHai9Fn-sEw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Urban Jazz Motion</span>
-                <span class="video-dur">32:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4uCSMnArFvs" target="_blank">
-            <img src="https://i.ytimg.com/vi/4uCSMnArFvs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Fading Signals & Broken Frequencies</span>
-                <span class="video-dur">26:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nDuejh0-TPE" target="_blank">
-            <img src="https://i.ytimg.com/vi/nDuejh0-TPE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Electric Siam EDM Nights</span>
-                <span class="video-dur">27:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AACDr4Uajqg" target="_blank">
-            <img src="https://i.ytimg.com/vi/AACDr4Uajqg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Siam Jazz Fusion Boulevard</span>
-                <span class="video-dur">33:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ocCpLq4dWew" target="_blank">
-            <img src="https://i.ytimg.com/vi/ocCpLq4dWew/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Little Dreams Playground</span>
-                <span class="video-dur">11:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2dzzCAI1QP8" target="_blank">
-            <img src="https://i.ytimg.com/vi/2dzzCAI1QP8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Golden Era Swing Jazz</span>
-                <span class="video-dur">25:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3tZlhqc7n8A" target="_blank">
-            <img src="https://i.ytimg.com/vi/3tZlhqc7n8A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ocean Lights Latin Jazz</span>
-                <span class="video-dur">31:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1WbIjt90LT8" target="_blank">
-            <img src="https://i.ytimg.com/vi/1WbIjt90LT8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Titanium Bass Havoc</span>
-                <span class="video-dur">25:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KfCUpK4yH5g" target="_blank">
-            <img src="https://i.ytimg.com/vi/KfCUpK4yH5g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cosmic Jazz Funk Syndicate</span>
-                <span class="video-dur">33:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yDFZ41bN9tc" target="_blank">
-            <img src="https://i.ytimg.com/vi/yDFZ41bN9tc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Golden Breeze Bossa</span>
-                <span class="video-dur">19:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mQtFgOVufU8" target="_blank">
-            <img src="https://i.ytimg.com/vi/mQtFgOVufU8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tropical Escape Routes</span>
-                <span class="video-dur">25:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=laDi9zHEsbk" target="_blank">
-            <img src="https://i.ytimg.com/vi/laDi9zHEsbk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Reggae Paradise Motion</span>
-                <span class="video-dur">23:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=slSo09nYmw4" target="_blank">
-            <img src="https://i.ytimg.com/vi/slSo09nYmw4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Elegant Dixieland Jazz</span>
-                <span class="video-dur">22:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g415gZ5pbK4" target="_blank">
-            <img src="https://i.ytimg.com/vi/g415gZ5pbK4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Whispers of Forever</span>
-                <span class="video-dur">28:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kk758s__7Mc" target="_blank">
-            <img src="https://i.ytimg.com/vi/kk758s__7Mc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Luna del Fuego</span>
-                <span class="video-dur">14:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9SEycMN4zeE" target="_blank">
-            <img src="https://i.ytimg.com/vi/9SEycMN4zeE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">อีสานสะเทือนฟลอร์</span>
-                <span class="video-dur">21:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hsrQosPsUzY" target="_blank">
-            <img src="https://i.ytimg.com/vi/hsrQosPsUzY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">NEON HORIZON PROTOCOL</span>
-                <span class="video-dur">32:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8Tt1i6K7Nc0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8Tt1i6K7Nc0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Echoes Beyond Goodbye</span>
-                <span class="video-dur">28:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ze5V0OvA1Yg" target="_blank">
-            <img src="https://i.ytimg.com/vi/ze5V0OvA1Yg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Fusion Pulse</span>
-                <span class="video-dur">33:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-0TMQNVDwxM" target="_blank">
-            <img src="https://i.ytimg.com/vi/-0TMQNVDwxM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Shadowfall: Age of War</span>
-                <span class="video-dur">24:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=k9bIq-skmKc" target="_blank">
-            <img src="https://i.ytimg.com/vi/k9bIq-skmKc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Velour Serenity: Timeless Lobby Ambience</span>
-                <span class="video-dur">28:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ammrLijAuNg" target="_blank">
-            <img src="https://i.ytimg.com/vi/ammrLijAuNg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">MIDNIGHT CIRCUITSA Deep House Instrumental Experience</span>
-                <span class="video-dur">37:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L_2A-jmWR2c" target="_blank">
-            <img src="https://i.ytimg.com/vi/L_2A-jmWR2c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BASS DOMINION: A Dubstep Instrumental Journey</span>
-                <span class="video-dur">27:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KZ0M98M1xso" target="_blank">
-            <img src="https://i.ytimg.com/vi/KZ0M98M1xso/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Echoes of the Wind Valley</span>
-                <span class="video-dur">26:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BPyVsJBjhmc" target="_blank">
-            <img src="https://i.ytimg.com/vi/BPyVsJBjhmc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Pulse of the Night: A Modern House Experience</span>
-                <span class="video-dur">30:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jIB6TlQ_dcg" target="_blank">
-            <img src="https://i.ytimg.com/vi/jIB6TlQ_dcg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Velvet Evenings: A Smooth Jazz Experience</span>
-                <span class="video-dur">33:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oyfitfhQCfc" target="_blank">
-            <img src="https://i.ytimg.com/vi/oyfitfhQCfc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Genesis of Dominion: The Grand Opening Saga</span>
-                <span class="video-dur">26:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oVngz2s3RLQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/oVngz2s3RLQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rhythm Ascension: From Warm-Up to Peak</span>
-                <span class="video-dur">23:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QeZLjEDPkbE" target="_blank">
-            <img src="https://i.ytimg.com/vi/QeZLjEDPkbE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Velvet Flow: The R&B Event Experience</span>
-                <span class="video-dur">25:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nYH7cp_kRQw" target="_blank">
-            <img src="https://i.ytimg.com/vi/nYH7cp_kRQw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">NEON ASCENT: The EDM Event Journey</span>
-                <span class="video-dur">29:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=q9VJvlOz4dA" target="_blank">
-            <img src="https://i.ytimg.com/vi/q9VJvlOz4dA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Pulse: Deep House Experience</span>
-                <span class="video-dur">31:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7FBDgRceZBQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/7FBDgRceZBQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rising Voltage: The Rock Event Experience</span>
-                <span class="video-dur">24:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dfEB6-4sOxE" target="_blank">
-            <img src="https://i.ytimg.com/vi/dfEB6-4sOxE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Adrenaline Flow: From Warm-Up to Burnout</span>
-                <span class="video-dur">22:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h-ymWs8JOjU" target="_blank">
-            <img src="https://i.ytimg.com/vi/h-ymWs8JOjU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Innovation Continuum</span>
-                <span class="video-dur">25:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1cB6DByghGk" target="_blank">
-            <img src="https://i.ytimg.com/vi/1cB6DByghGk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Neon Meridian: The Event Odyssey</span>
-                <span class="video-dur">31:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dMW_-nxPRHY" target="_blank">
-            <img src="https://i.ytimg.com/vi/dMW_-nxPRHY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Taste Of Jazz</span>
-                <span class="video-dur">26:05</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Music For Event";
+const VIDEOS = [{"id": "C4Z2r_M9i_g", "title": "Dark Symphony of Legends", "thumb": "https://i.ytimg.com/vi/C4Z2r_M9i_g/mqdefault.jpg", "dur": "24:13"}, {"id": "pI9XSFANblA", "title": "Jazz Fusion Overdrive", "thumb": "https://i.ytimg.com/vi/pI9XSFANblA/mqdefault.jpg", "dur": "33:53"}, {"id": "XHai9Fn-sEw", "title": "Urban Jazz Motion", "thumb": "https://i.ytimg.com/vi/XHai9Fn-sEw/mqdefault.jpg", "dur": "32:51"}, {"id": "4uCSMnArFvs", "title": "Fading Signals & Broken Frequencies", "thumb": "https://i.ytimg.com/vi/4uCSMnArFvs/mqdefault.jpg", "dur": "26:20"}, {"id": "nDuejh0-TPE", "title": "Electric Siam EDM Nights", "thumb": "https://i.ytimg.com/vi/nDuejh0-TPE/mqdefault.jpg", "dur": "27:34"}, {"id": "AACDr4Uajqg", "title": "Siam Jazz Fusion Boulevard", "thumb": "https://i.ytimg.com/vi/AACDr4Uajqg/mqdefault.jpg", "dur": "33:02"}, {"id": "ocCpLq4dWew", "title": "Little Dreams Playground", "thumb": "https://i.ytimg.com/vi/ocCpLq4dWew/mqdefault.jpg", "dur": "11:31"}, {"id": "2dzzCAI1QP8", "title": "Golden Era Swing Jazz", "thumb": "https://i.ytimg.com/vi/2dzzCAI1QP8/mqdefault.jpg", "dur": "25:21"}, {"id": "3tZlhqc7n8A", "title": "Ocean Lights Latin Jazz", "thumb": "https://i.ytimg.com/vi/3tZlhqc7n8A/mqdefault.jpg", "dur": "31:48"}, {"id": "1WbIjt90LT8", "title": "Titanium Bass Havoc", "thumb": "https://i.ytimg.com/vi/1WbIjt90LT8/mqdefault.jpg", "dur": "25:05"}, {"id": "KfCUpK4yH5g", "title": "Cosmic Jazz Funk Syndicate", "thumb": "https://i.ytimg.com/vi/KfCUpK4yH5g/mqdefault.jpg", "dur": "33:09"}, {"id": "yDFZ41bN9tc", "title": "Golden Breeze Bossa", "thumb": "https://i.ytimg.com/vi/yDFZ41bN9tc/mqdefault.jpg", "dur": "19:22"}, {"id": "mQtFgOVufU8", "title": "Tropical Escape Routes", "thumb": "https://i.ytimg.com/vi/mQtFgOVufU8/mqdefault.jpg", "dur": "25:47"}, {"id": "laDi9zHEsbk", "title": "Reggae Paradise Motion", "thumb": "https://i.ytimg.com/vi/laDi9zHEsbk/mqdefault.jpg", "dur": "23:41"}, {"id": "slSo09nYmw4", "title": "Elegant Dixieland Jazz", "thumb": "https://i.ytimg.com/vi/slSo09nYmw4/mqdefault.jpg", "dur": "22:09"}, {"id": "g415gZ5pbK4", "title": "Whispers of Forever", "thumb": "https://i.ytimg.com/vi/g415gZ5pbK4/mqdefault.jpg", "dur": "28:23"}, {"id": "kk758s__7Mc", "title": "Luna del Fuego", "thumb": "https://i.ytimg.com/vi/kk758s__7Mc/mqdefault.jpg", "dur": "14:08"}, {"id": "9SEycMN4zeE", "title": "อีสานสะเทือนฟลอร์", "thumb": "https://i.ytimg.com/vi/9SEycMN4zeE/mqdefault.jpg", "dur": "21:03"}, {"id": "hsrQosPsUzY", "title": "NEON HORIZON PROTOCOL", "thumb": "https://i.ytimg.com/vi/hsrQosPsUzY/mqdefault.jpg", "dur": "32:52"}, {"id": "8Tt1i6K7Nc0", "title": "Echoes Beyond Goodbye", "thumb": "https://i.ytimg.com/vi/8Tt1i6K7Nc0/mqdefault.jpg", "dur": "28:13"}, {"id": "ze5V0OvA1Yg", "title": "Jazz Fusion Pulse", "thumb": "https://i.ytimg.com/vi/ze5V0OvA1Yg/mqdefault.jpg", "dur": "33:14"}, {"id": "-0TMQNVDwxM", "title": "Shadowfall: Age of War", "thumb": "https://i.ytimg.com/vi/-0TMQNVDwxM/mqdefault.jpg", "dur": "24:49"}, {"id": "k9bIq-skmKc", "title": "Velour Serenity: Timeless Lobby Ambience", "thumb": "https://i.ytimg.com/vi/k9bIq-skmKc/mqdefault.jpg", "dur": "28:17"}, {"id": "ammrLijAuNg", "title": "MIDNIGHT CIRCUITSA Deep House Instrumental Experience", "thumb": "https://i.ytimg.com/vi/ammrLijAuNg/mqdefault.jpg", "dur": "37:06"}, {"id": "L_2A-jmWR2c", "title": "BASS DOMINION: A Dubstep Instrumental Journey", "thumb": "https://i.ytimg.com/vi/L_2A-jmWR2c/mqdefault.jpg", "dur": "27:46"}, {"id": "KZ0M98M1xso", "title": "Echoes of the Wind Valley", "thumb": "https://i.ytimg.com/vi/KZ0M98M1xso/mqdefault.jpg", "dur": "26:05"}, {"id": "BPyVsJBjhmc", "title": "Pulse of the Night: A Modern House Experience", "thumb": "https://i.ytimg.com/vi/BPyVsJBjhmc/mqdefault.jpg", "dur": "30:55"}, {"id": "jIB6TlQ_dcg", "title": "Velvet Evenings: A Smooth Jazz Experience", "thumb": "https://i.ytimg.com/vi/jIB6TlQ_dcg/mqdefault.jpg", "dur": "33:07"}, {"id": "oyfitfhQCfc", "title": "Genesis of Dominion: The Grand Opening Saga", "thumb": "https://i.ytimg.com/vi/oyfitfhQCfc/mqdefault.jpg", "dur": "26:43"}, {"id": "oVngz2s3RLQ", "title": "Rhythm Ascension: From Warm-Up to Peak", "thumb": "https://i.ytimg.com/vi/oVngz2s3RLQ/mqdefault.jpg", "dur": "23:54"}, {"id": "QeZLjEDPkbE", "title": "Velvet Flow: The R&B Event Experience", "thumb": "https://i.ytimg.com/vi/QeZLjEDPkbE/mqdefault.jpg", "dur": "25:22"}, {"id": "nYH7cp_kRQw", "title": "NEON ASCENT: The EDM Event Journey", "thumb": "https://i.ytimg.com/vi/nYH7cp_kRQw/mqdefault.jpg", "dur": "29:55"}, {"id": "q9VJvlOz4dA", "title": "Midnight Pulse: Deep House Experience", "thumb": "https://i.ytimg.com/vi/q9VJvlOz4dA/mqdefault.jpg", "dur": "31:58"}, {"id": "7FBDgRceZBQ", "title": "Rising Voltage: The Rock Event Experience", "thumb": "https://i.ytimg.com/vi/7FBDgRceZBQ/mqdefault.jpg", "dur": "24:39"}, {"id": "dfEB6-4sOxE", "title": "Adrenaline Flow: From Warm-Up to Burnout", "thumb": "https://i.ytimg.com/vi/dfEB6-4sOxE/mqdefault.jpg", "dur": "22:59"}, {"id": "h-ymWs8JOjU", "title": "The Innovation Continuum", "thumb": "https://i.ytimg.com/vi/h-ymWs8JOjU/mqdefault.jpg", "dur": "25:34"}, {"id": "1cB6DByghGk", "title": "Neon Meridian: The Event Odyssey", "thumb": "https://i.ytimg.com/vi/1cB6DByghGk/mqdefault.jpg", "dur": "31:03"}, {"id": "dMW_-nxPRHY", "title": "A Taste Of Jazz", "thumb": "https://i.ytimg.com/vi/dMW_-nxPRHY/mqdefault.jpg", "dur": "26:05"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

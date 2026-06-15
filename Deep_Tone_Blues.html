@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@deeptoneblues -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,421 +51,97 @@
       <div class="channel-count">59 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=GE4tcR8S6sc" target="_blank">
-            <img src="https://i.ytimg.com/vi/GE4tcR8S6sc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Calm Blues Guitar for Long Quiet Nights | Deep Tone Blues</span>
-                <span class="video-dur">1:32:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wMpfIGAwg_c" target="_blank">
-            <img src="https://i.ytimg.com/vi/wMpfIGAwg_c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Still Night Blues Guitar Instrumental for Peaceful Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:31:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7yE3ASv-zqA" target="_blank">
-            <img src="https://i.ytimg.com/vi/7yE3ASv-zqA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soft Electric Blues Guitar for Deep Relaxing Nights | Deep Tone Blues</span>
-                <span class="video-dur">1:33:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ULVAS8NYbew" target="_blank">
-            <img src="https://i.ytimg.com/vi/ULVAS8NYbew/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Shadowy Blues Guitar for Emotional Night Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:33:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fj_jnzVw6qE" target="_blank">
-            <img src="https://i.ytimg.com/vi/fj_jnzVw6qE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smooth Blues Guitar Instrumental for Late Evening Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:31:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xBStEVIBt-k" target="_blank">
-            <img src="https://i.ytimg.com/vi/xBStEVIBt-k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nocturnal Blues Guitar Instrumental for Calm and Focused Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:32:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vXzb1iIIEjc" target="_blank">
-            <img src="https://i.ytimg.com/vi/vXzb1iIIEjc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Burning Blues Guitar for Deep Night Mood | Deep Tone Blues</span>
-                <span class="video-dur">1:32:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9NRqjS58nxA" target="_blank">
-            <img src="https://i.ytimg.com/vi/9NRqjS58nxA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dim Light Blues Guitar for Quiet Relaxation and Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:30:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wAVAfkwmX7c" target="_blank">
-            <img src="https://i.ytimg.com/vi/wAVAfkwmX7c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Echoing Blues Guitar Instrumental for Midnight Calm and Space | Deep Tone Blues</span>
-                <span class="video-dur">1:32:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=E3H9AcZQkf8" target="_blank">
-            <img src="https://i.ytimg.com/vi/E3H9AcZQkf8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Gentle Slow Blues Guitar for Evening Wind Down Moments | Deep Tone Blues</span>
-                <span class="video-dur">1:30:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9bHMmDsG5q0" target="_blank">
-            <img src="https://i.ytimg.com/vi/9bHMmDsG5q0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Low Light Blues Guitar Instrumental for Deep Focus Sessions | Deep Tone Blues</span>
-                <span class="video-dur">1:31:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3ZV9_EHQv60" target="_blank">
-            <img src="https://i.ytimg.com/vi/3ZV9_EHQv60/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moody Late Blues Guitar for Night Time Escape and Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:30:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vraUDW0d_9M" target="_blank">
-            <img src="https://i.ytimg.com/vi/vraUDW0d_9M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Subtle Blues Guitar Instrumental for Calm Evening Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:33:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8qVUVUzT8Xc" target="_blank">
-            <img src="https://i.ytimg.com/vi/8qVUVUzT8Xc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Nightfall Blues Guitar for Relaxed and Quiet Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:30:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ie6-181WVn4" target="_blank">
-            <img src="https://i.ytimg.com/vi/ie6-181WVn4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soft Slow Blues Guitar for Peaceful Night Ambience | Deep Tone Blues</span>
-                <span class="video-dur">1:32:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=r-cHfeAMLFo" target="_blank">
-            <img src="https://i.ytimg.com/vi/r-cHfeAMLFo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lonely Night Blues Guitar Instrumental for Emotional Release | Deep Tone Blues</span>
-                <span class="video-dur">1:32:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_YSbhpKgFgg" target="_blank">
-            <img src="https://i.ytimg.com/vi/_YSbhpKgFgg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Tone Blues Guitar for Late Night Relaxation and Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:30:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NYgLbjQJnns" target="_blank">
-            <img src="https://i.ytimg.com/vi/NYgLbjQJnns/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Heavy Mood Blues Guitar Instrumental for Silent Midnight Hours | Deep Tone Blues</span>
-                <span class="video-dur">1:30:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sKqy6z0wS4M" target="_blank">
-            <img src="https://i.ytimg.com/vi/sKqy6z0wS4M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nightfall Slow Blues Guitar for Deep Calm and Gentle Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:34:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zfpo324Ibfo" target="_blank">
-            <img src="https://i.ytimg.com/vi/zfpo324Ibfo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Intimate Blues Guitar Instrumental for Late Night Listening and Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:31:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vwEImW6JzqY" target="_blank">
-            <img src="https://i.ytimg.com/vi/vwEImW6JzqY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Vintage Blues Guitar for Warm Night Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:33:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SshUI4k633Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/SshUI4k633Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Calm Blues Guitar Instrumental for Evening Relaxation and Peace | Deep Tone Blues</span>
-                <span class="video-dur">1:34:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zF-yEQOS5Go" target="_blank">
-            <img src="https://i.ytimg.com/vi/zF-yEQOS5Go/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Slow Blues Guitar for Stress Relief and Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:30:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fzr_K21ka9Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/fzr_K21ka9Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Warm Electric Blues Guitar for Late Night Calm and Study | Deep Tone Blues</span>
-                <span class="video-dur">1:32:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fzsuYIHH0Tw" target="_blank">
-            <img src="https://i.ytimg.com/vi/fzsuYIHH0Tw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Soulful Blues Guitar for Relaxation and Night Ambience | Deep Tone Blues</span>
-                <span class="video-dur">1:31:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cmCdncj143k" target="_blank">
-            <img src="https://i.ytimg.com/vi/cmCdncj143k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Emotional Blues Guitar Instrumental for Silent Night Moments | Deep Tone Blues</span>
-                <span class="video-dur">1:34:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TpL7dc17nfI" target="_blank">
-            <img src="https://i.ytimg.com/vi/TpL7dc17nfI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Blues Guitar Instrumental for Relaxing After Hours Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:33:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LpFBnYqoIcw" target="_blank">
-            <img src="https://i.ytimg.com/vi/LpFBnYqoIcw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Melancholic Blues Guitar for Quiet Nights and Gentle Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:33:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rLayXE9UjNQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/rLayXE9UjNQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Night Blues Guitar Instrumental for Calm Background Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:32:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_qldoLAMY7Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/_qldoLAMY7Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Expressive Slow Blues Guitar for Late Night Solitude and Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:32:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rgPH9nL7E1I" target="_blank">
-            <img src="https://i.ytimg.com/vi/rgPH9nL7E1I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moody Blues Guitar Instrumental for Dark Night Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:30:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aqs9nZp9QyY" target="_blank">
-            <img src="https://i.ytimg.com/vi/aqs9nZp9QyY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Deep Blues Guitar for Night Drive and Emotional Escape | Deep Tone Blues</span>
-                <span class="video-dur">1:30:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GbXVl_hvuWE" target="_blank">
-            <img src="https://i.ytimg.com/vi/GbXVl_hvuWE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Blues Guitar Instrumental for Calm and Introspective Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:30:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9Adbf1yDPak" target="_blank">
-            <img src="https://i.ytimg.com/vi/9Adbf1yDPak/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soulful Blues Guitar Instrumental for Deep Thought and Night Vibes | Deep Tone Blues</span>
-                <span class="video-dur">1:36:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tohCbAj6Ecg" target="_blank">
-            <img src="https://i.ytimg.com/vi/tohCbAj6Ecg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Warm Slow Blues Guitar for Relaxing Evenings and Peaceful Moments | Deep Tone Blues</span>
-                <span class="video-dur">1:36:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=I96ozEcpoto" target="_blank">
-            <img src="https://i.ytimg.com/vi/I96ozEcpoto/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smoky Blues Guitar Instrumental for Late Night Chill and Ambient Mood | Deep Tone Blues</span>
-                <span class="video-dur">1:33:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LyySCZU8cwg" target="_blank">
-            <img src="https://i.ytimg.com/vi/LyySCZU8cwg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Blues Guitar Instrumental for Night Time Relaxation and Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:32:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TvZSIVGVJdk" target="_blank">
-            <img src="https://i.ytimg.com/vi/TvZSIVGVJdk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Emotional Blues Guitar for Midnight Reflection and Calm Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:32:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=N8kJ5unkdLk" target="_blank">
-            <img src="https://i.ytimg.com/vi/N8kJ5unkdLk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Blues Guitar Instrumental for Deep Relaxation and Quiet Nights | Deep Tone Blues</span>
-                <span class="video-dur">1:31:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s4WOtzPUoK8" target="_blank">
-            <img src="https://i.ytimg.com/vi/s4WOtzPUoK8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">After Hours Slow Blues Guitar for Smoky Night Vibes | Deep Tone Blues</span>
-                <span class="video-dur">1:30:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ubI9oZT9rIw" target="_blank">
-            <img src="https://i.ytimg.com/vi/ubI9oZT9rIw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Blues Guitar Instrumental for Nocturnal Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:32:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hcUCt7ZXgnQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/hcUCt7ZXgnQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Emotional Blues Guitar for Silent Night Moments | Deep Tone Blues</span>
-                <span class="video-dur">1:32:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RMdXBd08YFQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/RMdXBd08YFQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Electric Blues Guitar for Calm Background Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:31:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EixIBOfIbAg" target="_blank">
-            <img src="https://i.ytimg.com/vi/EixIBOfIbAg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Warm Vintage Blues Guitar for Relaxing Evening Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:36:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=vrPH9Gb1-ck" target="_blank">
-            <img src="https://i.ytimg.com/vi/vrPH9Gb1-ck/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moody Slow Blues Guitar Instrumental for Dark Cozy Nights | Deep Tone Blues</span>
-                <span class="video-dur">1:33:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TTWFif_UXUk" target="_blank">
-            <img src="https://i.ytimg.com/vi/TTWFif_UXUk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep and Soulful Blues Guitar for Night Time Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:31:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bTIfIK4JteE" target="_blank">
-            <img src="https://i.ytimg.com/vi/bTIfIK4JteE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Intimate Slow Blues Guitar Instrumental for Late Night Listening | Deep Tone Blues</span>
-                <span class="video-dur">1:31:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VgH60ALUSKk" target="_blank">
-            <img src="https://i.ytimg.com/vi/VgH60ALUSKk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Blues Guitar Instrumental for Rainy Night Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:30:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WW3snY6jrEI" target="_blank">
-            <img src="https://i.ytimg.com/vi/WW3snY6jrEI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Emotional Blues Guitar for Midnight Solitude | Deep Tone Blues</span>
-                <span class="video-dur">1:34:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UL6EpZeqtYQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/UL6EpZeqtYQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Blues Guitar Instrumental for Study and Deep Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:32:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jat93z31tFI" target="_blank">
-            <img src="https://i.ytimg.com/vi/jat93z31tFI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Expressive Electric Blues Guitar for Quiet Evening Mood | Deep Tone Blues</span>
-                <span class="video-dur">1:30:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VkA72CDz9zk" target="_blank">
-            <img src="https://i.ytimg.com/vi/VkA72CDz9zk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Melancholic Blues Guitar Instrumental for After Hours Relaxation | Deep Tone Blues</span>
-                <span class="video-dur">1:34:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PlL2Ej--rAI" target="_blank">
-            <img src="https://i.ytimg.com/vi/PlL2Ej--rAI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soulful Slow Blues Guitar Instrumental for Calm and Introspective Nights | Deep Tone Blues</span>
-                <span class="video-dur">1:31:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=desHukwN4MY" target="_blank">
-            <img src="https://i.ytimg.com/vi/desHukwN4MY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Warm Electric Blues Guitar for Relaxing Night Ambience | Deep Tone Blues</span>
-                <span class="video-dur">1:32:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uSx3tjMNlI8" target="_blank">
-            <img src="https://i.ytimg.com/vi/uSx3tjMNlI8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smoky Slow Blues Guitar Instrumental for Late Night Mood | Deep Tone Blues</span>
-                <span class="video-dur">1:31:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6a27Fmshvz0" target="_blank">
-            <img src="https://i.ytimg.com/vi/6a27Fmshvz0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Peaceful Blues Guitar Instrumental for Midnight Listening Atmosphere | Deep Tone Blues</span>
-                <span class="video-dur">1:32:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HBmDpReAeMU" target="_blank">
-            <img src="https://i.ytimg.com/vi/HBmDpReAeMU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Emotional Slow Blues Guitar for Late Night Relaxation and Reflection | Deep Tone Blues</span>
-                <span class="video-dur">1:30:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=nUS775qf6Q8" target="_blank">
-            <img src="https://i.ytimg.com/vi/nUS775qf6Q8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Deep Blues Guitar Instrumental for Night Drive and Quiet Moments | Deep Tone Blues</span>
-                <span class="video-dur">1:31:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yGG7e2rVIkw" target="_blank">
-            <img src="https://i.ytimg.com/vi/yGG7e2rVIkw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Slow Blues Guitar Instrumental for Relaxing and Deep Focus | Deep Tone Blues</span>
-                <span class="video-dur">1:30:50</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Deep Tone Blues";
+const VIDEOS = [{"id": "GE4tcR8S6sc", "title": "Deep Calm Blues Guitar for Long Quiet Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/GE4tcR8S6sc/mqdefault.jpg", "dur": "1:32:28"}, {"id": "wMpfIGAwg_c", "title": "Still Night Blues Guitar Instrumental for Peaceful Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/wMpfIGAwg_c/mqdefault.jpg", "dur": "1:31:12"}, {"id": "7yE3ASv-zqA", "title": "Soft Electric Blues Guitar for Deep Relaxing Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/7yE3ASv-zqA/mqdefault.jpg", "dur": "1:33:20"}, {"id": "ULVAS8NYbew", "title": "Shadowy Blues Guitar for Emotional Night Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ULVAS8NYbew/mqdefault.jpg", "dur": "1:33:49"}, {"id": "fj_jnzVw6qE", "title": "Smooth Blues Guitar Instrumental for Late Evening Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fj_jnzVw6qE/mqdefault.jpg", "dur": "1:31:36"}, {"id": "xBStEVIBt-k", "title": "Nocturnal Blues Guitar Instrumental for Calm and Focused Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/xBStEVIBt-k/mqdefault.jpg", "dur": "1:32:35"}, {"id": "vXzb1iIIEjc", "title": "Slow Burning Blues Guitar for Deep Night Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vXzb1iIIEjc/mqdefault.jpg", "dur": "1:32:32"}, {"id": "9NRqjS58nxA", "title": "Dim Light Blues Guitar for Quiet Relaxation and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9NRqjS58nxA/mqdefault.jpg", "dur": "1:30:50"}, {"id": "wAVAfkwmX7c", "title": "Echoing Blues Guitar Instrumental for Midnight Calm and Space | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/wAVAfkwmX7c/mqdefault.jpg", "dur": "1:32:52"}, {"id": "E3H9AcZQkf8", "title": "Gentle Slow Blues Guitar for Evening Wind Down Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/E3H9AcZQkf8/mqdefault.jpg", "dur": "1:30:19"}, {"id": "9bHMmDsG5q0", "title": "Low Light Blues Guitar Instrumental for Deep Focus Sessions | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9bHMmDsG5q0/mqdefault.jpg", "dur": "1:31:49"}, {"id": "3ZV9_EHQv60", "title": "Moody Late Blues Guitar for Night Time Escape and Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/3ZV9_EHQv60/mqdefault.jpg", "dur": "1:30:30"}, {"id": "vraUDW0d_9M", "title": "Subtle Blues Guitar Instrumental for Calm Evening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vraUDW0d_9M/mqdefault.jpg", "dur": "1:33:54"}, {"id": "8qVUVUzT8Xc", "title": "Deep Nightfall Blues Guitar for Relaxed and Quiet Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/8qVUVUzT8Xc/mqdefault.jpg", "dur": "1:30:14"}, {"id": "ie6-181WVn4", "title": "Soft Slow Blues Guitar for Peaceful Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ie6-181WVn4/mqdefault.jpg", "dur": "1:32:34"}, {"id": "r-cHfeAMLFo", "title": "Lonely Night Blues Guitar Instrumental for Emotional Release | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/r-cHfeAMLFo/mqdefault.jpg", "dur": "1:32:23"}, {"id": "_YSbhpKgFgg", "title": "Dark Tone Blues Guitar for Late Night Relaxation and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/_YSbhpKgFgg/mqdefault.jpg", "dur": "1:30:52"}, {"id": "NYgLbjQJnns", "title": "Heavy Mood Blues Guitar Instrumental for Silent Midnight Hours | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/NYgLbjQJnns/mqdefault.jpg", "dur": "1:30:22"}, {"id": "sKqy6z0wS4M", "title": "Nightfall Slow Blues Guitar for Deep Calm and Gentle Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/sKqy6z0wS4M/mqdefault.jpg", "dur": "1:34:48"}, {"id": "zfpo324Ibfo", "title": "Intimate Blues Guitar Instrumental for Late Night Listening and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/zfpo324Ibfo/mqdefault.jpg", "dur": "1:31:10"}, {"id": "vwEImW6JzqY", "title": "Slow Vintage Blues Guitar for Warm Night Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vwEImW6JzqY/mqdefault.jpg", "dur": "1:33:02"}, {"id": "SshUI4k633Q", "title": "Calm Blues Guitar Instrumental for Evening Relaxation and Peace | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/SshUI4k633Q/mqdefault.jpg", "dur": "1:34:55"}, {"id": "zF-yEQOS5Go", "title": "Late Night Slow Blues Guitar for Stress Relief and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/zF-yEQOS5Go/mqdefault.jpg", "dur": "1:30:44"}, {"id": "fzr_K21ka9Y", "title": "Warm Electric Blues Guitar for Late Night Calm and Study | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fzr_K21ka9Y/mqdefault.jpg", "dur": "1:32:29"}, {"id": "fzsuYIHH0Tw", "title": "Deep Soulful Blues Guitar for Relaxation and Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fzsuYIHH0Tw/mqdefault.jpg", "dur": "1:31:13"}, {"id": "cmCdncj143k", "title": "Emotional Blues Guitar Instrumental for Silent Night Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/cmCdncj143k/mqdefault.jpg", "dur": "1:34:00"}, {"id": "TpL7dc17nfI", "title": "Slow Blues Guitar Instrumental for Relaxing After Hours Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TpL7dc17nfI/mqdefault.jpg", "dur": "1:33:46"}, {"id": "LpFBnYqoIcw", "title": "Melancholic Blues Guitar for Quiet Nights and Gentle Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/LpFBnYqoIcw/mqdefault.jpg", "dur": "1:33:09"}, {"id": "rLayXE9UjNQ", "title": "Deep Night Blues Guitar Instrumental for Calm Background Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/rLayXE9UjNQ/mqdefault.jpg", "dur": "1:32:59"}, {"id": "_qldoLAMY7Q", "title": "Expressive Slow Blues Guitar for Late Night Solitude and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/_qldoLAMY7Q/mqdefault.jpg", "dur": "1:32:57"}, {"id": "rgPH9nL7E1I", "title": "Moody Blues Guitar Instrumental for Dark Night Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/rgPH9nL7E1I/mqdefault.jpg", "dur": "1:30:04"}, {"id": "aqs9nZp9QyY", "title": "Slow Deep Blues Guitar for Night Drive and Emotional Escape | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/aqs9nZp9QyY/mqdefault.jpg", "dur": "1:30:20"}, {"id": "GbXVl_hvuWE", "title": "Midnight Blues Guitar Instrumental for Calm and Introspective Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/GbXVl_hvuWE/mqdefault.jpg", "dur": "1:30:11"}, {"id": "9Adbf1yDPak", "title": "Soulful Blues Guitar Instrumental for Deep Thought and Night Vibes | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9Adbf1yDPak/mqdefault.jpg", "dur": "1:36:30"}, {"id": "tohCbAj6Ecg", "title": "Warm Slow Blues Guitar for Relaxing Evenings and Peaceful Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/tohCbAj6Ecg/mqdefault.jpg", "dur": "1:36:21"}, {"id": "I96ozEcpoto", "title": "Smoky Blues Guitar Instrumental for Late Night Chill and Ambient Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/I96ozEcpoto/mqdefault.jpg", "dur": "1:33:23"}, {"id": "LyySCZU8cwg", "title": "Deep Blues Guitar Instrumental for Night Time Relaxation and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/LyySCZU8cwg/mqdefault.jpg", "dur": "1:32:00"}, {"id": "TvZSIVGVJdk", "title": "Slow Emotional Blues Guitar for Midnight Reflection and Calm Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TvZSIVGVJdk/mqdefault.jpg", "dur": "1:32:08"}, {"id": "N8kJ5unkdLk", "title": "Late Night Blues Guitar Instrumental for Deep Relaxation and Quiet Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/N8kJ5unkdLk/mqdefault.jpg", "dur": "1:31:36"}, {"id": "s4WOtzPUoK8", "title": "After Hours Slow Blues Guitar for Smoky Night Vibes | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/s4WOtzPUoK8/mqdefault.jpg", "dur": "1:30:44"}, {"id": "ubI9oZT9rIw", "title": "Deep Blues Guitar Instrumental for Nocturnal Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ubI9oZT9rIw/mqdefault.jpg", "dur": "1:32:12"}, {"id": "hcUCt7ZXgnQ", "title": "Slow Emotional Blues Guitar for Silent Night Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/hcUCt7ZXgnQ/mqdefault.jpg", "dur": "1:32:57"}, {"id": "RMdXBd08YFQ", "title": "Late Night Electric Blues Guitar for Calm Background Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/RMdXBd08YFQ/mqdefault.jpg", "dur": "1:31:46"}, {"id": "EixIBOfIbAg", "title": "Warm Vintage Blues Guitar for Relaxing Evening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/EixIBOfIbAg/mqdefault.jpg", "dur": "1:36:45"}, {"id": "vrPH9Gb1-ck", "title": "Moody Slow Blues Guitar Instrumental for Dark Cozy Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vrPH9Gb1-ck/mqdefault.jpg", "dur": "1:33:24"}, {"id": "TTWFif_UXUk", "title": "Deep and Soulful Blues Guitar for Night Time Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TTWFif_UXUk/mqdefault.jpg", "dur": "1:31:41"}, {"id": "bTIfIK4JteE", "title": "Intimate Slow Blues Guitar Instrumental for Late Night Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/bTIfIK4JteE/mqdefault.jpg", "dur": "1:31:15"}, {"id": "VgH60ALUSKk", "title": "Slow Blues Guitar Instrumental for Rainy Night Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/VgH60ALUSKk/mqdefault.jpg", "dur": "1:30:06"}, {"id": "WW3snY6jrEI", "title": "Deep Emotional Blues Guitar for Midnight Solitude | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/WW3snY6jrEI/mqdefault.jpg", "dur": "1:34:19"}, {"id": "UL6EpZeqtYQ", "title": "Late Night Blues Guitar Instrumental for Study and Deep Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/UL6EpZeqtYQ/mqdefault.jpg", "dur": "1:32:53"}, {"id": "jat93z31tFI", "title": "Expressive Electric Blues Guitar for Quiet Evening Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/jat93z31tFI/mqdefault.jpg", "dur": "1:30:10"}, {"id": "VkA72CDz9zk", "title": "Melancholic Blues Guitar Instrumental for After Hours Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/VkA72CDz9zk/mqdefault.jpg", "dur": "1:34:30"}, {"id": "PlL2Ej--rAI", "title": "Soulful Slow Blues Guitar Instrumental for Calm and Introspective Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/PlL2Ej--rAI/mqdefault.jpg", "dur": "1:31:48"}, {"id": "desHukwN4MY", "title": "Warm Electric Blues Guitar for Relaxing Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/desHukwN4MY/mqdefault.jpg", "dur": "1:32:34"}, {"id": "uSx3tjMNlI8", "title": "Smoky Slow Blues Guitar Instrumental for Late Night Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/uSx3tjMNlI8/mqdefault.jpg", "dur": "1:31:37"}, {"id": "6a27Fmshvz0", "title": "Peaceful Blues Guitar Instrumental for Midnight Listening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/6a27Fmshvz0/mqdefault.jpg", "dur": "1:32:59"}, {"id": "HBmDpReAeMU", "title": "Emotional Slow Blues Guitar for Late Night Relaxation and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/HBmDpReAeMU/mqdefault.jpg", "dur": "1:30:13"}, {"id": "nUS775qf6Q8", "title": "Slow Deep Blues Guitar Instrumental for Night Drive and Quiet Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/nUS775qf6Q8/mqdefault.jpg", "dur": "1:31:44"}, {"id": "yGG7e2rVIkw", "title": "Late Night Slow Blues Guitar Instrumental for Relaxing and Deep Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/yGG7e2rVIkw/mqdefault.jpg", "dur": "1:30:50"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

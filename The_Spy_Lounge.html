@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Spy Lounge</title>
 <!-- categories: Lounge -->
+<!-- channel-id:  -->
 <!-- channel-url: https://www.youtube.com/@thespylounge60 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
   .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -16,13 +17,26 @@
   .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -37,265 +51,97 @@
       <div class="channel-count">37 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZGhelIjMHe4" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZGhelIjMHe4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BROOKLYN DEBRIEF | 1960s Cold War Spy Jazz | Deep Work, Late Night Reading & Focus Music</span>
-                <span class="video-dur">1:37:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9m6-sTc854E" target="_blank">
-            <img src="https://i.ytimg.com/vi/9m6-sTc854E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE RIO PURSUIT | 1960s Spy Jazz · Bossa Nova Noir · Rio at Dusk · Deep Focus · Elegant Tension</span>
-                <span class="video-dur">1:38:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sAhRrHhDo4w" target="_blank">
-            <img src="https://i.ytimg.com/vi/sAhRrHhDo4w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">CLASSIFIED CHILL | Smooth Spy Jazz for Warm Days, Slow Hours, Creative Focus, 1960s Cinematic Lounge</span>
-                <span class="video-dur">1:38:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CXQMHPUV2lc" target="_blank">
-            <img src="https://i.ytimg.com/vi/CXQMHPUV2lc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE LAST COURIER - BERLIN | 1960s Spy Jazz for Late Night Study & Deep Focus</span>
-                <span class="video-dur">1:30:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Gav1rZoYEiA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Gav1rZoYEiA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GROOM LAKE, NOTHING OFFICIALLY | Cold War Spy Jazz for Sleepless Nights & Classified Files</span>
-                <span class="video-dur">1:37:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3tz_j60tj_0" target="_blank">
-            <img src="https://i.ytimg.com/vi/3tz_j60tj_0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">BERLIN PINE ZERO | 1960s Cold War Spy Jazz | East Germany Noir & Cinematic Espionage Lounge</span>
-                <span class="video-dur">1:26:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bRr6OS7yfSI" target="_blank">
-            <img src="https://i.ytimg.com/vi/bRr6OS7yfSI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">THE LUNIK KIDNAPPING | True Declassified Cold War Story | CIA Spy Jazz & Cinematic Lounge</span>
-                <span class="video-dur">1:32:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sYAsXAruHJE" target="_blank">
-            <img src="https://i.ytimg.com/vi/sYAsXAruHJE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">GHOST PROTOCOL | 1960s Action Spy Jazz & Cold War Lounge | Classified Operations & Deep Focus</span>
-                <span class="video-dur">1:35:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fUhvnHuLElg" target="_blank">
-            <img src="https://i.ytimg.com/vi/fUhvnHuLElg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">TOKYO SHŌGUN PROTOCOL | 1960s Spy Jazz Noir | Cold War Yakuza Surveillance | Midnight Focus Jazz</span>
-                <span class="video-dur">1:46:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wKaLApUd3wQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/wKaLApUd3wQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">DPRK CANCELED. NEW MISSION: RELAX | 1960s Spy Jazz for Safe Houses & Quiet Nights</span>
-                <span class="video-dur">1:35:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=G-sK5WyrjTw" target="_blank">
-            <img src="https://i.ytimg.com/vi/G-sK5WyrjTw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">WELCOME TO CUBA,1960s Spy Lounge, Cinematic Cuban Jazz for Cold War Afternoons, Untraceable Missions</span>
-                <span class="video-dur">1:43:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=F0uQgFSroG8" target="_blank">
-            <img src="https://i.ytimg.com/vi/F0uQgFSroG8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">OPERATION WASHTUB | True Declassified Cold War Story | Alaska Spy Jazz & Cinematic Lounge</span>
-                <span class="video-dur">1:40:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ifGwB_LqbFw" target="_blank">
-            <img src="https://i.ytimg.com/vi/ifGwB_LqbFw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SUNDAY OFF THE GRID | 1960s Spy Lounge | Cinematic Jazz for Slow Mornings & Untraceable Afternoons</span>
-                <span class="video-dur">1:36:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JOiYwCi23_E" target="_blank">
-            <img src="https://i.ytimg.com/vi/JOiYwCi23_E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">SECRET SUMMER IN POSITANO | 1960s Amalfi Coast Spy Lounge | Cinematic Jazz for Focus & Night Drives</span>
-                <span class="video-dur">1:42:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pRLGNXwl8MI" target="_blank">
-            <img src="https://i.ytimg.com/vi/pRLGNXwl8MI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: CHECKPOINT CHARLIE'S GHOST | 1960s Cold War Berlin, Spy Jazz & Iron Curtain Tension</span>
-                <span class="video-dur">1:26:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-hT9yxHn5aM" target="_blank">
-            <img src="https://i.ytimg.com/vi/-hT9yxHn5aM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: BOARDING PASS TO NOWHERE | 1960s European Spy Jazz, Cold War Tension & Suspense</span>
-                <span class="video-dur">1:32:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9Tn46QMz_BY" target="_blank">
-            <img src="https://i.ytimg.com/vi/9Tn46QMz_BY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: PALM SPRINGS: SECRETS RUN HOT | 1960s Desert Spy Lounge Jazz, Elegant Intrigue</span>
-                <span class="video-dur">1:42:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yghxC1P-l98" target="_blank">
-            <img src="https://i.ytimg.com/vi/yghxC1P-l98/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: LONDON: TRUST NO ONE, DARLING | Rainy London Spy Jazz, 1960 Cold War, Elegant Danger</span>
-                <span class="video-dur">1:31:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=oWDWff6VDoE" target="_blank">
-            <img src="https://i.ytimg.com/vi/oWDWff6VDoE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: ROME NEVER FORGIVES | Sunlit Italian Spy Lounge, 1960s Cinematic Days</span>
-                <span class="video-dur">1:37:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j_IUFJOggQU" target="_blank">
-            <img src="https://i.ytimg.com/vi/j_IUFJOggQU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: THE CAPRI AFFAIR | Mediterranean Spy Jazz, Cold War Riviera, 1960s Espionage Nights</span>
-                <span class="video-dur">1:37:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DLoSJEB9L7Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/DLoSJEB9L7Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: ALWAYS BERLIN | Cold War Spy Jazz, Berlin Noir, 1960 Espionage, Iron Curtain Secrets</span>
-                <span class="video-dur">1:41:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tXZjwELquJI" target="_blank">
-            <img src="https://i.ytimg.com/vi/tXZjwELquJI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: The Monaco Exchange | 1960s Spy Lounge, Riviera Secrets & Cold War Glamour</span>
-                <span class="video-dur">1:43:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bsc-cJLeoaw" target="_blank">
-            <img src="https://i.ytimg.com/vi/bsc-cJLeoaw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: Operation Europe | 1960s Spy Lounge, Cold War Shadows & Eastern Clues</span>
-                <span class="video-dur">1:34:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VwwA0Ev3gY0" target="_blank">
-            <img src="https://i.ytimg.com/vi/VwwA0Ev3gY0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: The Buenos Aires Dossier | 1960s Spy Lounge, Argentine Elegance & Nocturnal Suspense</span>
-                <span class="video-dur">1:27:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ogYDz4tNa8Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/ogYDz4tNa8Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: The Last Mission in Havana | 1960s Spy Jazz for Relaxation & Night Focus</span>
-                <span class="video-dur">1:28:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SyyfLg9i23o" target="_blank">
-            <img src="https://i.ytimg.com/vi/SyyfLg9i23o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge CUBA: WHERE SPIES DRINK RUM  | 1960s Spy Jazz for Daytime Focus & Productivity</span>
-                <span class="video-dur">1:25:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Y-Lr487H1iU" target="_blank">
-            <img src="https://i.ytimg.com/vi/Y-Lr487H1iU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge: THE HAVANA DEPARTURE | 1960s Spy Jazz for Daytime Focus & Productivity</span>
-                <span class="video-dur">1:27:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-GTJsWdKny0" target="_blank">
-            <img src="https://i.ytimg.com/vi/-GTJsWdKny0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge FALSE PASSPORT | 1960s Spy Jazz for Daytime Focus & Productivity</span>
-                <span class="video-dur">1:21:56</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_ioOhjVUIDo" target="_blank">
-            <img src="https://i.ytimg.com/vi/_ioOhjVUIDo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge AZURE COAST PROTOCOL | 1960s Spy Jazz for Daytime Focus & Productivity</span>
-                <span class="video-dur">1:22:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VPtIf4DbGOs" target="_blank">
-            <img src="https://i.ytimg.com/vi/VPtIf4DbGOs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge MISSION, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus</span>
-                <span class="video-dur">1:26:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qruKJe4gePE" target="_blank">
-            <img src="https://i.ytimg.com/vi/qruKJe4gePE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge MOMENTUM, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus</span>
-                <span class="video-dur">1:26:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=66yfQvG85cs" target="_blank">
-            <img src="https://i.ytimg.com/vi/66yfQvG85cs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge INTERCEPT, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Focus</span>
-                <span class="video-dur">1:22:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jZPxm2z3mZc" target="_blank">
-            <img src="https://i.ytimg.com/vi/jZPxm2z3mZc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge BERLIN, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus</span>
-                <span class="video-dur">1:29:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KUdvIzYfQ8w" target="_blank">
-            <img src="https://i.ytimg.com/vi/KUdvIzYfQ8w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge DRIVE, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus</span>
-                <span class="video-dur">1:18:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KgZZhVB_krY" target="_blank">
-            <img src="https://i.ytimg.com/vi/KgZZhVB_krY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge UNDERCOVER, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus</span>
-                <span class="video-dur">1:22:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NnjvKohs3bA" target="_blank">
-            <img src="https://i.ytimg.com/vi/NnjvKohs3bA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge CONFIDENTIAL, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus</span>
-                <span class="video-dur">1:17:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=edsd9bRs4tw" target="_blank">
-            <img src="https://i.ytimg.com/vi/edsd9bRs4tw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Spy Lounge DEBUT | 1960s Lounge Jazz for Relaxing and Cinematic Evenings</span>
-                <span class="video-dur">1:14:58</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "The Spy Lounge";
+const VIDEOS = [{"id": "ZGhelIjMHe4", "title": "BROOKLYN DEBRIEF | 1960s Cold War Spy Jazz | Deep Work, Late Night Reading & Focus Music", "thumb": "https://i.ytimg.com/vi/ZGhelIjMHe4/mqdefault.jpg", "dur": "1:37:38"}, {"id": "9m6-sTc854E", "title": "THE RIO PURSUIT | 1960s Spy Jazz · Bossa Nova Noir · Rio at Dusk · Deep Focus · Elegant Tension", "thumb": "https://i.ytimg.com/vi/9m6-sTc854E/mqdefault.jpg", "dur": "1:38:37"}, {"id": "sAhRrHhDo4w", "title": "CLASSIFIED CHILL | Smooth Spy Jazz for Warm Days, Slow Hours, Creative Focus, 1960s Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/sAhRrHhDo4w/mqdefault.jpg", "dur": "1:38:38"}, {"id": "CXQMHPUV2lc", "title": "THE LAST COURIER - BERLIN | 1960s Spy Jazz for Late Night Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/CXQMHPUV2lc/mqdefault.jpg", "dur": "1:30:17"}, {"id": "Gav1rZoYEiA", "title": "GROOM LAKE, NOTHING OFFICIALLY | Cold War Spy Jazz for Sleepless Nights & Classified Files", "thumb": "https://i.ytimg.com/vi/Gav1rZoYEiA/mqdefault.jpg", "dur": "1:37:16"}, {"id": "3tz_j60tj_0", "title": "BERLIN PINE ZERO | 1960s Cold War Spy Jazz | East Germany Noir & Cinematic Espionage Lounge", "thumb": "https://i.ytimg.com/vi/3tz_j60tj_0/mqdefault.jpg", "dur": "1:26:04"}, {"id": "bRr6OS7yfSI", "title": "THE LUNIK KIDNAPPING | True Declassified Cold War Story | CIA Spy Jazz & Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/bRr6OS7yfSI/mqdefault.jpg", "dur": "1:32:23"}, {"id": "sYAsXAruHJE", "title": "GHOST PROTOCOL | 1960s Action Spy Jazz & Cold War Lounge | Classified Operations & Deep Focus", "thumb": "https://i.ytimg.com/vi/sYAsXAruHJE/mqdefault.jpg", "dur": "1:35:22"}, {"id": "fUhvnHuLElg", "title": "TOKYO SHŌGUN PROTOCOL | 1960s Spy Jazz Noir | Cold War Yakuza Surveillance | Midnight Focus Jazz", "thumb": "https://i.ytimg.com/vi/fUhvnHuLElg/mqdefault.jpg", "dur": "1:46:02"}, {"id": "wKaLApUd3wQ", "title": "DPRK CANCELED. NEW MISSION: RELAX | 1960s Spy Jazz for Safe Houses & Quiet Nights", "thumb": "https://i.ytimg.com/vi/wKaLApUd3wQ/mqdefault.jpg", "dur": "1:35:32"}, {"id": "G-sK5WyrjTw", "title": "WELCOME TO CUBA,1960s Spy Lounge, Cinematic Cuban Jazz for Cold War Afternoons, Untraceable Missions", "thumb": "https://i.ytimg.com/vi/G-sK5WyrjTw/mqdefault.jpg", "dur": "1:43:19"}, {"id": "F0uQgFSroG8", "title": "OPERATION WASHTUB | True Declassified Cold War Story | Alaska Spy Jazz & Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/F0uQgFSroG8/mqdefault.jpg", "dur": "1:40:04"}, {"id": "ifGwB_LqbFw", "title": "SUNDAY OFF THE GRID | 1960s Spy Lounge | Cinematic Jazz for Slow Mornings & Untraceable Afternoons", "thumb": "https://i.ytimg.com/vi/ifGwB_LqbFw/mqdefault.jpg", "dur": "1:36:21"}, {"id": "JOiYwCi23_E", "title": "SECRET SUMMER IN POSITANO | 1960s Amalfi Coast Spy Lounge | Cinematic Jazz for Focus & Night Drives", "thumb": "https://i.ytimg.com/vi/JOiYwCi23_E/mqdefault.jpg", "dur": "1:42:36"}, {"id": "pRLGNXwl8MI", "title": "The Spy Lounge: CHECKPOINT CHARLIE'S GHOST | 1960s Cold War Berlin, Spy Jazz & Iron Curtain Tension", "thumb": "https://i.ytimg.com/vi/pRLGNXwl8MI/mqdefault.jpg", "dur": "1:26:38"}, {"id": "-hT9yxHn5aM", "title": "The Spy Lounge: BOARDING PASS TO NOWHERE | 1960s European Spy Jazz, Cold War Tension & Suspense", "thumb": "https://i.ytimg.com/vi/-hT9yxHn5aM/mqdefault.jpg", "dur": "1:32:51"}, {"id": "9Tn46QMz_BY", "title": "The Spy Lounge: PALM SPRINGS: SECRETS RUN HOT | 1960s Desert Spy Lounge Jazz, Elegant Intrigue", "thumb": "https://i.ytimg.com/vi/9Tn46QMz_BY/mqdefault.jpg", "dur": "1:42:54"}, {"id": "yghxC1P-l98", "title": "The Spy Lounge: LONDON: TRUST NO ONE, DARLING | Rainy London Spy Jazz, 1960 Cold War, Elegant Danger", "thumb": "https://i.ytimg.com/vi/yghxC1P-l98/mqdefault.jpg", "dur": "1:31:53"}, {"id": "oWDWff6VDoE", "title": "The Spy Lounge: ROME NEVER FORGIVES | Sunlit Italian Spy Lounge, 1960s Cinematic Days", "thumb": "https://i.ytimg.com/vi/oWDWff6VDoE/mqdefault.jpg", "dur": "1:37:41"}, {"id": "j_IUFJOggQU", "title": "The Spy Lounge: THE CAPRI AFFAIR | Mediterranean Spy Jazz, Cold War Riviera, 1960s Espionage Nights", "thumb": "https://i.ytimg.com/vi/j_IUFJOggQU/mqdefault.jpg", "dur": "1:37:20"}, {"id": "DLoSJEB9L7Q", "title": "The Spy Lounge: ALWAYS BERLIN | Cold War Spy Jazz, Berlin Noir, 1960 Espionage, Iron Curtain Secrets", "thumb": "https://i.ytimg.com/vi/DLoSJEB9L7Q/mqdefault.jpg", "dur": "1:41:45"}, {"id": "tXZjwELquJI", "title": "The Spy Lounge: The Monaco Exchange | 1960s Spy Lounge, Riviera Secrets & Cold War Glamour", "thumb": "https://i.ytimg.com/vi/tXZjwELquJI/mqdefault.jpg", "dur": "1:43:24"}, {"id": "bsc-cJLeoaw", "title": "The Spy Lounge: Operation Europe | 1960s Spy Lounge, Cold War Shadows & Eastern Clues", "thumb": "https://i.ytimg.com/vi/bsc-cJLeoaw/mqdefault.jpg", "dur": "1:34:58"}, {"id": "VwwA0Ev3gY0", "title": "The Spy Lounge: The Buenos Aires Dossier | 1960s Spy Lounge, Argentine Elegance & Nocturnal Suspense", "thumb": "https://i.ytimg.com/vi/VwwA0Ev3gY0/mqdefault.jpg", "dur": "1:27:10"}, {"id": "ogYDz4tNa8Q", "title": "The Spy Lounge: The Last Mission in Havana | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/ogYDz4tNa8Q/mqdefault.jpg", "dur": "1:28:41"}, {"id": "SyyfLg9i23o", "title": "The Spy Lounge CUBA: WHERE SPIES DRINK RUM  | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/SyyfLg9i23o/mqdefault.jpg", "dur": "1:25:18"}, {"id": "Y-Lr487H1iU", "title": "The Spy Lounge: THE HAVANA DEPARTURE | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/Y-Lr487H1iU/mqdefault.jpg", "dur": "1:27:21"}, {"id": "-GTJsWdKny0", "title": "The Spy Lounge FALSE PASSPORT | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/-GTJsWdKny0/mqdefault.jpg", "dur": "1:21:56"}, {"id": "_ioOhjVUIDo", "title": "The Spy Lounge AZURE COAST PROTOCOL | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/_ioOhjVUIDo/mqdefault.jpg", "dur": "1:22:01"}, {"id": "VPtIf4DbGOs", "title": "The Spy Lounge MISSION, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/VPtIf4DbGOs/mqdefault.jpg", "dur": "1:26:01"}, {"id": "qruKJe4gePE", "title": "The Spy Lounge MOMENTUM, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/qruKJe4gePE/mqdefault.jpg", "dur": "1:26:15"}, {"id": "66yfQvG85cs", "title": "The Spy Lounge INTERCEPT, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/66yfQvG85cs/mqdefault.jpg", "dur": "1:22:31"}, {"id": "jZPxm2z3mZc", "title": "The Spy Lounge BERLIN, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/jZPxm2z3mZc/mqdefault.jpg", "dur": "1:29:11"}, {"id": "KUdvIzYfQ8w", "title": "The Spy Lounge DRIVE, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/KUdvIzYfQ8w/mqdefault.jpg", "dur": "1:18:30"}, {"id": "KgZZhVB_krY", "title": "The Spy Lounge UNDERCOVER, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/KgZZhVB_krY/mqdefault.jpg", "dur": "1:22:45"}, {"id": "NnjvKohs3bA", "title": "The Spy Lounge CONFIDENTIAL, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/NnjvKohs3bA/mqdefault.jpg", "dur": "1:17:12"}, {"id": "edsd9bRs4tw", "title": "The Spy Lounge DEBUT | 1960s Lounge Jazz for Relaxing and Cinematic Evenings", "thumb": "https://i.ytimg.com/vi/edsd9bRs4tw/mqdefault.jpg", "dur": "1:14:58"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

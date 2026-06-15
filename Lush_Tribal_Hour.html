@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@LushTribalHour -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,246 +51,97 @@
       <div class="channel-count">34 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=63em_iPi_vk" target="_blank">
-            <img src="https://i.ytimg.com/vi/63em_iPi_vk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental</span>
-                <span class="video-dur">2:08:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=spTkzL1Fcp0" target="_blank">
-            <img src="https://i.ytimg.com/vi/spTkzL1Fcp0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Focus</span>
-                <span class="video-dur">2:04:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7Vz-jut9Hpc" target="_blank">
-            <img src="https://i.ytimg.com/vi/7Vz-jut9Hpc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Ritual Jazz Instrumental</span>
-                <span class="video-dur">2:00:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qX95AgRB45E" target="_blank">
-            <img src="https://i.ytimg.com/vi/qX95AgRB45E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz | Sacred Grooves | Deep Ritual Jazz Instrumental for Midnight Focus & Chill</span>
-                <span class="video-dur">2:02:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=C5Ed0c5yPPQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/C5Ed0c5yPPQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual | Deep Tribal Jazz Instrumental for Sacred Grooves & Focus</span>
-                <span class="video-dur">2:02:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cfE90kYhXlg" target="_blank">
-            <img src="https://i.ytimg.com/vi/cfE90kYhXlg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hypnotic Tribal Grooves | Sacred Grooves & Midnight Ritual | Deep Tribal Jazz Instrumental</span>
-                <span class="video-dur">2:05:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-eh34JV42Tk" target="_blank">
-            <img src="https://i.ytimg.com/vi/-eh34JV42Tk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hypnotic Tribal Jazz Grooves Sacred Ritual Music for Deep Focus</span>
-                <span class="video-dur">2:03:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3xwq2iriufs" target="_blank">
-            <img src="https://i.ytimg.com/vi/3xwq2iriufs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dark Tribal Lounge Jazz ~ Midnight Afro Ritual for Deep Focus & Sacred Grooves</span>
-                <span class="video-dur">2:03:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6M5E07mtLuE" target="_blank">
-            <img src="https://i.ytimg.com/vi/6M5E07mtLuE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nocturnal Tribal Jazz - Deep Tribal Jazz Instrumental & Sacred Grooves for Midnight Rituals</span>
-                <span class="video-dur">2:04:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HYnvqN-RUM0" target="_blank">
-            <img src="https://i.ytimg.com/vi/HYnvqN-RUM0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - Sacred Grooves & Deep Tribal Jazz Instrumental for Late Night Rituals</span>
-                <span class="video-dur">2:04:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZIXXRA9xlI8" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZIXXRA9xlI8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ Hypnotic Sacred Grooves for Focus</span>
-                <span class="video-dur">2:03:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hInohte5m1w" target="_blank">
-            <img src="https://i.ytimg.com/vi/hInohte5m1w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz | Sacred Grooves | Deep Instrumental for Late Night Rituals and Focus Now</span>
-                <span class="video-dur">2:03:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SCFpL_LJl80" target="_blank">
-            <img src="https://i.ytimg.com/vi/SCFpL_LJl80/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for Late Night Calm</span>
-                <span class="video-dur">2:02:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1CwpYK5qstM" target="_blank">
-            <img src="https://i.ytimg.com/vi/1CwpYK5qstM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz | Hypnotic Tribal Grooves | After Hours Ritual Jazz | Relaxing Music</span>
-                <span class="video-dur">2:04:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3a4-GtkwMSg" target="_blank">
-            <img src="https://i.ytimg.com/vi/3a4-GtkwMSg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental - Sacred Grooves for Midnight Afro Ritual & Tribal Lounge Jazz</span>
-                <span class="video-dur">2:07:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bNBjqGomYvg" target="_blank">
-            <img src="https://i.ytimg.com/vi/bNBjqGomYvg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">midnight afro ritual - ritual jazz - hypnotic tribal grooves - late night tribal jazz & co</span>
-                <span class="video-dur">2:05:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sybQP86c05E" target="_blank">
-            <img src="https://i.ytimg.com/vi/sybQP86c05E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual | Tribal Lounge Jazz - Sacred Grooves for Late Night Deep Focus Chill</span>
-                <span class="video-dur">2:04:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TlaxOHLggE0" target="_blank">
-            <img src="https://i.ytimg.com/vi/TlaxOHLggE0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual Music for Deep Focus and Chill</span>
-                <span class="video-dur">2:06:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YPSc9wc4Jc8" target="_blank">
-            <img src="https://i.ytimg.com/vi/YPSc9wc4Jc8/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for After Hours Study</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hY6CHtKrR5Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/hY6CHtKrR5Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental | Midnight Afro Ritual | Relaxing Tribal Lounge Jazz Rhythms</span>
-                <span class="video-dur">2:04:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fbVSadQTBO0" target="_blank">
-            <img src="https://i.ytimg.com/vi/fbVSadQTBO0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Grooves and Late Night Focus</span>
-                <span class="video-dur">1:01:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=picE14n_xXU" target="_blank">
-            <img src="https://i.ytimg.com/vi/picE14n_xXU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">After Hours Ritual Jazz | Hypnotic Tribal Grooves and Relaxing Nocturnal Jazz Instrumental</span>
-                <span class="video-dur">1:03:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8FqoGRXbMGU" target="_blank">
-            <img src="https://i.ytimg.com/vi/8FqoGRXbMGU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - Sacred Grooves ~ Deep Tribal Jazz Instrumental & After Hours Ritual Jazz</span>
-                <span class="video-dur">1:01:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=R15uCApKrPc" target="_blank">
-            <img src="https://i.ytimg.com/vi/R15uCApKrPc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal Lounge Jazz - After Hours Ritual Jazz & Relaxing Nocturnal Tribal Jazz Melodies</span>
-                <span class="video-dur">1:03:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wEW98-m9erk" target="_blank">
-            <img src="https://i.ytimg.com/vi/wEW98-m9erk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental | Sacred Grooves & Midnight Afro Ritual for After Hours Bliss</span>
-                <span class="video-dur">1:02:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Gyl4i6DUJDc" target="_blank">
-            <img src="https://i.ytimg.com/vi/Gyl4i6DUJDc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental | After Hours Ritual Jazz ~ Relaxing Midnight Afro Rituals</span>
-                <span class="video-dur">1:01:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZkLorSzF468" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZkLorSzF468/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal lounge jazz - Sacred grooves - Midnight afro ritual & deep tribal jazz instrumental</span>
-                <span class="video-dur">1:00:12</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sTfZ5D2ToPg" target="_blank">
-            <img src="https://i.ytimg.com/vi/sTfZ5D2ToPg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hypnotic Tribal Lounge Jazz ~ Deep Focus Ritual Grooves for Relaxation</span>
-                <span class="video-dur">1:03:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mSQ2Dh3J-hM" target="_blank">
-            <img src="https://i.ytimg.com/vi/mSQ2Dh3J-hM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual | Deep Tribal Jazz Instrumental & Sacred Grooves for Late Night Focus</span>
-                <span class="video-dur">1:01:01</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=H_1d9pISVvs" target="_blank">
-            <img src="https://i.ytimg.com/vi/H_1d9pISVvs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hypnotic Tribal Grooves | After Hours Ritual Jazz | Deep Tribal Jazz Instrumental Relaxation</span>
-                <span class="video-dur">1:03:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YCnE6-V_K-4" target="_blank">
-            <img src="https://i.ytimg.com/vi/YCnE6-V_K-4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ After Hours Sacred Grooves Relaxing</span>
-                <span class="video-dur">1:01:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S-dl8SIZrpA" target="_blank">
-            <img src="https://i.ytimg.com/vi/S-dl8SIZrpA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tribal lounge jazz | Sacred grooves for deep focus and midnight afro ritual at after hours</span>
-                <span class="video-dur">1:00:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RdV_UxV3G-U" target="_blank">
-            <img src="https://i.ytimg.com/vi/RdV_UxV3G-U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual - Hypnotic Tribal Grooves | Relaxing Tribal Lounge Jazz For Deep Focus</span>
-                <span class="video-dur">1:01:54</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eZXB572z52c" target="_blank">
-            <img src="https://i.ytimg.com/vi/eZXB572z52c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Afro Ritual | Deep Tribal Jazz Instrumental | Sacred Grooves for Spiritual Focus</span>
-                <span class="video-dur">1:00:14</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Lush Tribal Hour";
+const VIDEOS = [{"id": "63em_iPi_vk", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/63em_iPi_vk/mqdefault.jpg", "dur": "2:08:17"}, {"id": "spTkzL1Fcp0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Focus", "thumb": "https://i.ytimg.com/vi/spTkzL1Fcp0/mqdefault.jpg", "dur": "2:04:25"}, {"id": "7Vz-jut9Hpc", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Ritual Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/7Vz-jut9Hpc/mqdefault.jpg", "dur": "2:00:36"}, {"id": "qX95AgRB45E", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Ritual Jazz Instrumental for Midnight Focus & Chill", "thumb": "https://i.ytimg.com/vi/qX95AgRB45E/mqdefault.jpg", "dur": "2:02:05"}, {"id": "C5Ed0c5yPPQ", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental for Sacred Grooves & Focus", "thumb": "https://i.ytimg.com/vi/C5Ed0c5yPPQ/mqdefault.jpg", "dur": "2:02:07"}, {"id": "cfE90kYhXlg", "title": "Hypnotic Tribal Grooves | Sacred Grooves & Midnight Ritual | Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/cfE90kYhXlg/mqdefault.jpg", "dur": "2:05:04"}, {"id": "-eh34JV42Tk", "title": "Hypnotic Tribal Jazz Grooves Sacred Ritual Music for Deep Focus", "thumb": "https://i.ytimg.com/vi/-eh34JV42Tk/mqdefault.jpg", "dur": "2:03:52"}, {"id": "3xwq2iriufs", "title": "Dark Tribal Lounge Jazz ~ Midnight Afro Ritual for Deep Focus & Sacred Grooves", "thumb": "https://i.ytimg.com/vi/3xwq2iriufs/mqdefault.jpg", "dur": "2:03:16"}, {"id": "6M5E07mtLuE", "title": "Nocturnal Tribal Jazz - Deep Tribal Jazz Instrumental & Sacred Grooves for Midnight Rituals", "thumb": "https://i.ytimg.com/vi/6M5E07mtLuE/mqdefault.jpg", "dur": "2:04:41"}, {"id": "HYnvqN-RUM0", "title": "Tribal Lounge Jazz - Sacred Grooves & Deep Tribal Jazz Instrumental for Late Night Rituals", "thumb": "https://i.ytimg.com/vi/HYnvqN-RUM0/mqdefault.jpg", "dur": "2:04:05"}, {"id": "ZIXXRA9xlI8", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ Hypnotic Sacred Grooves for Focus", "thumb": "https://i.ytimg.com/vi/ZIXXRA9xlI8/mqdefault.jpg", "dur": "2:03:59"}, {"id": "hInohte5m1w", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Instrumental for Late Night Rituals and Focus Now", "thumb": "https://i.ytimg.com/vi/hInohte5m1w/mqdefault.jpg", "dur": "2:03:32"}, {"id": "SCFpL_LJl80", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for Late Night Calm", "thumb": "https://i.ytimg.com/vi/SCFpL_LJl80/mqdefault.jpg", "dur": "2:02:31"}, {"id": "1CwpYK5qstM", "title": "Tribal Lounge Jazz | Hypnotic Tribal Grooves | After Hours Ritual Jazz | Relaxing Music", "thumb": "https://i.ytimg.com/vi/1CwpYK5qstM/mqdefault.jpg", "dur": "2:04:39"}, {"id": "3a4-GtkwMSg", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves for Midnight Afro Ritual & Tribal Lounge Jazz", "thumb": "https://i.ytimg.com/vi/3a4-GtkwMSg/mqdefault.jpg", "dur": "2:07:45"}, {"id": "bNBjqGomYvg", "title": "midnight afro ritual - ritual jazz - hypnotic tribal grooves - late night tribal jazz & co", "thumb": "https://i.ytimg.com/vi/bNBjqGomYvg/mqdefault.jpg", "dur": "2:05:15"}, {"id": "sybQP86c05E", "title": "Midnight Afro Ritual | Tribal Lounge Jazz - Sacred Grooves for Late Night Deep Focus Chill", "thumb": "https://i.ytimg.com/vi/sybQP86c05E/mqdefault.jpg", "dur": "2:04:11"}, {"id": "TlaxOHLggE0", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual Music for Deep Focus and Chill", "thumb": "https://i.ytimg.com/vi/TlaxOHLggE0/mqdefault.jpg", "dur": "2:06:40"}, {"id": "YPSc9wc4Jc8", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for After Hours Study", "thumb": "https://i.ytimg.com/vi/YPSc9wc4Jc8/mqdefault_live.jpg", "dur": ""}, {"id": "hY6CHtKrR5Y", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual | Relaxing Tribal Lounge Jazz Rhythms", "thumb": "https://i.ytimg.com/vi/hY6CHtKrR5Y/mqdefault.jpg", "dur": "2:04:57"}, {"id": "fbVSadQTBO0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Grooves and Late Night Focus", "thumb": "https://i.ytimg.com/vi/fbVSadQTBO0/mqdefault.jpg", "dur": "1:01:06"}, {"id": "picE14n_xXU", "title": "After Hours Ritual Jazz | Hypnotic Tribal Grooves and Relaxing Nocturnal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/picE14n_xXU/mqdefault.jpg", "dur": "1:03:25"}, {"id": "8FqoGRXbMGU", "title": "Tribal Lounge Jazz - Sacred Grooves ~ Deep Tribal Jazz Instrumental & After Hours Ritual Jazz", "thumb": "https://i.ytimg.com/vi/8FqoGRXbMGU/mqdefault.jpg", "dur": "1:01:09"}, {"id": "R15uCApKrPc", "title": "Tribal Lounge Jazz - After Hours Ritual Jazz & Relaxing Nocturnal Tribal Jazz Melodies", "thumb": "https://i.ytimg.com/vi/R15uCApKrPc/mqdefault.jpg", "dur": "1:03:09"}, {"id": "wEW98-m9erk", "title": "Deep Tribal Jazz Instrumental | Sacred Grooves & Midnight Afro Ritual for After Hours Bliss", "thumb": "https://i.ytimg.com/vi/wEW98-m9erk/mqdefault.jpg", "dur": "1:02:28"}, {"id": "Gyl4i6DUJDc", "title": "Deep Tribal Jazz Instrumental | After Hours Ritual Jazz ~ Relaxing Midnight Afro Rituals", "thumb": "https://i.ytimg.com/vi/Gyl4i6DUJDc/mqdefault.jpg", "dur": "1:01:02"}, {"id": "ZkLorSzF468", "title": "Tribal lounge jazz - Sacred grooves - Midnight afro ritual & deep tribal jazz instrumental", "thumb": "https://i.ytimg.com/vi/ZkLorSzF468/mqdefault.jpg", "dur": "1:00:12"}, {"id": "sTfZ5D2ToPg", "title": "Hypnotic Tribal Lounge Jazz ~ Deep Focus Ritual Grooves for Relaxation", "thumb": "https://i.ytimg.com/vi/sTfZ5D2ToPg/mqdefault.jpg", "dur": "1:03:29"}, {"id": "mSQ2Dh3J-hM", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental & Sacred Grooves for Late Night Focus", "thumb": "https://i.ytimg.com/vi/mSQ2Dh3J-hM/mqdefault.jpg", "dur": "1:01:01"}, {"id": "H_1d9pISVvs", "title": "Hypnotic Tribal Grooves | After Hours Ritual Jazz | Deep Tribal Jazz Instrumental Relaxation", "thumb": "https://i.ytimg.com/vi/H_1d9pISVvs/mqdefault.jpg", "dur": "1:03:35"}, {"id": "YCnE6-V_K-4", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ After Hours Sacred Grooves Relaxing", "thumb": "https://i.ytimg.com/vi/YCnE6-V_K-4/mqdefault.jpg", "dur": "1:01:38"}, {"id": "S-dl8SIZrpA", "title": "Tribal lounge jazz | Sacred grooves for deep focus and midnight afro ritual at after hours", "thumb": "https://i.ytimg.com/vi/S-dl8SIZrpA/mqdefault.jpg", "dur": "1:00:26"}, {"id": "RdV_UxV3G-U", "title": "Midnight Afro Ritual - Hypnotic Tribal Grooves | Relaxing Tribal Lounge Jazz For Deep Focus", "thumb": "https://i.ytimg.com/vi/RdV_UxV3G-U/mqdefault.jpg", "dur": "1:01:54"}, {"id": "eZXB572z52c", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental | Sacred Grooves for Spiritual Focus", "thumb": "https://i.ytimg.com/vi/eZXB572z52c/mqdefault.jpg", "dur": "1:00:14"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

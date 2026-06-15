@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@sepialounge -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,365 +51,97 @@
       <div class="channel-count">51 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=ehgA1c8cqUQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/ehgA1c8cqUQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Night Is Mine. – Slow, Smoky Vintage Noir Jazz</span>
-                <span class="video-dur">3:05:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=e-5BqN5UHTs" target="_blank">
-            <img src="https://i.ytimg.com/vi/e-5BqN5UHTs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">On My Own Time. – 1940s Smooth Vintage Jazz Lounge for Cozy Days</span>
-                <span class="video-dur">3:05:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_gafUlCnJtQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/_gafUlCnJtQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Still Waiting. – Vintage Noir Jazz for Lazy Evenings</span>
-                <span class="video-dur">2:58:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RS2veL7S2c8" target="_blank">
-            <img src="https://i.ytimg.com/vi/RS2veL7S2c8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Out of Office. – Vintage Noir Jazz for Lazy Days & Quiet Hours</span>
-                <span class="video-dur">2:52:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=RbTYkjq5GXQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/RbTYkjq5GXQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Radio On  World Off. – Vintage Noir Jazz for Quiet Hours & Relaxation</span>
-                <span class="video-dur">2:22:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TEVh4mvKXqk" target="_blank">
-            <img src="https://i.ytimg.com/vi/TEVh4mvKXqk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Burn Slowly. – Vintage Noir Jazz for Quiet Evenings & Relaxation</span>
-                <span class="video-dur">2:28:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PWD7pMZbODk" target="_blank">
-            <img src="https://i.ytimg.com/vi/PWD7pMZbODk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Still Half Asleep. – Vintage Noir Jazz for Slow Mornings & Relaxation</span>
-                <span class="video-dur">2:29:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jsQog6eOxpg" target="_blank">
-            <img src="https://i.ytimg.com/vi/jsQog6eOxpg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let the Evening Stretch. – Vintage Noir Jazz for Reading, Work & Relaxation</span>
-                <span class="video-dur">2:23:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8vkcIecqJgA" target="_blank">
-            <img src="https://i.ytimg.com/vi/8vkcIecqJgA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Some Things Deserve a Longer Ending. – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:26:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JGFyxIPRJGk" target="_blank">
-            <img src="https://i.ytimg.com/vi/JGFyxIPRJGk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Not Before Coffee. – Vintage Noir Jazz for Slow Mornings</span>
-                <span class="video-dur">2:12:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cRJ-w9CRKyE" target="_blank">
-            <img src="https://i.ytimg.com/vi/cRJ-w9CRKyE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Not Leaving Yet. – Vintage Noir Jazz for After Hours Relaxation</span>
-                <span class="video-dur">2:14:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1E8IEelMXIg" target="_blank">
-            <img src="https://i.ytimg.com/vi/1E8IEelMXIg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Wash It All Away. – Vintage Noir Jazz for Weekend Unwinding</span>
-                <span class="video-dur">2:11:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LVw8Gad8IXY" target="_blank">
-            <img src="https://i.ytimg.com/vi/LVw8Gad8IXY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Take It Slow. – Vintage Noir Jazz for Easy Days</span>
-                <span class="video-dur">2:11:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7IkHm4EIId0" target="_blank">
-            <img src="https://i.ytimg.com/vi/7IkHm4EIId0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Low Light. Good Wine. – Vintage Noir Jazz for the Late Hours</span>
-                <span class="video-dur">2:19:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=QL0-VAAINWI" target="_blank">
-            <img src="https://i.ytimg.com/vi/QL0-VAAINWI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Alone by Choice. – Vintage Noir Jazz for Your Own Hours</span>
-                <span class="video-dur">2:19:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7WWEJWVlVps" target="_blank">
-            <img src="https://i.ytimg.com/vi/7WWEJWVlVps/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">No Plans. Just Coffee. – Vintage Noir Jazz for Relaxation, Work & Reading</span>
-                <span class="video-dur">2:11:02</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sq3dPvVRZCY" target="_blank">
-            <img src="https://i.ytimg.com/vi/sq3dPvVRZCY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Don't Stop the Record. – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:12:43</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HfNQxHskAXk" target="_blank">
-            <img src="https://i.ytimg.com/vi/HfNQxHskAXk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Off Duty. – Vintage Noir Jazz for Slow Afternoons</span>
-                <span class="video-dur">2:16:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZFFAV88dKS4" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZFFAV88dKS4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Not Studying. Just Jazz. – Vintage Noir Jazz for Focus, Work & Relaxation</span>
-                <span class="video-dur">2:14:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_qDqnjwNhqY" target="_blank">
-            <img src="https://i.ytimg.com/vi/_qDqnjwNhqY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Pour. – Vintage Noir Jazz for Work, Reading & Relaxation</span>
-                <span class="video-dur">2:13:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s3cJG2pUjN0" target="_blank">
-            <img src="https://i.ytimg.com/vi/s3cJG2pUjN0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stay Awhile. – Vintage Noir Jazz for Relaxation & Quiet Hours</span>
-                <span class="video-dur">2:14:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jQ5B4MsgIwc" target="_blank">
-            <img src="https://i.ytimg.com/vi/jQ5B4MsgIwc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz, Naturally. – Vintage Noir Jazz for Sipping & Staying In</span>
-                <span class="video-dur">2:14:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2qQHwHoHcoo" target="_blank">
-            <img src="https://i.ytimg.com/vi/2qQHwHoHcoo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Not a Morning Cat. – Vintage Noir Jazz for Slow Starts & Coffee</span>
-                <span class="video-dur">2:20:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Hn1C5p4cBEk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Hn1C5p4cBEk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Still the Night. – Vintage Noir Jazz for Quiet Evenings</span>
-                <span class="video-dur">2:24:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2_EfhSXLeVE" target="_blank">
-            <img src="https://i.ytimg.com/vi/2_EfhSXLeVE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let It Play. – Vintage Noir Jazz for Quiet Hours</span>
-                <span class="video-dur">2:08:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yQUOE2UHvKU" target="_blank">
-            <img src="https://i.ytimg.com/vi/yQUOE2UHvKU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Just Add Jazz. – Vintage Noir Jazz for Slow Mornings</span>
-                <span class="video-dur">2:15:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CSw0tzNVRe4" target="_blank">
-            <img src="https://i.ytimg.com/vi/CSw0tzNVRe4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Black Tie. Red Wine. – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:20:21</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xsw93t_IUME" target="_blank">
-            <img src="https://i.ytimg.com/vi/xsw93t_IUME/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Book? Really? – Vintage Noir Jazz for Focus & Reading</span>
-                <span class="video-dur">2:17:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zTDct8yadVo" target="_blank">
-            <img src="https://i.ytimg.com/vi/zTDct8yadVo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Let the Day Drift. – Vintage Noir Jazz for Lazy Weekends</span>
-                <span class="video-dur">2:11:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M6qLeFlhGcY" target="_blank">
-            <img src="https://i.ytimg.com/vi/M6qLeFlhGcY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Earned This Sip. – Vintage Noir Jazz for Quiet Evenings</span>
-                <span class="video-dur">2:07:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xRdsz1BY7jE" target="_blank">
-            <img src="https://i.ytimg.com/vi/xRdsz1BY7jE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Breakfast at Nowhere – Vintage Noir Jazz for Relaxation, Work & Reading</span>
-                <span class="video-dur">2:11:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rUp5TlE6bpE" target="_blank">
-            <img src="https://i.ytimg.com/vi/rUp5TlE6bpE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">No Plans. Just Jazz. – Vintage Noir Jazz for Relaxation, Work & Reading</span>
-                <span class="video-dur">2:08:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=kPoYKtuxB64" target="_blank">
-            <img src="https://i.ytimg.com/vi/kPoYKtuxB64/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">After Midnight. – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:12:06</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=sgeCihWbjjg" target="_blank">
-            <img src="https://i.ytimg.com/vi/sgeCihWbjjg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Decaf? Never. – Vintage Noir Jazz for Focus, Work & Relaxation</span>
-                <span class="video-dur">2:10:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SYoDqLOLX6w" target="_blank">
-            <img src="https://i.ytimg.com/vi/SYoDqLOLX6w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Slow Sips – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:17:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Z1myHXZRGxk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Z1myHXZRGxk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">One More Pour – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:13:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SoQXvmr6NXA" target="_blank">
-            <img src="https://i.ytimg.com/vi/SoQXvmr6NXA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">After Hours  – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:08:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Adt3eNMRyqY" target="_blank">
-            <img src="https://i.ytimg.com/vi/Adt3eNMRyqY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Coffee. Jazz. Nothing Else. – Vintage Noir Jazz for a Calm Morning</span>
-                <span class="video-dur">2:17:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=g4dScvHrXC8" target="_blank">
-            <img src="https://i.ytimg.com/vi/g4dScvHrXC8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">No Rush. Just Jazz. – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:16:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3SePnUkfyV0" target="_blank">
-            <img src="https://i.ytimg.com/vi/3SePnUkfyV0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Take It Slow Tonight – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:33:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4JIWnF6OiBs" target="_blank">
-            <img src="https://i.ytimg.com/vi/4JIWnF6OiBs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">No Rush Tonight – Vintage Noir Jazz for Quiet Evenings</span>
-                <span class="video-dur">2:00:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=meyUsak02Wc" target="_blank">
-            <img src="https://i.ytimg.com/vi/meyUsak02Wc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Black Cat’s Table – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:32:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Nke6Ss6xhWU" target="_blank">
-            <img src="https://i.ytimg.com/vi/Nke6Ss6xhWU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Quiet Gentleman – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:25:20</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=k1hI-S6t4c8" target="_blank">
-            <img src="https://i.ytimg.com/vi/k1hI-S6t4c8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1940s Nostalgic Jazz Playlist – Cozy Vintage Jazz Vibes</span>
-                <span class="video-dur">2:37:40</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bX9fNj0vPGk" target="_blank">
-            <img src="https://i.ytimg.com/vi/bX9fNj0vPGk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Velvet Noir Jazz Nights – 1940s Lounge Music for Quiet Evenings</span>
-                <span class="video-dur">2:32:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bc07FlQ5ZXo" target="_blank">
-            <img src="https://i.ytimg.com/vi/bc07FlQ5ZXo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Velvet Trumpet – Vintage Noir Jazz for Late Night Relaxation</span>
-                <span class="video-dur">2:32:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=gk-lceWik1c" target="_blank">
-            <img src="https://i.ytimg.com/vi/gk-lceWik1c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Gentleman's Hour – Vintage Jazz Noir for Quiet Evenings</span>
-                <span class="video-dur">2:18:30</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A35hxcieay0" target="_blank">
-            <img src="https://i.ytimg.com/vi/A35hxcieay0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Jazz Piano – 1940s Smooth Retro Jazz Lounge</span>
-                <span class="video-dur">2:24:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=4aDUET73elY" target="_blank">
-            <img src="https://i.ytimg.com/vi/4aDUET73elY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1940s Jazz Noir - Deep Jazz Instrumental | Soothing Midnight Trumpet Music</span>
-                <span class="video-dur">2:09:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=my14H66iGQU" target="_blank">
-            <img src="https://i.ytimg.com/vi/my14H66iGQU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Jazz for Late Hours – 1940s Noir Lounge Atmosphere</span>
-                <span class="video-dur">3:04:59</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TovjyfE6-2I" target="_blank">
-            <img src="https://i.ytimg.com/vi/TovjyfE6-2I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Jazz – Smoky 1940s Vintage Saxophone for Late Night Relaxation</span>
-                <span class="video-dur">2:35:30</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Sepia Lounge";
+const VIDEOS = [{"id": "ehgA1c8cqUQ", "title": "The Night Is Mine. – Slow, Smoky Vintage Noir Jazz", "thumb": "https://i.ytimg.com/vi/ehgA1c8cqUQ/mqdefault.jpg", "dur": "3:05:53"}, {"id": "e-5BqN5UHTs", "title": "On My Own Time. – 1940s Smooth Vintage Jazz Lounge for Cozy Days", "thumb": "https://i.ytimg.com/vi/e-5BqN5UHTs/mqdefault.jpg", "dur": "3:05:17"}, {"id": "_gafUlCnJtQ", "title": "Still Waiting. – Vintage Noir Jazz for Lazy Evenings", "thumb": "https://i.ytimg.com/vi/_gafUlCnJtQ/mqdefault.jpg", "dur": "2:58:00"}, {"id": "RS2veL7S2c8", "title": "Out of Office. – Vintage Noir Jazz for Lazy Days & Quiet Hours", "thumb": "https://i.ytimg.com/vi/RS2veL7S2c8/mqdefault.jpg", "dur": "2:52:39"}, {"id": "RbTYkjq5GXQ", "title": "Radio On  World Off. – Vintage Noir Jazz for Quiet Hours & Relaxation", "thumb": "https://i.ytimg.com/vi/RbTYkjq5GXQ/mqdefault.jpg", "dur": "2:22:45"}, {"id": "TEVh4mvKXqk", "title": "Burn Slowly. – Vintage Noir Jazz for Quiet Evenings & Relaxation", "thumb": "https://i.ytimg.com/vi/TEVh4mvKXqk/mqdefault.jpg", "dur": "2:28:41"}, {"id": "PWD7pMZbODk", "title": "Still Half Asleep. – Vintage Noir Jazz for Slow Mornings & Relaxation", "thumb": "https://i.ytimg.com/vi/PWD7pMZbODk/mqdefault.jpg", "dur": "2:29:41"}, {"id": "jsQog6eOxpg", "title": "Let the Evening Stretch. – Vintage Noir Jazz for Reading, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/jsQog6eOxpg/mqdefault.jpg", "dur": "2:23:59"}, {"id": "8vkcIecqJgA", "title": "Some Things Deserve a Longer Ending. – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/8vkcIecqJgA/mqdefault.jpg", "dur": "2:26:27"}, {"id": "JGFyxIPRJGk", "title": "Not Before Coffee. – Vintage Noir Jazz for Slow Mornings", "thumb": "https://i.ytimg.com/vi/JGFyxIPRJGk/mqdefault.jpg", "dur": "2:12:16"}, {"id": "cRJ-w9CRKyE", "title": "Not Leaving Yet. – Vintage Noir Jazz for After Hours Relaxation", "thumb": "https://i.ytimg.com/vi/cRJ-w9CRKyE/mqdefault.jpg", "dur": "2:14:51"}, {"id": "1E8IEelMXIg", "title": "Wash It All Away. – Vintage Noir Jazz for Weekend Unwinding", "thumb": "https://i.ytimg.com/vi/1E8IEelMXIg/mqdefault.jpg", "dur": "2:11:08"}, {"id": "LVw8Gad8IXY", "title": "Take It Slow. – Vintage Noir Jazz for Easy Days", "thumb": "https://i.ytimg.com/vi/LVw8Gad8IXY/mqdefault.jpg", "dur": "2:11:03"}, {"id": "7IkHm4EIId0", "title": "Low Light. Good Wine. – Vintage Noir Jazz for the Late Hours", "thumb": "https://i.ytimg.com/vi/7IkHm4EIId0/mqdefault.jpg", "dur": "2:19:23"}, {"id": "QL0-VAAINWI", "title": "Alone by Choice. – Vintage Noir Jazz for Your Own Hours", "thumb": "https://i.ytimg.com/vi/QL0-VAAINWI/mqdefault.jpg", "dur": "2:19:16"}, {"id": "7WWEJWVlVps", "title": "No Plans. Just Coffee. – Vintage Noir Jazz for Relaxation, Work & Reading", "thumb": "https://i.ytimg.com/vi/7WWEJWVlVps/mqdefault.jpg", "dur": "2:11:02"}, {"id": "sq3dPvVRZCY", "title": "Don't Stop the Record. – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/sq3dPvVRZCY/mqdefault.jpg", "dur": "2:12:43"}, {"id": "HfNQxHskAXk", "title": "Off Duty. – Vintage Noir Jazz for Slow Afternoons", "thumb": "https://i.ytimg.com/vi/HfNQxHskAXk/mqdefault.jpg", "dur": "2:16:09"}, {"id": "ZFFAV88dKS4", "title": "Not Studying. Just Jazz. – Vintage Noir Jazz for Focus, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/ZFFAV88dKS4/mqdefault.jpg", "dur": "2:14:57"}, {"id": "_qDqnjwNhqY", "title": "Slow Pour. – Vintage Noir Jazz for Work, Reading & Relaxation", "thumb": "https://i.ytimg.com/vi/_qDqnjwNhqY/mqdefault.jpg", "dur": "2:13:40"}, {"id": "s3cJG2pUjN0", "title": "Stay Awhile. – Vintage Noir Jazz for Relaxation & Quiet Hours", "thumb": "https://i.ytimg.com/vi/s3cJG2pUjN0/mqdefault.jpg", "dur": "2:14:52"}, {"id": "jQ5B4MsgIwc", "title": "Jazz, Naturally. – Vintage Noir Jazz for Sipping & Staying In", "thumb": "https://i.ytimg.com/vi/jQ5B4MsgIwc/mqdefault.jpg", "dur": "2:14:42"}, {"id": "2qQHwHoHcoo", "title": "Not a Morning Cat. – Vintage Noir Jazz for Slow Starts & Coffee", "thumb": "https://i.ytimg.com/vi/2qQHwHoHcoo/mqdefault.jpg", "dur": "2:20:36"}, {"id": "Hn1C5p4cBEk", "title": "Still the Night. – Vintage Noir Jazz for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/Hn1C5p4cBEk/mqdefault.jpg", "dur": "2:24:34"}, {"id": "2_EfhSXLeVE", "title": "Let It Play. – Vintage Noir Jazz for Quiet Hours", "thumb": "https://i.ytimg.com/vi/2_EfhSXLeVE/mqdefault.jpg", "dur": "2:08:29"}, {"id": "yQUOE2UHvKU", "title": "Just Add Jazz. – Vintage Noir Jazz for Slow Mornings", "thumb": "https://i.ytimg.com/vi/yQUOE2UHvKU/mqdefault.jpg", "dur": "2:15:41"}, {"id": "CSw0tzNVRe4", "title": "Black Tie. Red Wine. – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/CSw0tzNVRe4/mqdefault.jpg", "dur": "2:20:21"}, {"id": "xsw93t_IUME", "title": "The Book? Really? – Vintage Noir Jazz for Focus & Reading", "thumb": "https://i.ytimg.com/vi/xsw93t_IUME/mqdefault.jpg", "dur": "2:17:00"}, {"id": "zTDct8yadVo", "title": "Let the Day Drift. – Vintage Noir Jazz for Lazy Weekends", "thumb": "https://i.ytimg.com/vi/zTDct8yadVo/mqdefault.jpg", "dur": "2:11:11"}, {"id": "M6qLeFlhGcY", "title": "Earned This Sip. – Vintage Noir Jazz for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/M6qLeFlhGcY/mqdefault.jpg", "dur": "2:07:09"}, {"id": "xRdsz1BY7jE", "title": "Breakfast at Nowhere – Vintage Noir Jazz for Relaxation, Work & Reading", "thumb": "https://i.ytimg.com/vi/xRdsz1BY7jE/mqdefault.jpg", "dur": "2:11:03"}, {"id": "rUp5TlE6bpE", "title": "No Plans. Just Jazz. – Vintage Noir Jazz for Relaxation, Work & Reading", "thumb": "https://i.ytimg.com/vi/rUp5TlE6bpE/mqdefault.jpg", "dur": "2:08:49"}, {"id": "kPoYKtuxB64", "title": "After Midnight. – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/kPoYKtuxB64/mqdefault.jpg", "dur": "2:12:06"}, {"id": "sgeCihWbjjg", "title": "Decaf? Never. – Vintage Noir Jazz for Focus, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/sgeCihWbjjg/mqdefault.jpg", "dur": "2:10:59"}, {"id": "SYoDqLOLX6w", "title": "Slow Sips – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/SYoDqLOLX6w/mqdefault.jpg", "dur": "2:17:50"}, {"id": "Z1myHXZRGxk", "title": "One More Pour – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/Z1myHXZRGxk/mqdefault.jpg", "dur": "2:13:22"}, {"id": "SoQXvmr6NXA", "title": "After Hours  – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/SoQXvmr6NXA/mqdefault.jpg", "dur": "2:08:24"}, {"id": "Adt3eNMRyqY", "title": "Coffee. Jazz. Nothing Else. – Vintage Noir Jazz for a Calm Morning", "thumb": "https://i.ytimg.com/vi/Adt3eNMRyqY/mqdefault.jpg", "dur": "2:17:10"}, {"id": "g4dScvHrXC8", "title": "No Rush. Just Jazz. – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/g4dScvHrXC8/mqdefault.jpg", "dur": "2:16:31"}, {"id": "3SePnUkfyV0", "title": "Take It Slow Tonight – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/3SePnUkfyV0/mqdefault.jpg", "dur": "2:33:37"}, {"id": "4JIWnF6OiBs", "title": "No Rush Tonight – Vintage Noir Jazz for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/4JIWnF6OiBs/mqdefault.jpg", "dur": "2:00:27"}, {"id": "meyUsak02Wc", "title": "The Black Cat’s Table – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/meyUsak02Wc/mqdefault.jpg", "dur": "2:32:45"}, {"id": "Nke6Ss6xhWU", "title": "The Quiet Gentleman – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/Nke6Ss6xhWU/mqdefault.jpg", "dur": "2:25:20"}, {"id": "k1hI-S6t4c8", "title": "1940s Nostalgic Jazz Playlist – Cozy Vintage Jazz Vibes", "thumb": "https://i.ytimg.com/vi/k1hI-S6t4c8/mqdefault.jpg", "dur": "2:37:40"}, {"id": "bX9fNj0vPGk", "title": "Velvet Noir Jazz Nights – 1940s Lounge Music for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/bX9fNj0vPGk/mqdefault.jpg", "dur": "2:32:44"}, {"id": "bc07FlQ5ZXo", "title": "The Velvet Trumpet – Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/bc07FlQ5ZXo/mqdefault.jpg", "dur": "2:32:47"}, {"id": "gk-lceWik1c", "title": "The Gentleman's Hour – Vintage Jazz Noir for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/gk-lceWik1c/mqdefault.jpg", "dur": "2:18:30"}, {"id": "A35hxcieay0", "title": "Vintage Jazz Piano – 1940s Smooth Retro Jazz Lounge", "thumb": "https://i.ytimg.com/vi/A35hxcieay0/mqdefault.jpg", "dur": "2:24:50"}, {"id": "4aDUET73elY", "title": "1940s Jazz Noir - Deep Jazz Instrumental | Soothing Midnight Trumpet Music", "thumb": "https://i.ytimg.com/vi/4aDUET73elY/mqdefault.jpg", "dur": "2:09:19"}, {"id": "my14H66iGQU", "title": "Vintage Jazz for Late Hours – 1940s Noir Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/my14H66iGQU/mqdefault.jpg", "dur": "3:04:59"}, {"id": "TovjyfE6-2I", "title": "Midnight Jazz – Smoky 1940s Vintage Saxophone for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/TovjyfE6-2I/mqdefault.jpg", "dur": "2:35:30"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

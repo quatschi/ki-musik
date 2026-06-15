@@ -9,21 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@nafasjazz -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
   .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -38,328 +51,97 @@
       <div class="channel-count">46 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=y5T2Pz-3MnM" target="_blank">
-            <img src="https://i.ytimg.com/vi/y5T2Pz-3MnM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Stolen Moments in Cairo | Arabic Jazz Mix | Melodies for Quiet Introspection 🌙</span>
-                <span class="video-dur">2:01:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9Fq5YWAjSKY" target="_blank">
-            <img src="https://i.ytimg.com/vi/9Fq5YWAjSKY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Jazz Café | Arabic Jazz Mix | Oud Jazz & Arabic Melodies Mix | Ideal For Work & Focus 🌙</span>
-                <span class="video-dur">1:28:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=al33AajKxR4" target="_blank">
-            <img src="https://i.ytimg.com/vi/al33AajKxR4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Arabic Jazz Mix | Egyptian Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">2:23:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=0ja7t8CxZtg" target="_blank">
-            <img src="https://i.ytimg.com/vi/0ja7t8CxZtg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3AM in Cairo | Egyptian Jazz & Arabic Melodies Mix | Ideal For Late Nights & Deep Focus</span>
-                <span class="video-dur">1:08:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9lfxO0AdkW0" target="_blank">
-            <img src="https://i.ytimg.com/vi/9lfxO0AdkW0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost In Beirut's Jazz | Arabic Melodies Mix Ideal For Late Nights & Deep Focus</span>
-                <span class="video-dur">1:28:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=35Cbfi0GU20" target="_blank">
-            <img src="https://i.ytimg.com/vi/35Cbfi0GU20/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Quiet Walks In Old Cairo | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:13:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aGaDkiNNLoY" target="_blank">
-            <img src="https://i.ytimg.com/vi/aGaDkiNNLoY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Giza Jazz | Arabic Jazz & Oud Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:00:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=v66tpdLgUY0" target="_blank">
-            <img src="https://i.ytimg.com/vi/v66tpdLgUY0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Tarab Nights | Arabic Jazz & Egyptian Tarab Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:21:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fF2NZU9MXF0" target="_blank">
-            <img src="https://i.ytimg.com/vi/fF2NZU9MXF0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Tunis Knows Jazz | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:30:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=D8Zw-LX4Y4E" target="_blank">
-            <img src="https://i.ytimg.com/vi/D8Zw-LX4Y4E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Remembering Old Sana'a | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:22:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bRDcALpImvY" target="_blank">
-            <img src="https://i.ytimg.com/vi/bRDcALpImvY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Damascus, Unsaid | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:31:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=F687nSOIpts" target="_blank">
-            <img src="https://i.ytimg.com/vi/F687nSOIpts/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Jazz Experience | Egyptian Jazz & Arabic Melodies Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:55:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AFY6w-c7Scg" target="_blank">
-            <img src="https://i.ytimg.com/vi/AFY6w-c7Scg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Moon Over Giza | Egyptian Jazz & Arabic Melodies Mix | Ideal For Work & Late Night Focus 🌙</span>
-                <span class="video-dur">1:35:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=l7C9j5iTKrQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/l7C9j5iTKrQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost In Alexandria | Egyptian Jazz & Arabic Melodies Mix | Study Music & Late Night Focus 🌙</span>
-                <span class="video-dur">2:00:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=J_TnhShoqys" target="_blank">
-            <img src="https://i.ytimg.com/vi/J_TnhShoqys/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost In Cairo Vol2 : Ethereal Arabic Jazz & Desert Melodies Mix | Deep Focus & Relaxation</span>
-                <span class="video-dur">1:49:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Qu9MhwMhnLo" target="_blank">
-            <img src="https://i.ytimg.com/vi/Qu9MhwMhnLo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo After Dark |  Arabic Melodies & Jazz Fusion Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:01:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hK_0zK5UnJ4" target="_blank">
-            <img src="https://i.ytimg.com/vi/hK_0zK5UnJ4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beirut Jazz Experience | Lebanese Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:08:37</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=neoL-GyycMA" target="_blank">
-            <img src="https://i.ytimg.com/vi/neoL-GyycMA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Remembers Jazz |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:05:47</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tg6O0oYCRcE" target="_blank">
-            <img src="https://i.ytimg.com/vi/tg6O0oYCRcE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Left In Cairo |  Arabic Melodies & Jazz Fusion Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:06:16</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=D5nCJKORdmM" target="_blank">
-            <img src="https://i.ytimg.com/vi/D5nCJKORdmM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Madina, Unspoken | Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:06:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=bgCqHozQkwE" target="_blank">
-            <img src="https://i.ytimg.com/vi/bgCqHozQkwE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Don't Forget About Me | Arabic Jazz Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">35:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YVyWIpsrEH8" target="_blank">
-            <img src="https://i.ytimg.com/vi/YVyWIpsrEH8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Somewhere In Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:06:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=tTHLj05qnOY" target="_blank">
-            <img src="https://i.ytimg.com/vi/tTHLj05qnOY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hidden In Casablanca | Arabic Jazz & Moroccan Melodies Mix | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:05:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zYXVSd8pH6A" target="_blank">
-            <img src="https://i.ytimg.com/vi/zYXVSd8pH6A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Beirut, Unsaid | Lebanese Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">57:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=m1tb-QxVsKI" target="_blank">
-            <img src="https://i.ytimg.com/vi/m1tb-QxVsKI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Quiet Nights by the Nile |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:07:36</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-PgPhwWqFiQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/-PgPhwWqFiQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Luxor Jazz Mirage |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">58:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=aFvVF2nMXbM" target="_blank">
-            <img src="https://i.ytimg.com/vi/aFvVF2nMXbM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost In Old Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:02:58</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KTHIP6-Wtuk" target="_blank">
-            <img src="https://i.ytimg.com/vi/KTHIP6-Wtuk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Hidden In Giza |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">1:02:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eo7dMpaWQO4" target="_blank">
-            <img src="https://i.ytimg.com/vi/eo7dMpaWQO4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Trip To Damascus Vol.4 | Arabic Jazz Melodies Mix | Ideal For Morning Relaxation & Focus 🌙</span>
-                <span class="video-dur">1:04:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3swKVRjaJDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/3swKVRjaJDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost In Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙</span>
-                <span class="video-dur">59:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EbOz3E3MJ78" target="_blank">
-            <img src="https://i.ytimg.com/vi/EbOz3E3MJ78/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Trip To Damascus Vol.3 | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:03:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=jA46CvIGMQ4" target="_blank">
-            <img src="https://i.ytimg.com/vi/jA46CvIGMQ4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Trip To Damascus Vol.2 | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:07:25</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=x6aSMDycd-k" target="_blank">
-            <img src="https://i.ytimg.com/vi/x6aSMDycd-k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz night under the stars of Alexandria | Arabic Jazz Fusion 🌙</span>
-                <span class="video-dur">1:02:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TuR39Ebeojo" target="_blank">
-            <img src="https://i.ytimg.com/vi/TuR39Ebeojo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Caravan To Baghdad | Arabic Jazz Fusion 🌙</span>
-                <span class="video-dur">1:03:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=hCK-MDkAEMg" target="_blank">
-            <img src="https://i.ytimg.com/vi/hCK-MDkAEMg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Jazz Evening in Alexandria | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:07:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=3htnmehEa5k" target="_blank">
-            <img src="https://i.ytimg.com/vi/3htnmehEa5k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight in Wahran | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:15:17</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EzfCh1wPxZQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/EzfCh1wPxZQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Nights |  Arabic Jazz & Arabic Melodies Mix 🌙</span>
-                <span class="video-dur">56:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GRlCOaMiyO8" target="_blank">
-            <img src="https://i.ytimg.com/vi/GRlCOaMiyO8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz In Baghdad  | Middle Eastern Jazz Fusion Mix 🌙</span>
-                <span class="video-dur">1:13:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8CMYor9jbu0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8CMYor9jbu0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Layali Nahawad | Arabic Jazz Fusion 🌙</span>
-                <span class="video-dur">46:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TJ3hRX9YRpc" target="_blank">
-            <img src="https://i.ytimg.com/vi/TJ3hRX9YRpc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cairo Nights |  Egyptian Jazz & Arabic Melodies Mix 🌙</span>
-                <span class="video-dur">1:02:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ANOAeEk2DLA" target="_blank">
-            <img src="https://i.ytimg.com/vi/ANOAeEk2DLA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Desert Night Jazz 🌙 Soulful Arabic Jazz Fusion for Relaxing & Studying</span>
-                <span class="video-dur">53:10</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dPWjUjZZYAo" target="_blank">
-            <img src="https://i.ytimg.com/vi/dPWjUjZZYAo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Ya Lili | Arabic Jazz Fusion Mix | Deep Relaxation</span>
-                <span class="video-dur">54:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EfJpa44rzDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/EfJpa44rzDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Jazz Trip To Damascus | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:02:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A9oLogW7MTI" target="_blank">
-            <img src="https://i.ytimg.com/vi/A9oLogW7MTI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Nafas Jazz | نفَس جاز | Modern Arabic Jazz | 1 Hour of Smooth Arabic Jazz</span>
-                <span class="video-dur">1:04:27</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=s5EtZuGbxMM" target="_blank">
-            <img src="https://i.ytimg.com/vi/s5EtZuGbxMM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Somehow… this Arabic bossa nova found you. | Relaxing Arabic Bossa Nova</span>
-                <span class="video-dur">1:01:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=HWaGiB39ad8" target="_blank">
-            <img src="https://i.ytimg.com/vi/HWaGiB39ad8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">A Saharan Night, Told in Jazz | Arabic Jazz Fusion</span>
-                <span class="video-dur">1:02:09</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Nafas Jazz | \"\u0646\u0641\u0633 \u062c\u0627\u0632\"";
+const VIDEOS = [{"id": "y5T2Pz-3MnM", "title": "Stolen Moments in Cairo | Arabic Jazz Mix | Melodies for Quiet Introspection 🌙", "thumb": "https://i.ytimg.com/vi/y5T2Pz-3MnM/mqdefault.jpg", "dur": "2:01:58"}, {"id": "9Fq5YWAjSKY", "title": "Cairo Jazz Café | Arabic Jazz Mix | Oud Jazz & Arabic Melodies Mix | Ideal For Work & Focus 🌙", "thumb": "https://i.ytimg.com/vi/9Fq5YWAjSKY/mqdefault.jpg", "dur": "1:28:05"}, {"id": "al33AajKxR4", "title": "Arabic Jazz Mix | Egyptian Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/al33AajKxR4/mqdefault.jpg", "dur": "2:23:24"}, {"id": "0ja7t8CxZtg", "title": "3AM in Cairo | Egyptian Jazz & Arabic Melodies Mix | Ideal For Late Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/0ja7t8CxZtg/mqdefault.jpg", "dur": "1:08:11"}, {"id": "9lfxO0AdkW0", "title": "Lost In Beirut's Jazz | Arabic Melodies Mix Ideal For Late Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/9lfxO0AdkW0/mqdefault.jpg", "dur": "1:28:48"}, {"id": "35Cbfi0GU20", "title": "Quiet Walks In Old Cairo | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/35Cbfi0GU20/mqdefault.jpg", "dur": "1:13:35"}, {"id": "aGaDkiNNLoY", "title": "Old Giza Jazz | Arabic Jazz & Oud Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/aGaDkiNNLoY/mqdefault.jpg", "dur": "1:00:42"}, {"id": "v66tpdLgUY0", "title": "Cairo Tarab Nights | Arabic Jazz & Egyptian Tarab Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/v66tpdLgUY0/mqdefault.jpg", "dur": "1:21:07"}, {"id": "fF2NZU9MXF0", "title": "Tunis Knows Jazz | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/fF2NZU9MXF0/mqdefault.jpg", "dur": "1:30:41"}, {"id": "D8Zw-LX4Y4E", "title": "Remembering Old Sana'a | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/D8Zw-LX4Y4E/mqdefault.jpg", "dur": "1:22:17"}, {"id": "bRDcALpImvY", "title": "Damascus, Unsaid | Arabic Jazz & Ethereal Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/bRDcALpImvY/mqdefault.jpg", "dur": "1:31:35"}, {"id": "F687nSOIpts", "title": "Cairo Jazz Experience | Egyptian Jazz & Arabic Melodies Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/F687nSOIpts/mqdefault.jpg", "dur": "1:55:13"}, {"id": "AFY6w-c7Scg", "title": "Moon Over Giza | Egyptian Jazz & Arabic Melodies Mix | Ideal For Work & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/AFY6w-c7Scg/mqdefault.jpg", "dur": "1:35:42"}, {"id": "l7C9j5iTKrQ", "title": "Lost In Alexandria | Egyptian Jazz & Arabic Melodies Mix | Study Music & Late Night Focus 🌙", "thumb": "https://i.ytimg.com/vi/l7C9j5iTKrQ/mqdefault.jpg", "dur": "2:00:57"}, {"id": "J_TnhShoqys", "title": "Lost In Cairo Vol2 : Ethereal Arabic Jazz & Desert Melodies Mix | Deep Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/J_TnhShoqys/mqdefault.jpg", "dur": "1:49:19"}, {"id": "Qu9MhwMhnLo", "title": "Cairo After Dark |  Arabic Melodies & Jazz Fusion Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/Qu9MhwMhnLo/mqdefault.jpg", "dur": "1:01:58"}, {"id": "hK_0zK5UnJ4", "title": "Beirut Jazz Experience | Lebanese Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/hK_0zK5UnJ4/mqdefault.jpg", "dur": "1:08:37"}, {"id": "neoL-GyycMA", "title": "Cairo Remembers Jazz |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/neoL-GyycMA/mqdefault.jpg", "dur": "1:05:47"}, {"id": "tg6O0oYCRcE", "title": "Left In Cairo |  Arabic Melodies & Jazz Fusion Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/tg6O0oYCRcE/mqdefault.jpg", "dur": "1:06:16"}, {"id": "D5nCJKORdmM", "title": "Madina, Unspoken | Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/D5nCJKORdmM/mqdefault.jpg", "dur": "1:06:23"}, {"id": "bgCqHozQkwE", "title": "Don't Forget About Me | Arabic Jazz Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/bgCqHozQkwE/mqdefault.jpg", "dur": "35:44"}, {"id": "YVyWIpsrEH8", "title": "Somewhere In Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/YVyWIpsrEH8/mqdefault.jpg", "dur": "1:06:15"}, {"id": "tTHLj05qnOY", "title": "Hidden In Casablanca | Arabic Jazz & Moroccan Melodies Mix | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/tTHLj05qnOY/mqdefault.jpg", "dur": "1:05:13"}, {"id": "zYXVSd8pH6A", "title": "Beirut, Unsaid | Lebanese Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/zYXVSd8pH6A/mqdefault.jpg", "dur": "57:35"}, {"id": "m1tb-QxVsKI", "title": "Quiet Nights by the Nile |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/m1tb-QxVsKI/mqdefault.jpg", "dur": "1:07:36"}, {"id": "-PgPhwWqFiQ", "title": "Luxor Jazz Mirage |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/-PgPhwWqFiQ/mqdefault.jpg", "dur": "58:00"}, {"id": "aFvVF2nMXbM", "title": "Lost In Old Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/aFvVF2nMXbM/mqdefault.jpg", "dur": "1:02:58"}, {"id": "KTHIP6-Wtuk", "title": "Hidden In Giza |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/KTHIP6-Wtuk/mqdefault.jpg", "dur": "1:02:34"}, {"id": "eo7dMpaWQO4", "title": "Jazz Trip To Damascus Vol.4 | Arabic Jazz Melodies Mix | Ideal For Morning Relaxation & Focus 🌙", "thumb": "https://i.ytimg.com/vi/eo7dMpaWQO4/mqdefault.jpg", "dur": "1:04:35"}, {"id": "3swKVRjaJDA", "title": "Lost In Cairo |  Egyptian Jazz & Arabic Melodies Mix  | Ideal For Late Night & Focus 🌙", "thumb": "https://i.ytimg.com/vi/3swKVRjaJDA/mqdefault.jpg", "dur": "59:00"}, {"id": "EbOz3E3MJ78", "title": "Jazz Trip To Damascus Vol.3 | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/EbOz3E3MJ78/mqdefault.jpg", "dur": "1:03:18"}, {"id": "jA46CvIGMQ4", "title": "Jazz Trip To Damascus Vol.2 | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/jA46CvIGMQ4/mqdefault.jpg", "dur": "1:07:25"}, {"id": "x6aSMDycd-k", "title": "Jazz night under the stars of Alexandria | Arabic Jazz Fusion 🌙", "thumb": "https://i.ytimg.com/vi/x6aSMDycd-k/mqdefault.jpg", "dur": "1:02:50"}, {"id": "TuR39Ebeojo", "title": "Jazz Caravan To Baghdad | Arabic Jazz Fusion 🌙", "thumb": "https://i.ytimg.com/vi/TuR39Ebeojo/mqdefault.jpg", "dur": "1:03:11"}, {"id": "hCK-MDkAEMg", "title": "A Jazz Evening in Alexandria | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/hCK-MDkAEMg/mqdefault.jpg", "dur": "1:07:19"}, {"id": "3htnmehEa5k", "title": "Midnight in Wahran | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/3htnmehEa5k/mqdefault.jpg", "dur": "1:15:17"}, {"id": "EzfCh1wPxZQ", "title": "Cairo Nights |  Arabic Jazz & Arabic Melodies Mix 🌙", "thumb": "https://i.ytimg.com/vi/EzfCh1wPxZQ/mqdefault.jpg", "dur": "56:07"}, {"id": "GRlCOaMiyO8", "title": "Jazz In Baghdad  | Middle Eastern Jazz Fusion Mix 🌙", "thumb": "https://i.ytimg.com/vi/GRlCOaMiyO8/mqdefault.jpg", "dur": "1:13:07"}, {"id": "8CMYor9jbu0", "title": "Layali Nahawad | Arabic Jazz Fusion 🌙", "thumb": "https://i.ytimg.com/vi/8CMYor9jbu0/mqdefault.jpg", "dur": "46:11"}, {"id": "TJ3hRX9YRpc", "title": "Cairo Nights |  Egyptian Jazz & Arabic Melodies Mix 🌙", "thumb": "https://i.ytimg.com/vi/TJ3hRX9YRpc/mqdefault.jpg", "dur": "1:02:00"}, {"id": "ANOAeEk2DLA", "title": "Desert Night Jazz 🌙 Soulful Arabic Jazz Fusion for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/ANOAeEk2DLA/mqdefault.jpg", "dur": "53:10"}, {"id": "dPWjUjZZYAo", "title": "Ya Lili | Arabic Jazz Fusion Mix | Deep Relaxation", "thumb": "https://i.ytimg.com/vi/dPWjUjZZYAo/mqdefault.jpg", "dur": "54:32"}, {"id": "EfJpa44rzDA", "title": "Jazz Trip To Damascus | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/EfJpa44rzDA/mqdefault.jpg", "dur": "1:02:09"}, {"id": "A9oLogW7MTI", "title": "Nafas Jazz | نفَس جاز | Modern Arabic Jazz | 1 Hour of Smooth Arabic Jazz", "thumb": "https://i.ytimg.com/vi/A9oLogW7MTI/mqdefault.jpg", "dur": "1:04:27"}, {"id": "s5EtZuGbxMM", "title": "Somehow… this Arabic bossa nova found you. | Relaxing Arabic Bossa Nova", "thumb": "https://i.ytimg.com/vi/s5EtZuGbxMM/mqdefault.jpg", "dur": "1:01:48"}, {"id": "HWaGiB39ad8", "title": "A Saharan Night, Told in Jazz | Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/HWaGiB39ad8/mqdefault.jpg", "dur": "1:02:09"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

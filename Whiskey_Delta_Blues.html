@@ -9,107 +9,34 @@
 <!-- channel-url: https://youtube.com/@deltawhiskeyblues -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,561 +51,97 @@
       <div class="channel-count">79 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=WHyolegIJIo" target="_blank">
-            <img src="https://i.ytimg.com/vi/WHyolegIJIo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Acoustic Blues Harmonica – Lonely Traveler Blues</span>
-                <span class="video-dur">51:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=GsI29BPXJ6A" target="_blank">
-            <img src="https://i.ytimg.com/vi/GsI29BPXJ6A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Acoustic Blues Harmonica – Long Road Home Blues</span>
-                <span class="video-dur">51:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Jnk0ZvTBZRA" target="_blank">
-            <img src="https://i.ytimg.com/vi/Jnk0ZvTBZRA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Acoustic Blues Harmonica – Golden Mellow Blues</span>
-                <span class="video-dur">51:35</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=svVWXtU71Nk" target="_blank">
-            <img src="https://i.ytimg.com/vi/svVWXtU71Nk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Acoustic Blues Harmonica – Lonely Road Song</span>
-                <span class="video-dur">51:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IpYwj0w9HYc" target="_blank">
-            <img src="https://i.ytimg.com/vi/IpYwj0w9HYc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Acoustic Blues Harmonica – Back Alley Serenade</span>
-                <span class="video-dur">50:38</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=twITiXFdL0Q" target="_blank">
-            <img src="https://i.ytimg.com/vi/twITiXFdL0Q/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Voices of Mississippi Cotton Fields – Delta Music Playlist Collection, Rural Blues & Jazz</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=etW1iB8agNw" target="_blank">
-            <img src="https://i.ytimg.com/vi/etW1iB8agNw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">They Played Blues to Forget the Pain – Mississippi Delta Music Blues Jazz from the 1930s</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=w0thVHso4wg" target="_blank">
-            <img src="https://i.ytimg.com/vi/w0thVHso4wg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lantern Songs from Mississippi – Deep Delta Blues & Rural Jazz of the 1930s South</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Fv8HVBEKM8s" target="_blank">
-            <img src="https://i.ytimg.com/vi/Fv8HVBEKM8s/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mississippi Delta Blues in the Cotton Fields – Rural 1930s Harmonica & Steel Guitar Collection</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=cRieljHcGGw" target="_blank">
-            <img src="https://i.ytimg.com/vi/cRieljHcGGw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">They Worked the Cotton Fields by Day, Then Sang the Blues All Night – Delta Soul Stories 1930s</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=as6zgn2NTjo" target="_blank">
-            <img src="https://i.ytimg.com/vi/as6zgn2NTjo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Voices of Mississippi Cotton Fields – Delta Music Playlist Collection, Rural Blues & Jazz</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7ZHwFkc8b-w" target="_blank">
-            <img src="https://i.ytimg.com/vi/7ZHwFkc8b-w/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">They Played Blues to Forget the Pain – Mississippi Delta Music Blues Jazz from the 1930s</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=NBYhqBKqG4M" target="_blank">
-            <img src="https://i.ytimg.com/vi/NBYhqBKqG4M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lantern Songs from Mississippi – Deep Delta Blues & Rural Jazz of the 1930s South</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=95Q4hZV3PNg" target="_blank">
-            <img src="https://i.ytimg.com/vi/95Q4hZV3PNg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Mississippi Delta Blues in the Cotton Fields – Rural 1930s Harmonica & Steel Guitar Collection</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=wlcek7ChR8E" target="_blank">
-            <img src="https://i.ytimg.com/vi/wlcek7ChR8E/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:17:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mUl-UHetJK8" target="_blank">
-            <img src="https://i.ytimg.com/vi/mUl-UHetJK8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:17:29</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S4Y5kIHyFjk" target="_blank">
-            <img src="https://i.ytimg.com/vi/S4Y5kIHyFjk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:16:41</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6UV0B80kmA8" target="_blank">
-            <img src="https://i.ytimg.com/vi/6UV0B80kmA8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:17:23</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WpBGB58dkiA" target="_blank">
-            <img src="https://i.ytimg.com/vi/WpBGB58dkiA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:17:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=TnawqFpxEyw" target="_blank">
-            <img src="https://i.ytimg.com/vi/TnawqFpxEyw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1 Hour of Delta Blues Harmonica l Long River Mississippi Soul</span>
-                <span class="video-dur">1:18:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=IHvjHkrY5z8" target="_blank">
-            <img src="https://i.ytimg.com/vi/IHvjHkrY5z8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blues Whiskey – Slow Chicago Blues for Late Night Blues Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=65TgicNMaII" target="_blank">
-            <img src="https://i.ytimg.com/vi/65TgicNMaII/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=_38U0G1sGSQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/_38U0G1sGSQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blues Whiskey – Midnight Chicago Blues Playlist for Late Night Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zoiPoX77LOI" target="_blank">
-            <img src="https://i.ytimg.com/vi/zoiPoX77LOI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blues Forge – Midnight Chicago Blues Playlist for Late Night Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=EhdzxHVA7Fc" target="_blank">
-            <img src="https://i.ytimg.com/vi/EhdzxHVA7Fc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rHCMHGYOcWA" target="_blank">
-            <img src="https://i.ytimg.com/vi/rHCMHGYOcWA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Blues Whiskey – Midnight Chicago Blues Playlist for Late Night Relaxation</span>
-                <span class="video-dur">56:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=a3hNojEF0FY" target="_blank">
-            <img src="https://i.ytimg.com/vi/a3hNojEF0FY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost Delta Blues 1930s – Harmonica Sessions from Mississippi</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MStJrK-NjM4" target="_blank">
-            <img src="https://i.ytimg.com/vi/MStJrK-NjM4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Backroads Beneath the Moon | Delta Blues 1930s | Raw Acoustic Mississippi</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Xm1r9eccQTM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Xm1r9eccQTM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Field Work Blues | Delta Mississippi 1930s | Raw Guitar & Harmonica</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BZzqmR8AwK8" target="_blank">
-            <img src="https://i.ytimg.com/vi/BZzqmR8AwK8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Backyard Blues Session | Mississippi Delta 1930s | Gritty Acoustic Jam</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=yWqWzE2Ikms" target="_blank">
-            <img src="https://i.ytimg.com/vi/yWqWzE2Ikms/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Old School Delta Blues | Deep Southern Guitar & Harmonica</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=P9rcmHh1i34" target="_blank">
-            <img src="https://i.ytimg.com/vi/P9rcmHh1i34/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Front Porch Jam | Mississippi Delta 1930s | Acoustic Guitar & Harp</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lMlW6VMFAtk" target="_blank">
-            <img src="https://i.ytimg.com/vi/lMlW6VMFAtk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost Delta Blues 1930s – Harmonica Sessions from Mississippi</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=LlRkdMufwXA" target="_blank">
-            <img src="https://i.ytimg.com/vi/LlRkdMufwXA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost Delta Blues 1930s – Harmonica Sessions from Mississippi</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8ycHfEFXap0" target="_blank">
-            <img src="https://i.ytimg.com/vi/8ycHfEFXap0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Harmonica 1930s – Dusty Mississippi Nights</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PcRtJwBUg4g" target="_blank">
-            <img src="https://i.ytimg.com/vi/PcRtJwBUg4g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost Blues Recordings 1930s – Delta Harmonica Session</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BqqHzBvJIgU" target="_blank">
-            <img src="https://i.ytimg.com/vi/BqqHzBvJIgU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Old Delta Blues Harmonica 1930s – Rare & Forgotten Sounds</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=PT3WVItzjG8" target="_blank">
-            <img src="https://i.ytimg.com/vi/PT3WVItzjG8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1930s Delta Blues Harmonica – Deep South Vintage Mix</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=fpABGAT1AnU" target="_blank">
-            <img src="https://i.ytimg.com/vi/fpABGAT1AnU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rare Delta Blues Harmonica 1930s – Old Mississippi Sound</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6LQzyr2s6j4" target="_blank">
-            <img src="https://i.ytimg.com/vi/6LQzyr2s6j4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost Delta Blues 1930s – Harmonica Sessions from Mississippi</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7KlZzkeHUQM" target="_blank">
-            <img src="https://i.ytimg.com/vi/7KlZzkeHUQM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lost 1930s Delta Blues Harmonica Rare Recordings</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xaIYbLUkG04" target="_blank">
-            <img src="https://i.ytimg.com/vi/xaIYbLUkG04/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1930s Mississippi Delta Blues Harmonica Vintage Recordings</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=InYujDuv2aE" target="_blank">
-            <img src="https://i.ytimg.com/vi/InYujDuv2aE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">1930s Delta Blues Harmonica – Lost Mississippi Recordings</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=z1YswBTCjEs" target="_blank">
-            <img src="https://i.ytimg.com/vi/z1YswBTCjEs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rare 1930s Blues Harmonica – Mississippi Delta Sessions</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=p7MSL935DC4" target="_blank">
-            <img src="https://i.ytimg.com/vi/p7MSL935DC4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lonely Desert Bend Blues • Delta Blues 1930s • Raw Acoustic Mississipi</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dLkHnCs7tNs" target="_blank">
-            <img src="https://i.ytimg.com/vi/dLkHnCs7tNs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lRYrfco_zGE" target="_blank">
-            <img src="https://i.ytimg.com/vi/lRYrfco_zGE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night | The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=dE30VrsG5l4" target="_blank">
-            <img src="https://i.ytimg.com/vi/dE30VrsG5l4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rS6kmF_HLF4" target="_blank">
-            <img src="https://i.ytimg.com/vi/rS6kmF_HLF4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=YchGqbledp4" target="_blank">
-            <img src="https://i.ytimg.com/vi/YchGqbledp4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Southern Blues  Whisky Night Delta Guitar & Harmonica 1 5 Hours</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VlQ3WmYlsLs" target="_blank">
-            <img src="https://i.ytimg.com/vi/VlQ3WmYlsLs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night | The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KWAIFi8nPz8" target="_blank">
-            <img src="https://i.ytimg.com/vi/KWAIFi8nPz8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Southern Blues | Whisky Night Delta Guitar & Harmonica 1.5 Hours</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2xZ6MtWE-80" target="_blank">
-            <img src="https://i.ytimg.com/vi/2xZ6MtWE-80/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night | The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=phk-LbZdDCg" target="_blank">
-            <img src="https://i.ytimg.com/vi/phk-LbZdDCg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZwEavszicIM" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZwEavszicIM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Southern Blues | Whisky Night Delta Guitar & Harmonica 1.5 Hours</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=khS2kUhtBRw" target="_blank">
-            <img src="https://i.ytimg.com/vi/khS2kUhtBRw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S3ZLNGx4Awo" target="_blank">
-            <img src="https://i.ytimg.com/vi/S3ZLNGx4Awo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WufagRubG9Y" target="_blank">
-            <img src="https://i.ytimg.com/vi/WufagRubG9Y/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ItAJWx8nszY" target="_blank">
-            <img src="https://i.ytimg.com/vi/ItAJWx8nszY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Delta Blues Instrumental – Midnight Southern Guitar Groove</span>
-                <span class="video-dur">1:00:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xMrRghT3atI" target="_blank">
-            <img src="https://i.ytimg.com/vi/xMrRghT3atI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Late Night Mississippi Blues | Raw Delta Guitar Sound</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=WLckZ0SpDQs" target="_blank">
-            <img src="https://i.ytimg.com/vi/WLckZ0SpDQs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues  Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=6MQn_kWw0Xo" target="_blank">
-            <img src="https://i.ytimg.com/vi/6MQn_kWw0Xo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night  The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=j-bIyAXcI8M" target="_blank">
-            <img src="https://i.ytimg.com/vi/j-bIyAXcI8M/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7--R6FLpv2I" target="_blank">
-            <img src="https://i.ytimg.com/vi/7--R6FLpv2I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night  The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=F5HDoLeVJZk" target="_blank">
-            <img src="https://i.ytimg.com/vi/F5HDoLeVJZk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Delta Blues | Deep Southern Guitar & Harmonica</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=-maZrGlPicc" target="_blank">
-            <img src="https://i.ytimg.com/vi/-maZrGlPicc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night  The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">55:49</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xgL7Ooy7qMs" target="_blank">
-            <img src="https://i.ytimg.com/vi/xgL7Ooy7qMs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Harmonica DEEP Southern DELTA Blues</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=JLlEz7o7pL8" target="_blank">
-            <img src="https://i.ytimg.com/vi/JLlEz7o7pL8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=H0tU-zDe9p8" target="_blank">
-            <img src="https://i.ytimg.com/vi/H0tU-zDe9p8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night – The Graveyard Blues | Deep Southern Night Mix</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=FPejARXAOnc" target="_blank">
-            <img src="https://i.ytimg.com/vi/FPejARXAOnc/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues  Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Wt5QsgfM-I0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Wt5QsgfM-I0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Delta Blues Night  The Graveyard Blues – Old Soul Sound</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=7KITOxEaZ-o" target="_blank">
-            <img src="https://i.ytimg.com/vi/7KITOxEaZ-o/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Southern Blues  Whisky Night Delta Guitar & Harmonica 1 5 Hours</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=iBs79zkg2lk" target="_blank">
-            <img src="https://i.ytimg.com/vi/iBs79zkg2lk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues</span>
-                <span class="video-dur">55:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Edbfo19_OzM" target="_blank">
-            <img src="https://i.ytimg.com/vi/Edbfo19_OzM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Where Blues Was Born  Deep Southern Delta Blues Mix</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CVx1c7TjNzw" target="_blank">
-            <img src="https://i.ytimg.com/vi/CVx1c7TjNzw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Delta Blues | The Graveyard Blues – Blues Masterpiece</span>
-                <span class="video-dur">55:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=zwZxG0a3xEE" target="_blank">
-            <img src="https://i.ytimg.com/vi/zwZxG0a3xEE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Mississippi Blues | Delta Blues Harmonica – Classic Whiskey Blues Session</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=A32pyiiJ_PY" target="_blank">
-            <img src="https://i.ytimg.com/vi/A32pyiiJ_PY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Delta Blues | The Graveyard Mississippi Harmonica Blues – Whiskey Blues Soulful</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=B2iqS1-QrQ0" target="_blank">
-            <img src="https://i.ytimg.com/vi/B2iqS1-QrQ0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Delta Blues  Deep Southern Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DO0E0vRBGlE" target="_blank">
-            <img src="https://i.ytimg.com/vi/DO0E0vRBGlE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Real Mississippi Blues  Old School Guitar & Harmonica</span>
-                <span class="video-dur">1:00:46</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Whiskey Delta Blues";
+const VIDEOS = [{"id": "WHyolegIJIo", "title": "Acoustic Blues Harmonica – Lonely Traveler Blues", "thumb": "https://i.ytimg.com/vi/WHyolegIJIo/mqdefault.jpg", "dur": "51:26"}, {"id": "GsI29BPXJ6A", "title": "Acoustic Blues Harmonica – Long Road Home Blues", "thumb": "https://i.ytimg.com/vi/GsI29BPXJ6A/mqdefault.jpg", "dur": "51:35"}, {"id": "Jnk0ZvTBZRA", "title": "Acoustic Blues Harmonica – Golden Mellow Blues", "thumb": "https://i.ytimg.com/vi/Jnk0ZvTBZRA/mqdefault.jpg", "dur": "51:35"}, {"id": "svVWXtU71Nk", "title": "Acoustic Blues Harmonica – Lonely Road Song", "thumb": "https://i.ytimg.com/vi/svVWXtU71Nk/mqdefault.jpg", "dur": "51:26"}, {"id": "IpYwj0w9HYc", "title": "Acoustic Blues Harmonica – Back Alley Serenade", "thumb": "https://i.ytimg.com/vi/IpYwj0w9HYc/mqdefault.jpg", "dur": "50:38"}, {"id": "twITiXFdL0Q", "title": "The Voices of Mississippi Cotton Fields – Delta Music Playlist Collection, Rural Blues & Jazz", "thumb": "https://i.ytimg.com/vi/twITiXFdL0Q/mqdefault.jpg", "dur": "1:00:46"}, {"id": "etW1iB8agNw", "title": "They Played Blues to Forget the Pain – Mississippi Delta Music Blues Jazz from the 1930s", "thumb": "https://i.ytimg.com/vi/etW1iB8agNw/mqdefault.jpg", "dur": "55:49"}, {"id": "w0thVHso4wg", "title": "Lantern Songs from Mississippi – Deep Delta Blues & Rural Jazz of the 1930s South", "thumb": "https://i.ytimg.com/vi/w0thVHso4wg/mqdefault.jpg", "dur": "1:00:46"}, {"id": "Fv8HVBEKM8s", "title": "Mississippi Delta Blues in the Cotton Fields – Rural 1930s Harmonica & Steel Guitar Collection", "thumb": "https://i.ytimg.com/vi/Fv8HVBEKM8s/mqdefault.jpg", "dur": "55:49"}, {"id": "cRieljHcGGw", "title": "They Worked the Cotton Fields by Day, Then Sang the Blues All Night – Delta Soul Stories 1930s", "thumb": "https://i.ytimg.com/vi/cRieljHcGGw/mqdefault.jpg", "dur": "1:00:46"}, {"id": "as6zgn2NTjo", "title": "The Voices of Mississippi Cotton Fields – Delta Music Playlist Collection, Rural Blues & Jazz", "thumb": "https://i.ytimg.com/vi/as6zgn2NTjo/mqdefault.jpg", "dur": "55:49"}, {"id": "7ZHwFkc8b-w", "title": "They Played Blues to Forget the Pain – Mississippi Delta Music Blues Jazz from the 1930s", "thumb": "https://i.ytimg.com/vi/7ZHwFkc8b-w/mqdefault.jpg", "dur": "1:00:46"}, {"id": "NBYhqBKqG4M", "title": "Lantern Songs from Mississippi – Deep Delta Blues & Rural Jazz of the 1930s South", "thumb": "https://i.ytimg.com/vi/NBYhqBKqG4M/mqdefault.jpg", "dur": "55:49"}, {"id": "95Q4hZV3PNg", "title": "Mississippi Delta Blues in the Cotton Fields – Rural 1930s Harmonica & Steel Guitar Collection", "thumb": "https://i.ytimg.com/vi/95Q4hZV3PNg/mqdefault.jpg", "dur": "1:00:46"}, {"id": "wlcek7ChR8E", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/wlcek7ChR8E/mqdefault.jpg", "dur": "1:17:08"}, {"id": "mUl-UHetJK8", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/mUl-UHetJK8/mqdefault.jpg", "dur": "1:17:29"}, {"id": "S4Y5kIHyFjk", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/S4Y5kIHyFjk/mqdefault.jpg", "dur": "1:16:41"}, {"id": "6UV0B80kmA8", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/6UV0B80kmA8/mqdefault.jpg", "dur": "1:17:23"}, {"id": "WpBGB58dkiA", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/WpBGB58dkiA/mqdefault.jpg", "dur": "1:17:09"}, {"id": "TnawqFpxEyw", "title": "1 Hour of Delta Blues Harmonica l Long River Mississippi Soul", "thumb": "https://i.ytimg.com/vi/TnawqFpxEyw/mqdefault.jpg", "dur": "1:18:11"}, {"id": "IHvjHkrY5z8", "title": "Blues Whiskey – Slow Chicago Blues for Late Night Blues Relaxation", "thumb": "https://i.ytimg.com/vi/IHvjHkrY5z8/mqdefault.jpg", "dur": "56:44"}, {"id": "65TgicNMaII", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/65TgicNMaII/mqdefault.jpg", "dur": "56:44"}, {"id": "_38U0G1sGSQ", "title": "Blues Whiskey – Midnight Chicago Blues Playlist for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/_38U0G1sGSQ/mqdefault.jpg", "dur": "56:44"}, {"id": "zoiPoX77LOI", "title": "Blues Forge – Midnight Chicago Blues Playlist for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/zoiPoX77LOI/mqdefault.jpg", "dur": "56:44"}, {"id": "EhdzxHVA7Fc", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/EhdzxHVA7Fc/mqdefault.jpg", "dur": "56:44"}, {"id": "rHCMHGYOcWA", "title": "Blues Whiskey – Midnight Chicago Blues Playlist for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/rHCMHGYOcWA/mqdefault.jpg", "dur": "56:44"}, {"id": "a3hNojEF0FY", "title": "Lost Delta Blues 1930s – Harmonica Sessions from Mississippi", "thumb": "https://i.ytimg.com/vi/a3hNojEF0FY/mqdefault.jpg", "dur": "1:00:46"}, {"id": "MStJrK-NjM4", "title": "Backroads Beneath the Moon | Delta Blues 1930s | Raw Acoustic Mississippi", "thumb": "https://i.ytimg.com/vi/MStJrK-NjM4/mqdefault.jpg", "dur": "55:49"}, {"id": "Xm1r9eccQTM", "title": "Field Work Blues | Delta Mississippi 1930s | Raw Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/Xm1r9eccQTM/mqdefault.jpg", "dur": "55:49"}, {"id": "BZzqmR8AwK8", "title": "Backyard Blues Session | Mississippi Delta 1930s | Gritty Acoustic Jam", "thumb": "https://i.ytimg.com/vi/BZzqmR8AwK8/mqdefault.jpg", "dur": "55:49"}, {"id": "yWqWzE2Ikms", "title": "Real Old School Delta Blues | Deep Southern Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/yWqWzE2Ikms/mqdefault.jpg", "dur": "55:49"}, {"id": "P9rcmHh1i34", "title": "Front Porch Jam | Mississippi Delta 1930s | Acoustic Guitar & Harp", "thumb": "https://i.ytimg.com/vi/P9rcmHh1i34/mqdefault.jpg", "dur": "55:49"}, {"id": "lMlW6VMFAtk", "title": "Lost Delta Blues 1930s – Harmonica Sessions from Mississippi", "thumb": "https://i.ytimg.com/vi/lMlW6VMFAtk/mqdefault.jpg", "dur": "1:00:46"}, {"id": "LlRkdMufwXA", "title": "Lost Delta Blues 1930s – Harmonica Sessions from Mississippi", "thumb": "https://i.ytimg.com/vi/LlRkdMufwXA/mqdefault.jpg", "dur": "1:00:46"}, {"id": "8ycHfEFXap0", "title": "Delta Blues Harmonica 1930s – Dusty Mississippi Nights", "thumb": "https://i.ytimg.com/vi/8ycHfEFXap0/mqdefault.jpg", "dur": "1:00:46"}, {"id": "PcRtJwBUg4g", "title": "Lost Blues Recordings 1930s – Delta Harmonica Session", "thumb": "https://i.ytimg.com/vi/PcRtJwBUg4g/mqdefault.jpg", "dur": "1:00:46"}, {"id": "BqqHzBvJIgU", "title": "Old Delta Blues Harmonica 1930s – Rare & Forgotten Sounds", "thumb": "https://i.ytimg.com/vi/BqqHzBvJIgU/mqdefault.jpg", "dur": "1:00:46"}, {"id": "PT3WVItzjG8", "title": "1930s Delta Blues Harmonica – Deep South Vintage Mix", "thumb": "https://i.ytimg.com/vi/PT3WVItzjG8/mqdefault.jpg", "dur": "1:00:46"}, {"id": "fpABGAT1AnU", "title": "Rare Delta Blues Harmonica 1930s – Old Mississippi Sound", "thumb": "https://i.ytimg.com/vi/fpABGAT1AnU/mqdefault.jpg", "dur": "1:00:45"}, {"id": "6LQzyr2s6j4", "title": "Lost Delta Blues 1930s – Harmonica Sessions from Mississippi", "thumb": "https://i.ytimg.com/vi/6LQzyr2s6j4/mqdefault.jpg", "dur": "1:00:45"}, {"id": "7KlZzkeHUQM", "title": "Lost 1930s Delta Blues Harmonica Rare Recordings", "thumb": "https://i.ytimg.com/vi/7KlZzkeHUQM/mqdefault.jpg", "dur": "1:00:45"}, {"id": "xaIYbLUkG04", "title": "1930s Mississippi Delta Blues Harmonica Vintage Recordings", "thumb": "https://i.ytimg.com/vi/xaIYbLUkG04/mqdefault.jpg", "dur": "1:00:45"}, {"id": "InYujDuv2aE", "title": "1930s Delta Blues Harmonica – Lost Mississippi Recordings", "thumb": "https://i.ytimg.com/vi/InYujDuv2aE/mqdefault.jpg", "dur": "1:00:45"}, {"id": "z1YswBTCjEs", "title": "Rare 1930s Blues Harmonica – Mississippi Delta Sessions", "thumb": "https://i.ytimg.com/vi/z1YswBTCjEs/mqdefault.jpg", "dur": "1:00:46"}, {"id": "p7MSL935DC4", "title": "Lonely Desert Bend Blues • Delta Blues 1930s • Raw Acoustic Mississipi", "thumb": "https://i.ytimg.com/vi/p7MSL935DC4/mqdefault.jpg", "dur": "1:00:46"}, {"id": "dLkHnCs7tNs", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/dLkHnCs7tNs/mqdefault.jpg", "dur": "1:00:46"}, {"id": "lRYrfco_zGE", "title": "Delta Blues Night | The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/lRYrfco_zGE/mqdefault.jpg", "dur": "1:00:45"}, {"id": "dE30VrsG5l4", "title": "Real Mississippi Blues | Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/dE30VrsG5l4/mqdefault.jpg", "dur": "1:00:45"}, {"id": "rS6kmF_HLF4", "title": "Real Mississippi Blues | Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/rS6kmF_HLF4/mqdefault.jpg", "dur": "1:00:46"}, {"id": "YchGqbledp4", "title": "Deep Southern Blues  Whisky Night Delta Guitar & Harmonica 1 5 Hours", "thumb": "https://i.ytimg.com/vi/YchGqbledp4/mqdefault.jpg", "dur": "1:00:45"}, {"id": "VlQ3WmYlsLs", "title": "Delta Blues Night | The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/VlQ3WmYlsLs/mqdefault.jpg", "dur": "1:00:45"}, {"id": "KWAIFi8nPz8", "title": "Deep Southern Blues | Whisky Night Delta Guitar & Harmonica 1.5 Hours", "thumb": "https://i.ytimg.com/vi/KWAIFi8nPz8/mqdefault.jpg", "dur": "1:00:45"}, {"id": "2xZ6MtWE-80", "title": "Delta Blues Night | The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/2xZ6MtWE-80/mqdefault.jpg", "dur": "1:00:45"}, {"id": "phk-LbZdDCg", "title": "Real Mississippi Blues | Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/phk-LbZdDCg/mqdefault.jpg", "dur": "1:00:46"}, {"id": "ZwEavszicIM", "title": "Deep Southern Blues | Whisky Night Delta Guitar & Harmonica 1.5 Hours", "thumb": "https://i.ytimg.com/vi/ZwEavszicIM/mqdefault.jpg", "dur": "1:00:46"}, {"id": "khS2kUhtBRw", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/khS2kUhtBRw/mqdefault.jpg", "dur": "1:00:45"}, {"id": "S3ZLNGx4Awo", "title": "Real Mississippi Blues | Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/S3ZLNGx4Awo/mqdefault.jpg", "dur": "1:00:46"}, {"id": "WufagRubG9Y", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/WufagRubG9Y/mqdefault.jpg", "dur": "1:00:46"}, {"id": "ItAJWx8nszY", "title": "Real Delta Blues Instrumental – Midnight Southern Guitar Groove", "thumb": "https://i.ytimg.com/vi/ItAJWx8nszY/mqdefault.jpg", "dur": "1:00:45"}, {"id": "xMrRghT3atI", "title": "Late Night Mississippi Blues | Raw Delta Guitar Sound", "thumb": "https://i.ytimg.com/vi/xMrRghT3atI/mqdefault.jpg", "dur": "1:00:46"}, {"id": "WLckZ0SpDQs", "title": "Real Mississippi Blues  Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/WLckZ0SpDQs/mqdefault.jpg", "dur": "1:00:46"}, {"id": "6MQn_kWw0Xo", "title": "Delta Blues Night  The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/6MQn_kWw0Xo/mqdefault.jpg", "dur": "55:49"}, {"id": "j-bIyAXcI8M", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/j-bIyAXcI8M/mqdefault.jpg", "dur": "55:49"}, {"id": "7--R6FLpv2I", "title": "Delta Blues Night  The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/7--R6FLpv2I/mqdefault.jpg", "dur": "1:00:46"}, {"id": "F5HDoLeVJZk", "title": "Midnight Delta Blues | Deep Southern Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/F5HDoLeVJZk/mqdefault.jpg", "dur": "55:49"}, {"id": "-maZrGlPicc", "title": "Delta Blues Night  The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/-maZrGlPicc/mqdefault.jpg", "dur": "55:49"}, {"id": "xgL7Ooy7qMs", "title": "Real Mississippi Blues | Harmonica DEEP Southern DELTA Blues", "thumb": "https://i.ytimg.com/vi/xgL7Ooy7qMs/mqdefault.jpg", "dur": "1:00:46"}, {"id": "JLlEz7o7pL8", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/JLlEz7o7pL8/mqdefault.jpg", "dur": "1:00:46"}, {"id": "H0tU-zDe9p8", "title": "Delta Blues Night – The Graveyard Blues | Deep Southern Night Mix", "thumb": "https://i.ytimg.com/vi/H0tU-zDe9p8/mqdefault.jpg", "dur": "1:00:46"}, {"id": "FPejARXAOnc", "title": "Real Mississippi Blues  Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/FPejARXAOnc/mqdefault.jpg", "dur": "1:00:46"}, {"id": "Wt5QsgfM-I0", "title": "Delta Blues Night  The Graveyard Blues – Old Soul Sound", "thumb": "https://i.ytimg.com/vi/Wt5QsgfM-I0/mqdefault.jpg", "dur": "1:00:46"}, {"id": "7KITOxEaZ-o", "title": "Deep Southern Blues  Whisky Night Delta Guitar & Harmonica 1 5 Hours", "thumb": "https://i.ytimg.com/vi/7KITOxEaZ-o/mqdefault.jpg", "dur": "1:00:46"}, {"id": "iBs79zkg2lk", "title": "Real Mississippi Blues | Old School Guitar & Harmonica blues | Midnight Delta Blues", "thumb": "https://i.ytimg.com/vi/iBs79zkg2lk/mqdefault.jpg", "dur": "55:13"}, {"id": "Edbfo19_OzM", "title": "Where Blues Was Born  Deep Southern Delta Blues Mix", "thumb": "https://i.ytimg.com/vi/Edbfo19_OzM/mqdefault.jpg", "dur": "1:00:46"}, {"id": "CVx1c7TjNzw", "title": "Midnight Delta Blues | The Graveyard Blues – Blues Masterpiece", "thumb": "https://i.ytimg.com/vi/CVx1c7TjNzw/mqdefault.jpg", "dur": "55:13"}, {"id": "zwZxG0a3xEE", "title": "Midnight Mississippi Blues | Delta Blues Harmonica – Classic Whiskey Blues Session", "thumb": "https://i.ytimg.com/vi/zwZxG0a3xEE/mqdefault.jpg", "dur": "1:00:46"}, {"id": "A32pyiiJ_PY", "title": "Midnight Delta Blues | The Graveyard Mississippi Harmonica Blues – Whiskey Blues Soulful", "thumb": "https://i.ytimg.com/vi/A32pyiiJ_PY/mqdefault.jpg", "dur": "1:00:46"}, {"id": "B2iqS1-QrQ0", "title": "Midnight Delta Blues  Deep Southern Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/B2iqS1-QrQ0/mqdefault.jpg", "dur": "1:00:46"}, {"id": "DO0E0vRBGlE", "title": "Real Mississippi Blues  Old School Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/DO0E0vRBGlE/mqdefault.jpg", "dur": "1:00:46"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>

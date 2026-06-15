@@ -9,107 +9,34 @@
 <!-- channel-url: https://www.youtube.com/@JazzillaLounge -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    padding: 30px 20px;
-    color: white;
-  }
-  .back {
-    display: inline-block;
-    color: #9b8fc0;
-    text-decoration: none;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
   .back:hover { color: #e0d7ff; }
-  .channel-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    max-width: 860px;
-    margin: 0 auto 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .channel-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(180,150,255,0.4);
-  }
-  .channel-title {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: #e0d7ff;
-    letter-spacing: 0.05em;
-  }
-  .channel-count {
-    font-size: 0.8rem;
-    color: #7a6fa0;
-    margin-top: 4px;
-  }
-  .grid {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .video-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 16px 10px 10px;
-    text-decoration: none;
-    color: white;
-    transition: all 0.2s ease;
-  }
-  .video-card:hover {
-    background: rgba(255,255,255,0.12);
-    border-color: rgba(180,150,255,0.35);
-    transform: translateX(4px);
-  }
-  .thumb {
-    width: 120px;
-    height: 68px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .nothumb {
-    width: 120px;
-    height: 68px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    color: #cc0000;
-    flex-shrink: 0;
-  }
-  .video-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .video-title {
-    font-size: 0.92rem;
-    color: #e8e0ff;
-    line-height: 1.3;
-  }
-  .video-dur {
-    font-size: 0.78rem;
-    color: #7a6fa0;
-  }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
 </style>
 </head>
 <body>
@@ -124,225 +51,97 @@
       <div class="channel-count">31 Videos</div>
     </div>
   </div>
-  <div class="grid">
-    
-        <a class="video-card" href="https://www.youtube.com/watch?v=D50EEtV1F74" target="_blank">
-            <img src="https://i.ytimg.com/vi/D50EEtV1F74/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Reggae Vibes 2 | Deep Bass, Sunset Groove & Island Soul Lounge</span>
-                <span class="video-dur">58:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=UKRf5Bn5wyM" target="_blank">
-            <img src="https://i.ytimg.com/vi/UKRf5Bn5wyM/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 9 | Smooth Sax, Deep Bass & Velvet Midnight Grooves</span>
-                <span class="video-dur">59:19</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9zlumOVXl3A" target="_blank">
-            <img src="https://i.ytimg.com/vi/9zlumOVXl3A/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Acid Vibes 1 | Nu Acid Jazz, Funky Soul Grooves & Deep Focus Instrumentals</span>
-                <span class="video-dur">1:02:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=D6BAueEDd2c" target="_blank">
-            <img src="https://i.ytimg.com/vi/D6BAueEDd2c/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 8 | Velvet Lounge Funk, Smooth Rhodes & Deep Bass</span>
-                <span class="video-dur">56:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xsZjNxe1Oxg" target="_blank">
-            <img src="https://i.ytimg.com/vi/xsZjNxe1Oxg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 7 | Late-Night Lounge Funk, Smooth Sax & Deep Bass</span>
-                <span class="video-dur">58:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Ekm_ywz1ib0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Ekm_ywz1ib0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 6 | Late-Night Lounge, Smooth Sax & Deep Bass and Rhodes Keys</span>
-                <span class="video-dur">59:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uDIA-oxtn9U" target="_blank">
-            <img src="https://i.ytimg.com/vi/uDIA-oxtn9U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 5 | Smooth Sax, Deep Bass & Midnight After-Hours Grooves</span>
-                <span class="video-dur">1:03:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=MQYOL3exHIY" target="_blank">
-            <img src="https://i.ytimg.com/vi/MQYOL3exHIY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 4 | Smooth Sax, Deep Bass & Neon After-Hours Grooves</span>
-                <span class="video-dur">1:02:24</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1Nj3LmXKGNs" target="_blank">
-            <img src="https://i.ytimg.com/vi/1Nj3LmXKGNs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Reggae Vibes 1 | Laid-Back Flow, Deep Bass & Island Night Grooves</span>
-                <span class="video-dur">1:00:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=M8u7-y0kQKU" target="_blank">
-            <img src="https://i.ytimg.com/vi/M8u7-y0kQKU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 3 | Smooth Sax, Deep Bass & Velvet Night Grooves</span>
-                <span class="video-dur">59:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=qJdAhTr-ngw" target="_blank">
-            <img src="https://i.ytimg.com/vi/qJdAhTr-ngw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 2 | Smooth Sax, Deep Bass & Midnight Grooves</span>
-                <span class="video-dur">1:06:34</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mC8JORYPCCs" target="_blank">
-            <img src="https://i.ytimg.com/vi/mC8JORYPCCs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Jazz Vibes | Soulful Vocals, Warm Sax & Relaxing Night Vibes</span>
-                <span class="video-dur">1:14:42</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Av2NBVlMjsk" target="_blank">
-            <img src="https://i.ytimg.com/vi/Av2NBVlMjsk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Chill Soul Funk Vibes 1 | Smooth Sax, Deep Bass & Late-Night Grooves</span>
-                <span class="video-dur">56:22</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=CC5zPUcuycs" target="_blank">
-            <img src="https://i.ytimg.com/vi/CC5zPUcuycs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lionel Crestwood – Heaven’s Open Door | Vintage Philly Soul Ballad</span>
-                <span class="video-dur">5:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Dvw6XffJyc0" target="_blank">
-            <img src="https://i.ytimg.com/vi/Dvw6XffJyc0/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Solenne Vaudrin – River Without Fear — Fleuve sans peur #DarkPop #ArtPop #MusicVideo #NoirAesthetic</span>
-                <span class="video-dur">4:08</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=mYlIMASNAWY" target="_blank">
-            <img src="https://i.ytimg.com/vi/mYlIMASNAWY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Rustcoil Revival - The River Knows the Way #SouthernRock #BluesRock #AnalogSound #GuitarDriven</span>
-                <span class="video-dur">3:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=eA9IIovjHaI" target="_blank">
-            <img src="https://i.ytimg.com/vi/eA9IIovjHaI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Scoville Fusion Syndicate - Shibuya Blue Smoke #JazzFusion #JazzFunk #JazzRock #FusionGuitar</span>
-                <span class="video-dur">3:48</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=pKwQ4rbGDTI" target="_blank">
-            <img src="https://i.ytimg.com/vi/pKwQ4rbGDTI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Naya Vero – Across That River (Longing) | Soul Ballad Music</span>
-                <span class="video-dur">4:07</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=t3a1smrb_bo" target="_blank">
-            <img src="https://i.ytimg.com/vi/t3a1smrb_bo/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Thuringia - Rennsteig Blues #bluesmusic #germanblues #thuringianforest #rennsteig #chicagoblues</span>
-                <span class="video-dur">3:53</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8AJlsl1_IiI" target="_blank">
-            <img src="https://i.ytimg.com/vi/8AJlsl1_IiI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soulflux Pocket Ensemble - Rapid Fire Groove #jazzfunk #hammondorgan #souljazz #fusionjazz</span>
-                <span class="video-dur">4:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lZL9mNBH2f4" target="_blank">
-            <img src="https://i.ytimg.com/vi/lZL9mNBH2f4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Cole Varrick – Curse the Dawn Ride the Gallows (Official Video) #IndiePop #FunkPop #Groove #DarkPop</span>
-                <span class="video-dur">4:55</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=S_nCKgT-XXk" target="_blank">
-            <img src="https://i.ytimg.com/vi/S_nCKgT-XXk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Scoville Fusion Syndicate - Make Scoville - Live - #fusionjazz #jazzfunk #fusionfunk</span>
-                <span class="video-dur">4:26</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=VfZf5w-9Z28" target="_blank">
-            <img src="https://i.ytimg.com/vi/VfZf5w-9Z28/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soulflux Pocket Ensemble - Golden Neon Pockets #jazzfunk #hammondorgan #souljazz</span>
-                <span class="video-dur">4:31</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KGVTRHnCyEQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/KGVTRHnCyEQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Calvin Blueford - Super Robbers #analogvibe #music #funk #groove #soulfunk #funkmusic #soulmusic</span>
-                <span class="video-dur">2:46</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=lgkRUTvdb84" target="_blank">
-            <img src="https://i.ytimg.com/vi/lgkRUTvdb84/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Calvin Blueford - Super Robbers #Funk #FunkMusic #SoulFunk #Groove #70sFunkVibes #NeoSoulVibes</span>
-                <span class="video-dur">4:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=KiEw4PNOrdE" target="_blank">
-            <img src="https://i.ytimg.com/vi/KiEw4PNOrdE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dorian Kingsley - Across That River #analogvibe #soul #soulmusic #rnb #retrosoul</span>
-                <span class="video-dur">3:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=rwvWya54Qxk" target="_blank">
-            <img src="https://i.ytimg.com/vi/rwvWya54Qxk/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Dorian Kingsley - Across That River Uptempo retro-soul meets R&B-pop</span>
-                <span class="video-dur">3:03</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ILqBzm_OTWs" target="_blank">
-            <img src="https://i.ytimg.com/vi/ILqBzm_OTWs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lionel Crestwood - Plant That Hope #music #1970ssoul #analogvibe #PhiladelphiaSoul</span>
-                <span class="video-dur">2:45</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=L0I-m75VLW8" target="_blank">
-            <img src="https://i.ytimg.com/vi/L0I-m75VLW8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lionel Crestwood - Plant That Hope #music #1970ssoul #analogvibe #PhiladelphiaSoul</span>
-                <span class="video-dur">3:52</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=AhahHuHDceI" target="_blank">
-            <img src="https://i.ytimg.com/vi/AhahHuHDceI/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lionel Crestwood - Sweet Philly Robbers #music #1970ssoul #analogvibe #PhiladelphiaSoul</span>
-                <span class="video-dur">3:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SF2SC2YL3yQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/SF2SC2YL3yQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Lionel Crestwood - Sweet Philly Robbers #music #1970ssoul #analogvibe #PhiladelphiaSoul</span>
-                <span class="video-dur">6:45</span>
-            </div>
-        </a>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
+
+<script>
+const CHANNEL = "Jazzilla Lounge";
+const VIDEOS = [{"id": "D50EEtV1F74", "title": "Chill Soul Reggae Vibes 2 | Deep Bass, Sunset Groove & Island Soul Lounge", "thumb": "https://i.ytimg.com/vi/D50EEtV1F74/mqdefault.jpg", "dur": "58:15"}, {"id": "UKRf5Bn5wyM", "title": "Chill Soul Funk Vibes 9 | Smooth Sax, Deep Bass & Velvet Midnight Grooves", "thumb": "https://i.ytimg.com/vi/UKRf5Bn5wyM/mqdefault.jpg", "dur": "59:19"}, {"id": "9zlumOVXl3A", "title": "Chill Soul Acid Vibes 1 | Nu Acid Jazz, Funky Soul Grooves & Deep Focus Instrumentals", "thumb": "https://i.ytimg.com/vi/9zlumOVXl3A/mqdefault.jpg", "dur": "1:02:45"}, {"id": "D6BAueEDd2c", "title": "Chill Soul Funk Vibes 8 | Velvet Lounge Funk, Smooth Rhodes & Deep Bass", "thumb": "https://i.ytimg.com/vi/D6BAueEDd2c/mqdefault.jpg", "dur": "56:39"}, {"id": "xsZjNxe1Oxg", "title": "Chill Soul Funk Vibes 7 | Late-Night Lounge Funk, Smooth Sax & Deep Bass", "thumb": "https://i.ytimg.com/vi/xsZjNxe1Oxg/mqdefault.jpg", "dur": "58:39"}, {"id": "Ekm_ywz1ib0", "title": "Chill Soul Funk Vibes 6 | Late-Night Lounge, Smooth Sax & Deep Bass and Rhodes Keys", "thumb": "https://i.ytimg.com/vi/Ekm_ywz1ib0/mqdefault.jpg", "dur": "59:51"}, {"id": "uDIA-oxtn9U", "title": "Chill Soul Funk Vibes 5 | Smooth Sax, Deep Bass & Midnight After-Hours Grooves", "thumb": "https://i.ytimg.com/vi/uDIA-oxtn9U/mqdefault.jpg", "dur": "1:03:31"}, {"id": "MQYOL3exHIY", "title": "Chill Soul Funk Vibes 4 | Smooth Sax, Deep Bass & Neon After-Hours Grooves", "thumb": "https://i.ytimg.com/vi/MQYOL3exHIY/mqdefault.jpg", "dur": "1:02:24"}, {"id": "1Nj3LmXKGNs", "title": "Chill Soul Reggae Vibes 1 | Laid-Back Flow, Deep Bass & Island Night Grooves", "thumb": "https://i.ytimg.com/vi/1Nj3LmXKGNs/mqdefault.jpg", "dur": "1:00:07"}, {"id": "M8u7-y0kQKU", "title": "Chill Soul Funk Vibes 3 | Smooth Sax, Deep Bass & Velvet Night Grooves", "thumb": "https://i.ytimg.com/vi/M8u7-y0kQKU/mqdefault.jpg", "dur": "59:34"}, {"id": "qJdAhTr-ngw", "title": "Chill Soul Funk Vibes 2 | Smooth Sax, Deep Bass & Midnight Grooves", "thumb": "https://i.ytimg.com/vi/qJdAhTr-ngw/mqdefault.jpg", "dur": "1:06:34"}, {"id": "mC8JORYPCCs", "title": "Chill Soul Jazz Vibes | Soulful Vocals, Warm Sax & Relaxing Night Vibes", "thumb": "https://i.ytimg.com/vi/mC8JORYPCCs/mqdefault.jpg", "dur": "1:14:42"}, {"id": "Av2NBVlMjsk", "title": "Chill Soul Funk Vibes 1 | Smooth Sax, Deep Bass & Late-Night Grooves", "thumb": "https://i.ytimg.com/vi/Av2NBVlMjsk/mqdefault.jpg", "dur": "56:22"}, {"id": "CC5zPUcuycs", "title": "Lionel Crestwood – Heaven’s Open Door | Vintage Philly Soul Ballad", "thumb": "https://i.ytimg.com/vi/CC5zPUcuycs/mqdefault.jpg", "dur": "5:15"}, {"id": "Dvw6XffJyc0", "title": "Solenne Vaudrin – River Without Fear — Fleuve sans peur #DarkPop #ArtPop #MusicVideo #NoirAesthetic", "thumb": "https://i.ytimg.com/vi/Dvw6XffJyc0/mqdefault.jpg", "dur": "4:08"}, {"id": "mYlIMASNAWY", "title": "Rustcoil Revival - The River Knows the Way #SouthernRock #BluesRock #AnalogSound #GuitarDriven", "thumb": "https://i.ytimg.com/vi/mYlIMASNAWY/mqdefault.jpg", "dur": "3:50"}, {"id": "eA9IIovjHaI", "title": "Scoville Fusion Syndicate - Shibuya Blue Smoke #JazzFusion #JazzFunk #JazzRock #FusionGuitar", "thumb": "https://i.ytimg.com/vi/eA9IIovjHaI/mqdefault.jpg", "dur": "3:48"}, {"id": "pKwQ4rbGDTI", "title": "Naya Vero – Across That River (Longing) | Soul Ballad Music", "thumb": "https://i.ytimg.com/vi/pKwQ4rbGDTI/mqdefault.jpg", "dur": "4:07"}, {"id": "t3a1smrb_bo", "title": "Thuringia - Rennsteig Blues #bluesmusic #germanblues #thuringianforest #rennsteig #chicagoblues", "thumb": "https://i.ytimg.com/vi/t3a1smrb_bo/mqdefault.jpg", "dur": "3:53"}, {"id": "8AJlsl1_IiI", "title": "Soulflux Pocket Ensemble - Rapid Fire Groove #jazzfunk #hammondorgan #souljazz #fusionjazz", "thumb": "https://i.ytimg.com/vi/8AJlsl1_IiI/mqdefault.jpg", "dur": "4:33"}, {"id": "lZL9mNBH2f4", "title": "Cole Varrick – Curse the Dawn Ride the Gallows (Official Video) #IndiePop #FunkPop #Groove #DarkPop", "thumb": "https://i.ytimg.com/vi/lZL9mNBH2f4/mqdefault.jpg", "dur": "4:55"}, {"id": "S_nCKgT-XXk", "title": "Scoville Fusion Syndicate - Make Scoville - Live - #fusionjazz #jazzfunk #fusionfunk", "thumb": "https://i.ytimg.com/vi/S_nCKgT-XXk/mqdefault.jpg", "dur": "4:26"}, {"id": "VfZf5w-9Z28", "title": "Soulflux Pocket Ensemble - Golden Neon Pockets #jazzfunk #hammondorgan #souljazz", "thumb": "https://i.ytimg.com/vi/VfZf5w-9Z28/mqdefault.jpg", "dur": "4:31"}, {"id": "KGVTRHnCyEQ", "title": "Calvin Blueford - Super Robbers #analogvibe #music #funk #groove #soulfunk #funkmusic #soulmusic", "thumb": "https://i.ytimg.com/vi/KGVTRHnCyEQ/mqdefault.jpg", "dur": "2:46"}, {"id": "lgkRUTvdb84", "title": "Calvin Blueford - Super Robbers #Funk #FunkMusic #SoulFunk #Groove #70sFunkVibes #NeoSoulVibes", "thumb": "https://i.ytimg.com/vi/lgkRUTvdb84/mqdefault.jpg", "dur": "4:00"}, {"id": "KiEw4PNOrdE", "title": "Dorian Kingsley - Across That River #analogvibe #soul #soulmusic #rnb #retrosoul", "thumb": "https://i.ytimg.com/vi/KiEw4PNOrdE/mqdefault.jpg", "dur": "3:00"}, {"id": "rwvWya54Qxk", "title": "Dorian Kingsley - Across That River Uptempo retro-soul meets R&B-pop", "thumb": "https://i.ytimg.com/vi/rwvWya54Qxk/mqdefault.jpg", "dur": "3:03"}, {"id": "ILqBzm_OTWs", "title": "Lionel Crestwood - Plant That Hope #music #1970ssoul #analogvibe #PhiladelphiaSoul", "thumb": "https://i.ytimg.com/vi/ILqBzm_OTWs/mqdefault.jpg", "dur": "2:45"}, {"id": "L0I-m75VLW8", "title": "Lionel Crestwood - Plant That Hope #music #1970ssoul #analogvibe #PhiladelphiaSoul", "thumb": "https://i.ytimg.com/vi/L0I-m75VLW8/mqdefault.jpg", "dur": "3:52"}, {"id": "AhahHuHDceI", "title": "Lionel Crestwood - Sweet Philly Robbers #music #1970ssoul #analogvibe #PhiladelphiaSoul", "thumb": "https://i.ytimg.com/vi/AhahHuHDceI/mqdefault.jpg", "dur": "3:00"}, {"id": "SF2SC2YL3yQ", "title": "Lionel Crestwood - Sweet Philly Robbers #music #1970ssoul #analogvibe #PhiladelphiaSoul", "thumb": "https://i.ytimg.com/vi/SF2SC2YL3yQ/mqdefault.jpg", "dur": "6:45"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
 </body>
 </html>
