@@ -160,8 +160,32 @@
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     const videos = [];
+
+    // Neue Struktur: VIDEOS-Array im Script-Tag (konvertierte Seiten)
+    const scriptTags = doc.querySelectorAll('script');
+    for (const script of scriptTags) {
+      const m = script.textContent.match(/const VIDEOS\s*=\s*(\[[\s\S]*?\]);/);
+      if (m) {
+        try {
+          const arr = JSON.parse(m[1]);
+          arr.forEach(v => {
+            if (v.id && v.title) {
+              videos.push({
+                videoId: v.id,
+                url: 'https://www.youtube.com/watch?v=' + v.id,
+                title: v.title,
+                dur: v.dur || ''
+              });
+            }
+          });
+          return videos;
+        } catch(e) {}
+      }
+    }
+
+    // Alte Struktur: <a class="video-card" href="...">
     doc.querySelectorAll('.video-card').forEach(card => {
-      const url = card.getAttribute('href');
+      const url = card.getAttribute('href') || card.querySelector('a[href*="youtube"]')?.getAttribute('href') || '';
       const title = card.querySelector('.video-title')?.textContent?.trim() || '';
       const dur = card.querySelector('.video-dur')?.textContent?.trim() || '';
       if (url && title) {
