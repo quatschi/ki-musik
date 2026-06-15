@@ -17,13 +17,24 @@
   .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; }
   .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
   .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; text-decoration: none; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); transform: translateX(4px); }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; text-decoration: none; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
   .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
-  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
   .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
   .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; color: #7a6fa0; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  body { padding-bottom: 70px; }
 </style>
 </head>
 <body>
@@ -38,153 +49,105 @@
       <div class="channel-count">21 Videos</div>
     </div>
   </div>
-  <div class="grid">
-        <a class="video-card" href="https://www.youtube.com/watch?v=B2_m9oHy070" target="_blank">
-            <img src="https://i.ytimg.com/vi/B2_m9oHy070/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Soul & Rare Funk Fusion | 3 Hours of Immersive Retro Grooves</span>
-                <span class="video-dur">3:28:33</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=5OIwyySBRA8" target="_blank">
-            <img src="https://i.ytimg.com/vi/5OIwyySBRA8/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soul & Deep Funk Essentials | 3 Hours of Immersive Retro Grooves</span>
-                <span class="video-dur">3:22:13</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BgE9HFePAmA" target="_blank">
-            <img src="https://i.ytimg.com/vi/BgE9HFePAmA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Soul & Deep Funk: 3 Hours of Immersive Retro Grooves</span>
-                <span class="video-dur">3:22:09</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=BA3OBPTOYQ4" target="_blank">
-            <img src="https://i.ytimg.com/vi/BA3OBPTOYQ4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hours of Timeless Soul & Deep Funk Fusion • Immersive Vintage Grooves</span>
-                <span class="video-dur">3:16:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ZXV2Z3xcg5U" target="_blank">
-            <img src="https://i.ytimg.com/vi/ZXV2Z3xcg5U/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Midnight Velvet Soul & Deep Funk Mix | 3 Hours of Rare Grooves for Focus & Late Night Vibes</span>
-                <span class="video-dur">3:22:51</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=9NcHu-BiA7I" target="_blank">
-            <img src="https://i.ytimg.com/vi/9NcHu-BiA7I/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Soul & Deep Funk Fusion | 3 Hours of Non-Stop Vintage Grooves</span>
-                <span class="video-dur">3:14:05</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=On4tN3pWdDY" target="_blank">
-            <img src="https://i.ytimg.com/vi/On4tN3pWdDY/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Velvet Soul Melodies | 3 Hours of Smooth Retro Funk & Deep Groove Fusion</span>
-                <span class="video-dur">3:21:44</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=smz5Nzpg2kU" target="_blank">
-            <img src="https://i.ytimg.com/vi/smz5Nzpg2kU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">3 Hours of Retro Soul & Deep Funk • Smooth Vintage Grooves for Focus, Study & Relax</span>
-                <span class="video-dur">3:22:32</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=2ktOBQ5VMWs" target="_blank">
-            <img src="https://i.ytimg.com/vi/2ktOBQ5VMWs/mqdefault_live.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">24/7 Retro Soul & Deep Funk Radio • Timeless Grooves for Focus, Study & Chill 🎷</span>
-                <span class="video-dur"></span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=ksKIuuL6mz4" target="_blank">
-            <img src="https://i.ytimg.com/vi/ksKIuuL6mz4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Smooth Soul Essentials | 3 Hours of Retro Funk & Deep Groove Fusion</span>
-                <span class="video-dur">3:25:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Zwg5U6Cgx1k" target="_blank">
-            <img src="https://i.ytimg.com/vi/Zwg5U6Cgx1k/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Classic Soul & Rare Funk Fusion | 3 Hours of Pure Timeless Grooves</span>
-                <span class="video-dur">3:28:15</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uVxx_4wPxfU" target="_blank">
-            <img src="https://i.ytimg.com/vi/uVxx_4wPxfU/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Soul & Funk Infinity | 3 Hours of Deep Retro Grooves & Timeless Vibes</span>
-                <span class="video-dur">3:05:11</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=14s9WgTUwLA" target="_blank">
-            <img src="https://i.ytimg.com/vi/14s9WgTUwLA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Retro Soul & Deep Funk Mix | 3 Hours of Soulful Grooves & Vintage Vibes</span>
-                <span class="video-dur">3:16:28</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=DSb1PjolyZg" target="_blank">
-            <img src="https://i.ytimg.com/vi/DSb1PjolyZg/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Deep Soul & Funk Revival | 3 Hours of Non-Stop Retro Grooves & Smooth Vibes</span>
-                <span class="video-dur">3:20:00</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=8aP0JTaVzfs" target="_blank">
-            <img src="https://i.ytimg.com/vi/8aP0JTaVzfs/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Golden Era Soul | 3 Hours of Deep Funk & Retro Classics for Pure Relaxation</span>
-                <span class="video-dur">3:13:50</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=1s-Fd7OXY6g" target="_blank">
-            <img src="https://i.ytimg.com/vi/1s-Fd7OXY6g/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Timeless Soul Classics | 3 Hours of Deep Retro Funk & Soulful Grooves</span>
-                <span class="video-dur">3:14:39</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=uI2mnTC_HDA" target="_blank">
-            <img src="https://i.ytimg.com/vi/uI2mnTC_HDA/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Vintage Vibes Only | 3 Hours of Deep Soul & Rare Funk for Maximum Focus</span>
-                <span class="video-dur">3:16:14</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=h08pxb05Rs4" target="_blank">
-            <img src="https://i.ytimg.com/vi/h08pxb05Rs4/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Essential Soul & Smooth Funk Mix | 3 Hours of Deep Retro Grooves for Focus & Chill</span>
-                <span class="video-dur">3:09:57</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=SNHSGGmBoGw" target="_blank">
-            <img src="https://i.ytimg.com/vi/SNHSGGmBoGw/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Retro Soul & Deep Funk Mix | 3 Hours of Non-Stop Grooves for Focus & Relax</span>
-                <span class="video-dur">3:09:18</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=Yay5WeQ-5AE" target="_blank">
-            <img src="https://i.ytimg.com/vi/Yay5WeQ-5AE/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">Pure Soul & Funk Essentials | 3-Hour Immersive Music Experience</span>
-                <span class="video-dur">3:08:04</span>
-            </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/watch?v=xkdgQwkZPoQ" target="_blank">
-            <img src="https://i.ytimg.com/vi/xkdgQwkZPoQ/mqdefault.jpg" alt="" class="thumb">
-            <div class="video-info">
-                <span class="video-title">The Ultimate 3-Hour Funky & Soul Journey: Pure Grooves for Your Day</span>
-                <span class="video-dur">3:18:50</span>
-            </div>
-        </a></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertungen: <span id="rated-count">0</span> vergeben &nbsp;<span class="changed-hint" id="changed-hint">● ungespeicherte Änderungen</span></span>
+    <button class="save-btn" onclick="saveRatings()">💾 noten.json speichern</button>
+  </div>
+
+<script>
+const VIDEOS = [
+  {id:"B2_m9oHy070", title:"Timeless Soul & Rare Funk Fusion | 3 Hours of Immersive Retro Grooves", dur:"3:28:33"},
+  {id:"5OIwyySBRA8", title:"Soul & Deep Funk Essentials | 3 Hours of Immersive Retro Grooves", dur:"3:22:13"},
+  {id:"BgE9HFePAmA", title:"Timeless Soul & Deep Funk: 3 Hours of Immersive Retro Grooves", dur:"3:22:09"},
+  {id:"BA3OBPTOYQ4", title:"3 Hours of Timeless Soul & Deep Funk Fusion • Immersive Vintage Grooves", dur:"3:16:51"},
+  {id:"ZXV2Z3xcg5U", title:"Midnight Velvet Soul & Deep Funk Mix | 3 Hours of Rare Grooves for Focus & Late Night Vibes", dur:"3:22:51"},
+  {id:"9NcHu-BiA7I", title:"Timeless Soul & Deep Funk Fusion | 3 Hours of Non-Stop Vintage Grooves", dur:"3:14:05"},
+  {id:"On4tN3pWdDY", title:"Velvet Soul Melodies | 3 Hours of Smooth Retro Funk & Deep Groove Fusion", dur:"3:21:44"},
+  {id:"smz5Nzpg2kU", title:"3 Hours of Retro Soul & Deep Funk • Smooth Vintage Grooves for Focus, Study & Relax", dur:"3:22:32"},
+  {id:"2ktOBQ5VMWs", title:"24/7 Retro Soul & Deep Funk Radio • Timeless Grooves for Focus, Study & Chill 🎷", dur:""},
+  {id:"ksKIuuL6mz4", title:"Smooth Soul Essentials | 3 Hours of Retro Funk & Deep Groove Fusion", dur:"3:25:11"},
+  {id:"Zwg5U6Cgx1k", title:"Classic Soul & Rare Funk Fusion | 3 Hours of Pure Timeless Grooves", dur:"3:28:15"},
+  {id:"uVxx_4wPxfU", title:"Soul & Funk Infinity | 3 Hours of Deep Retro Grooves & Timeless Vibes", dur:"3:05:11"},
+  {id:"14s9WgTUwLA", title:"Retro Soul & Deep Funk Mix | 3 Hours of Soulful Grooves & Vintage Vibes", dur:"3:16:28"},
+  {id:"DSb1PjolyZg", title:"Deep Soul & Funk Revival | 3 Hours of Non-Stop Retro Grooves & Smooth Vibes", dur:"3:20:00"},
+  {id:"8aP0JTaVzfs", title:"Golden Era Soul | 3 Hours of Deep Funk & Retro Classics for Pure Relaxation", dur:"3:13:50"},
+  {id:"1s-Fd7OXY6g", title:"Timeless Soul Classics | 3 Hours of Deep Retro Funk & Soulful Grooves", dur:"3:14:39"},
+  {id:"uI2mnTC_HDA", title:"Vintage Vibes Only | 3 Hours of Deep Soul & Rare Funk for Maximum Focus", dur:"3:16:14"},
+  {id:"h08pxb05Rs4", title:"Essential Soul & Smooth Funk Mix | 3 Hours of Deep Retro Grooves for Focus & Chill", dur:"3:09:57"},
+  {id:"SNHSGGmBoGw", title:"Retro Soul & Deep Funk Mix | 3 Hours of Non-Stop Grooves for Focus & Relax", dur:"3:09:18"},
+  {id:"Yay5WeQ-5AE", title:"Pure Soul & Funk Essentials | 3-Hour Immersive Music Experience", dur:"3:08:04"},
+  {id:"xkdgQwkZPoQ", title:"The Ultimate 3-Hour Funky & Soul Journey: Pure Grooves for Your Day", dur:"3:18:50"}
+];
+
+// Load existing ratings from noten.json if available
+let ratings = {};
+let changed = false;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) {
+      const data = await r.json();
+      ratings = data.ratings || {};
+    }
+  } catch(e) { /* keine Datei vorhanden – kein Problem */ }
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const currentRating = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        <img src="https://i.ytimg.com/vi/${v.id}/mqdefault.jpg" class="thumb">
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= currentRating ? 'active' : ''}" onclick="setRating('${v.id}', ${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}', 0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  const stars = document.querySelectorAll(`#stars-${id} .star`);
+  stars.forEach((s, i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  const n = Object.values(ratings).filter(v => v > 0).length;
+  document.getElementById('rated-count').textContent = n;
+}
+
+function saveRatings() {
+  const data = { channel: "Amber", updated: new Date().toISOString(), ratings };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json';
+  a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+}
+
+loadRatings();
+</script>
 </body>
 </html>
