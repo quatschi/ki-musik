@@ -617,7 +617,7 @@
       );
       if (resp.ok) {
         const data = await resp.json();
-        const content = JSON.parse(atob(data.content));
+        const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
         allRatings = content.ratings || {};
         window.allMeta = content.meta || {};
       }
