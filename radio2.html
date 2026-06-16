@@ -45,6 +45,8 @@
   .rating-status { font-size: 0.75rem; font-style: italic; color: #7a6fa0; }
   .rating-status.ok { color: #6fcf97; }
   .rating-status.err { color: #eb5757; }
+  .bestof-btn { background: rgba(240,192,64,0.15); border: 1px solid rgba(240,192,64,0.4); border-radius: 20px; color: #f0c040; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
+  .bestof-btn.active { background: rgba(240,192,64,0.35); border-color: rgba(240,192,64,0.8); }
   .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
   .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
   .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
@@ -88,6 +90,7 @@
   const API_KEY2 = 'AIzaSyBBOUTQIbs9_xUbVqbEKyVBb5q7xc1y0oM';
 
   let channelList = [];
+  let bestOfMode = false;      // true = nur bewertete Videos mit 4-5 Sternen
   let includedCats = new Set(); // im Einschluss-Modus gewählte Kategorien (leer = Alle)
   let excludeMode = false;      // false = Einschluss, true = Ausschluss
   let excludedCats = new Set(); // im Ausschluss-Modus ausgeschlossene Kategorien
@@ -225,6 +228,37 @@
     return videos;
   }
 
+  function toggleBestOf() {
+    bestOfMode = !bestOfMode;
+    const btn = document.getElementById('btn-bestof');
+    if (btn) btn.classList.toggle('active', bestOfMode);
+    document.getElementById('subtitle').textContent = bestOfMode
+      ? '⭐ Best Of – nur 4 & 5 Sterne'
+      : 'Alle Kategorien · Zufälliges Video';
+    pickRandom();
+  }
+
+  // Gibt alle Videos mit 4-5 Sternen zurück als { video, channel } Liste
+  async function getBestOfVideos() {
+    const result = [];
+    const topIds = Object.entries(allRatings)
+      .filter(([id, stars]) => stars >= 4)
+      .map(([id]) => id);
+    if (!topIds.length) return result;
+    const topSet = new Set(topIds);
+
+    const filtered = getFiltered();
+    for (const channel of filtered) {
+      const videos = await loadOneChannel(channel);
+      for (const v of videos) {
+        if (topSet.has(v.videoId)) {
+          result.push({ video: v, channel });
+        }
+      }
+    }
+    return result;
+  }
+
   function toggleMode() {
     excludeMode = !excludeMode;
     excludedCats.clear();
@@ -338,6 +372,57 @@
     if (isLoading) return;
     isLoading = true;
     clearPlaybackTimeout();
+
+    // Best-Of Modus: nur Videos mit 4-5 Sternen
+    if (bestOfMode) {
+      setStatus('Lade Best-Of Liste...');
+      const bestOf = await getBestOfVideos();
+      if (!bestOf.length) {
+        document.getElementById('info').innerHTML = '<p style="color:#9b8fc0;text-align:center;padding:10px">Keine bewerteten Videos (4-5 Sterne) gefunden.</p>';
+        isLoading = false;
+        return;
+      }
+      const shuffled = bestOf.sort(() => Math.random() - 0.5);
+      for (const { video, channel: ch } of shuffled.slice(0, 8)) {
+        setStatus('Prüfe Video...');
+        const ok = await isEmbeddable(video.videoId);
+        if (ok) {
+          document.getElementById('placeholder').style.display = 'flex';
+          setStatus('Starte...');
+          const startSec = randomStartSeconds(video.dur);
+          if (ytPlayer && playerReady) {
+            ytPlayer.loadVideoById({ videoId: video.videoId, startSeconds: startSec });
+            startPlaybackTimeout();
+          }
+          currentVideoId = video.videoId;
+          currentRating = allRatings[video.videoId] || 0;
+          document.getElementById('info').innerHTML = `
+            <div class="channel-row">
+              ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
+              <span class="channel-name">${ch.name}</span>
+            </div>
+            <div class="video-title">${video.title}</div>
+            <div class="video-dur">${video.dur}${startSec > 0 ? ' · Einstieg bei ' + Math.floor(startSec/60) + ' min' : ''}</div>
+            <div class="rating-row">
+              <span class="rating-label">Bewertung:</span>
+              <div class="stars" id="radio-stars">
+                ${[1,2,3,4,5].map(n => `<span class="star" onclick="setRadioRating(${n})">★</span>`).join('')}
+              </div>
+              <button class="clear-star" onclick="setRadioRating(0)">✕</button>
+              <button class="save-rating-btn" id="radio-save-btn" onclick="saveRadioRating()">💾</button>
+              <span class="rating-status" id="radio-status"></span>
+            </div>
+            <button class="btn-next" onclick="pickRandom()">⟳ Nächstes Best-Of Video</button>
+          `;
+          renderRadioStars();
+          isLoading = false;
+          return;
+        }
+      }
+      document.getElementById('info').innerHTML = '<p style="color:#9b8fc0;text-align:center;padding:10px">Kein abspielbares Best-Of Video gefunden.</p>';
+      isLoading = false;
+      return;
+    }
 
     let filtered;
     if (kanalParam) {
@@ -536,6 +621,14 @@
     tbtn.textContent = '⏩ Zufallseinstieg';
     tbtn.onclick = toggleRandomStart;
     fdiv.appendChild(tbtn);
+
+    // Best-Of Button
+    const bbtn = document.createElement('button');
+    bbtn.className = 'bestof-btn';
+    bbtn.id = 'btn-bestof';
+    bbtn.textContent = '⭐ Best Of';
+    bbtn.onclick = toggleBestOf;
+    fdiv.appendChild(bbtn);
 
     if (kanalParam) {
       // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
