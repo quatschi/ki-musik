@@ -47,8 +47,9 @@
   .rating-status.err { color: #eb5757; }
   .bestof-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: #9b8fc0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
   .bestof-btn.active { background: #f0c040; border-color: #f0c040; color: #1a1535; font-weight: bold; }
-  .migrate-btn { background: rgba(100,200,100,0.15); border: 1px solid rgba(100,200,100,0.4); border-radius: 20px; color: #6fc96f; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
-  .migrate-btn:disabled { opacity: 0.5; cursor: wait; }
+  .migrate-btn { background: transparent; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; color: #5a5070; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
+  .migrate-btn:hover { border-color: rgba(255,255,255,0.25); color: #9b8fc0; }
+  .migrate-btn:disabled { opacity: 0.4; cursor: wait; }
   .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
   .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
   .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
@@ -719,15 +720,6 @@
     bbtn.onclick = toggleBestOf;
     fdiv.appendChild(bbtn);
 
-    // Migrations-Button (nur anzeigen wenn meta fehlt)
-    const mbtn = document.createElement('button');
-    mbtn.className = 'migrate-btn';
-    mbtn.id = 'btn-migrate';
-    mbtn.textContent = '🔧 Meta reparieren';
-    mbtn.title = 'Titel und Kanalnamen für Best-Of nachträglich einlesen';
-    mbtn.onclick = migrateMeta;
-    fdiv.appendChild(mbtn);
-
     if (kanalParam) {
       // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
       document.querySelectorAll('.filter-btn').forEach(b => { if (b.id !== 'btn-randomstart') b.style.display = 'none'; });
@@ -754,6 +746,15 @@
       btn.onclick = () => setFilter(cat);
       filterDiv.appendChild(btn);
     });
+
+    // Migrations-Button ganz am Ende, unauffällig
+    const mbtn = document.createElement('button');
+    mbtn.className = 'migrate-btn';
+    mbtn.id = 'btn-migrate';
+    mbtn.textContent = '🔧 Meta';
+    mbtn.title = 'Titel und Kanalnamen für Best-Of nachträglich einlesen';
+    mbtn.onclick = migrateMeta;
+    filterDiv.appendChild(mbtn);
 
     if (startFilter !== 'Alle') {
       includedCats.add(startFilter);
