@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vintage Park</title>
+<!-- categories: Lounge -->
+<!-- channel-id:  -->
+<!-- channel-url: https://www.youtube.com/@vintage-park -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Vintage_Park.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/MZGRXYCS8-d9GcIRJlx9TOgk31q0LtZPq-qJ7HGBns3valDZCDrsTrEwcvMiUMX6dWTK99ws=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Vintage Park</div>
+      <div class="channel-count">49 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Vintage Park";
+const VIDEOS = [{"id": "fg3xT2HD9jY", "title": "Dusty Vintage Soul Funk | Raw & Deep Midnight Grooves | Vol. 48", "thumb": "https://i.ytimg.com/vi/fg3xT2HD9jY/mqdefault.jpg", "dur": "2:48:42"}, {"id": "BsZ3FBU0qFE", "title": "🔥Vintage Soul Funk Grooves You’ll Never Skip | Raw, Dusty & Deep Funk Vibes | vol.47", "thumb": "https://i.ytimg.com/vi/BsZ3FBU0qFE/mqdefault.jpg", "dur": "2:46:26"}, {"id": "lWXgNckL02U", "title": "🔥Vintage Soul Funk Grooves You Can’t Escape | Raw, Dusty & Deep Funk Grooves | vol.46", "thumb": "https://i.ytimg.com/vi/lWXgNckL02U/mqdefault.jpg", "dur": "3:06:16"}, {"id": "6qDQXoFwa9s", "title": "🔥Vintage Soul Funk Grooves You’ll Get Lost In | Raw, Dusty & Deep Funk Grooves | vol.45", "thumb": "https://i.ytimg.com/vi/6qDQXoFwa9s/mqdefault.jpg", "dur": "2:59:45"}, {"id": "4qUJmlrCIw8", "title": "🔥Vintage Soul Funk Grooves You’ll Keep Coming Back To | Raw, Dusty & Deep Funk Grooves | vol.44", "thumb": "https://i.ytimg.com/vi/4qUJmlrCIw8/mqdefault.jpg", "dur": "2:59:27"}, {"id": "3LICSeg1fs4", "title": "🔥Vintage Soul Funk Groove You Can’t Ignore | Raw, Dusty & Deep Funk Grooves | vol.43", "thumb": "https://i.ytimg.com/vi/3LICSeg1fs4/mqdefault.jpg", "dur": "2:39:59"}, {"id": "N_RPUNH9ysg", "title": "Funk Hop with Deep Bass | Boom Bap Funk Playlist | vol.42", "thumb": "https://i.ytimg.com/vi/N_RPUNH9ysg/mqdefault.jpg", "dur": "1:15:32"}, {"id": "Ff3PCATJ6cE", "title": "A Nostalgic Night of 70s Soul Funk | Vintage Soul Funk Playlist | vol.41", "thumb": "https://i.ytimg.com/vi/Ff3PCATJ6cE/mqdefault.jpg", "dur": "1:20:02"}, {"id": "xetCIknhCH8", "title": "Starlight on the Turntable | Vintage Soul Funk Playlist | vol.40", "thumb": "https://i.ytimg.com/vi/xetCIknhCH8/mqdefault.jpg", "dur": "1:14:10"}, {"id": "NU-auuelX9w", "title": "Saturday Digging Session | Vintage Soul Funk Playlist | vol.39", "thumb": "https://i.ytimg.com/vi/NU-auuelX9w/mqdefault.jpg", "dur": "1:42:18"}, {"id": "2jiz-jR4RsI", "title": "Playlist | Vintage Soul Funk | vol.38", "thumb": "https://i.ytimg.com/vi/2jiz-jR4RsI/mqdefault.jpg", "dur": "1:31:03"}, {"id": "3nHejNY7WEs", "title": "🔥Vintage & Modern Soul Funk Mix (With Lyrics) 🎧 | Vintage Soul Funk Playlist | vol.37", "thumb": "https://i.ytimg.com/vi/3nHejNY7WEs/mqdefault.jpg", "dur": "1:14:00"}, {"id": "_jGmv3Hj1CA", "title": "Vintage Soul Funk Playlist (With Lyrics) | vol.36", "thumb": "https://i.ytimg.com/vi/_jGmv3Hj1CA/mqdefault.jpg", "dur": "1:26:05"}, {"id": "PkbEscDbKY8", "title": "🔥Put This On & Feel Better (With Lyrics) | Vintage Soul Funk Playlist | vol.35", "thumb": "https://i.ytimg.com/vi/PkbEscDbKY8/mqdefault.jpg", "dur": "1:56:29"}, {"id": "ZTtM7N6sxSU", "title": "Spring Jazz Funk Playlist (With Lyrics) 🎷 Soft Grooves for Daily Life | vol.34", "thumb": "https://i.ytimg.com/vi/ZTtM7N6sxSU/mqdefault.jpg", "dur": "1:17:27"}, {"id": "-Ao9h5sY-1M", "title": "🎧Soul Funk Grooves You Can't Stop Playing | Soul & Funk Vibes | vol.33", "thumb": "https://i.ytimg.com/vi/-Ao9h5sY-1M/mqdefault.jpg", "dur": "1:28:49"}, {"id": "84N3-oMp3bA", "title": "🔥Ultimate 70s Soul Funk Mix – Vintage Groove Playlist | vol.32", "thumb": "https://i.ytimg.com/vi/84N3-oMp3bA/mqdefault.jpg", "dur": "1:28:32"}, {"id": "B_VREfonDBI", "title": "Vintage Grooves to Believe in Yourself | Vintage Soul Funk Playlist | vol.31", "thumb": "https://i.ytimg.com/vi/B_VREfonDBI/mqdefault.jpg", "dur": "1:18:33"}, {"id": "D_7eaIc5qFU", "title": "Golden Hour Drive – Warm Spring Driving Music | vol.30", "thumb": "https://i.ytimg.com/vi/D_7eaIc5qFU/mqdefault.jpg", "dur": "58:58"}, {"id": "nga_lpOy_0k", "title": "Retro Groove Therapy | Vintage Soul Funk | vol.29", "thumb": "https://i.ytimg.com/vi/nga_lpOy_0k/mqdefault.jpg", "dur": "1:18:39"}, {"id": "QsiUhSrG7Ic", "title": "Same Sky, Different Roads", "thumb": "https://i.ytimg.com/vi/QsiUhSrG7Ic/mqdefault.jpg", "dur": "0:50"}, {"id": "ly7n5MMfD4o", "title": "After the Goodbye | 70s Golden Soul & Funk | vol.28", "thumb": "https://i.ytimg.com/vi/ly7n5MMfD4o/mqdefault.jpg", "dur": "1:35:40"}, {"id": "sU64DClgcjk", "title": "Late Night Soul Funk Grooves | Vintage Soul Funk Playlist | vol.27", "thumb": "https://i.ytimg.com/vi/sU64DClgcjk/mqdefault.jpg", "dur": "3:02:31"}, {"id": "TDUCLzfoXjQ", "title": "Vintage Soul Funk Grooves Playlist | vol.26", "thumb": "https://i.ytimg.com/vi/TDUCLzfoXjQ/mqdefault.jpg", "dur": "1:37:13"}, {"id": "x1tVyaLcrPs", "title": "Vintage Soul Funk Playlist | Born to Keep Moving | vol.25", "thumb": "https://i.ytimg.com/vi/x1tVyaLcrPs/mqdefault.jpg", "dur": "2:01:26"}, {"id": "LAEZBQe0Z4I", "title": "Vintage Grooves for Complicated Love | Vintage Soul Funk Playlist | vol.24", "thumb": "https://i.ytimg.com/vi/LAEZBQe0Z4I/mqdefault.jpg", "dur": "2:00:39"}, {"id": "dKP2pC81h7U", "title": "Minimal Acoustic Soul Funk | Vintage Soul Funk Playlist | vol.23", "thumb": "https://i.ytimg.com/vi/dKP2pC81h7U/mqdefault.jpg", "dur": "1:25:42"}, {"id": "HVcOQJ_SE_Y", "title": "Where Dreams Find a Rhythm | Vintage Park Soul Funk Playlist | vol.22", "thumb": "https://i.ytimg.com/vi/HVcOQJ_SE_Y/mqdefault.jpg", "dur": "1:55:09"}, {"id": "ZTQbt_WOY6c", "title": "After the Rain | Calm Grooves – Vintage Park Soul Funk Playlist | vol.21", "thumb": "https://i.ytimg.com/vi/ZTQbt_WOY6c/mqdefault.jpg", "dur": "1:31:37"}, {"id": "nzpSjDcKjZk", "title": "Silent Affection | Soulful Grooves for Memories | Vintage Park Soul Funk Playlist | vol.20", "thumb": "https://i.ytimg.com/vi/nzpSjDcKjZk/mqdefault.jpg", "dur": "1:17:11"}, {"id": "eKXZ99GGlRg", "title": "A Place Between Today and Tomorrow | Vintage Park Soul Funk Playlist | vol.19", "thumb": "https://i.ytimg.com/vi/eKXZ99GGlRg/mqdefault.jpg", "dur": "2:57:58"}, {"id": "ufzPtUqdOBU", "title": "Nothing Left to Prove | Vintage Soul Funk Playlist | vol.18", "thumb": "https://i.ytimg.com/vi/ufzPtUqdOBU/mqdefault.jpg", "dur": "1:25:22"}, {"id": "4vkzeGXoBGk", "title": "Soul Funk in My Own Lane | Vintage Soul Funk Playlist | vol.17", "thumb": "https://i.ytimg.com/vi/4vkzeGXoBGk/mqdefault.jpg", "dur": "1:19:16"}, {"id": "rcGrl_2K-kU", "title": "Feel So Right – Soul Funk Essentials | Vintage Soul Funk Playlist | vol.16", "thumb": "https://i.ytimg.com/vi/rcGrl_2K-kU/mqdefault.jpg", "dur": "1:44:17"}, {"id": "HLiNSqdblu0", "title": "Feel Like Gold – Street Soul Funk Grooves | Vintage Soul & Funk Grooves | vol.15", "thumb": "https://i.ytimg.com/vi/HLiNSqdblu0/mqdefault.jpg", "dur": "1:11:32"}, {"id": "do557SIHvfg", "title": "Soul Funk for Quiet Confidence | Vintage Soul Funk Playlist | vol.14", "thumb": "https://i.ytimg.com/vi/do557SIHvfg/mqdefault.jpg", "dur": "1:19:32"}, {"id": "51aM8Imi9AM", "title": "Vintage Grooves to Trust Yourself | Vintage Soul Funk Playlist | vol.13", "thumb": "https://i.ytimg.com/vi/51aM8Imi9AM/mqdefault.jpg", "dur": "1:31:01"}, {"id": "2LSM_bgnkM8", "title": "Feel So Great – 70s Golden Era Grooves | Vintage Soul Funk Playlist | vol.12", "thumb": "https://i.ytimg.com/vi/2LSM_bgnkM8/mqdefault.jpg", "dur": "1:21:27"}, {"id": "jyMjGGhmpHY", "title": "Good Times Flow – 70s Soul Funk Grooves | Vintage Soul Funk Playlist | vol.11", "thumb": "https://i.ytimg.com/vi/jyMjGGhmpHY/mqdefault.jpg", "dur": "1:18:25"}, {"id": "1jtYNcbAZrA", "title": "That Golden Feeling – 70s Soul Funk Grooves | Vintage Soul Funk Playlist  | vol.10", "thumb": "https://i.ytimg.com/vi/1jtYNcbAZrA/mqdefault.jpg", "dur": "59:27"}, {"id": "WhHofef4dOE", "title": "🔥Vintage Soul Funk Grooves | Vintage Soul Funk Playlist | vol.9🎷", "thumb": "https://i.ytimg.com/vi/WhHofef4dOE/mqdefault.jpg", "dur": "1:17:29"}, {"id": "HDLiwfjy_cc", "title": "Feel So Good – 70s Golden Era Grooves | Vintage Soul & Funk Grooves | vol.8", "thumb": "https://i.ytimg.com/vi/HDLiwfjy_cc/mqdefault.jpg", "dur": "1:19:11"}, {"id": "FzZ4wM7SMVo", "title": "Vintage Soul Funk You’ve Been Waiting For | Groovy Soul Funk Playlist for Chill Vibes | vol.7", "thumb": "https://i.ytimg.com/vi/FzZ4wM7SMVo/mqdefault.jpg", "dur": "1:17:50"}, {"id": "Qrg3wCNlvaQ", "title": "🔥Vintage Soul Funk Grooves | Soul & Funk Archive | vol.6🎷", "thumb": "https://i.ytimg.com/vi/Qrg3wCNlvaQ/mqdefault.jpg", "dur": "1:35:05"}, {"id": "CIwKxlabbrE", "title": "🔥Deep Funk & Soulful Beats | Vintage Soul Funk Grooves | vol.5🎷", "thumb": "https://i.ytimg.com/vi/CIwKxlabbrE/mqdefault.jpg", "dur": "1:17:02"}, {"id": "ePNMRCfs1ug", "title": "🔥Deep Groove Soul | Vintage Soul Funk Grooves | vol.4🎷", "thumb": "https://i.ytimg.com/vi/ePNMRCfs1ug/mqdefault.jpg", "dur": "1:37:26"}, {"id": "xtAm9snuAdA", "title": "🔥Classic Groove Chronicles | Vintage Soul Funk Grooves | vol.3🎷", "thumb": "https://i.ytimg.com/vi/xtAm9snuAdA/mqdefault.jpg", "dur": "1:41:57"}, {"id": "OqIZLi_7m4M", "title": "🔥Retro Soul Sessions | Vintage Soul Funk Grooves | vol.2🎷", "thumb": "https://i.ytimg.com/vi/OqIZLi_7m4M/mqdefault.jpg", "dur": "1:18:29"}, {"id": "FeH-hJmFSNg", "title": "🔥Urban Soul & Vintage Groove | Vintage Soul Funk Grooves | vol.1🎷", "thumb": "https://i.ytimg.com/vi/FeH-hJmFSNg/mqdefault.jpg", "dur": "1:39:26"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

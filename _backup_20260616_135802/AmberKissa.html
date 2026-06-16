@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmberKissa</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCQwtf-L6Ri-qx4563spve3w -->
+<!-- channel-url: https://www.youtube.com/@amberkissa -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=AmberKissa.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/nLCClekjIYY35QmpjRZvoQIIF4s3oANZ4zgQ-bFKYARzwhOGiSvBawVWMNY5PYKQsq8O8wV9=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">AmberKissa</div>
+      <div class="channel-count">92 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "AmberKissa";
+const VIDEOS = [{"id": "ZNZV9wq9Eok", "title": "昭和1969年ジャズ喫茶BGM｜クラシックラジオと雨の夜に寄り添うノスタルジックジャズ", "thumb": "https://i.ytimg.com/vi/ZNZV9wq9Eok/mqdefault.jpg", "dur": "11:54:56"}, {"id": "m-4VxMSIQU8", "title": "昭和1966年ジャズ喫茶BGM｜クラシックラジオが流れる雨夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/m-4VxMSIQU8/mqdefault.jpg", "dur": "23:05"}, {"id": "8FKnPVDtW5w", "title": "昭和1966年ジャズ喫茶BGM｜クラシックラジオと雨音に包まれる懐かしの夜ジャズ", "thumb": "https://i.ytimg.com/vi/8FKnPVDtW5w/mqdefault.jpg", "dur": "5:01:39"}, {"id": "N5laXqPieZk", "title": "昭和1972年ジャズ喫茶BGM｜深夜ラジオの灯りと雨音に癒される静かな夜ジャズ", "thumb": "https://i.ytimg.com/vi/N5laXqPieZk/mqdefault.jpg", "dur": "11:55:00"}, {"id": "EGfQc5Ws1IQ", "title": "昭和1975年ジャズ喫茶BGM｜深夜ラジオが流れる雨の夜に寄り添うメロウジャズ", "thumb": "https://i.ytimg.com/vi/EGfQc5Ws1IQ/mqdefault.jpg", "dur": "5:01:45"}, {"id": "jhpdDby8yqQ", "title": "昭和1967年ジャズ喫茶BGM｜クラシックラジオの灯りとともに過ごす雨夜のノスタルジックジャズ", "thumb": "https://i.ytimg.com/vi/jhpdDby8yqQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "mW-YEuu6Saw", "title": "昭和1974年ジャズ喫茶BGM｜雨音とレコードが奏でる静かな夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/mW-YEuu6Saw/mqdefault.jpg", "dur": "1:03:14"}, {"id": "NkVQBQYQuP0", "title": "昭和1965年ジャズ喫茶BGM｜クラシックラジオの灯りと雨音に癒される夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/NkVQBQYQuP0/mqdefault.jpg", "dur": "5:01:56"}, {"id": "NKakfukssrc", "title": "昭和1973年ジャズ喫茶BGM｜深夜ラジオと雨の音が寄り添う静かな夜ジャズ", "thumb": "https://i.ytimg.com/vi/NKakfukssrc/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7sASp5b37HM", "title": "昭和ヴィンテージ・ジャズクラブ 🎷 思い出のジャズ歌とネオン街のラウンジ", "thumb": "https://i.ytimg.com/vi/7sASp5b37HM/mqdefault.jpg", "dur": "5:01:51"}, {"id": "WJta5GfJkDc", "title": "昭和ヴィンテージ・ジャズクラブ 🎷 懐かしのブルース名曲とネオン街の夜", "thumb": "https://i.ytimg.com/vi/WJta5GfJkDc/mqdefault.jpg", "dur": "11:55:00"}, {"id": "LmDHZc9olFk", "title": "昭和1968年ジャズ喫茶BGM｜レコードのぬくもりに癒される雨夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/LmDHZc9olFk/mqdefault.jpg", "dur": "1:03:01"}, {"id": "6RZUcBtVrcc", "title": "昭和1969年ジャズ喫茶BGM｜クラシックラジオが流れる雨夜のノスタルジックジャズ", "thumb": "https://i.ytimg.com/vi/6RZUcBtVrcc/mqdefault.jpg", "dur": "5:01:56"}, {"id": "BGCEiSux5lI", "title": "昭和1973年ジャズ喫茶BGM｜深夜ラジオと雨音に包まれる静かな夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/BGCEiSux5lI/mqdefault.jpg", "dur": "11:55:00"}, {"id": "82ZLEVnYgGE", "title": "昭和1975年ジャズ喫茶BGM｜レコードのぬくもりに包まれる雨夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/82ZLEVnYgGE/mqdefault.jpg", "dur": "5:02:26"}, {"id": "rlO8vv7ChNw", "title": "昭和1967年ジャズ喫茶BGM｜深夜ラジオとともに過ごす雨夜のノスタルジックジャズ", "thumb": "https://i.ytimg.com/vi/rlO8vv7ChNw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7-QCVRT-EC8", "title": "昭和1971年ジャズ喫茶BGM｜深夜ラジオと雨音に寄り添う静かな夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/7-QCVRT-EC8/mqdefault.jpg", "dur": "1:03:08"}, {"id": "lOFefPwSA7g", "title": "昭和1965年ジャズ喫茶BGM｜レコードノイズとともに眠る懐かしの深夜スモーキージャズ", "thumb": "https://i.ytimg.com/vi/lOFefPwSA7g/mqdefault.jpg", "dur": "11:54:59"}, {"id": "ro2teBA7UeQ", "title": "昭和1969年ジャズ喫茶BGM｜深夜ラジオとレコードの音に包まれる静かな雨夜ジャズ", "thumb": "https://i.ytimg.com/vi/ro2teBA7UeQ/mqdefault.jpg", "dur": "7:03:16"}, {"id": "_ft-XMI9DhM", "title": "昭和1973年ジャズ喫茶BGM｜雨音とラジオノイズに癒される懐かしの深夜ジャズ", "thumb": "https://i.ytimg.com/vi/_ft-XMI9DhM/mqdefault.jpg", "dur": "11:55:01"}, {"id": "qIWP9TgIFWI", "title": "昭和1967年ジャズ喫茶BGM｜レコードのぬくもりと雨音に包まれる静かな深夜メロウジャズ", "thumb": "https://i.ytimg.com/vi/qIWP9TgIFWI/mqdefault.jpg", "dur": "1:03:19"}, {"id": "3qLt0llLeWg", "title": "昭和1966年ジャズ喫茶BGM｜雨音とレコードに包まれる懐かしの深夜スモーキージャズ", "thumb": "https://i.ytimg.com/vi/3qLt0llLeWg/mqdefault.jpg", "dur": "7:02:26"}, {"id": "ueNkbXome_8", "title": "昭和1972年ジャズ喫茶BGM｜レコードのぬくもりに癒される静かな深夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/ueNkbXome_8/mqdefault.jpg", "dur": "11:54:59"}, {"id": "17JFXApfB18", "title": "昭和1967年ジャズ喫茶BGM｜雨音とラジオの灯りに癒される静かな深夜ジャズ", "thumb": "https://i.ytimg.com/vi/17JFXApfB18/mqdefault.jpg", "dur": "7:02:40"}, {"id": "uMU_834OuzM", "title": "昭和1974年ジャズ喫茶BGM｜レコードノイズとともに眠る静かな雨夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/uMU_834OuzM/mqdefault.jpg", "dur": "11:55:01"}, {"id": "tf3SuVYGpDk", "title": "昭和1973年ジャズ喫茶BGM｜レコードのぬくもりと雨夜に溶ける懐かしのスロージャズ", "thumb": "https://i.ytimg.com/vi/tf3SuVYGpDk/mqdefault.jpg", "dur": "1:03:02"}, {"id": "GqcDLP2_vak", "title": "昭和1968年ジャズ喫茶BGM｜静かな深夜ラジオとともに過ごす懐かしの雨夜ジャズ", "thumb": "https://i.ytimg.com/vi/GqcDLP2_vak/mqdefault.jpg", "dur": "7:02:55"}, {"id": "ZlQqzY2vU58", "title": "昭和1974年ジャズ喫茶BGM｜レコードノイズとともに眠る静かな雨夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/ZlQqzY2vU58/mqdefault.jpg", "dur": "11:55:00"}, {"id": "HAiVgmkVv0g", "title": "昭和1967年ジャズ喫茶BGM｜雨音とラジオの灯りに癒される静かな深夜ジャズ", "thumb": "https://i.ytimg.com/vi/HAiVgmkVv0g/mqdefault.jpg", "dur": "7:02:50"}, {"id": "ZYPmpbbA30Y", "title": "昭和1976年ジャズ喫茶BGM｜レコードノイズとともに過ごす静かな深夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/ZYPmpbbA30Y/mqdefault.jpg", "dur": "11:55:00"}, {"id": "mQo2NzFTx3Y", "title": "昭和1965年ジャズ喫茶BGM｜深夜ラジオと雨音に寄り添う懐かしのメロウジャズ", "thumb": "https://i.ytimg.com/vi/mQo2NzFTx3Y/mqdefault.jpg", "dur": "1:03:20"}, {"id": "NcdotnT-BNQ", "title": "昭和1968年ジャズ喫茶BGM｜静かな雨夜に流れる懐かしのスモーキージャズ", "thumb": "https://i.ytimg.com/vi/NcdotnT-BNQ/mqdefault.jpg", "dur": "7:02:50"}, {"id": "J-jU1hpF9KY", "title": "昭和1964年ジャズ喫茶BGM｜深夜ラジオとともに眠る懐かしの雨夜ジャズ", "thumb": "https://i.ytimg.com/vi/J-jU1hpF9KY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "klx0eIr-rkI", "title": "昭和1975年ジャズ喫茶BGM｜雨音とレコードに包まれる懐かしの深夜メロウジャズ", "thumb": "https://i.ytimg.com/vi/klx0eIr-rkI/mqdefault.jpg", "dur": "11:55:00"}, {"id": "knOLR6a0M5o", "title": "昭和1972年ジャズ喫茶BGM｜深夜ラジオとともに眠る静かな雨夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/knOLR6a0M5o/mqdefault.jpg", "dur": "11:55:00"}, {"id": "OMJNYRrF8eM", "title": "昭和1973年ジャズ喫茶BGM｜深夜ラジオと雨音に包まれる懐かしの夜ジャズ", "thumb": "https://i.ytimg.com/vi/OMJNYRrF8eM/mqdefault.jpg", "dur": "1:02:09"}, {"id": "IFk3tL1-7EQ", "title": "昭和1966年ジャズ喫茶BGM｜レコードノイズと深夜ラジオに癒される静かな夜ジャズ", "thumb": "https://i.ytimg.com/vi/IFk3tL1-7EQ/mqdefault.jpg", "dur": "11:54:56"}, {"id": "K2TWO0RSJRA", "title": "昭和1968年ジャズ喫茶BGM｜静かな雨夜に流れるレコードとやさしいメロウジャズ", "thumb": "https://i.ytimg.com/vi/K2TWO0RSJRA/mqdefault.jpg", "dur": "11:55:00"}, {"id": "S3mR-2Wkn0c", "title": "昭和1966年ジャズ喫茶BGM｜雨音とともに眠るレコードのぬくもりジャズ", "thumb": "https://i.ytimg.com/vi/S3mR-2Wkn0c/mqdefault.jpg", "dur": "1:08:44"}, {"id": "PSzd1thNM_k", "title": "昭和1965年ジャズ喫茶BGM｜レコードのぬくもりと雨音に癒される静かな夜ジャズ", "thumb": "https://i.ytimg.com/vi/PSzd1thNM_k/mqdefault.jpg", "dur": "7:03:25"}, {"id": "vbRKrSn4lP8", "title": "昭和1967年ジャズ喫茶BGM｜雨音とラジオノイズが心を癒す深夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/vbRKrSn4lP8/mqdefault.jpg", "dur": "5:02:15"}, {"id": "gcvveJbRTpY", "title": "昭和1972年ジャズ喫茶BGM｜静かな雨夜に寄り添うレコードとやさしいスモーキージャズ", "thumb": "https://i.ytimg.com/vi/gcvveJbRTpY/mqdefault.jpg", "dur": "1:03:15"}, {"id": "8vLdJtoEif0", "title": "昭和1971年ジャズ喫茶BGM｜レコードの音に包まれる雨夜のしっとりスモーキージャズ", "thumb": "https://i.ytimg.com/vi/8vLdJtoEif0/mqdefault.jpg", "dur": "5:02:15"}, {"id": "Ak1nzWZDBVs", "title": "昭和1964年ジャズ喫茶BGM｜深夜ラジオとともに過ごす静かな雨夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/Ak1nzWZDBVs/mqdefault.jpg", "dur": "5:00:51"}, {"id": "1v5wnY0eAto", "title": "昭和1968年ジャズ喫茶BGM｜雨の窓辺で眠る静かな夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/1v5wnY0eAto/mqdefault.jpg", "dur": "5:02:20"}, {"id": "SNFcxyQpAmk", "title": "昭和1976年ジャズ喫茶BGM｜静かな深夜ラジオとともに過ごす懐かしのスロージャズ", "thumb": "https://i.ytimg.com/vi/SNFcxyQpAmk/mqdefault.jpg", "dur": "5:02:46"}, {"id": "Gnxt6qi3UTg", "title": "昭和1970年ジャズ喫茶BGM｜深夜ラジオと雨音に包まれる懐かしのメロウジャズ", "thumb": "https://i.ytimg.com/vi/Gnxt6qi3UTg/mqdefault.jpg", "dur": "1:08:45"}, {"id": "UNi1jHmRloQ", "title": "昭和1972年ジャズ喫茶BGM｜レコードのぬくもりに包まれる静かな夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/UNi1jHmRloQ/mqdefault.jpg", "dur": "5:02:15"}, {"id": "BTwUtEALFc0", "title": "昭和1969年ジャズ喫茶BGM｜ラジオの灯りとともに過ごす静かな雨夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/BTwUtEALFc0/mqdefault.jpg", "dur": "5:01:19"}, {"id": "y5cZjNyqLKs", "title": "昭和1974年ジャズ喫茶BGM｜雨の窓辺で聴く懐かしの深夜メロウジャズ", "thumb": "https://i.ytimg.com/vi/y5cZjNyqLKs/mqdefault.jpg", "dur": "5:02:06"}, {"id": "46JxNV2I1Ig", "title": "昭和1967年ジャズ喫茶BGM｜静かな雨夜に寄り添うラジオとやさしいスロージャズ", "thumb": "https://i.ytimg.com/vi/46JxNV2I1Ig/mqdefault.jpg", "dur": "1:07:41"}, {"id": "VFr5fU_iSFM", "title": "昭和1964年ジャズ喫茶BGM｜ラジオの灯りとともに眠る静かな夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/VFr5fU_iSFM/mqdefault.jpg", "dur": "5:02:06"}, {"id": "mMJsbolHz7g", "title": "昭和1973年ジャズ喫茶BGM｜レコードの温もりと雨音に包まれる深夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/mMJsbolHz7g/mqdefault.jpg", "dur": "5:02:20"}, {"id": "LzLd5XuTKiQ", "title": "昭和1975年ジャズ喫茶BGM｜雨音とラジオノイズが心地よい深夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/LzLd5XuTKiQ/mqdefault.jpg", "dur": "11:54:57"}, {"id": "4TUtLoT65UM", "title": "昭和1966年ジャズ喫茶BGM｜レコードのぬくもりに包まれる静かな夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/4TUtLoT65UM/mqdefault.jpg", "dur": "5:02:11"}, {"id": "6Dut5yilHqw", "title": "昭和1974年ジャズ喫茶BGM｜深夜ラジオとともに過ごす静かな雨夜のスロージャズ", "thumb": "https://i.ytimg.com/vi/6Dut5yilHqw/mqdefault.jpg", "dur": "1:07:41"}, {"id": "KCBCyAm7FY0", "title": "昭和1967年ジャズ喫茶BGM｜レコードノイズと雨音に包まれる静かな夜ジャズ", "thumb": "https://i.ytimg.com/vi/KCBCyAm7FY0/mqdefault.jpg", "dur": "1:06:55"}, {"id": "-zUqqBKy_ww", "title": "昭和1973年ジャズ喫茶BGM｜雨音とラジオが流れる深夜のやさしいメロウジャズ", "thumb": "https://i.ytimg.com/vi/-zUqqBKy_ww/mqdefault.jpg", "dur": "1:07:55"}, {"id": "7sq1gNn3E5c", "title": "昭和1965年ジャズ喫茶BGM｜静かなラジオノイズに包まれる夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/7sq1gNn3E5c/mqdefault.jpg", "dur": "1:07:18"}, {"id": "9sjGJZMVJGw", "title": "昭和1971年ジャズ喫茶BGM｜深夜ラジオとともに過ごす静かな雨夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/9sjGJZMVJGw/mqdefault.jpg", "dur": "1:07:55"}, {"id": "jLDpshH-UZs", "title": "昭和1960-1980年ジャズ喫茶BGM｜雨の夜に灯る真空管とレコードで味わう懐かしのメロウジャズ", "thumb": "https://i.ytimg.com/vi/jLDpshH-UZs/mqdefault.jpg", "dur": "11:54:56"}, {"id": "ApcY1oOp7bo", "title": "昭和1962年ジャズ喫茶BGM｜レコードのかすかなノイズと静かな夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/ApcY1oOp7bo/mqdefault.jpg", "dur": "1:06:56"}, {"id": "BtnCxq1QgLY", "title": "昭和1969年ジャズ喫茶BGM｜雨の深夜に流れるしっとりピアノジャズ", "thumb": "https://i.ytimg.com/vi/BtnCxq1QgLY/mqdefault.jpg", "dur": "1:08:45"}, {"id": "GSuGTgzkD-w", "title": "昭和1974年ジャズ喫茶BGM｜レコードの温もりと雨の夜に溶けるメロウジャズ", "thumb": "https://i.ytimg.com/vi/GSuGTgzkD-w/mqdefault.jpg", "dur": "1:08:41"}, {"id": "iT_ezKOoitw", "title": "昭和1963年ジャズ喫茶BGM｜静かな夜に漂うやわらかなピアノとサックスのジャズ", "thumb": "https://i.ytimg.com/vi/iT_ezKOoitw/mqdefault.jpg", "dur": "1:06:59"}, {"id": "DewKMrN1TBo", "title": "昭和1971年ジャズ喫茶BGM｜雨音とともに過ごす静かな夜のスモーキージャズ", "thumb": "https://i.ytimg.com/vi/DewKMrN1TBo/mqdefault.jpg", "dur": "1:08:48"}, {"id": "6o5RSP9_vXg", "title": "昭和1966年ジャズ喫茶BGM｜雨の夜にグラス越しで聴くしっとりスロージャズ", "thumb": "https://i.ytimg.com/vi/6o5RSP9_vXg/mqdefault.jpg", "dur": "1:08:31"}, {"id": "Y0HJ0dZiUbo", "title": "昭和1970年ジャズ喫茶BGM｜静かな深夜に響くピアノとサックスのメロウジャズ", "thumb": "https://i.ytimg.com/vi/Y0HJ0dZiUbo/mqdefault.jpg", "dur": "1:10:23"}, {"id": "m3sSAIF5SIo", "title": "昭和1968年ジャズ喫茶BGM｜雨音とレコードが重なる深夜のメロウジャズ", "thumb": "https://i.ytimg.com/vi/m3sSAIF5SIo/mqdefault.jpg", "dur": "1:09:38"}, {"id": "cdpfrvYA264", "title": "昭和1972年ジャズ喫茶BGM｜雨の夜にレコードで聴くしっとりメロウジャズ", "thumb": "https://i.ytimg.com/vi/cdpfrvYA264/mqdefault.jpg", "dur": "1:08:52"}, {"id": "EBw8iarmibI", "title": "昭和1967年ジャズ喫茶BGM｜静かな雨夜に染みるスモーキーなサックスジャズ", "thumb": "https://i.ytimg.com/vi/EBw8iarmibI/mqdefault.jpg", "dur": "1:07:39"}, {"id": "35KZebgJvr0", "title": "昭和1969年ジャズ喫茶BGM｜雨の窓辺で聴くしっとりメロウジャズ", "thumb": "https://i.ytimg.com/vi/35KZebgJvr0/mqdefault.jpg", "dur": "1:08:28"}, {"id": "EyGZgsNO7fU", "title": "昭和1974年ジャズ喫茶BGM｜レコードが奏でる温もりのスウィングジャズ", "thumb": "https://i.ytimg.com/vi/EyGZgsNO7fU/mqdefault.jpg", "dur": "1:03:50"}, {"id": "ABGnUXbI3uc", "title": "昭和1985年ジャズ喫茶BGM｜深夜の都会に流れるロマンチックなナイトジャズ", "thumb": "https://i.ytimg.com/vi/ABGnUXbI3uc/mqdefault.jpg", "dur": "1:04:03"}, {"id": "LtS3X9oflBI", "title": "昭和1966年ジャズ喫茶BGM｜静かな夜に寄り添うスモーキーなブルージャズ", "thumb": "https://i.ytimg.com/vi/LtS3X9oflBI/mqdefault.jpg", "dur": "1:03:03"}, {"id": "ImAB9fRd7cM", "title": "昭和1983年ジャズ喫茶BGM｜雨の東京ナイトを彩るメロウアーバンジャズ", "thumb": "https://i.ytimg.com/vi/ImAB9fRd7cM/mqdefault.jpg", "dur": "1:03:58"}, {"id": "K7yB-txOASI", "title": "昭和1970年ジャズ喫茶BGM｜レコードが回る静かな夜のヴィンテージジャズ", "thumb": "https://i.ytimg.com/vi/K7yB-txOASI/mqdefault.jpg", "dur": "1:04:23"}, {"id": "zqaIe7VI1Aw", "title": "昭和1961年ジャズ喫茶BGM｜朝のコーヒーと静かに始まるクラシックジャズ", "thumb": "https://i.ytimg.com/vi/zqaIe7VI1Aw/mqdefault.jpg", "dur": "1:04:10"}, {"id": "PWZe6-5kM3U", "title": "昭和1968年ジャズ喫茶BGM｜雨音に包まれる深夜のメロウジャズタイム", "thumb": "https://i.ytimg.com/vi/PWZe6-5kM3U/mqdefault.jpg", "dur": "1:03:44"}, {"id": "0VUjvtXuplY", "title": "昭和1977年ジャズ喫茶BGM｜雨のネオン街に漂うロマンチックなミッドナイトジャズ", "thumb": "https://i.ytimg.com/vi/0VUjvtXuplY/mqdefault.jpg", "dur": "1:05:27"}, {"id": "tB8zPxI-BEQ", "title": "昭和1964年クールジャズ喫茶BGM｜深夜の静かな街に漂うスモーキーなサウンド", "thumb": "https://i.ytimg.com/vi/tB8zPxI-BEQ/mqdefault.jpg", "dur": "1:02:02"}, {"id": "iUs7oAzoZjo", "title": "昭和1975年ジャズ喫茶BGM｜静かな雨夜に流れるしっとりメロウジャズ", "thumb": "https://i.ytimg.com/vi/iUs7oAzoZjo/mqdefault.jpg", "dur": "57:41"}, {"id": "3eclrhGTx5o", "title": "昭和1981年シティポップジャズ喫茶BGM｜夜風に揺れる都会派メロウグルーヴ", "thumb": "https://i.ytimg.com/vi/3eclrhGTx5o/mqdefault.jpg", "dur": "40:51"}, {"id": "zwajRb5Dw6c", "title": "昭和1967年ブルージャズ喫茶BGM｜雨上がりの夕暮れに響く哀愁のアナログメロディ", "thumb": "https://i.ytimg.com/vi/zwajRb5Dw6c/mqdefault.jpg", "dur": "40:51"}, {"id": "fkMI-n3qI2I", "title": "昭和1973年メロウジャズ喫茶BGM｜木漏れ日の午後に流れる優雅なスウィング", "thumb": "https://i.ytimg.com/vi/fkMI-n3qI2I/mqdefault.jpg", "dur": "40:51"}, {"id": "lPA6jagj3sc", "title": "昭和1984年ナイトジャズ喫茶BGM｜静寂のミッドナイトに漂うムーディーなアダルトサウンド", "thumb": "https://i.ytimg.com/vi/lPA6jagj3sc/mqdefault.jpg", "dur": "40:51"}, {"id": "kXaMzD42I-0", "title": "昭和1962年トラディショナルジャズ喫茶BGM｜煙草の煙が揺れる静かな夜とクラシックな響き", "thumb": "https://i.ytimg.com/vi/kXaMzD42I-0/mqdefault.jpg", "dur": "40:51"}, {"id": "eCLt8TZlzM0", "title": "昭和1979年フュージョンジャズ喫茶BGM｜夜景に溶け込む都会派グルーヴとレトロな余韻", "thumb": "https://i.ytimg.com/vi/eCLt8TZlzM0/mqdefault.jpg", "dur": "40:51"}, {"id": "AwaU2u4FcPI", "title": "昭和1966年ボサノバジャズ喫茶BGM｜午後の陽だまりに包まれる穏やかなレトロサウンド", "thumb": "https://i.ytimg.com/vi/AwaU2u4FcPI/mqdefault.jpg", "dur": "40:51"}, {"id": "3SymV3tvBxw", "title": "昭和1980年ジャズ喫茶BGM｜ネオン灯る東京ミッドナイトと洗練されたアーバンジャズ", "thumb": "https://i.ytimg.com/vi/3SymV3tvBxw/mqdefault.jpg", "dur": "40:51"}, {"id": "0Te9V0rncK4", "title": "昭和1971年ジャズ喫茶BGM｜都会の夜に溶け込むヴィンテージスロージャズ", "thumb": "https://i.ytimg.com/vi/0Te9V0rncK4/mqdefault.jpg", "dur": "40:51"}, {"id": "9mOlIeu-Ups", "title": "昭和1970年代ジャズ喫茶BGM｜真空管アンプとレコードで聴く高音質ヴィンテージジャズ", "thumb": "https://i.ytimg.com/vi/9mOlIeu-Ups/mqdefault.jpg", "dur": "40:51"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

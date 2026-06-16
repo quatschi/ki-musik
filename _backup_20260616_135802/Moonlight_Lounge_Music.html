@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moonlight Lounge Music</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCBEPcFKB8RVFZu5Yw3ntVxg -->
+<!-- channel-url: https://www.youtube.com/@moonlightloungemusic -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Moonlight_Lounge_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/hIyou2UXVNT-OWtc7YOh5fyJb9yQ9YCFBR4UvxRGLBKrE8o_T7z2_B8LnVTmHOdMmgvMG6wLgnM=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Moonlight Lounge Music</div>
+      <div class="channel-count">75 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Moonlight Lounge Music";
+const VIDEOS = [{"id": "Mvffw6OJ5Mo", "title": "Smooth Jazz Lounge | Soulful Female Vocals & Smooth Love Lyrics to Relax Deeply", "thumb": "https://i.ytimg.com/vi/Mvffw6OJ5Mo/mqdefault.jpg", "dur": "1:29:58"}, {"id": "CvJrxDNiNIY", "title": "Relaxing Smooth Jazz | Romantic Female Vocals & Soft Jazz Lyrics to Soothe Your Soul Deeply", "thumb": "https://i.ytimg.com/vi/CvJrxDNiNIY/mqdefault.jpg", "dur": "1:27:53"}, {"id": "qej-tR9x41U", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset", "thumb": "https://i.ytimg.com/vi/qej-tR9x41U/mqdefault_live.jpg", "dur": ""}, {"id": "8LHFkz-8NpI", "title": "Smooth Day Jazz | Soulful Female Vocals & Romantic Jazz Lyrics for Quiet Night Vibes", "thumb": "https://i.ytimg.com/vi/8LHFkz-8NpI/mqdefault.jpg", "dur": "1:29:55"}, {"id": "DVWsR8-H7V0", "title": "Smooth Morning Jazz | Warm Female Vocals & Soft Jazz Lyrics to Soothe Emotional Pain", "thumb": "https://i.ytimg.com/vi/DVWsR8-H7V0/mqdefault.jpg", "dur": "1:31:38"}, {"id": "65HN5ARArWk", "title": "Smooth Jazz Lounge | Soulful Female Vocals for Peaceful Nights, Gentle Love & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/65HN5ARArWk/mqdefault.jpg", "dur": "1:29:40"}, {"id": "TNj8oCg0RFY", "title": "Moonlight Smooth Jazz | Warm Female Vocals & Soft Jazz Love Lyrics to Heal Your Emotional Soul", "thumb": "https://i.ytimg.com/vi/TNj8oCg0RFY/mqdefault.jpg", "dur": "1:33:50"}, {"id": "MlplgkXIWeQ", "title": "Smooth Jazz Harmony | Soft Female Vocals & Gentle Love Lyrics for Stress Relief & Calm Evenings", "thumb": "https://i.ytimg.com/vi/MlplgkXIWeQ/mqdefault.jpg", "dur": "1:29:38"}, {"id": "lOwwzgLcCwo", "title": "Moonlight Smooth Jazz | Soft Female Vocals, Gentle Love & Relaxing Lounge Music", "thumb": "https://i.ytimg.com/vi/lOwwzgLcCwo/mqdefault.jpg", "dur": "1:30:19"}, {"id": "5ETQEwxztgc", "title": "Smooth Day Jazz | Soft Jazz Vocals & Tender Love Lyrics for Deep Emotional Relaxation", "thumb": "https://i.ytimg.com/vi/5ETQEwxztgc/mqdefault.jpg", "dur": "1:28:11"}, {"id": "VWsmd3NWwGw", "title": "Relaxing Smooth Jazz | Soft Female Vocals & Gentle Jazz Lyrics to Soothe Your Soul Deeply", "thumb": "https://i.ytimg.com/vi/VWsmd3NWwGw/mqdefault.jpg", "dur": "1:28:43"}, {"id": "mSiHra3OhIo", "title": "Smooth Jazz Hamony | Soulful Vocals & Soft Melodies to Unwind After a Long Day", "thumb": "https://i.ytimg.com/vi/mSiHra3OhIo/mqdefault.jpg", "dur": "1:22:45"}, {"id": "D2SHOd8vhSc", "title": "Relaxing Smooth Jazz | Elegant Night Lounge & Smooth Female Singing (1 Hour)", "thumb": "https://i.ytimg.com/vi/D2SHOd8vhSc/mqdefault.jpg", "dur": "1:29:19"}, {"id": "j6xo6vdrkdc", "title": "Relaxing Smooth Jazz | Soft Female Vocals & Gentle Love Songs for Relaxing", "thumb": "https://i.ytimg.com/vi/j6xo6vdrkdc/mqdefault.jpg", "dur": "1:29:04"}, {"id": "Tm9M1M0Xk68", "title": "Relaxing Smooth Jazz | Soft Female Vocals & Gentle Love Lyrics for Peaceful Night Relaxation", "thumb": "https://i.ytimg.com/vi/Tm9M1M0Xk68/mqdefault.jpg", "dur": "1:29:05"}, {"id": "AKWhrx1pYqM", "title": "Relaxing Night Jazz Music 🎷Soft Female Vocals, Gentle Jazz Melodies & Cozy Night Lounge", "thumb": "https://i.ytimg.com/vi/AKWhrx1pYqM/mqdefault.jpg", "dur": "1:28:36"}, {"id": "4Gix2H7Ru_s", "title": "Midnight Smooth Jazz | Soft Female Vocals & Gentle Love Lyrics for Peaceful Night Relaxation", "thumb": "https://i.ytimg.com/vi/4Gix2H7Ru_s/mqdefault.jpg", "dur": "1:27:33"}, {"id": "hcbMklEQnE4", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/hcbMklEQnE4/mqdefault.jpg", "dur": "1:29:21"}, {"id": "PWR021kevm0", "title": "Relaxing Smooth Jazz | Romantic Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/PWR021kevm0/mqdefault.jpg", "dur": "1:30:43"}, {"id": "C1yzdl8-zpE", "title": "Relaxing Smooth Jazz | Cozy Night Lounge, Warm Female Vocals & Gentle Relaxing Melodies (1 Hour)", "thumb": "https://i.ytimg.com/vi/C1yzdl8-zpE/mqdefault.jpg", "dur": "1:24:54"}, {"id": "8o1HCfZPq8s", "title": "Relaxing Smooth Jazz | Soft Female Vocals, Cozy Lounge Vibes & Calm Night Melodies (1 Hour)", "thumb": "https://i.ytimg.com/vi/8o1HCfZPq8s/mqdefault.jpg", "dur": "1:29:40"}, {"id": "_wsDhoMKF_Y", "title": "Relaxing Smooth Jazz | Soft Female Vocals & Tender Love Lyrics to Relax Your Soul", "thumb": "https://i.ytimg.com/vi/_wsDhoMKF_Y/mqdefault.jpg", "dur": "1:26:29"}, {"id": "Ule_5hU-NAQ", "title": "Smooth Jazz Hamony| Cozy Female Vocals & Loving Lyrics for Emotional Comfort", "thumb": "https://i.ytimg.com/vi/Ule_5hU-NAQ/mqdefault.jpg", "dur": "1:27:20"}, {"id": "vzmXXlwYW1c", "title": "Relaxing Smooth Jazz | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/vzmXXlwYW1c/mqdefault.jpg", "dur": "1:29:41"}, {"id": "PhmW4gEqolo", "title": "Relaxing Smooth Jazz | Cozy Night Jazz Lounge, Soft Female Vocals & Soothing Melodies (1 Hour)", "thumb": "https://i.ytimg.com/vi/PhmW4gEqolo/mqdefault.jpg", "dur": "1:27:11"}, {"id": "bWz1sOuMDUE", "title": "Relaxing Smooth Jazz | Soft Female Vocals & Elegant Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/bWz1sOuMDUE/mqdefault.jpg", "dur": "1:24:19"}, {"id": "MfpBbWKIIVM", "title": "Relaxing Smooth Jazz | Soft Female Vocals, Gentle Jazz Melodies & Cozy Night Lounge (1 Hour)", "thumb": "https://i.ytimg.com/vi/MfpBbWKIIVM/mqdefault.jpg", "dur": "1:25:55"}, {"id": "gO6uoB72Pxw", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Gentle Lyrics to Heal and Feel Loved", "thumb": "https://i.ytimg.com/vi/gO6uoB72Pxw/mqdefault.jpg", "dur": "1:31:40"}, {"id": "RhJQrSTo9zA", "title": "Relaxing Smooth Jazz | Cozy Night Lounge, Soft Female Vocals & Gentle Jazz Melodies (1 Hour)", "thumb": "https://i.ytimg.com/vi/RhJQrSTo9zA/mqdefault.jpg", "dur": "1:27:54"}, {"id": "qSGnqGEwMkY", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/qSGnqGEwMkY/mqdefault.jpg", "dur": "1:28:48"}, {"id": "9-NTbXKDdzw", "title": "Smooth Jazz Harmony | Warm Female Vocals & Gentle Lyrics to Heal and Feel Loved", "thumb": "https://i.ytimg.com/vi/9-NTbXKDdzw/mqdefault.jpg", "dur": "1:28:32"}, {"id": "LG4oihyMx8E", "title": "Relaxing Smooth Jazz | Calm Female Vocals & Soft Love Lyrics for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/LG4oihyMx8E/mqdefault.jpg", "dur": "1:26:40"}, {"id": "fFjDb1tdgv4", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Gentle Love Lyrics to Calm Your Soul", "thumb": "https://i.ytimg.com/vi/fFjDb1tdgv4/mqdefault.jpg", "dur": "1:29:36"}, {"id": "ix4WMOP_GPI", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Healing Music for Inner Peace", "thumb": "https://i.ytimg.com/vi/ix4WMOP_GPI/mqdefault.jpg", "dur": "1:30:19"}, {"id": "t661l3FRN9s", "title": "Smooth Jazz Harmony | Soft Female Vocals & Sweet Love Lyrics to Warm Your Heart", "thumb": "https://i.ytimg.com/vi/t661l3FRN9s/mqdefault.jpg", "dur": "1:29:18"}, {"id": "Dpa5HuI2LHU", "title": "Smooth Jazz Harmony | Soulful Female Vocals for Stress Relief (1 Hour)", "thumb": "https://i.ytimg.com/vi/Dpa5HuI2LHU/mqdefault.jpg", "dur": "1:33:47"}, {"id": "4x7E64PM-Ok", "title": "Smooth Jazz Harmony | Soft Female Vocals & Relaxing Lyrics for Peaceful Moments (1 Hour)", "thumb": "https://i.ytimg.com/vi/4x7E64PM-Ok/mqdefault.jpg", "dur": "1:30:34"}, {"id": "ZtFaaN5qheQ", "title": "Relaxing Smooth Jazz | Relaxing Calm Twilight Waves & Lunar Peace", "thumb": "https://i.ytimg.com/vi/ZtFaaN5qheQ/mqdefault.jpg", "dur": "1:25:57"}, {"id": "1Tax4SHuicY", "title": "Smooth Jazz Harmony | Romantic Female Vocals & Chill Uplifting Songs", "thumb": "https://i.ytimg.com/vi/1Tax4SHuicY/mqdefault.jpg", "dur": "1:30:31"}, {"id": "0GQ4gdbwTcg", "title": "Smooth Jazz Lounge 🎷 Relaxing Female Vocals & Healing Music for Inner Peace", "thumb": "https://i.ytimg.com/vi/0GQ4gdbwTcg/mqdefault.jpg", "dur": "1:28:43"}, {"id": "BbuqI15-0CU", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/BbuqI15-0CU/mqdefault.jpg", "dur": "1:34:36"}, {"id": "x5BvacWwQK4", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Midnight Comfort Waves", "thumb": "https://i.ytimg.com/vi/x5BvacWwQK4/mqdefault.jpg", "dur": "1:27:14"}, {"id": "LJk2mg0IvXw", "title": "Smooth Jazz Harmony | Soothing Female Vocals & Uplifting Lyrics to Calm Your Mind", "thumb": "https://i.ytimg.com/vi/LJk2mg0IvXw/mqdefault.jpg", "dur": "1:26:27"}, {"id": "Au5j9eaion8", "title": "Relaxing Smooth Jazz | Soothing Female Vocals & Lyrics to Refuel Your Soul (1 Hour)", "thumb": "https://i.ytimg.com/vi/Au5j9eaion8/mqdefault.jpg", "dur": "1:29:57"}, {"id": "GvITcONmdgg", "title": "Smooth Jazz Harmony | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/GvITcONmdgg/mqdefault.jpg", "dur": "1:27:36"}, {"id": "hYiHKmDM3oM", "title": "Smooth Jazz Lounge with Female Vocals | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/hYiHKmDM3oM/mqdefault.jpg", "dur": "1:31:55"}, {"id": "vPban1pjwHw", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/vPban1pjwHw/mqdefault.jpg", "dur": "1:24:14"}, {"id": "n5alSYrLSQE", "title": "Relaxing Smooth Jazz | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/n5alSYrLSQE/mqdefault.jpg", "dur": "1:22:29"}, {"id": "TuayAd_kk1I", "title": "Smooth Jazz Harmony | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/TuayAd_kk1I/mqdefault.jpg", "dur": "1:21:33"}, {"id": "KroCemDk5Pk", "title": "Relaxing Smooth Jazz | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/KroCemDk5Pk/mqdefault.jpg", "dur": "1:24:25"}, {"id": "zn-qjD-uqsw", "title": "Smooth Jazz Harmony | Soothing Female Vocals & Uplifting Lyrics for Stress Relief", "thumb": "https://i.ytimg.com/vi/zn-qjD-uqsw/mqdefault.jpg", "dur": "1:27:49"}, {"id": "xU9DbwdLghU", "title": "Smooth Jazz Harmony | Gentle & Healing Jazz for Stress Relief (Lyrics, 1 Hour)", "thumb": "https://i.ytimg.com/vi/xU9DbwdLghU/mqdefault.jpg", "dur": "1:27:16"}, {"id": "9IIf2v2EAxY", "title": "Relaxing Smooth Jazz | Uplifting Love Songs & Soothing Vocals to Ignite Your Heart (1 Hour)", "thumb": "https://i.ytimg.com/vi/9IIf2v2EAxY/mqdefault.jpg", "dur": "1:26:06"}, {"id": "5hRCTH0zYlc", "title": "Relaxing Smooth Jazz | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/5hRCTH0zYlc/mqdefault.jpg", "dur": "1:24:02"}, {"id": "JNzwDGjcfaE", "title": "Smooth Jazz Harmony | Soothing Female Vocals & Uplifting Lyrics for Stress Relief", "thumb": "https://i.ytimg.com/vi/JNzwDGjcfaE/mqdefault.jpg", "dur": "1:32:38"}, {"id": "bM_RZ7DeCxo", "title": "Relaxing Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/bM_RZ7DeCxo/mqdefault.jpg", "dur": "1:24:34"}, {"id": "QSewMK1dyX0", "title": "Smooth Jazz Harmony | Soothing Female Vocals & Uplifting Lyrics for Stress Relief", "thumb": "https://i.ytimg.com/vi/QSewMK1dyX0/mqdefault.jpg", "dur": "1:40:57"}, {"id": "tm_eX-xrT8k", "title": "Romantic Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/tm_eX-xrT8k/mqdefault.jpg", "dur": "1:37:16"}, {"id": "H8qKQj7upKA", "title": "Smooth Jazz Harmony | Uplifting Love Songs & Soothing Vocals to Ignite Your Heart (1 Hour)", "thumb": "https://i.ytimg.com/vi/H8qKQj7upKA/mqdefault.jpg", "dur": "1:26:53"}, {"id": "EA6Bzu3kcdg", "title": "Smooth Jazz Harmony | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/EA6Bzu3kcdg/mqdefault.jpg", "dur": "1:15:56"}, {"id": "Vhs0lVw9Jsw", "title": "Romantic Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/Vhs0lVw9Jsw/mqdefault.jpg", "dur": "1:26:40"}, {"id": "QE9v73kvOmM", "title": "Smooth Jazz Harmony | Uplifting Love Songs & Soothing Vocals to Ignite Your Heart (1 Hour)", "thumb": "https://i.ytimg.com/vi/QE9v73kvOmM/mqdefault.jpg", "dur": "1:26:43"}, {"id": "Eo4g0i2ip7A", "title": "Romantic Smooth Jazz | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/Eo4g0i2ip7A/mqdefault.jpg", "dur": "1:28:34"}, {"id": "nP67Rqifjc8", "title": "Romantic Smooth Jazz | Uplifting Love Songs & Soothing Vocals to Ignite Your Heart (1 Hour)", "thumb": "https://i.ytimg.com/vi/nP67Rqifjc8/mqdefault.jpg", "dur": "1:24:46"}, {"id": "ZoyEJFijKQA", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Uplifting Lyrics to Heal, Relax & Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/ZoyEJFijKQA/mqdefault.jpg", "dur": "1:27:28"}, {"id": "wXrD8S40S8k", "title": "Smooth Jazz Harmony | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/wXrD8S40S8k/mqdefault.jpg", "dur": "1:22:19"}, {"id": "EesqRufK6DA", "title": "Smooth Jazz Harmony | Soulful Female Vocals & Uplifting Lyrics to Heal and Reset (1 Hour)", "thumb": "https://i.ytimg.com/vi/EesqRufK6DA/mqdefault.jpg", "dur": "1:31:56"}, {"id": "XAv_DFwqBTs", "title": "Smooth Jazz Relaxing Music | Empowering Female Vocals & Motivating Lyrics to Fuel Your Soul", "thumb": "https://i.ytimg.com/vi/XAv_DFwqBTs/mqdefault.jpg", "dur": "1:29:25"}, {"id": "TItmlb2I63c", "title": "Radiant Resilience Smooth Jazz | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/TItmlb2I63c/mqdefault.jpg", "dur": "1:28:04"}, {"id": "mAIHRoNd6pw", "title": "Smooth Jazz Harmony | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/mAIHRoNd6pw/mqdefault.jpg", "dur": "1:27:07"}, {"id": "wkCP-e0dAqE", "title": "Smooth Jazz Relaxing Music | Empowering Female Vocals & Motivating Lyrics to Fuel Your Soul", "thumb": "https://i.ytimg.com/vi/wkCP-e0dAqE/mqdefault.jpg", "dur": "1:30:17"}, {"id": "cHbonnVJ4AA", "title": "Romantic Smooth Jazz for Loving Souls | Uplifting Lyrics & Soothing Female Vocals to Feel the Magic", "thumb": "https://i.ytimg.com/vi/cHbonnVJ4AA/mqdefault.jpg", "dur": "1:29:03"}, {"id": "UZEbcCuhT4g", "title": "Radiant Resilience Smooth Jazz | Empowering Female Vocals & Motivating Lyrics to Fuel Your Soul", "thumb": "https://i.ytimg.com/vi/UZEbcCuhT4g/mqdefault.jpg", "dur": "1:31:07"}, {"id": "K_KwptBxyl8", "title": "Smooth Jazz Relaxing Music | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/K_KwptBxyl8/mqdefault.jpg", "dur": "1:25:43"}, {"id": "JJDOKRXN00k", "title": "Smooth Jazz Relaxing Music | Romantic Female Vocals & Uplifting Lyrics (1 Hour)", "thumb": "https://i.ytimg.com/vi/JJDOKRXN00k/mqdefault.jpg", "dur": "1:27:27"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

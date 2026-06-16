@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velvet Rust Blues </title>
+<!-- categories: Lounge, Blues -->
+<!-- channel-id: UCHN280wZiVT4_ZO_4wNisRA -->
+<!-- channel-url: https://www.youtube.com/@velvetrustblues12 -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Velvet_Rust_Blues.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/84Q20FTPOY92mu5tOu49rigVUujtOGGAxEl0hqyTsF5ht203Yyt6mFxMCQwfWKfXwqlzPyUu=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Velvet Rust Blues </div>
+      <div class="channel-count">59 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Velvet Rust Blues ";
+const VIDEOS = [{"id": "4oYuAbj9SDM", "title": "Heavy Blues Metal | Rebel Road Thunder & Gritty Guitar Soul", "thumb": "https://i.ytimg.com/vi/4oYuAbj9SDM/mqdefault.jpg", "dur": "1:36:20"}, {"id": "ORKg8Y6J1XA", "title": "Heavy Blues Metal | Iron Highway Groove & Raw Midnight Blues", "thumb": "https://i.ytimg.com/vi/ORKg8Y6J1XA/mqdefault.jpg", "dur": "1:36:20"}, {"id": "mnnKPmUP1rk", "title": "Heavy Blues Metal | Thunder Guitar Blues & Dark Desert Drive", "thumb": "https://i.ytimg.com/vi/mnnKPmUP1rk/mqdefault.jpg", "dur": "1:36:20"}, {"id": "v2crcWNwo_0", "title": "Heavy Blues Metal | Smoky Delta Riffs & Wild Road Energy", "thumb": "https://i.ytimg.com/vi/v2crcWNwo_0/mqdefault.jpg", "dur": "1:36:20"}, {"id": "OjCB5xDx-Ow", "title": "Heavy Blues Metal | Raw Highway Blues & Steel String Power", "thumb": "https://i.ytimg.com/vi/OjCB5xDx-Ow/mqdefault.jpg", "dur": "1:36:20"}, {"id": "XlsULrY-zEo", "title": "Heavy Blues Metal | Dark Southern Thunder & Heavy Road Riffs", "thumb": "https://i.ytimg.com/vi/XlsULrY-zEo/mqdefault.jpg", "dur": "1:36:20"}, {"id": "OLlKG9B2bhs", "title": "Heavy Blues Metal | Midnight Delta Fury & Iron Blues Groove", "thumb": "https://i.ytimg.com/vi/OLlKG9B2bhs/mqdefault.jpg", "dur": "1:36:20"}, {"id": "LTuz5JEHCwA", "title": "Heavy Blues Metal | Dusty Highway Storm & Rebel Guitar", "thumb": "https://i.ytimg.com/vi/LTuz5JEHCwA/mqdefault.jpg", "dur": "1:36:20"}, {"id": "edOCDpoXdGg", "title": "Heavy Blues Metal | Iron Blues Storm & Endless Road Ride", "thumb": "https://i.ytimg.com/vi/edOCDpoXdGg/mqdefault.jpg", "dur": "1:36:20"}, {"id": "cbJk1Jz_SSk", "title": "Heavy Blues Metal | Rebel Road Thunder & Raw Blues Energy", "thumb": "https://i.ytimg.com/vi/cbJk1Jz_SSk/mqdefault.jpg", "dur": "1:36:20"}, {"id": "3tmbaOYzOUo", "title": "Heavy Blues Metal | Midnight Delta Blues & Heavy Metal Groove", "thumb": "https://i.ytimg.com/vi/3tmbaOYzOUo/mqdefault.jpg", "dur": "1:36:20"}, {"id": "k8tnmzFlSzQ", "title": "Heavy Blues Metal | Dirty Highway Groove & Heavy Guitar Fury", "thumb": "https://i.ytimg.com/vi/k8tnmzFlSzQ/mqdefault.jpg", "dur": "1:36:20"}, {"id": "lqddsgo_UXk", "title": "Heavy Blues Metal | Thunder Road Blues & Smoky Rebel Fire", "thumb": "https://i.ytimg.com/vi/lqddsgo_UXk/mqdefault.jpg", "dur": "1:36:20"}, {"id": "22tVxqPhQlE", "title": "Heavy Blues Metal | Steel Guitar Blues & Dark Highway Power", "thumb": "https://i.ytimg.com/vi/22tVxqPhQlE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "XYI9GNWkMlg", "title": "Heavy Blues Metal | Gritty Delta Groove & Wild Metal Energy", "thumb": "https://i.ytimg.com/vi/XYI9GNWkMlg/mqdefault.jpg", "dur": "1:36:20"}, {"id": "r-8VsrDZSH4", "title": "Heavy Blues Metal | Burning Highway Riffs & Heavy Blues Storm", "thumb": "https://i.ytimg.com/vi/r-8VsrDZSH4/mqdefault.jpg", "dur": "1:36:20"}, {"id": "M9v0jKcNP4k", "title": "Heavy Blues Metal | Raw Southern Blues & Midnight Iron Ride", "thumb": "https://i.ytimg.com/vi/M9v0jKcNP4k/mqdefault.jpg", "dur": "1:36:20"}, {"id": "Jmfxgy72RwY", "title": "Heavy Blues Metal | Dark Road Fury & Rebel Guitar Thunder", "thumb": "https://i.ytimg.com/vi/Jmfxgy72RwY/mqdefault.jpg", "dur": "1:36:20"}, {"id": "mS5SsSyOjaE", "title": "Heavy Blues Metal | Raw Midnight Riffs & Dusty Road Power", "thumb": "https://i.ytimg.com/vi/mS5SsSyOjaE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "V6PKKI6dC_k", "title": "Heavy Blues Metal | Dark Iron Highway & Rebel Blues Storm", "thumb": "https://i.ytimg.com/vi/V6PKKI6dC_k/mqdefault.jpg", "dur": "1:36:20"}, {"id": "GCWiIP8tRPs", "title": "Heavy Blues Metal | Burning Blues Fury & Heavy Guitar Ride", "thumb": "https://i.ytimg.com/vi/GCWiIP8tRPs/mqdefault.jpg", "dur": "1:36:20"}, {"id": "OZgO8rpTNSs", "title": "Heavy Blues Metal | Dark Blues Metal & Endless Rebel Road", "thumb": "https://i.ytimg.com/vi/OZgO8rpTNSs/mqdefault.jpg", "dur": "1:36:20"}, {"id": "9lWKv85jLro", "title": "Heavy Blues Metal | Gritty Southern Thunder & Wild Road Groove", "thumb": "https://i.ytimg.com/vi/9lWKv85jLro/mqdefault.jpg", "dur": "1:36:20"}, {"id": "jMtVPz000Wg", "title": "Heavy Blues Metal | Steel String Blues & Dark Rebel Energy", "thumb": "https://i.ytimg.com/vi/jMtVPz000Wg/mqdefault.jpg", "dur": "1:36:20"}, {"id": "2_7q07AYhuQ", "title": "Heavy Blues Metal |24/7 LIVE Midnight Rebel Storm & Dark Highway Riffs", "thumb": "https://i.ytimg.com/vi/2_7q07AYhuQ/mqdefault_live.jpg", "dur": ""}, {"id": "B0lwuS3wf8k", "title": "Heavy Blues Metal | Thunder Road Riffs & Smoky Blues Fire", "thumb": "https://i.ytimg.com/vi/B0lwuS3wf8k/mqdefault.jpg", "dur": "1:36:20"}, {"id": "dzJ2usouhJE", "title": "Heavy Blues Metal | Dirty Delta Groove & Iron Guitar Storm", "thumb": "https://i.ytimg.com/vi/dzJ2usouhJE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "HUual3dru3E", "title": "Heavy Blues Metal | Midnight Blues Drive & Heavy Metal Soul", "thumb": "https://i.ytimg.com/vi/HUual3dru3E/mqdefault.jpg", "dur": "1:36:20"}, {"id": "DZQArX_4eME", "title": "Heavy Blues Metal | Wild Highway Thunder & Raw Blues Spirit", "thumb": "https://i.ytimg.com/vi/DZQArX_4eME/mqdefault.jpg", "dur": "1:36:20"}, {"id": "tymo2vwdvcg", "title": "Heavy Blues Metal | Burning Highway Blues & Steel String Power", "thumb": "https://i.ytimg.com/vi/tymo2vwdvcg/mqdefault.jpg", "dur": "1:36:20"}, {"id": "8o2TqCXL6-E", "title": "Heavy Blues Metal | Gritty Road Riffs & Dark Blues Energy", "thumb": "https://i.ytimg.com/vi/8o2TqCXL6-E/mqdefault.jpg", "dur": "1:36:20"}, {"id": "u6iZxm0tErQ", "title": "Heavy Blues Metal | Raw Blues Thunder & Endless Rebel Highway", "thumb": "https://i.ytimg.com/vi/u6iZxm0tErQ/mqdefault.jpg", "dur": "1:36:20"}, {"id": "bD_C1-xbqQ8", "title": "Heavy Blues Metal | Heavy Road Groove & Smoky Blues Fire", "thumb": "https://i.ytimg.com/vi/bD_C1-xbqQ8/mqdefault.jpg", "dur": "1:36:20"}, {"id": "7aHsgPLiw0w", "title": "Heavy Blues Metal | Thunder Guitar Blues & Dark Highway Ride", "thumb": "https://i.ytimg.com/vi/7aHsgPLiw0w/mqdefault.jpg", "dur": "1:36:20"}, {"id": "TqrZ4Qjj6mc", "title": "Heavy Blues Metal | Dirty Metal Blues & Midnight Road Storm", "thumb": "https://i.ytimg.com/vi/TqrZ4Qjj6mc/mqdefault.jpg", "dur": "1:36:20"}, {"id": "5zHQ82PNcv8", "title": "Heavy Blues Metal | Gritty Highway Blues & Iron Soul Riffs", "thumb": "https://i.ytimg.com/vi/5zHQ82PNcv8/mqdefault.jpg", "dur": "1:36:20"}, {"id": "0ms98QuCIzY", "title": "Heavy Blues Metal | Midnight Delta Blues & Heavy Metal Power", "thumb": "https://i.ytimg.com/vi/0ms98QuCIzY/mqdefault.jpg", "dur": "1:36:20"}, {"id": "rSwKf4Z-4CE", "title": "Heavy Blues Metal | Steel Road Groove & Raw Guitar Storm", "thumb": "https://i.ytimg.com/vi/rSwKf4Z-4CE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "L8T9B1rFuw0", "title": "Heavy Blues Metal | Dark Rebel Highway & Thunder Blues Riffs", "thumb": "https://i.ytimg.com/vi/L8T9B1rFuw0/mqdefault.jpg", "dur": "1:36:20"}, {"id": "2lvfgCX5C20", "title": "Heavy Blues Metal | Hard Blues Metal & Dark Rebel Highway", "thumb": "https://i.ytimg.com/vi/2lvfgCX5C20/mqdefault.jpg", "dur": "1:36:20"}, {"id": "tht95aHWmj4", "title": "Heavy Blues Metal | Thunder Blues Riffs & Rebel Road Energy", "thumb": "https://i.ytimg.com/vi/tht95aHWmj4/mqdefault.jpg", "dur": "1:36:20"}, {"id": "DYslCsyFWDQ", "title": "Heavy Blues Metal | Smoky Guitar Blues & Midnight Highway Storm", "thumb": "https://i.ytimg.com/vi/DYslCsyFWDQ/mqdefault.jpg", "dur": "1:36:20"}, {"id": "wbnB2GPmgy4", "title": "Heavy Blues Metal | Wild Road Blues & Heavy Metal Soul", "thumb": "https://i.ytimg.com/vi/wbnB2GPmgy4/mqdefault.jpg", "dur": "1:36:20"}, {"id": "_Gxo4rIzABQ", "title": "Heavy Blues Metal | Gritty Road Groove & Heavy Blues Fire", "thumb": "https://i.ytimg.com/vi/_Gxo4rIzABQ/mqdefault.jpg", "dur": "1:36:20"}, {"id": "Am7kHWM60RE", "title": "Heavy Blues Metal | Dark Southern Groove & Steel Guitar Power", "thumb": "https://i.ytimg.com/vi/Am7kHWM60RE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "o027qjeWWq4", "title": "Heavy Blues Metal | Raw Blues Fury & Endless Highway Ride", "thumb": "https://i.ytimg.com/vi/o027qjeWWq4/mqdefault.jpg", "dur": "1:36:20"}, {"id": "-08g2DfKlhE", "title": "Heavy Blues Metal | Dusty Delta Riffs & Midnight Road Fire", "thumb": "https://i.ytimg.com/vi/-08g2DfKlhE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "vnNPebXI9Z8", "title": "Heavy Blues Metal | Iron Road Blues & Heavy Guitar Thunder", "thumb": "https://i.ytimg.com/vi/vnNPebXI9Z8/mqdefault.jpg", "dur": "1:36:20"}, {"id": "OnAlj3wYF8o", "title": "Heavy Blues Metal | Rebel Highway Riffs & Dark Soul Groove", "thumb": "https://i.ytimg.com/vi/OnAlj3wYF8o/mqdefault.jpg", "dur": "1:36:20"}, {"id": "mNcDU9YTtpU", "title": "Heavy Blues Metal | Rebel Blues Fire & Heavy Road Vibes", "thumb": "https://i.ytimg.com/vi/mNcDU9YTtpU/mqdefault.jpg", "dur": "1:36:20"}, {"id": "zj7CEajQ0qY", "title": "Heavy Blues Metal | Hard Blues Metal & Midnight Highway Power", "thumb": "https://i.ytimg.com/vi/zj7CEajQ0qY/mqdefault.jpg", "dur": "1:36:20"}, {"id": "zVBRaVFjK2A", "title": "Heavy Blues Metal | Hard Blues Metal & Midnight Highway Power", "thumb": "https://i.ytimg.com/vi/zVBRaVFjK2A/mqdefault.jpg", "dur": "1:36:20"}, {"id": "l4RAJKKkfuY", "title": "Heavy Blues Metal | Rebel Highway Blues & Steel Guitar Fury", "thumb": "https://i.ytimg.com/vi/l4RAJKKkfuY/mqdefault.jpg", "dur": "1:36:20"}, {"id": "mX-Y367nSqw", "title": "Heavy Blues Metal | Heavy Southern Riffs & Wild Road Energy", "thumb": "https://i.ytimg.com/vi/mX-Y367nSqw/mqdefault.jpg", "dur": "1:36:20"}, {"id": "RTdOdQPwC68", "title": "Heavy Blues Metal | Gritty Metal Blues & Midnight Road Heat", "thumb": "https://i.ytimg.com/vi/RTdOdQPwC68/mqdefault.jpg", "dur": "1:36:20"}, {"id": "5Ri4u99QQZE", "title": "Heavy Blues Metal | Iron Highway Groove & Raw Blues Power", "thumb": "https://i.ytimg.com/vi/5Ri4u99QQZE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "Hi8s5c4fgds", "title": "Heavy Blues Metal | Dirty Road Blues & Metal Guitar Storm", "thumb": "https://i.ytimg.com/vi/Hi8s5c4fgds/mqdefault.jpg", "dur": "1:36:20"}, {"id": "SnrVqXOHp6c", "title": "Heavy Blues Metal | Dark Southern Steel & Heavy Blues Ride", "thumb": "https://i.ytimg.com/vi/SnrVqXOHp6c/mqdefault.jpg", "dur": "1:36:20"}, {"id": "EEFP03PT4ZQ", "title": "Heavy Blues Metal | Thunder Road Riffs & Rebel Soul Fire", "thumb": "https://i.ytimg.com/vi/EEFP03PT4ZQ/mqdefault.jpg", "dur": "1:36:20"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

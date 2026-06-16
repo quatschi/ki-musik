@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mississippi Willie</title>
+<!-- categories: Blues -->
+<!-- channel-id: UCakYiYhY9h1IIn4C-Zd7urA -->
+<!-- channel-url: https://youtube.com/@mississippi-willie -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Mississippi_Willie.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/OB8k_iZOcxmjAc1Jx6a5Ux2pQG6QpnV8ns6swOZhb8lqThfUKEX_mr42LHbONQ8VFPDsfqU9Pw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Mississippi Willie</div>
+      <div class="channel-count">29 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Mississippi Willie";
+const VIDEOS = [{"id": "zVStYZJfLM8", "title": "Too Poor to Quit, Too Strong to Fall | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/zVStYZJfLM8/mqdefault.jpg", "dur": "1:50:21"}, {"id": "PQaAAtI4p_g", "title": "No Road Ends in the Delta | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/PQaAAtI4p_g/mqdefault_live.jpg", "dur": "1:05:07"}, {"id": "Zv9XIBCTDxU", "title": "The Road Knows My Name | Mississippi Delta 1930s | Raw Blues & Harmonica", "thumb": "https://i.ytimg.com/vi/Zv9XIBCTDxU/mqdefault.jpg", "dur": "1:10:06"}, {"id": "5n40sMIG4RU", "title": "No Way Back, Still Walking | Mississippi Delta 1930s | Raw Blues & Harmonica", "thumb": "https://i.ytimg.com/vi/5n40sMIG4RU/mqdefault.jpg", "dur": "1:20:11"}, {"id": "NAsh42tgAyY", "title": "Too Old to Run From the Blues | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/NAsh42tgAyY/mqdefault.jpg", "dur": "1:07:15"}, {"id": "0T1e8jKWqsw", "title": "Too Old to Run From the Blues | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/0T1e8jKWqsw/mqdefault.jpg", "dur": "1:04:15"}, {"id": "H7YjRJ229GE", "title": "I Ain’t Drunk, I’m Just Old | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/H7YjRJ229GE/mqdefault.jpg", "dur": "1:14:00"}, {"id": "LW2r9oUicp0", "title": "Long Road & Cotton Fields | Mississippi Delta Blues 1930s | Raw Steel Guitar & Weary Soul", "thumb": "https://i.ytimg.com/vi/LW2r9oUicp0/mqdefault.jpg", "dur": "1:52:10"}, {"id": "q9qfD8ZQlOE", "title": "One More Mile to Go | Mississippi Delta 1930s | Raw Blues Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/q9qfD8ZQlOE/mqdefault.jpg", "dur": "1:05:27"}, {"id": "NKxRhy11f6Q", "title": "Too Old to Run From the Blues | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/NKxRhy11f6Q/mqdefault.jpg", "dur": "1:16:30"}, {"id": "AzWqnmyJOE8", "title": "No Road, Still Walking | Mississippi Delta 1930s | Raw Blues & Harmonica", "thumb": "https://i.ytimg.com/vi/AzWqnmyJOE8/mqdefault.jpg", "dur": "1:15:45"}, {"id": "6SDzKvjj3fk", "title": "Just sittin' here singin' away my blues | | Mississippi Delta Blues | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/6SDzKvjj3fk/mqdefault.jpg", "dur": "1:52:36"}, {"id": "hREu4bYYwGQ", "title": "Too Old to Run From the Blues | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/hREu4bYYwGQ/mqdefault.jpg", "dur": "1:07:10"}, {"id": "N2HPcou2YOw", "title": "No Road, Still Walking | Mississippi Delta 1930s | Raw Blues & Harmonica", "thumb": "https://i.ytimg.com/vi/N2HPcou2YOw/mqdefault.jpg", "dur": "1:04:56"}, {"id": "IqDosCtBOck", "title": "The Blues Follow Every Road Home | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/IqDosCtBOck/mqdefault.jpg", "dur": "1:09:35"}, {"id": "-DgJDqUYnV0", "title": "Moonlight Love - Mississippi Willie", "thumb": "https://i.ytimg.com/vi/-DgJDqUYnV0/mqdefault.jpg", "dur": "4:41"}, {"id": "-1sgVPfnM9I", "title": "I Ain’t Drunk, I’m Just Old | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/-1sgVPfnM9I/mqdefault.jpg", "dur": "1:03:41"}, {"id": "brZfhk_v6vQ", "title": "No Road, Still Walking | Mississippi Delta 1930s | Raw Blues & Harmonica", "thumb": "https://i.ytimg.com/vi/brZfhk_v6vQ/mqdefault.jpg", "dur": "1:04:20"}, {"id": "dh-_OGeMYh8", "title": "Too Old to Run From the Blues | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/dh-_OGeMYh8/mqdefault.jpg", "dur": "1:22:41"}, {"id": "HUsA9jT7qTw", "title": "Rusted Roads & Cotton Fields | Delta Blues 1930s | Acoustic Blues", "thumb": "https://i.ytimg.com/vi/HUsA9jT7qTw/mqdefault.jpg", "dur": "1:54:12"}, {"id": "03WXaPbOl_E", "title": "Hard Times Reveal | Mississippi Delta Blues 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/03WXaPbOl_E/mqdefault.jpg", "dur": "1:58:18"}, {"id": "b9_UvSV0WTo", "title": "Singing on the Cotton Fields | Mississippi Delta Blues 1930s & Vintage Jazz Vibes", "thumb": "https://i.ytimg.com/vi/b9_UvSV0WTo/mqdefault.jpg", "dur": "1:56:01"}, {"id": "MFFfMAPOnC4", "title": "Long Road & Cotton Fields | Mississippi Delta 1930s | Raw Blues & Steel Guitar", "thumb": "https://i.ytimg.com/vi/MFFfMAPOnC4/mqdefault.jpg", "dur": "1:53:16"}, {"id": "faISblh6GBw", "title": "When the Moon Cried - Mississippi Willie", "thumb": "https://i.ytimg.com/vi/faISblh6GBw/mqdefault.jpg", "dur": "4:22"}, {"id": "Zz36wXVzowc", "title": "Let It Roll, Cause I'm Old | Mississippi Delta 1930s | Raw Acoustic Guitar & Jazz Touch", "thumb": "https://i.ytimg.com/vi/Zz36wXVzowc/mqdefault.jpg", "dur": "1:48:13"}, {"id": "8hBrUQb0Eqk", "title": "Poor Folk Love Song | Mississippi Delta 1930s | Raw Blues & Jazz Vibes", "thumb": "https://i.ytimg.com/vi/8hBrUQb0Eqk/mqdefault.jpg", "dur": "1:58:04"}, {"id": "ObCn1LlUenY", "title": "Whiskey & Confessions | Mississippi Delta 1930s | Raw Blues & Jazz Vibes", "thumb": "https://i.ytimg.com/vi/ObCn1LlUenY/mqdefault.jpg", "dur": "1:48:13"}, {"id": "3rk1YbQXDnc", "title": "No Road, Still Walking | Mississippi Delta 1930s | Raw Blues & Jazz Vibes", "thumb": "https://i.ytimg.com/vi/3rk1YbQXDnc/mqdefault.jpg", "dur": "1:56:53"}, {"id": "jsObd8s0Xrc", "title": "I Ain’t Drunk, I’m Just Old | Mississippi Delta 1930s | Raw Blues & Jazz", "thumb": "https://i.ytimg.com/vi/jsObd8s0Xrc/mqdefault.jpg", "dur": "1:41:04"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

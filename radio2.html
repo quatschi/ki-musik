@@ -238,23 +238,21 @@
     pickRandom();
   }
 
-  // Gibt alle Videos mit 4-5 Sternen zurück als { video, channel } Liste
+  // Gibt alle Videos mit 4-5 Sternen zurück – direkt aus noten.json Meta-Daten
   async function getBestOfVideos() {
     const result = [];
-    const topIds = Object.entries(allRatings)
-      .filter(([id, stars]) => stars >= 4)
-      .map(([id]) => id);
-    if (!topIds.length) return result;
-    const topSet = new Set(topIds);
+    const meta = window.allMeta || {};
+    const entries = Object.entries(allRatings).filter(([id, stars]) => stars >= 4);
+    if (!entries.length) return result;
 
-    const filtered = getFiltered();
-    for (const channel of filtered) {
-      const videos = await loadOneChannel(channel);
-      for (const v of videos) {
-        if (topSet.has(v.videoId)) {
-          result.push({ video: v, channel });
-        }
-      }
+    for (const [id, stars] of entries) {
+      const m = meta[id] || {};
+      // Finde Kanal-Eintrag für Thumbnail
+      const ch = channelList.find(c => c.name === m.channel) || { name: m.channel || 'Unbekannt', thumb: '' };
+      result.push({
+        video: { videoId: id, title: m.title || id, dur: '' },
+        channel: ch
+      });
     }
     return result;
   }
@@ -400,6 +398,8 @@
             startPlaybackTimeout();
           }
           currentVideoId = video.videoId;
+          currentVideoTitle = video.title;
+          currentChannelName = ch.name;
           currentRating = allRatings[video.videoId] || 0;
           document.getElementById('info').innerHTML = `
             <div class="channel-row">
@@ -486,7 +486,9 @@
       }
 
       currentVideoId = video.videoId;
-      currentRating = 0;
+      currentVideoTitle = video.title;
+      currentChannelName = ch.name;
+      currentRating = allRatings[video.videoId] || 0;
       document.getElementById('info').innerHTML = `
         <div class="channel-row">
           ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
@@ -522,6 +524,8 @@
   const GITHUB_FILE = 'noten.json';
   const TOKEN_KEY = 'gh_token_ki_musik';
   let currentVideoId = null;
+  let currentVideoTitle = '';
+  let currentChannelName = '';
   let currentRating = 0;
   let allRatings = {};
 
@@ -546,6 +550,7 @@
         const data = await resp.json();
         const content = JSON.parse(atob(data.content));
         allRatings = content.ratings || {};
+        window.allMeta = content.meta || {};
       }
     } catch(e) {}
   }
@@ -582,7 +587,17 @@
     setRadioStatus('Speichern...', '');
 
     allRatings[currentVideoId] = currentRating;
-    const json = JSON.stringify({ channel: 'Radio', updated: new Date().toISOString(), ratings: allRatings }, null, 2);
+    // Meta-Daten (Titel + Kanal) mitspeichern für Best-Of
+    if (!window.allMeta) window.allMeta = {};
+    if (currentRating >= 4) {
+      window.allMeta[currentVideoId] = {
+        title: currentVideoTitle || '',
+        channel: currentChannelName || ''
+      };
+    } else {
+      delete window.allMeta[currentVideoId];
+    }
+    const json = JSON.stringify({ channel: 'Radio', updated: new Date().toISOString(), ratings: allRatings, meta: window.allMeta }, null, 2);
     const encoded = btoa(unescape(encodeURIComponent(json)));
 
     try {

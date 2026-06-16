@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RhythmAndSoul</title>
+<!-- categories: Lounge, Soul -->
+<!-- channel-id: UC0WC94vksAHYMmb0WO9bnPQ -->
+<!-- channel-url: https://www.youtube.com/@rhythmandsoul_rs -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=RhythmAndSoul.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/aTDlOhf8Yp4QeEcR8ZdVOPX8PViKY1_pv3yKR3-9fJ8FL7GxJkqmhaxL0rQgi63uzLw69kNEbA=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">RhythmAndSoul</div>
+      <div class="channel-count">127 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "RhythmAndSoul";
+const VIDEOS = [{"id": "kRzDrFkgJ3A", "title": "Midnight Mood — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/kRzDrFkgJ3A/mqdefault.jpg", "dur": "1:32:10"}, {"id": "d8x_ox7bFgA", "title": "Old Time Escape — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/d8x_ox7bFgA/mqdefault.jpg", "dur": "1:25:27"}, {"id": "KaeBZMQngec", "title": "Classic Night Atmosphere — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/KaeBZMQngec/mqdefault.jpg", "dur": "1:26:17"}, {"id": "1ts3zHik_n0", "title": "Vintage Night Experience — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/1ts3zHik_n0/mqdefault.jpg", "dur": "1:32:10"}, {"id": "sOGaKY4GUGs", "title": "Quiet Evenings — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/sOGaKY4GUGs/mqdefault.jpg", "dur": "1:30:26"}, {"id": "pcLhWgGpe-E", "title": "Timeless Vibes — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/pcLhWgGpe-E/mqdefault.jpg", "dur": "1:25:32"}, {"id": "r-WlEAXoXxc", "title": "Late Night Vibes — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/r-WlEAXoXxc/mqdefault.jpg", "dur": "1:25:39"}, {"id": "Qdl7cg_9uo8", "title": "Step Into the Past — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/Qdl7cg_9uo8/mqdefault.jpg", "dur": "1:28:35"}, {"id": "-LtALbWycmw", "title": "Late Night Vibes — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/-LtALbWycmw/mqdefault.jpg", "dur": "1:27:17"}, {"id": "Ol1ZhbR_V64", "title": "Vintage Night Experience — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/Ol1ZhbR_V64/mqdefault.jpg", "dur": "1:30:23"}, {"id": "_AmvAVQQhYA", "title": "Step Into the Past — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/_AmvAVQQhYA/mqdefault.jpg", "dur": "1:26:38"}, {"id": "hsGrAPIM6VY", "title": "Timeless Vibes — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/hsGrAPIM6VY/mqdefault.jpg", "dur": "1:25:43"}, {"id": "5aAiq3qXc5s", "title": "Classic Night Atmosphere — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/5aAiq3qXc5s/mqdefault.jpg", "dur": "1:32:19"}, {"id": "hd3Gft3CRmI", "title": "Timeless Vibes — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/hd3Gft3CRmI/mqdefault.jpg", "dur": "1:26:56"}, {"id": "55G-7LvOsNs", "title": "Old Time Escape — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/55G-7LvOsNs/mqdefault.jpg", "dur": "1:25:38"}, {"id": "P7aZpHZ_6NY", "title": "Old Time Escape — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/P7aZpHZ_6NY/mqdefault.jpg", "dur": "1:36:32"}, {"id": "tbKucoTRrYQ", "title": "Quiet Evenings — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/tbKucoTRrYQ/mqdefault.jpg", "dur": "1:31:22"}, {"id": "bUtt9X11tsE", "title": "Classic Night Atmosphere — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/bUtt9X11tsE/mqdefault.jpg", "dur": "2:12:49"}, {"id": "UtFe0_Ned5I", "title": "Vintage Night Experience — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/UtFe0_Ned5I/mqdefault.jpg", "dur": "1:24:23"}, {"id": "SkiWqxuZTqk", "title": "After Dark — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/SkiWqxuZTqk/mqdefault.jpg", "dur": "1:23:54"}, {"id": "rJvDogr5HgM", "title": "Timeless Vibes — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/rJvDogr5HgM/mqdefault.jpg", "dur": "1:29:22"}, {"id": "06HEi8FLh74", "title": "Late Night Vibes — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/06HEi8FLh74/mqdefault.jpg", "dur": "1:24:55"}, {"id": "KqmDab3nWlg", "title": "Deep Night Feelings — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/KqmDab3nWlg/mqdefault.jpg", "dur": "1:25:37"}, {"id": "pRCrc1qDIaE", "title": "Old Time Escape — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/pRCrc1qDIaE/mqdefault.jpg", "dur": "1:24:48"}, {"id": "xLunuYUG-0g", "title": "Midnight Mood — Sensual Jazz 1940s for Intimate Nights & Quiet Heartbreak", "thumb": "https://i.ytimg.com/vi/xLunuYUG-0g/mqdefault.jpg", "dur": "1:27:17"}, {"id": "uL2zP6wSGAg", "title": "Step Into the Past — 1940's Vintage Jazz Club | Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/uL2zP6wSGAg/mqdefault.jpg", "dur": "1:22:36"}, {"id": "B1agFB7pnv4", "title": "You Won’t Believe This 1940s Jazz Vibe ☕ Timeless Vintage Music for Deep Relaxation & Calm Nights", "thumb": "https://i.ytimg.com/vi/B1agFB7pnv4/mqdefault.jpg", "dur": "1:32:43"}, {"id": "a3Z4R7awTqI", "title": "This 1940s Jazz Cafe Ambience Will Melt Your Stress ☕Vintage Jazz for Deep Focus, Relax & Night Mood", "thumb": "https://i.ytimg.com/vi/a3Z4R7awTqI/mqdefault.jpg", "dur": "1:26:50"}, {"id": "kxLRyLRAIwQ", "title": "Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/kxLRyLRAIwQ/mqdefault.jpg", "dur": "1:23:04"}, {"id": "CE6CXsq5Btw", "title": "Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/CE6CXsq5Btw/mqdefault.jpg", "dur": "1:29:10"}, {"id": "o7P_3uU_IXc", "title": "You’ll Feel Like It’s 1940 ☕ Vintage Jazz for Deep Focus, Cozy Nights & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/o7P_3uU_IXc/mqdefault.jpg", "dur": "1:27:01"}, {"id": "8rFjGb9G4A0", "title": "Step Into 1940s Jazz Cafe ☕ Warm Vintage Music for Relaxing, Studying & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/8rFjGb9G4A0/mqdefault.jpg", "dur": "1:28:08"}, {"id": "9s9lPVMn8NA", "title": "This Vintage Jazz Will Melt Your Stress ☕ 1940s Cozy Cafe Ambience for Deep Focus & Relax", "thumb": "https://i.ytimg.com/vi/9s9lPVMn8NA/mqdefault.jpg", "dur": "1:24:25"}, {"id": "KauBnupeC7Y", "title": "Cozy 1940s Jazz Café ☕ Vintage Jazz Music for Relaxing, Studying & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/KauBnupeC7Y/mqdefault.jpg", "dur": "1:23:44"}, {"id": "IEPepcJRzLQ", "title": "Step Into a Smoky 1940s Jazz Club – Vintage Jazz That Feels Like a Lost Midnight Memory", "thumb": "https://i.ytimg.com/vi/IEPepcJRzLQ/mqdefault.jpg", "dur": "1:26:00"}, {"id": "wbgbpgCABWg", "title": "Step Back in Time with 1940s Vintage Jazz – Smooth, Cozy & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/wbgbpgCABWg/mqdefault.jpg", "dur": "1:22:39"}, {"id": "2a1CoLRlq2E", "title": "Relaxing 1940s Vintage Jazz 🎷 Timeless Smooth Music for Calm & Cozy Days", "thumb": "https://i.ytimg.com/vi/2a1CoLRlq2E/mqdefault.jpg", "dur": "1:19:48"}, {"id": "5Sfl56PSLao", "title": "Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/5Sfl56PSLao/mqdefault.jpg", "dur": "1:17:35"}, {"id": "M3zz1_5G5aE", "title": "Step Into a Smoky 1940s Jazz Club – Vintage Jazz That Feels Like a Lost Midnight Memory", "thumb": "https://i.ytimg.com/vi/M3zz1_5G5aE/mqdefault.jpg", "dur": "1:26:53"}, {"id": "9sbRlVyrW1g", "title": "☕ 1940s Jazz Ambience – Smooth Vintage Chill Music for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/9sbRlVyrW1g/mqdefault.jpg", "dur": "1:25:01"}, {"id": "1FNbJrLnZ8Q", "title": "Step Into the Golden Era – 1940s Vintage Jazz That Melts Stress & Boosts Focus Instantly", "thumb": "https://i.ytimg.com/vi/1FNbJrLnZ8Q/mqdefault.jpg", "dur": "1:23:45"}, {"id": "mi2HYZ7f5mY", "title": "🎷 BEST 1940s Vintage Jazz Experience – Timeless Chill Music for Deep Focus, Study, Relax & Sleep", "thumb": "https://i.ytimg.com/vi/mi2HYZ7f5mY/mqdefault.jpg", "dur": "1:25:05"}, {"id": "Fr53QmsV8-w", "title": "Relaxing 1940s Vintage Jazz 🎷 Timeless Smooth Music for Calm & Cozy Days", "thumb": "https://i.ytimg.com/vi/Fr53QmsV8-w/mqdefault.jpg", "dur": "1:25:18"}, {"id": "s8Dm4zs-QLw", "title": "Relaxing Vintage Jazz from the 1940s – Smooth Timeless Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/s8Dm4zs-QLw/mqdefault.jpg", "dur": "1:26:27"}, {"id": "F8Hj-EkAQWA", "title": "Timeless 1940s Vintage Jazz Music – Relax & Slow Down", "thumb": "https://i.ytimg.com/vi/F8Hj-EkAQWA/mqdefault.jpg", "dur": "1:23:59"}, {"id": "qvMci01FzRs", "title": "Classic 1940s Vintage Jazz – Smooth, Warm & Timeless Music for Peaceful Days", "thumb": "https://i.ytimg.com/vi/qvMci01FzRs/mqdefault.jpg", "dur": "1:26:07"}, {"id": "AxoHclKJ3l0", "title": "Timeless 1940s Vintage Jazz Music – Relax & Slow Down", "thumb": "https://i.ytimg.com/vi/AxoHclKJ3l0/mqdefault.jpg", "dur": "1:22:30"}, {"id": "JHUTiYoShdA", "title": "Relaxing 1940s Vintage Jazz 🎷 Timeless Smooth Music for Calm & Cozy Days", "thumb": "https://i.ytimg.com/vi/JHUTiYoShdA/mqdefault.jpg", "dur": "1:25:02"}, {"id": "rOO1gISb1lQ", "title": "Relaxing 1940s Vintage Jazz Music – Timeless Calm for Everyday Life", "thumb": "https://i.ytimg.com/vi/rOO1gISb1lQ/mqdefault.jpg", "dur": "1:24:29"}, {"id": "4miK8by0zK0", "title": "Relax with 1940s Vintage Jazz – Soft Music for Peaceful Days", "thumb": "https://i.ytimg.com/vi/4miK8by0zK0/mqdefault.jpg", "dur": "1:21:53"}, {"id": "CGp-BEViIEo", "title": "Relaxing Vintage Jazz from the 1940s – Smooth Timeless Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/CGp-BEViIEo/mqdefault.jpg", "dur": "1:20:30"}, {"id": "eVxBR5sIshs", "title": "1940s Vintage Jazz Music for Relaxation – Timeless Chill & Cozy Ambience", "thumb": "https://i.ytimg.com/vi/eVxBR5sIshs/mqdefault.jpg", "dur": "1:28:11"}, {"id": "_uq9c4S08tg", "title": "Step Back in Time with 1940s Vintage Jazz – Smooth, Cozy & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/_uq9c4S08tg/mqdefault.jpg", "dur": "1:24:12"}, {"id": "Hkp8Pgr0Uh0", "title": "Timeless 1940s Jazz 🎶 Smooth Vintage Music to Relax, Unwind & Feel Cozy", "thumb": "https://i.ytimg.com/vi/Hkp8Pgr0Uh0/mqdefault.jpg", "dur": "1:23:12"}, {"id": "DWsVB4pO-rU", "title": "1940s Vintage Jazz for Relaxation – Timeless Music for Calm Days", "thumb": "https://i.ytimg.com/vi/DWsVB4pO-rU/mqdefault.jpg", "dur": "1:23:33"}, {"id": "7S5GzE4wSrI", "title": "Step Back in Time with 1940s Vintage Jazz – Smooth, Cozy & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/7S5GzE4wSrI/mqdefault.jpg", "dur": "1:26:01"}, {"id": "DPMuVr8bJ4s", "title": "Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/DPMuVr8bJ4s/mqdefault.jpg", "dur": "1:29:04"}, {"id": "bT2yr8pZboE", "title": "Step Back in Time with 1940s Vintage Jazz – Smooth, Cozy & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/bT2yr8pZboE/mqdefault.jpg", "dur": "1:20:08"}, {"id": "q74EhKViLBM", "title": "Relaxing 1940s Vintage Jazz 🎷 Timeless Smooth Music for Calm & Cozy Days", "thumb": "https://i.ytimg.com/vi/q74EhKViLBM/mqdefault.jpg", "dur": "1:27:31"}, {"id": "RXTYZZuVnvU", "title": "Smoke Moves Slower After Midnight - Relaxing 1940s Jazz – Timeless Vintage Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/RXTYZZuVnvU/mqdefault.jpg", "dur": "1:25:41"}, {"id": "ClFiLaJ_yeM", "title": "Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/ClFiLaJ_yeM/mqdefault.jpg", "dur": "1:22:07"}, {"id": "sOZSr-subJ8", "title": "This City Only Loves the Guilty - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/sOZSr-subJ8/mqdefault.jpg", "dur": "1:24:49"}, {"id": "QG1CGhpZhL8", "title": "Moonlight in My Memories - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/QG1CGhpZhL8/mqdefault.jpg", "dur": "1:23:10"}, {"id": "u-Lzgt8Ez2U", "title": "Shadows of a Gentle Memory - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/u-Lzgt8Ez2U/mqdefault.jpg", "dur": "1:25:08"}, {"id": "TcxiveZmzxU", "title": "Quiet Reflections in the Night - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/TcxiveZmzxU/mqdefault.jpg", "dur": "1:28:05"}, {"id": "8_8HcqLi2Vk", "title": "City Lights & Candle Glow - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/8_8HcqLi2Vk/mqdefault.jpg", "dur": "1:26:21"}, {"id": "qli60ZhUhA8", "title": "Shadows Know My Name - Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/qli60ZhUhA8/mqdefault.jpg", "dur": "1:17:06"}, {"id": "mX0QhoRo-6c", "title": "Last Train in the Winter Snow - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/mX0QhoRo-6c/mqdefault.jpg", "dur": "1:23:10"}, {"id": "aTiAFYwOipg", "title": "Shadows Know My Name - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/aTiAFYwOipg/mqdefault.jpg", "dur": "1:23:07"}, {"id": "28_y3D_uoiQ", "title": "Softly, You Return to Me - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/28_y3D_uoiQ/mqdefault.jpg", "dur": "1:26:15"}, {"id": "tILt_zrj63k", "title": "Midnight Case of You - Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/tILt_zrj63k/mqdefault.jpg", "dur": "1:27:46"}, {"id": "KaGjsSWV5Bk", "title": "Gunmetal Night - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/KaGjsSWV5Bk/mqdefault.jpg", "dur": "1:29:07"}, {"id": "fOxURSTQPr0", "title": "Velvet Danger - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/fOxURSTQPr0/mqdefault.jpg", "dur": "1:28:23"}, {"id": "LlvUKx-Kq6k", "title": "A Whisper in the Evening Light - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/LlvUKx-Kq6k/mqdefault.jpg", "dur": "1:25:14"}, {"id": "1icBXJE0I98", "title": "The Warmth You Left Behind - Chill 1940s Vintage Jazz Music – Classic Sounds for Everyday Moments", "thumb": "https://i.ytimg.com/vi/1icBXJE0I98/mqdefault.jpg", "dur": "1:28:29"}, {"id": "wBPwlqxJWUY", "title": "Soft Moonlight Memories - Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/wBPwlqxJWUY/mqdefault.jpg", "dur": "1:27:25"}, {"id": "QjVkEVDKCL4", "title": "Warm Coffee & Morning Sun - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/QjVkEVDKCL4/mqdefault.jpg", "dur": "1:23:09"}, {"id": "xnUkLjy1-pI", "title": "The Scent of Yesterday - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/xnUkLjy1-pI/mqdefault.jpg", "dur": "1:28:42"}, {"id": "RqeUqU0xh4Y", "title": "Sunday Records - Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/RqeUqU0xh4Y/mqdefault.jpg", "dur": "1:28:00"}, {"id": "G2e4PBQuDUc", "title": "Golden Evening Swing - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/G2e4PBQuDUc/mqdefault.jpg", "dur": "1:29:57"}, {"id": "0xFRiC8XBi0", "title": "Softly the Stars Begin to Sing - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/0xFRiC8XBi0/mqdefault.jpg", "dur": "1:25:51"}, {"id": "iD88vepTKGk", "title": "Whispered Heat - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/iD88vepTKGk/mqdefault.jpg", "dur": "1:28:09"}, {"id": "6dURYPA-nb4", "title": "Windows and Warm Light - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/6dURYPA-nb4/mqdefault.jpg", "dur": "1:27:29"}, {"id": "4kcClqt_3Pk", "title": "When It Rains, I Remember You - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/4kcClqt_3Pk/mqdefault.jpg", "dur": "1:29:05"}, {"id": "f4SozH1QdZA", "title": "Morning Coffee Swing - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/f4SozH1QdZA/mqdefault.jpg", "dur": "1:24:58"}, {"id": "PGeEfAU03Nk", "title": "Lazy Afternoon Melody - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/PGeEfAU03Nk/mqdefault.jpg", "dur": "1:26:27"}, {"id": "LhGXXqbqtwI", "title": "Gentle Rain on the Window - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/LhGXXqbqtwI/mqdefault.jpg", "dur": "1:28:30"}, {"id": "f6lhVWLBZ6k", "title": "Cozy Corners - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/f6lhVWLBZ6k/mqdefault.jpg", "dur": "1:34:00"}, {"id": "tyFehrmfILU", "title": "A Smile Across the Room - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/tyFehrmfILU/mqdefault.jpg", "dur": "1:23:46"}, {"id": "QZcDPrYRg5U", "title": "Under the Amber Light - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/QZcDPrYRg5U/mqdefault.jpg", "dur": "1:24:06"}, {"id": "JRXy8MslHug", "title": "Lazy Afternoon Melody - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/JRXy8MslHug/mqdefault.jpg", "dur": "1:27:11"}, {"id": "KdJSeIxwZ0s", "title": "Dreaming You in Sepia - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/KdJSeIxwZ0s/mqdefault.jpg", "dur": "1:23:30"}, {"id": "-hxB5rVZfAk", "title": "Windows and Warm Light - 1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/-hxB5rVZfAk/mqdefault.jpg", "dur": "1:29:45"}, {"id": "fSB-anP5nhw", "title": "The Letter I Never Wrote - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/fSB-anP5nhw/mqdefault.jpg", "dur": "1:27:53"}, {"id": "LiXynZYtql8", "title": "After the Rain, There’s You - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/LiXynZYtql8/mqdefault.jpg", "dur": "1:27:15"}, {"id": "4tQNZBx23VI", "title": "Morning Cup Jazz - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/4tQNZBx23VI/mqdefault.jpg", "dur": "1:24:19"}, {"id": "L_qtYe5K0DM", "title": "Where We Used to Swing - Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/L_qtYe5K0DM/mqdefault.jpg", "dur": "1:27:07"}, {"id": "_XN86F3QciY", "title": "Dandelion Dreams - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/_XN86F3QciY/mqdefault.jpg", "dur": "1:25:13"}, {"id": "D0zfdcTR9zk", "title": "Timeless Love in the Rain - Chill 1940s Vintage Jazz Music – Relaxing Sounds for Calm Daily Living", "thumb": "https://i.ytimg.com/vi/D0zfdcTR9zk/mqdefault.jpg", "dur": "1:26:25"}, {"id": "EUoA3V1Mvcc", "title": "Golden Evenings - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/EUoA3V1Mvcc/mqdefault.jpg", "dur": "1:27:52"}, {"id": "s25szsmnRiU", "title": "Love in the Rain - Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/s25szsmnRiU/mqdefault.jpg", "dur": "1:22:24"}, {"id": "DvpsrDMXZxY", "title": "Faded Letters - Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/DvpsrDMXZxY/mqdefault.jpg", "dur": "1:28:15"}, {"id": "G0O5wN5k2uM", "title": "When the Night Remembers - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/G0O5wN5k2uM/mqdefault.jpg", "dur": "1:25:56"}, {"id": "-a1u-4_DcnM", "title": "Velvet Streets - Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/-a1u-4_DcnM/mqdefault.jpg", "dur": "1:26:26"}, {"id": "aqEORgTP3Dc", "title": "In the Quiet of Yesterday - Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/aqEORgTP3Dc/mqdefault.jpg", "dur": "1:27:32"}, {"id": "JTkXk0tjyXc", "title": "Autumn Serenade - Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/JTkXk0tjyXc/mqdefault.jpg", "dur": "1:23:54"}, {"id": "-yil2hBUOvk", "title": "Whispers in the Evening Glow - Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/-yil2hBUOvk/mqdefault.jpg", "dur": "1:23:58"}, {"id": "rD72D69qiAs", "title": "Timeless Romance -  Chill 1940s Vintage Jazz Music – Classic Evening & Everyday Chillout", "thumb": "https://i.ytimg.com/vi/rD72D69qiAs/mqdefault.jpg", "dur": "1:28:38"}, {"id": "_DYh8adlxng", "title": "Chill 1940s Vintage Jazz Music – Relaxing Sounds for Calm Daily Living", "thumb": "https://i.ytimg.com/vi/_DYh8adlxng/mqdefault.jpg", "dur": "1:23:06"}, {"id": "wjjLPPE9Agw", "title": "1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/wjjLPPE9Agw/mqdefault.jpg", "dur": "1:27:13"}, {"id": "Lswvz5KcmLs", "title": "Relax with 1940s Vintage Jazz – Timeless Chill Music for Everyday Calm", "thumb": "https://i.ytimg.com/vi/Lswvz5KcmLs/mqdefault.jpg", "dur": "1:23:47"}, {"id": "PSpZ7xn0KoA", "title": "Chill 1940s Vintage Jazz Music – Classic Evening & Everyday Chillout", "thumb": "https://i.ytimg.com/vi/PSpZ7xn0KoA/mqdefault.jpg", "dur": "1:26:17"}, {"id": "9zxyoO-Jwi0", "title": "Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/9zxyoO-Jwi0/mqdefault.jpg", "dur": "1:27:28"}, {"id": "bR8Ulc2b_I4", "title": "Chill 1940s Vintage Jazz Music – Smooth Retro Jazz for Daily Relaxation", "thumb": "https://i.ytimg.com/vi/bR8Ulc2b_I4/mqdefault.jpg", "dur": "1:24:22"}, {"id": "3VLM_hhEjsY", "title": "Chill 1940s Vintage Jazz Music – Classic Sounds for Everyday Moments", "thumb": "https://i.ytimg.com/vi/3VLM_hhEjsY/mqdefault.jpg", "dur": "1:25:59"}, {"id": "sg1WgY7YbVY", "title": "1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/sg1WgY7YbVY/mqdefault.jpg", "dur": "1:25:30"}, {"id": "rk1eW4b2-NE", "title": "Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/rk1eW4b2-NE/mqdefault.jpg", "dur": "1:25:33"}, {"id": "FDjJ6Q8eizI", "title": "Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/FDjJ6Q8eizI/mqdefault.jpg", "dur": "1:27:31"}, {"id": "RPn2LueSkHM", "title": "Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/RPn2LueSkHM/mqdefault.jpg", "dur": "1:26:15"}, {"id": "DduuoTw5moA", "title": "Chill 1940s Vintage Jazz Music – Smooth Retro Jazz for Daily Relaxation", "thumb": "https://i.ytimg.com/vi/DduuoTw5moA/mqdefault.jpg", "dur": "1:24:48"}, {"id": "0Pm2x80QQDw", "title": "Relaxing Chill 1940s Vintage Jazz Music – Daily Ambience & Timeless Charm", "thumb": "https://i.ytimg.com/vi/0Pm2x80QQDw/mqdefault.jpg", "dur": "1:28:06"}, {"id": "0dfMLewEMlM", "title": "Chill 1940s Vintage Jazz Music – Classic Sounds for Everyday Moments", "thumb": "https://i.ytimg.com/vi/0dfMLewEMlM/mqdefault.jpg", "dur": "1:23:00"}, {"id": "RvmFHOm530w", "title": "Chill 1940s Vintage Jazz Music – Classic Evening & Everyday Chillout", "thumb": "https://i.ytimg.com/vi/RvmFHOm530w/mqdefault.jpg", "dur": "1:28:51"}, {"id": "eeohRSZGLjQ", "title": "1940s Vintage Jazz Music – Chill & Timeless Melodies for Daily Vibes", "thumb": "https://i.ytimg.com/vi/eeohRSZGLjQ/mqdefault.jpg", "dur": "1:26:26"}, {"id": "qlZQ99X6LDs", "title": "Relaxing 1940s Vintage Jazz Music – Timeless Chill for Daily Life", "thumb": "https://i.ytimg.com/vi/qlZQ99X6LDs/mqdefault.jpg", "dur": "1:22:22"}, {"id": "iMqCU_5LdZo", "title": "Chill 1940s Vintage Jazz Music – Smooth Daily Vibes for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/iMqCU_5LdZo/mqdefault.jpg", "dur": "1:28:41"}, {"id": "8_9TsqsKD8M", "title": "Chill 1940s Vintage Jazz Music – Cozy Background Tunes for Everyday Living", "thumb": "https://i.ytimg.com/vi/8_9TsqsKD8M/mqdefault.jpg", "dur": "1:25:19"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

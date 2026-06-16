@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analog Atelier</title>
+<!-- categories: Soul, Funk -->
+<!-- channel-id: UCfdZNZwsiJUZ4j91UPpCk-Q -->
+<!-- channel-url: https://youtube.com/@analogatelierstudio -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Analog_Atelier.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/KFirTB9cu4JId_nVOu_zO1VRMa-x6v5AL_AFQlvgP1QWzWTehE4w_hOs0_XKAmOI3Dg2SHtxnkc=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Analog Atelier</div>
+      <div class="channel-count">61 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Analog Atelier";
+const VIDEOS = [{"id": "KDLwKGYzhfs", "title": "MOONLIT ANALOG SOCIETY 🌙 Deep Funk Soul Grooves for Study & Night Flow", "thumb": "https://i.ytimg.com/vi/KDLwKGYzhfs/mqdefault.jpg", "dur": "1:09:08"}, {"id": "qvmu4fhpOfg", "title": "GOLDEN RHODES GROOVE 🌅 Smooth Soul Jazz for Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/qvmu4fhpOfg/mqdefault.jpg", "dur": "50:38"}, {"id": "QP3ZJSz9HqM", "title": "MIDNIGHT SOUL DISTRICT 🌙 Deep Jazz Grooves for Study & Night Flow", "thumb": "https://i.ytimg.com/vi/QP3ZJSz9HqM/mqdefault.jpg", "dur": "54:58"}, {"id": "rsN9xX9yoKE", "title": "SUNSET RHYTHM DISTRICT 🌇 Analog Jazz Funk for Chill, Focus & Golden Hour Vibes", "thumb": "https://i.ytimg.com/vi/rsN9xX9yoKE/mqdefault.jpg", "dur": "1:00:17"}, {"id": "IvHmU8lCrYI", "title": "VELVET FUNK THEORY 🌙 Analog Jazz Funk for Focus & Late Night Flow", "thumb": "https://i.ytimg.com/vi/IvHmU8lCrYI/mqdefault.jpg", "dur": "43:20"}, {"id": "GUzm8O6FT8E", "title": "OCEAN RHODES THEORY 🌊 Smooth Soul Jazz for Deep Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/GUzm8O6FT8E/mqdefault.jpg", "dur": "1:04:48"}, {"id": "EzOlMBnmHu4", "title": "AMBER GROOVE DISTRICT 🌇 Smooth Jazz Funk for Chill, Focus & Sunset Flow", "thumb": "https://i.ytimg.com/vi/EzOlMBnmHu4/mqdefault.jpg", "dur": "57:42"}, {"id": "gQoz4Yrnho4", "title": "MIDNIGHT RHODES THEORY 🌙 Deep Soul Jazz for Study & Night Flow", "thumb": "https://i.ytimg.com/vi/gQoz4Yrnho4/mqdefault.jpg", "dur": "1:04:44"}, {"id": "DUiN8jrzao0", "title": "COASTLINE SOUL GROOVE 🌊 Smooth Analog Jazz for Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/DUiN8jrzao0/mqdefault.jpg", "dur": "1:09:16"}, {"id": "eejBMKTGB3w", "title": "VELVET MIDNIGHT DISTRICT 🌆 Deep Jazz Funk for Chill, Focus & Late Night Work", "thumb": "https://i.ytimg.com/vi/eejBMKTGB3w/mqdefault.jpg", "dur": "1:00:08"}, {"id": "WSAq8bZahXI", "title": "STARLIGHT GROOVE THEORY ✨ Smooth Analog Soul for Focus & Night Flow", "thumb": "https://i.ytimg.com/vi/WSAq8bZahXI/mqdefault.jpg", "dur": "51:57"}, {"id": "p9hE1SSt7fM", "title": "GOLDEN SOUL THEORY 🌅 Smooth Jazz Grooves for Creative Flow & Relaxation", "thumb": "https://i.ytimg.com/vi/p9hE1SSt7fM/mqdefault.jpg", "dur": "53:04"}, {"id": "0tChuYrkkn4", "title": "NEON FUNK GROOVE 🌃 Smooth Analog Jazz Funk for Chill & Creative Flow", "thumb": "https://i.ytimg.com/vi/0tChuYrkkn4/mqdefault.jpg", "dur": "47:00"}, {"id": "TOzXAyS-h1s", "title": "AFTER DARK FUNK THEORY 🌙 Analog Soul Grooves for Deep Focus & Late Night Work", "thumb": "https://i.ytimg.com/vi/TOzXAyS-h1s/mqdefault.jpg", "dur": "52:51"}, {"id": "T8T_upswW7U", "title": "MOONLIGHT SOUL GROOVE 🌙 Smooth Analog Jazz for Deep Focus & Night Flow", "thumb": "https://i.ytimg.com/vi/T8T_upswW7U/mqdefault.jpg", "dur": "1:06:40"}, {"id": "W1-q4YZI7_4", "title": "AFTER HOURS GROOVE 🌙 Deep Soul Jazz for Study & Night Flow", "thumb": "https://i.ytimg.com/vi/W1-q4YZI7_4/mqdefault.jpg", "dur": "50:01"}, {"id": "cpjVRH0tGXI", "title": "VELVET FUNK DISTRICT 🌆 Analog Groove Sessions for Chill, Focus & Night Flow", "thumb": "https://i.ytimg.com/vi/cpjVRH0tGXI/mqdefault.jpg", "dur": "42:46"}, {"id": "JjfUc3YJGEI", "title": "SUNSET SOUL DISTRICT 🌇 Smooth Jazz Funk for Chill, Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/JjfUc3YJGEI/mqdefault.jpg", "dur": "49:58"}, {"id": "OfX26PDmTx8", "title": "BLUE HOUR SOUL 🌊 Smooth Analog Jazz for Deep Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/OfX26PDmTx8/mqdefault.jpg", "dur": "49:11"}, {"id": "ZbTzYagXuhc", "title": "GALAXY SOUL LOUNGE ✨ Smooth Jazz for Relaxation, Focus & Night Flow", "thumb": "https://i.ytimg.com/vi/ZbTzYagXuhc/mqdefault.jpg", "dur": "1:11:16"}, {"id": "_dLF45Lwnqw", "title": "CITY LIGHTS GROOVE 🌃 Smooth Jazz Funk for Night Drive, Focus & Chill", "thumb": "https://i.ytimg.com/vi/_dLF45Lwnqw/mqdefault.jpg", "dur": "41:32"}, {"id": "ONJ68CiC_fs", "title": "TWILIGHT ANALOG LOUNGE 🌇 Smooth Jazz Soul for Chill, Focus & Evening Flow", "thumb": "https://i.ytimg.com/vi/ONJ68CiC_fs/mqdefault.jpg", "dur": "43:24"}, {"id": "7GFfamRZYfY", "title": "HORIZON GROOVE THEORY 🌄 Smooth Jazz Soul for Focus, Chill & Creative Flow", "thumb": "https://i.ytimg.com/vi/7GFfamRZYfY/mqdefault.jpg", "dur": "1:12:39"}, {"id": "9BA-nRsUKQw", "title": "MIDNIGHT DISTRICT FLOW 🌆 Deep Jazz Funk for Late Night Focus & Work", "thumb": "https://i.ytimg.com/vi/9BA-nRsUKQw/mqdefault.jpg", "dur": "1:08:43"}, {"id": "nztDmUT8TUc", "title": "DUSK ANALOG DISTRICT 🌆 Smooth Jazz Soul for Chill, Focus & Night Flow", "thumb": "https://i.ytimg.com/vi/nztDmUT8TUc/mqdefault.jpg", "dur": "1:07:28"}, {"id": "AYVNY2mrj64", "title": "BLUE HOUR GROOVE 🌊 Deep Soul Jazz for Focus, Relaxation & Creative Flow", "thumb": "https://i.ytimg.com/vi/AYVNY2mrj64/mqdefault.jpg", "dur": "1:04:30"}, {"id": "NNBrlv28DgQ", "title": "NOIR GROOVE ATELIER 🌙 Deep Jazz Soul for Late Night Focus & Smooth Flow", "thumb": "https://i.ytimg.com/vi/NNBrlv28DgQ/mqdefault.jpg", "dur": "1:07:49"}, {"id": "epZPdeCUjO4", "title": "ASTRAL ANALOG LOUNGE ✨ Deep Soul Jazz for Focus, Chill & Night Flow", "thumb": "https://i.ytimg.com/vi/epZPdeCUjO4/mqdefault.jpg", "dur": "1:12:08"}, {"id": "xt8m93EBQtg", "title": "AMBER SUNSET GROOVE 🌅 Smooth Jazz Funk for Relaxation, Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/xt8m93EBQtg/mqdefault.jpg", "dur": "1:08:27"}, {"id": "4Z3govpafjQ", "title": "VELVET AFTER HOURS 🌙 Deep Soul Jazz for Late Night Focus & Smooth Flow", "thumb": "https://i.ytimg.com/vi/4Z3govpafjQ/mqdefault.jpg", "dur": "1:16:54"}, {"id": "ExYJP59jdFc", "title": "OCEAN ANALOG FLOW 🌊 Smooth Soul Jazz for Deep Focus, Chill & Creative Work", "thumb": "https://i.ytimg.com/vi/ExYJP59jdFc/mqdefault.jpg", "dur": "1:13:58"}, {"id": "3AQWqq1TVKg", "title": "SUNSET GROOVE DISTRICT 🌇 Analog Jazz Funk for Chill, Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/3AQWqq1TVKg/mqdefault.jpg", "dur": "1:06:47"}, {"id": "3Huhdjioyho", "title": "AFTER HOURS ANALOG CLUB 🌙 Deep Soul Jazz for Late Night Focus & Chill", "thumb": "https://i.ytimg.com/vi/3Huhdjioyho/mqdefault.jpg", "dur": "1:09:01"}, {"id": "NGFOqorJQ3Q", "title": "GOLDEN ANALOG LOUNGE 🌅 Soul Jazz Grooves for Relaxation, Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/NGFOqorJQ3Q/mqdefault.jpg", "dur": "1:08:27"}, {"id": "9MIaeqlhFws", "title": "MIDNIGHT GROOVE STATION 🌙 Deep Jazz Funk for Focus, Study & Late Night Work", "thumb": "https://i.ytimg.com/vi/9MIaeqlhFws/mqdefault.jpg", "dur": "1:08:22"}, {"id": "TkrwVGI4LGk", "title": "SUNSET ANALOG FLOW 🌅 Soul Jazz Grooves for Relaxation, Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/TkrwVGI4LGk/mqdefault.jpg", "dur": "1:06:06"}, {"id": "x_2A1yN28CM", "title": "NOCTURNAL ANALOG LOUNGE 🌙 Deep Jazz Funk for Late Night Focus & Flow", "thumb": "https://i.ytimg.com/vi/x_2A1yN28CM/mqdefault.jpg", "dur": "1:06:40"}, {"id": "5DwzjmGiDFM", "title": "SUNSET TO MIDNIGHT GROOVE 🌅 Smooth Jazz Radio | Chill, Focus & Relax", "thumb": "https://i.ytimg.com/vi/5DwzjmGiDFM/mqdefault.jpg", "dur": "6:50:36"}, {"id": "j23ZGQqGbfA", "title": "VELVET SUNSET GROOVE 🌅 Smooth Analog Soul Jazz for Chill, Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/j23ZGQqGbfA/mqdefault.jpg", "dur": "1:12:32"}, {"id": "kIfaBOsTuQY", "title": "NEON SOUL DRIVE 🌆 Analog Jazz Funk Grooves for Chill, Focus & Creative Work", "thumb": "https://i.ytimg.com/vi/kIfaBOsTuQY/mqdefault.jpg", "dur": "1:13:15"}, {"id": "tWF0UgTMzbM", "title": "URBAN ANALOG FLOW 🌆 Smooth Jazz Soul for Work, Study & Creative Sessions", "thumb": "https://i.ytimg.com/vi/tWF0UgTMzbM/mqdefault.jpg", "dur": "1:07:09"}, {"id": "MSk580Rec1A", "title": "AMBER MIDNIGHT STUDIO 🌙 Smooth Analog Soul Jazz for Focus & Late Night Flow", "thumb": "https://i.ytimg.com/vi/MSk580Rec1A/mqdefault.jpg", "dur": "1:17:57"}, {"id": "LCbvUCzj8IM", "title": "VELVET NIGHT GROOVE 🌙 Smooth Analog Jazz Funk for Deep Focus & Late Chill", "thumb": "https://i.ytimg.com/vi/LCbvUCzj8IM/mqdefault.jpg", "dur": "1:15:06"}, {"id": "UOCyRt6O9-k", "title": "GOLDEN DESERT GROOVES 🌅 Soul Jazz & Funk Lounge for Chill, Work & Study", "thumb": "https://i.ytimg.com/vi/UOCyRt6O9-k/mqdefault.jpg", "dur": "1:13:58"}, {"id": "7uOqQ2tbxuk", "title": "COSMIC ANALOG LOUNGE ✨ Smooth Jazz Soul Grooves for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/7uOqQ2tbxuk/mqdefault.jpg", "dur": "1:07:19"}, {"id": "oUUlBG-Nb1g", "title": "MIDNIGHT SOUL ANALOG 🌙 Deep Jazz Funk Grooves for Study & Deep Work", "thumb": "https://i.ytimg.com/vi/oUUlBG-Nb1g/mqdefault.jpg", "dur": "1:13:18"}, {"id": "yrVYYkLAatM", "title": "GROOVE THEORY LOUNGE 🎶 Smooth Jazz Soul for Deep Work & Study Sessions", "thumb": "https://i.ytimg.com/vi/yrVYYkLAatM/mqdefault.jpg", "dur": "1:17:17"}, {"id": "xiFHgeNs2MY", "title": "NEON MIDNIGHT LOUNGE 🌙 Analog Jazz Funk for Focus, Study & Night Flow", "thumb": "https://i.ytimg.com/vi/xiFHgeNs2MY/mqdefault.jpg", "dur": "1:07:42"}, {"id": "wLk5Gas5qLQ", "title": "ANALOG DESERT LOUNGE 🌅 Soul Jazz Grooves for Work, Study & Relaxation", "thumb": "https://i.ytimg.com/vi/wLk5Gas5qLQ/mqdefault.jpg", "dur": "1:15:33"}, {"id": "-TCquLRuTt8", "title": "SUNSET SOUL STUDIO 🌇 Smooth Analog Funk & Jazz for Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/-TCquLRuTt8/mqdefault.jpg", "dur": "1:15:55"}, {"id": "t0G5RVsWvLs", "title": "THE VELVET STUDY LOUNGE 🎶 Analog Funk & Jazz for Productivity & Chill", "thumb": "https://i.ytimg.com/vi/t0G5RVsWvLs/mqdefault.jpg", "dur": "1:05:12"}, {"id": "EQgaPxWUxtM", "title": "AFTER HOURS ANALOG 🔥 Deep Groove Jazz Funk for Focus & Late Night Work", "thumb": "https://i.ytimg.com/vi/EQgaPxWUxtM/mqdefault.jpg", "dur": "1:11:16"}, {"id": "J-bfSHUFGfg", "title": "GOLDEN HOUR GROOVE 🌅 Smooth Soul Jazz for Deep Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/J-bfSHUFGfg/mqdefault.jpg", "dur": "1:06:39"}, {"id": "EzmdlUmwWpU", "title": "LATE NIGHT GROOVE THEORY 🌙 Smooth Jazz Funk for Deep Focus & Study Flow", "thumb": "https://i.ytimg.com/vi/EzmdlUmwWpU/mqdefault.jpg", "dur": "1:08:42"}, {"id": "01KJ-wlh7ho", "title": "THE ANALOG FLOW SESSION 🔥 Deep Groove Soul Jazz for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/01KJ-wlh7ho/mqdefault.jpg", "dur": "1:15:47"}, {"id": "x2PaFZp_3_E", "title": "AMBER SOUL LOUNGE 🎶 Analog Funk & Jazz Vibes for Work, Chill & Creativity", "thumb": "https://i.ytimg.com/vi/x2PaFZp_3_E/mqdefault.jpg", "dur": "1:15:59"}, {"id": "1nO5Fw4dKA4", "title": "ANALOG SOUL SESSION 2026 🎶 Deep Groove Jazz Funk for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/1nO5Fw4dKA4/mqdefault.jpg", "dur": "1:13:02"}, {"id": "3BN-_DRNoVk", "title": "MIDNIGHT FUNK ATELIER 🌙 Analog Soul & Jazz Grooves for Deep Focus & Late Night Flow", "thumb": "https://i.ytimg.com/vi/3BN-_DRNoVk/mqdefault.jpg", "dur": "1:17:36"}, {"id": "wKW5rmV-NGQ", "title": "VELVET FUNK LOUNGE 🎷 Smooth Analog Grooves for Chill Study & Creative Flow", "thumb": "https://i.ytimg.com/vi/wKW5rmV-NGQ/mqdefault.jpg", "dur": "1:14:34"}, {"id": "KEBMuPx0OrM", "title": "FUNK SOUL – ANALOG GROOVES | Smooth Funk, Soul & Jazz for Chill & Deep Work", "thumb": "https://i.ytimg.com/vi/KEBMuPx0OrM/mqdefault.jpg", "dur": "1:58:54"}, {"id": "wHdKY3EWIZU", "title": "ANALOG FUNK LOUNGE 2026 🎷 Smooth Soul Grooves for Deep Focus & Late Night Flow", "thumb": "https://i.ytimg.com/vi/wHdKY3EWIZU/mqdefault.jpg", "dur": "1:58:29"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

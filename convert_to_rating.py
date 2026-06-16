@@ -192,6 +192,7 @@ async function loadRatings() {{
       const data = await resp.json();
       const content = JSON.parse(atob(data.content));
       ratings = content.ratings || {{}};
+      meta = content.meta || {{}};
     }}
   }} catch(e) {{}}
 }}
@@ -224,6 +225,13 @@ function renderGrid() {{
 
 function setRating(id, val) {{
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {{
+    meta[id] = {{ title: v.title, channel: CHANNEL }};
+  }} else {{
+    delete meta[id];
+  }}
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${{id}} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -238,7 +246,7 @@ async function saveRatings() {{
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
   setStatus('Speichern...', '');
-  const json = JSON.stringify({{ channel: CHANNEL, updated: new Date().toISOString(), ratings }}, null, 2);
+  const json = JSON.stringify({{ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }}, null, 2);
   const encoded = btoa(unescape(encodeURIComponent(json)));
   try {{
     let sha = null;

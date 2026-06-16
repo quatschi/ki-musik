@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinyl Tropical</title>
+<!-- categories: Bossa Nova, Latin Jazz -->
+<!-- channel-id: UCmCJgGoBqOcVHOZSjMTZLmQ -->
+<!-- channel-url: https://www.youtube.com/@vinyl.tropical -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Vinyl_Tropical.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/rAczapz3JgqoEiiZF7TerH3sy2fRBBh9QYNUAiFFSjobEAIOODclA3BQRZ_dLFrc3B0zxaqw1Zc=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Vinyl Tropical</div>
+      <div class="channel-count">64 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Vinyl Tropical";
+const VIDEOS = [{"id": "os-zw899ars", "title": "Brasil in Silence 🌴 Quiet Bossa Nova Instrumentals | Relaxing Brazilian Lounge Music", "thumb": "https://i.ytimg.com/vi/os-zw899ars/mqdefault.jpg", "dur": "50:45"}, {"id": "mi601p_kS0k", "title": "Tim Tim Tim 🥂 Vintage Bossa Nova & Samba Jazz | Classic Brazilian Music", "thumb": "https://i.ytimg.com/vi/mi601p_kS0k/mqdefault.jpg", "dur": "2:50"}, {"id": "ksYruq1RBxM", "title": "Mambo No. 5 – Hecho en Cuba 🇨🇺 | Vintage 1950s Mambo, Cuban Dance Music & Latin Jazz", "thumb": "https://i.ytimg.com/vi/ksYruq1RBxM/mqdefault.jpg", "dur": "3:55"}, {"id": "LzAeT_Ib5ro", "title": "Vaso Vigilante 🍸🌅 | Vintage Samba & Bossa Nova | Sunset Lounge Music from Rio", "thumb": "https://i.ytimg.com/vi/LzAeT_Ib5ro/mqdefault.jpg", "dur": "3:32"}, {"id": "zC4zFUvAHxk", "title": "Mira Cómo Va – Cuban Son 1950s 🔥 Ritmo Cubano Bailable | Vintage Havana Sound", "thumb": "https://i.ytimg.com/vi/zC4zFUvAHxk/mqdefault.jpg", "dur": "5:16"}, {"id": "RBDJsK6YbTs", "title": "🎵 A Cortina Sozinha | Samba, Bossa Nova & Jazz Brasileiro (1962 Style)", "thumb": "https://i.ytimg.com/vi/RBDJsK6YbTs/mqdefault.jpg", "dur": "3:50"}, {"id": "JuSu264TlTo", "title": "O Banco da Praça Quatro 🇧🇷 | Vintage Samba & Bossa Nova Jazz from Brazil (1962 Style)", "thumb": "https://i.ytimg.com/vi/JuSu264TlTo/mqdefault.jpg", "dur": "4:00"}, {"id": "6gB6jdas9vo", "title": "Baila Sin Permiso 💃🔥 | Authentic Cuban Son | Vintage Havana Dance Music", "thumb": "https://i.ytimg.com/vi/6gB6jdas9vo/mqdefault.jpg", "dur": "2:16"}, {"id": "TCh1c33dsIg", "title": "Quase Tudo Sumiço 🌙 | Vintage Bossa Nova & Samba 60s", "thumb": "https://i.ytimg.com/vi/TCh1c33dsIg/mqdefault.jpg", "dur": "3:38"}, {"id": "yCHHhul-wjY", "title": "Lola del Salón – Authentic Son Cubano 🇨🇺 from Old Havana", "thumb": "https://i.ytimg.com/vi/yCHHhul-wjY/mqdefault.jpg", "dur": "4:05"}, {"id": "e4VXKXHNfO0", "title": "Dale con el Son 🇨🇺 | Cuban Son Music | Vintage Latin Dance 1950s", "thumb": "https://i.ytimg.com/vi/e4VXKXHNfO0/mqdefault.jpg", "dur": "3:06"}, {"id": "v_7TDxeNAME", "title": "Brasil in Blue – Samba, Bossa Nova & Jazz (Vintage 60s Brazilian Sound)", "thumb": "https://i.ytimg.com/vi/v_7TDxeNAME/mqdefault.jpg", "dur": "49:54"}, {"id": "H7Gpy1MOTDo", "title": "Piel y Son – Vintage Cuban Instrumental (1950s Style) | Ritmo Cubano Bailable", "thumb": "https://i.ytimg.com/vi/H7Gpy1MOTDo/mqdefault.jpg", "dur": "3:38"}, {"id": "x8-qcKJTN5k", "title": "Baila Isabel – Cuban Cha-Cha-Cha 1950s | Vintage Havana Dance Music", "thumb": "https://i.ytimg.com/vi/x8-qcKJTN5k/mqdefault.jpg", "dur": "3:51"}, {"id": "a1E2vEftJfM", "title": "1950s Cuban Son – Flauta De Ron (Havana Dance Music)", "thumb": "https://i.ytimg.com/vi/a1E2vEftJfM/mqdefault.jpg", "dur": "3:23"}, {"id": "m-jPbtiYGGw", "title": "Satin & Samba   Bossa Nova, Samba & Jazz", "thumb": "https://i.ytimg.com/vi/m-jPbtiYGGw/mqdefault.jpg", "dur": "1:20:16"}, {"id": "SzeHrgazy5Y", "title": "Luna Sobre La Habana - Cha-Cha-Cha", "thumb": "https://i.ytimg.com/vi/SzeHrgazy5Y/mqdefault.jpg", "dur": "2:10"}, {"id": "2Yo0J83HF2A", "title": "Rosa del Caribe - Cha-Cha-Cha", "thumb": "https://i.ytimg.com/vi/2Yo0J83HF2A/mqdefault.jpg", "dur": "2:58"}, {"id": "2ojgy8cK46E", "title": "Solar de la Habana - Son y Cha Cha Cha", "thumb": "https://i.ytimg.com/vi/2ojgy8cK46E/mqdefault.jpg", "dur": "51:36"}, {"id": "4RgZlaFUOBQ", "title": "Luna Cha-Cha-Cha  🌙💃", "thumb": "https://i.ytimg.com/vi/4RgZlaFUOBQ/mqdefault.jpg", "dur": "2:35"}, {"id": "N6H9ACBbW3g", "title": "Tarde em Ipanema - Bossa Nova Instrumental - 60s, Rio Lounge Sessions", "thumb": "https://i.ytimg.com/vi/N6H9ACBbW3g/mqdefault.jpg", "dur": "1:29:43"}, {"id": "A03igDm9X2U", "title": "Candela en el Solar - Son Cubano", "thumb": "https://i.ytimg.com/vi/A03igDm9X2U/mqdefault.jpg", "dur": "4:02"}, {"id": "jxTKpu6n4SM", "title": "Cha Cha del Puerto", "thumb": "https://i.ytimg.com/vi/jxTKpu6n4SM/mqdefault.jpg", "dur": "3:09"}, {"id": "xcnpa6nViAQ", "title": "Ritmos de Cuba   Son y Cha Cha Cha", "thumb": "https://i.ytimg.com/vi/xcnpa6nViAQ/mqdefault.jpg", "dur": "48:07"}, {"id": "210mqHKSfEM", "title": "1950s Cuban Son Music – Ritmos de la Habana (Vintage Dance Album)", "thumb": "https://i.ytimg.com/vi/210mqHKSfEM/mqdefault.jpg", "dur": "1:01:13"}, {"id": "noKvWt2GdLU", "title": "Oro y Ritmo - Cha Cha Cha de la Habana", "thumb": "https://i.ytimg.com/vi/noKvWt2GdLU/mqdefault.jpg", "dur": "49:35"}, {"id": "ARy8taX9Pek", "title": "Café do Brasil 🇧🇷 – Samba Bossa Nova Jazz Lounge | Vintage Brazilian Instrumental Music", "thumb": "https://i.ytimg.com/vi/ARy8taX9Pek/mqdefault.jpg", "dur": "1:25:37"}, {"id": "w8r3fX2fHQk", "title": "Brisa do Mar- Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/w8r3fX2fHQk/mqdefault.jpg", "dur": "1:30:41"}, {"id": "JXy3_VkL7J0", "title": "Coral y Arena - Ritmos Tropicales (Cumbia Colombiana)", "thumb": "https://i.ytimg.com/vi/JXy3_VkL7J0/mqdefault.jpg", "dur": "1:32:42"}, {"id": "80T2h6nNELE", "title": "Brisa da Tape - Samba, Bossa Nova & Jazz", "thumb": "https://i.ytimg.com/vi/80T2h6nNELE/mqdefault.jpg", "dur": "1:30:35"}, {"id": "fHLSH70ez7s", "title": "Tarde no Rio - Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/fHLSH70ez7s/mqdefault.jpg", "dur": "1:23:36"}, {"id": "6G3KQ3dR7wU", "title": "Sombras da Lua - Bossa Nova Brasileira", "thumb": "https://i.ytimg.com/vi/6G3KQ3dR7wU/mqdefault.jpg", "dur": "1:26:11"}, {"id": "qcg7Txdd-yk", "title": "Gaita y Tambora - Vol. 1", "thumb": "https://i.ytimg.com/vi/qcg7Txdd-yk/mqdefault.jpg", "dur": "2:02:07"}, {"id": "sj23rzrXEwY", "title": "Brasil em Veludo – Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/sj23rzrXEwY/mqdefault.jpg", "dur": "1:48:55"}, {"id": "Ie7R40q_lHA", "title": "Oro y Ritmo - Cha Cha Cha de Cuba", "thumb": "https://i.ytimg.com/vi/Ie7R40q_lHA/mqdefault.jpg", "dur": "1:22:02"}, {"id": "tBU58xlrpuA", "title": "Sabor del Barrio - Son Cubano de la Calle", "thumb": "https://i.ytimg.com/vi/tBU58xlrpuA/mqdefault.jpg", "dur": "54:43"}, {"id": "7puC243G6Sg", "title": "Moonlight Calypso", "thumb": "https://i.ytimg.com/vi/7puC243G6Sg/mqdefault.jpg", "dur": "1:00:29"}, {"id": "EPMe21LqhNs", "title": "Luzes de Copacabana – Bossa Nova & Samba Lounge", "thumb": "https://i.ytimg.com/vi/EPMe21LqhNs/mqdefault.jpg", "dur": "2:38:42"}, {"id": "Rn71ehju9Xo", "title": "Humo y Ron - Cuban Son Instrumental", "thumb": "https://i.ytimg.com/vi/Rn71ehju9Xo/mqdefault.jpg", "dur": "1:48:42"}, {"id": "jBJhlSahlN0", "title": "Veludo da Meia Noite - Bossa nova Brasileira", "thumb": "https://i.ytimg.com/vi/jBJhlSahlN0/mqdefault.jpg", "dur": "1:35:22"}, {"id": "5vYaD6RP8Bo", "title": "Sueño Cubano – Son de la Habana", "thumb": "https://i.ytimg.com/vi/5vYaD6RP8Bo/mqdefault.jpg", "dur": "1:00:28"}, {"id": "JtNyX01ufpo", "title": "La Habana Morena - Son Callejero de Cuba", "thumb": "https://i.ytimg.com/vi/JtNyX01ufpo/mqdefault.jpg", "dur": "50:49"}, {"id": "E6zUu0VFFHw", "title": "Rincón Cubano – Instrumental Vol. 2", "thumb": "https://i.ytimg.com/vi/E6zUu0VFFHw/mqdefault.jpg", "dur": "1:14:23"}, {"id": "rOeuaINIETs", "title": "Rincón Cubano – Instrumental Vol. 1", "thumb": "https://i.ytimg.com/vi/rOeuaINIETs/mqdefault.jpg", "dur": "1:13:20"}, {"id": "4dvOk0vyPTk", "title": "Alma Brasileira - Bossa Nova", "thumb": "https://i.ytimg.com/vi/4dvOk0vyPTk/mqdefault.jpg", "dur": "1:34:32"}, {"id": "9rmh32R46Xg", "title": "Luz de Ipanema - Bossa Nova", "thumb": "https://i.ytimg.com/vi/9rmh32R46Xg/mqdefault.jpg", "dur": "1:38:57"}, {"id": "KMNI_ECL7OI", "title": "Brisa de Cobre - Ritmos Tropicales (Cumbia Colombiana)", "thumb": "https://i.ytimg.com/vi/KMNI_ECL7OI/mqdefault.jpg", "dur": "1:37:20"}, {"id": "iFv5pL4Zlgs", "title": "Noites de Bossa - Brazilian Bossa Nova", "thumb": "https://i.ytimg.com/vi/iFv5pL4Zlgs/mqdefault.jpg", "dur": "2:22:37"}, {"id": "LvKDsmazyCg", "title": "Samba Bossa do Rio", "thumb": "https://i.ytimg.com/vi/LvKDsmazyCg/mqdefault.jpg", "dur": "1:12:56"}, {"id": "0XPfduhFgXA", "title": "Son de La Habana Vieja - Vol. 2", "thumb": "https://i.ytimg.com/vi/0XPfduhFgXA/mqdefault.jpg", "dur": "1:12:04"}, {"id": "Kg5CfjO7Soc", "title": "Son de La Habana Vieja - Vol. 1", "thumb": "https://i.ytimg.com/vi/Kg5CfjO7Soc/mqdefault.jpg", "dur": "1:19:04"}, {"id": "YvrOINNNmtc", "title": "Samba Carioca - Vol. 3", "thumb": "https://i.ytimg.com/vi/YvrOINNNmtc/mqdefault.jpg", "dur": "1:12:20"}, {"id": "AajQ3hz0kO8", "title": "Samba Carioca - Vol. 2", "thumb": "https://i.ytimg.com/vi/AajQ3hz0kO8/mqdefault.jpg", "dur": "1:28:47"}, {"id": "QNVTL7d64_0", "title": "Samba Carioca - Vol. 1", "thumb": "https://i.ytimg.com/vi/QNVTL7d64_0/mqdefault.jpg", "dur": "1:29:03"}, {"id": "dsdn-u_JwK0", "title": "Noites Bossa Infinita - Instrumental", "thumb": "https://i.ytimg.com/vi/dsdn-u_JwK0/mqdefault.jpg", "dur": "1:39:17"}, {"id": "1dUizknrzeU", "title": "Cumbia sobre mi Piel - Ritmos Tropicales", "thumb": "https://i.ytimg.com/vi/1dUizknrzeU/mqdefault.jpg", "dur": "1:16:27"}, {"id": "__uS7_Zd3po", "title": "Cumbia de Azúcar – Ritmos Tropicales", "thumb": "https://i.ytimg.com/vi/__uS7_Zd3po/mqdefault.jpg", "dur": "1:07:30"}, {"id": "eAJmMusiu5Y", "title": "Samba & Bossa Nova Lounge Vol.  2", "thumb": "https://i.ytimg.com/vi/eAJmMusiu5Y/mqdefault.jpg", "dur": "1:06:54"}, {"id": "tiKgWYaf3yE", "title": "Samba & Bossa Nova Lounge Vol. 1", "thumb": "https://i.ytimg.com/vi/tiKgWYaf3yE/mqdefault.jpg", "dur": "1:06:56"}, {"id": "5NVzsrU35Qc", "title": "Havana Mambo – The Golden Age", "thumb": "https://i.ytimg.com/vi/5NVzsrU35Qc/mqdefault.jpg", "dur": "1:18:29"}, {"id": "Hmq6UETuQOQ", "title": "Noites de Samba Infinito Vol.  1", "thumb": "https://i.ytimg.com/vi/Hmq6UETuQOQ/mqdefault.jpg", "dur": "57:23"}, {"id": "t1VDPKv5XPg", "title": "Midnight in Copacabana", "thumb": "https://i.ytimg.com/vi/t1VDPKv5XPg/mqdefault.jpg", "dur": "1:54:34"}, {"id": "Eb0-Q6dPHjE", "title": "Bossa Nova, Samba, & Latin Jazz Vol. 2", "thumb": "https://i.ytimg.com/vi/Eb0-Q6dPHjE/mqdefault.jpg", "dur": "2:39:24"}, {"id": "iEZ9Zu1-cW4", "title": "Bossa Nova, Samba, & Latin Jazz Vol. 1", "thumb": "https://i.ytimg.com/vi/iEZ9Zu1-cW4/mqdefault.jpg", "dur": "2:11:50"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

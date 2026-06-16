@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Blues</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCXAUbSyouRX2MVrxytuD13A -->
+<!-- channel-url: https://www.youtube.com/@myblues-t7e -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=My_Blues.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/fh3NJmUdIGOSljK4JC5F_t9UOfHUaC5a2K7lQsJDJxMDdk7_r62FzFtLQiRJ1QqMSL1K0gYGqQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">My Blues</div>
+      <div class="channel-count">87 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "My Blues";
+const VIDEOS = [{"id": "UG_A7uT8S_k", "title": "Raw Blues Guitar at 2AM | Live Soul Instrumental Experience 🎸🔥", "thumb": "https://i.ytimg.com/vi/UG_A7uT8S_k/mqdefault.jpg", "dur": "1:01:01"}, {"id": "Ily0Kw4hm1M", "title": "Raw Blues Instrumental | Deep Soul Guitar for Midnight Loneliness 🎸🌙", "thumb": "https://i.ytimg.com/vi/Ily0Kw4hm1M/mqdefault.jpg", "dur": "1:01:14"}, {"id": "zPdiita1AiM", "title": "Let Her Go – Passenger || Soul Blues Version (2012)", "thumb": "https://i.ytimg.com/vi/zPdiita1AiM/mqdefault.jpg", "dur": "6:45"}, {"id": "Jf9Vo6yGGgc", "title": "Moving On – Kodaline || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/Jf9Vo6yGGgc/mqdefault.jpg", "dur": "5:04"}, {"id": "fDfd82UqVV8", "title": "Chicago Midnight Blues | Soulful Guitar Through the Windy City Nights 🎷", "thumb": "https://i.ytimg.com/vi/fDfd82UqVV8/mqdefault.jpg", "dur": "1:00:48"}, {"id": "R3ggAdXRioM", "title": "Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights", "thumb": "https://i.ytimg.com/vi/R3ggAdXRioM/mqdefault.jpg", "dur": "1:01:06"}, {"id": "KtZWeFCClBY", "title": "2AM Blues Train Through the Rain | Deep Emotional Blues Guitar for Lonely Nights", "thumb": "https://i.ytimg.com/vi/KtZWeFCClBY/mqdefault.jpg", "dur": "1:00:56"}, {"id": "T6exbXaRrPc", "title": "Stand By Me – Ben E. King || Soul Blues Version (1961)", "thumb": "https://i.ytimg.com/vi/T6exbXaRrPc/mqdefault.jpg", "dur": "4:09"}, {"id": "8n1mY6FfHPA", "title": "Crying Blues Guitar at 2AM | Deep Soul Instrumental for Lonely Nights 🎸", "thumb": "https://i.ytimg.com/vi/8n1mY6FfHPA/mqdefault_live.jpg", "dur": ""}, {"id": "izyQ4qVvmMs", "title": "Soul of the Midnight Guitar | Deep Blues Instrumental for Lonely Nights 🎸🌙", "thumb": "https://i.ytimg.com/vi/izyQ4qVvmMs/mqdefault_live.jpg", "dur": ""}, {"id": "FAm_2F26RNM", "title": "Whiskey & Midnight Blues | Soul Guitar for Lonely Souls at 2AM 🥃🎷", "thumb": "https://i.ytimg.com/vi/FAm_2F26RNM/mqdefault_live.jpg", "dur": ""}, {"id": "M3xSbkT7c9Q", "title": "Midnight Blues Train at 2AM | Relaxing Emotional Guitar for Sleepless Nights", "thumb": "https://i.ytimg.com/vi/M3xSbkT7c9Q/mqdefault_live.jpg", "dur": ""}, {"id": "oOD7_1uWSJ4", "title": "Yesterday – The Beatles || Soul Blues Version (1965)", "thumb": "https://i.ytimg.com/vi/oOD7_1uWSJ4/mqdefault.jpg", "dur": "4:59"}, {"id": "VH-bmkGERP8", "title": "Faithfully – Journey || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/VH-bmkGERP8/mqdefault.jpg", "dur": "4:37"}, {"id": "hi5cbtjGhy8", "title": "Hotel California – Eagles || Soul Blues Version (1976)", "thumb": "https://i.ytimg.com/vi/hi5cbtjGhy8/mqdefault.jpg", "dur": "6:52"}, {"id": "VxlMVkS_tUA", "title": "Beautiful Things – Benson Boone || Soul Blues Version (2024)", "thumb": "https://i.ytimg.com/vi/VxlMVkS_tUA/mqdefault.jpg", "dur": "4:03"}, {"id": "1bVVURoibn0", "title": "Best Day of My Life – American Authors || Soul Blues Version (2014)", "thumb": "https://i.ytimg.com/vi/1bVVURoibn0/mqdefault.jpg", "dur": "3:54"}, {"id": "Y4Rx1yxln2c", "title": "Can’t Take My Eyes Off You – Frankie Valli || Soul Blues Version (1967)", "thumb": "https://i.ytimg.com/vi/Y4Rx1yxln2c/mqdefault.jpg", "dur": "4:13"}, {"id": "iTudOYiE3Ic", "title": "Don’t Matter – Akon || Soul Blues Version (2006)", "thumb": "https://i.ytimg.com/vi/iTudOYiE3Ic/mqdefault.jpg", "dur": "4:03"}, {"id": "IpO_fkHorJE", "title": "Love of My Life – Queen || Soul Blues Version (1975)", "thumb": "https://i.ytimg.com/vi/IpO_fkHorJE/mqdefault.jpg", "dur": "3:45"}, {"id": "38LxYtt_Ez0", "title": "Fix You – Coldplay || Soul Blues Version (2005)", "thumb": "https://i.ytimg.com/vi/38LxYtt_Ez0/mqdefault.jpg", "dur": "4:55"}, {"id": "lKiRx01beNM", "title": "Die on This Hill – Sienna Spiro || Soul Blues Version (2024)", "thumb": "https://i.ytimg.com/vi/lKiRx01beNM/mqdefault.jpg", "dur": "4:54"}, {"id": "kxxfZCU25_U", "title": "Dancing in the Moonlight – Toploader || Soul Blues Version (2000)", "thumb": "https://i.ytimg.com/vi/kxxfZCU25_U/mqdefault.jpg", "dur": "4:14"}, {"id": "_-290yKecwA", "title": "Attention – Charlie Puth || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/_-290yKecwA/mqdefault.jpg", "dur": "4:10"}, {"id": "Dbigov-0Lzk", "title": "Just the Two of Us – Bill Withers || Soul Blues Version (1981)", "thumb": "https://i.ytimg.com/vi/Dbigov-0Lzk/mqdefault.jpg", "dur": "4:33"}, {"id": "JrNo74UWDy8", "title": "If I Die Young – The Band Perry || Soul Blues Version (2010)", "thumb": "https://i.ytimg.com/vi/JrNo74UWDy8/mqdefault.jpg", "dur": "4:20"}, {"id": "pA0KnT0z_IY", "title": "I Don’t Want to Miss a Thing – Aerosmith || Soul Blues Version (1998)", "thumb": "https://i.ytimg.com/vi/pA0KnT0z_IY/mqdefault.jpg", "dur": "3:39"}, {"id": "S9jyZct_IZA", "title": "I Can’t Make You Love Me – Bonnie Raitt || Soul Blues Version (1991)", "thumb": "https://i.ytimg.com/vi/S9jyZct_IZA/mqdefault.jpg", "dur": "6:34"}, {"id": "rnlGQLGolZA", "title": "Halo – Beyoncé || Soul Blues Version (2008)", "thumb": "https://i.ytimg.com/vi/rnlGQLGolZA/mqdefault.jpg", "dur": "3:23"}, {"id": "jhwSc7qmQ9s", "title": "Girls Like You – Maroon 5 ft. Cardi B || Soul Blues Version (2018)", "thumb": "https://i.ytimg.com/vi/jhwSc7qmQ9s/mqdefault.jpg", "dur": "4:51"}, {"id": "NelcIdKlujk", "title": "Billie Jean – Michael Jackson || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/NelcIdKlujk/mqdefault.jpg", "dur": "4:28"}, {"id": "eCsOOcRgYEI", "title": "Because You Loved Me – Celine Dion || Soul Blues Version (1996)", "thumb": "https://i.ytimg.com/vi/eCsOOcRgYEI/mqdefault.jpg", "dur": "5:25"}, {"id": "IqayEdsjZZA", "title": "August – Taylor Swift || Soul Blues Version (2020)", "thumb": "https://i.ytimg.com/vi/IqayEdsjZZA/mqdefault.jpg", "dur": "4:53"}, {"id": "IT67OzqK_UE", "title": "At My Worst – Pink Sweat$ || Soul Blues Version (2020)", "thumb": "https://i.ytimg.com/vi/IT67OzqK_UE/mqdefault.jpg", "dur": "3:24"}, {"id": "lmMsvwTY-QQ", "title": "Made You Look – Meghan Trainor || Soul Blues Version (2022)", "thumb": "https://i.ytimg.com/vi/lmMsvwTY-QQ/mqdefault.jpg", "dur": "3:35"}, {"id": "mQXdc8Hs1QM", "title": "Let Her Go – Passenger || Soul Blues Version (2012)", "thumb": "https://i.ytimg.com/vi/mQXdc8Hs1QM/mqdefault.jpg", "dur": "6:45"}, {"id": "OQ-6MvsHZa0", "title": "I’m a Believer – The Monkees || Soul Blues Version (1966)", "thumb": "https://i.ytimg.com/vi/OQ-6MvsHZa0/mqdefault.jpg", "dur": "5:19"}, {"id": "Cipf8XLfyC4", "title": "If Tomorrow Never Comes – Ronan Keating || Soul Blues Version (2002)", "thumb": "https://i.ytimg.com/vi/Cipf8XLfyC4/mqdefault.jpg", "dur": "5:12"}, {"id": "gpqOfCbNofY", "title": "I Live My Life for You – FireHouse || Soul Blues Version (1995)", "thumb": "https://i.ytimg.com/vi/gpqOfCbNofY/mqdefault.jpg", "dur": "4:09"}, {"id": "5Ebjht7FOXk", "title": "Bleeding Love – Leona Lewis || Soul Blues Version (2007)", "thumb": "https://i.ytimg.com/vi/5Ebjht7FOXk/mqdefault.jpg", "dur": "5:30"}, {"id": "V4EwCei3d0k", "title": "Before You Go – Lewis Capaldi || Soul Blues Version (2019)", "thumb": "https://i.ytimg.com/vi/V4EwCei3d0k/mqdefault.jpg", "dur": "4:40"}, {"id": "pcn28a4a2ok", "title": "Angels – Robbie Williams || Soul Blues Version (1997)", "thumb": "https://i.ytimg.com/vi/pcn28a4a2ok/mqdefault.jpg", "dur": "5:15"}, {"id": "uqfJN5dzoT4", "title": "Moving On – Kodaline || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/uqfJN5dzoT4/mqdefault.jpg", "dur": "5:00"}, {"id": "NqwJW4HD3K4", "title": "Beautiful in White – Shane Filan || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/NqwJW4HD3K4/mqdefault.jpg", "dur": "4:21"}, {"id": "_MYUnE3UBdo", "title": "Jar of Hearts – Christina Perri || Soul Blues Version (2010)", "thumb": "https://i.ytimg.com/vi/_MYUnE3UBdo/mqdefault.jpg", "dur": "5:05"}, {"id": "VBVGh8HdOnM", "title": "Yellow – Coldplay || Soul Blues Version (2000)", "thumb": "https://i.ytimg.com/vi/VBVGh8HdOnM/mqdefault.jpg", "dur": "5:15"}, {"id": "qg_9N0tUlcg", "title": "Wonderwall – Oasis || Soul Blues Version (1995)", "thumb": "https://i.ytimg.com/vi/qg_9N0tUlcg/mqdefault.jpg", "dur": "4:18"}, {"id": "iTZ9Rbvg10o", "title": "All of Me – John Legend || Soul Blues Version (2013)", "thumb": "https://i.ytimg.com/vi/iTZ9Rbvg10o/mqdefault.jpg", "dur": "5:35"}, {"id": "Sp7b8DYmFMw", "title": "Best Part – H.E.R. ft. Daniel Caesar || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/Sp7b8DYmFMw/mqdefault.jpg", "dur": "3:40"}, {"id": "AXnlO8QR5ZU", "title": "If I Ain’t Got You – Alicia Keys || Soul Blues Version (2003)", "thumb": "https://i.ytimg.com/vi/AXnlO8QR5ZU/mqdefault.jpg", "dur": "4:46"}, {"id": "RLd7hwm0QBk", "title": "Like I’m Gonna Lose You – Meghan Trainor || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/RLd7hwm0QBk/mqdefault.jpg", "dur": "4:00"}, {"id": "ICxeseUz_gE", "title": "Memories – Maroon 5 || Soul Blues Version (2019)", "thumb": "https://i.ytimg.com/vi/ICxeseUz_gE/mqdefault.jpg", "dur": "3:19"}, {"id": "FxF4VVMRVzc", "title": "Officially Missing You – Tamia || Soul Blues Version (2003)", "thumb": "https://i.ytimg.com/vi/FxF4VVMRVzc/mqdefault.jpg", "dur": "6:43"}, {"id": "MlaKvkw22CU", "title": "Weak – SWV || Soul Blues Version (1992)", "thumb": "https://i.ytimg.com/vi/MlaKvkw22CU/mqdefault.jpg", "dur": "4:28"}, {"id": "utLS3NytUbo", "title": "Yesterday – The Beatles || Soul Blues Version (1965)", "thumb": "https://i.ytimg.com/vi/utLS3NytUbo/mqdefault.jpg", "dur": "4:09"}, {"id": "Jlb17LNcqx4", "title": "Ain’t No Sunshine – Bill Withers || Soul Blues Version (1971)", "thumb": "https://i.ytimg.com/vi/Jlb17LNcqx4/mqdefault.jpg", "dur": "6:52"}, {"id": "HQsg9ysIuiA", "title": "Dear God – Avenged Sevenfold || Soul Blues Version (2007)", "thumb": "https://i.ytimg.com/vi/HQsg9ysIuiA/mqdefault.jpg", "dur": "4:20"}, {"id": "hsWxxPmsrW0", "title": "Englishman in New York – Sting || Soul Blues Version (1987)", "thumb": "https://i.ytimg.com/vi/hsWxxPmsrW0/mqdefault.jpg", "dur": "5:42"}, {"id": "JysiwWKELTU", "title": "Faithfully – Journey || Soul Blues Version (1983)", "thumb": "https://i.ytimg.com/vi/JysiwWKELTU/mqdefault.jpg", "dur": "4:42"}, {"id": "1gRmS_yg2jU", "title": "I Will Always Love You – Whitney Houston || Soul Blues Version (1992)", "thumb": "https://i.ytimg.com/vi/1gRmS_yg2jU/mqdefault.jpg", "dur": "5:11"}, {"id": "nAYCgTjo240", "title": "In the Blood – John Mayer || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/nAYCgTjo240/mqdefault.jpg", "dur": "4:29"}, {"id": "AGl7xViVesI", "title": "One Call Away – Charlie Puth || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/AGl7xViVesI/mqdefault.jpg", "dur": "4:37"}, {"id": "-D83kZI0ThM", "title": "Stand by Me – Ben E. King || Soul Blues Version (1961)", "thumb": "https://i.ytimg.com/vi/-D83kZI0ThM/mqdefault.jpg", "dur": "4:19"}, {"id": "yI3RlWZ82kQ", "title": "All I Want – Kodaline || Soul Blues Version (2013)", "thumb": "https://i.ytimg.com/vi/yI3RlWZ82kQ/mqdefault.jpg", "dur": "4:30"}, {"id": "v4EMXYuMMaU", "title": "Supermarket Flowers – Ed Sheeran || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/v4EMXYuMMaU/mqdefault.jpg", "dur": "4:29"}, {"id": "RsGCSBn9uXg", "title": "Wherever You Will Go – The Calling (2001) || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/RsGCSBn9uXg/mqdefault.jpg", "dur": "4:29"}, {"id": "bHI2-Cd4YXM", "title": "7 Years – Lukas Graham || Soul Blues Version (2015)", "thumb": "https://i.ytimg.com/vi/bHI2-Cd4YXM/mqdefault.jpg", "dur": "6:36"}, {"id": "9uhkAwEPv6U", "title": "Hey Jude – The Beatles || Soul Blues Version (1968)", "thumb": "https://i.ytimg.com/vi/9uhkAwEPv6U/mqdefault.jpg", "dur": "4:55"}, {"id": "hArViv5Cgx8", "title": "Hey There Delilah – Plain White T’s || Soul Blues Version (2006)", "thumb": "https://i.ytimg.com/vi/hArViv5Cgx8/mqdefault.jpg", "dur": "6:14"}, {"id": "T26c0biuqNo", "title": "Hotel California – Eagles || Soul Blues Version (1976)", "thumb": "https://i.ytimg.com/vi/T26c0biuqNo/mqdefault.jpg", "dur": "6:52"}, {"id": "o7cH4KZq2m8", "title": "My Heart Will Go On – Celine Dion || Soul Blues Version (1997)", "thumb": "https://i.ytimg.com/vi/o7cH4KZq2m8/mqdefault.jpg", "dur": "5:29"}, {"id": "0sIae1f8u7Y", "title": "Never Enough – Loren Allred || Soul Blues Version (2017)", "thumb": "https://i.ytimg.com/vi/0sIae1f8u7Y/mqdefault.jpg", "dur": "4:10"}, {"id": "0pUGUi7hVMs", "title": "The Climb – Miley Cyrus || Soul Blues Version (2009)", "thumb": "https://i.ytimg.com/vi/0pUGUi7hVMs/mqdefault.jpg", "dur": "4:50"}, {"id": "NqYajsoQwWo", "title": "Flowers – Miley Cyrus || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/NqYajsoQwWo/mqdefault.jpg", "dur": "3:31"}, {"id": "1hU0kND13PQ", "title": "I Live My Life for You – FireHouse || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/1hU0kND13PQ/mqdefault.jpg", "dur": "4:34"}, {"id": "vE1C-EhUdQE", "title": "If Tomorrow Never Comes – Ronan Keating || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/vE1C-EhUdQE/mqdefault.jpg", "dur": "5:18"}, {"id": "R23XyFfzUdk", "title": "You Are the Reason – Calum Scott || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/R23XyFfzUdk/mqdefault.jpg", "dur": "4:43"}, {"id": "8i-wUTHlrYc", "title": "Let Her Go – Passenger || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/8i-wUTHlrYc/mqdefault.jpg", "dur": "4:34"}, {"id": "0OWLuJaFpwk", "title": "Girls Like You – Maroon 5 || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/0OWLuJaFpwk/mqdefault.jpg", "dur": "4:32"}, {"id": "f7RT2hQ1bGQ", "title": "Bleeding Love – Leona Lewis || Soul Blues Version", "thumb": "https://i.ytimg.com/vi/f7RT2hQ1bGQ/mqdefault.jpg", "dur": "3:48"}, {"id": "i06VOr-kQk0", "title": "See You Again – Charlie Puth (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/i06VOr-kQk0/mqdefault.jpg", "dur": "4:10"}, {"id": "QqRE4NKCUu4", "title": "Every Breath You Take – The Police (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/QqRE4NKCUu4/mqdefault.jpg", "dur": "4:00"}, {"id": "g0pTOqY52ak", "title": "I Don't Want to Miss a Thing – Aerosmith (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/g0pTOqY52ak/mqdefault.jpg", "dur": "3:32"}, {"id": "j-5DeOckGYE", "title": "Perfect – Ed Sheeran (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/j-5DeOckGYE/mqdefault.jpg", "dur": "5:05"}, {"id": "tkpX7qVsRW0", "title": "I'm Yours – Jason Mraz (Soul Blues Version)", "thumb": "https://i.ytimg.com/vi/tkpX7qVsRW0/mqdefault.jpg", "dur": "3:41"}, {"id": "T2Rtds1wrCc", "title": "One in a Million – Ne-Yo | Soul Blues Cover", "thumb": "https://i.ytimg.com/vi/T2Rtds1wrCc/mqdefault.jpg", "dur": "3:09"}, {"id": "hlva_uw7jDU", "title": "Yesterday – The Beatles | Soul Blues Cover", "thumb": "https://i.ytimg.com/vi/hlva_uw7jDU/mqdefault.jpg", "dur": "4:20"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

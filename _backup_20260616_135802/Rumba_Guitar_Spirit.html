@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rumba Guitar Spirit</title>
+<!-- categories: Latin, Jazz -->
+<!-- channel-id: UCTM_Jfuum60Mw3DUDfp4-mw -->
+<!-- channel-url: https://youtube.com/@rumbaguitarspirit16 -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Rumba_Guitar_Spirit.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/kPhAmvlzldKqjVcFutrgsudMs_mIdMxcXEeBSMO5zblJy_ECykJ4s9lt-q8Sqt1RWqScwom4SQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Rumba Guitar Spirit</div>
+      <div class="channel-count">46 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Rumba Guitar Spirit";
+const VIDEOS = [{"id": "vgHz8S9L55E", "title": "Spanish Guitar Vibes: A Flamenco Guitar Journey to Latin Inspiration", "thumb": "https://i.ytimg.com/vi/vgHz8S9L55E/mqdefault.jpg", "dur": "2:07:11"}, {"id": "vSowcOaFg_s", "title": "Soulful Strings Podcast | World Music Guitar & Gypsy Rumba Guitar ~ Spanish Flamenco Vibes", "thumb": "https://i.ytimg.com/vi/vSowcOaFg_s/mqdefault.jpg", "dur": "2:05:31"}, {"id": "cld8bvjMA2U", "title": "Flamenco Rhythms | Relaxing Flamenco Music & Exotic Guitar Sounds for Mediterranean Vibes", "thumb": "https://i.ytimg.com/vi/cld8bvjMA2U/mqdefault.jpg", "dur": "1:25:39"}, {"id": "KEWB9BlBKx8", "title": "Spanish Guitar Vibes - Sunset Beach Melodies - Relaxing Mediterranean Oud & Guitar Soul", "thumb": "https://i.ytimg.com/vi/KEWB9BlBKx8/mqdefault.jpg", "dur": "2:00:45"}, {"id": "opSg4uDQ8vw", "title": "Spanish Guitar Vibes | Relaxing Flamenco Guitar Journey & Latin Guitar Inspiration Sunset", "thumb": "https://i.ytimg.com/vi/opSg4uDQ8vw/mqdefault.jpg", "dur": "2:00:20"}, {"id": "I9bYj6CeRi0", "title": "Spanish guitar vibes | Flamenco guitar journey | Mediterranean oud and guitar melody magic", "thumb": "https://i.ytimg.com/vi/I9bYj6CeRi0/mqdefault.jpg", "dur": "2:02:32"}, {"id": "cB0BCb2PAoU", "title": "Relaxing flamenco music | Exotic guitar sounds & Mediterranean guitar podcast for study", "thumb": "https://i.ytimg.com/vi/cB0BCb2PAoU/mqdefault.jpg", "dur": "2:05:56"}, {"id": "UkC7oWKjnAM", "title": "Spanish Guitar Vibes | Mediterranean Flamenco Journey & Relaxing Latin Guitar Inspiration", "thumb": "https://i.ytimg.com/vi/UkC7oWKjnAM/mqdefault.jpg", "dur": "2:00:14"}, {"id": "3brKMeFrtFI", "title": "Deep Flamenco Rhythms ~ Mediterranean Guitar Podcast ~ Relaxing Flamenco Instrumental Mixes", "thumb": "https://i.ytimg.com/vi/3brKMeFrtFI/mqdefault.jpg", "dur": "2:02:07"}, {"id": "10leLzR3XCE", "title": "Flamenco Rhythms Live Mediterranean Guitar~Exotic Sounds Relaxing Instrumental", "thumb": "https://i.ytimg.com/vi/10leLzR3XCE/mqdefault.jpg", "dur": "1:22:23"}, {"id": "ZZCH8897Eq8", "title": "Gypsy Rumba Guitar Sunset Serenade   Spanish Flamenco Vibes for Relaxation", "thumb": "https://i.ytimg.com/vi/ZZCH8897Eq8/mqdefault.jpg", "dur": "2:03:53"}, {"id": "VEzVMwXh9HU", "title": "Spanish Guitar Vibes | Relaxing Flamenco Journey - Cafe Sunset Mediterranean Oud", "thumb": "https://i.ytimg.com/vi/VEzVMwXh9HU/mqdefault.jpg", "dur": "2:08:58"}, {"id": "vn5CzdrV_gA", "title": "Flamenco Guitar Podcast | Soulful Spanish Rhythms and Acoustic Latin Melodies", "thumb": "https://i.ytimg.com/vi/vn5CzdrV_gA/mqdefault.jpg", "dur": "2:07:54"}, {"id": "GGx_Zz6GTVw", "title": "Spanish Guitar Vibes~ Flamenco Guitar Journey Awaits You", "thumb": "https://i.ytimg.com/vi/GGx_Zz6GTVw/mqdefault.jpg", "dur": "2:05:17"}, {"id": "47_0Z_olghE", "title": "Flamenco Rhythms – Relaxing Guitar Music for Sunset Chill | Mediterranean Sounds", "thumb": "https://i.ytimg.com/vi/47_0Z_olghE/mqdefault.jpg", "dur": "2:02:30"}, {"id": "RPjGpsNwONk", "title": "Flamenco Sunset Serenade | Gypsy Rumba Guitar for Soulful Meditation Vibes", "thumb": "https://i.ytimg.com/vi/RPjGpsNwONk/mqdefault.jpg", "dur": "2:12:59"}, {"id": "3svHuYsFWb4", "title": "Spanish Guitar Vibes | Chill Flamenco Journey & Latin Serenity", "thumb": "https://i.ytimg.com/vi/3svHuYsFWb4/mqdefault.jpg", "dur": "2:00:50"}, {"id": "fjlibDCK2uY", "title": "Spanish Guitar Vibes | Flamenco Journey ~ Relaxing World Music Podcast", "thumb": "https://i.ytimg.com/vi/fjlibDCK2uY/mqdefault.jpg", "dur": "2:00:34"}, {"id": "BWcZ5YZTd1E", "title": "Sunset Serenade | Gypsy Rumba Guitar for Relaxation & Soulful Meditation Music Stream", "thumb": "https://i.ytimg.com/vi/BWcZ5YZTd1E/mqdefault.jpg", "dur": "2:04:05"}, {"id": "bQqrDhVBiHc", "title": "Flamenco Rhythms & Mediterranean Guitar Podcast ~ Exotic Guitar Sounds for Deep Relaxation!", "thumb": "https://i.ytimg.com/vi/bQqrDhVBiHc/mqdefault.jpg", "dur": "2:03:08"}, {"id": "Hw-4Ah5r8As", "title": "Relaxing Flamenco Music | Mediterranean Guitar for Chillout & Serene Ambiance", "thumb": "https://i.ytimg.com/vi/Hw-4Ah5r8As/mqdefault.jpg", "dur": "2:07:43"}, {"id": "8jdBVzqhR3s", "title": "Flamenco Rhythms for Relaxing | Mediterranean Guitar Music & Exotic Sunset Sounds", "thumb": "https://i.ytimg.com/vi/8jdBVzqhR3s/mqdefault.jpg", "dur": "2:04:51"}, {"id": "5M1W3EVX-Ls", "title": "Spanish Guitar Vibes | Flamenco Journey | Latin Chill Music & Oud Inspiration", "thumb": "https://i.ytimg.com/vi/5M1W3EVX-Ls/mqdefault.jpg", "dur": "2:10:33"}, {"id": "DBW71JYVles", "title": "Spanish Guitar Vibes | Sunset Flamenco Journey | Relaxing World Music Podcast", "thumb": "https://i.ytimg.com/vi/DBW71JYVles/mqdefault.jpg", "dur": "2:08:21"}, {"id": "iTX7bKsISCo", "title": "Flamenco Fusion Guitar & Violin – Peaceful Instrumental Music for Deep Relaxation and Meditation", "thumb": "https://i.ytimg.com/vi/iTX7bKsISCo/mqdefault.jpg", "dur": "1:11:17"}, {"id": "qsC3AbbZ62c", "title": "Spanish Guitar Vibes | Flamenco Journey - Relaxing Latin Music & Chill World Sound", "thumb": "https://i.ytimg.com/vi/qsC3AbbZ62c/mqdefault.jpg", "dur": "2:12:33"}, {"id": "WXaU0-p1Xow", "title": "Flamenco Rhythms | Relaxing Mediterranean Guitar for Sunset Ambiance & Chill Vibes Flow", "thumb": "https://i.ytimg.com/vi/WXaU0-p1Xow/mqdefault.jpg", "dur": "2:06:00"}, {"id": "QY1KYA_oGns", "title": "Spanish Guitar Vibes | Flamenco Journey - Relaxing Mediterranean Chill Music", "thumb": "https://i.ytimg.com/vi/QY1KYA_oGns/mqdefault.jpg", "dur": "2:05:15"}, {"id": "LIco9ShmdYI", "title": "Flamenco Rumba Guitar Podcast | Soulful Latin Melodies for Relaxation | Acoustic Chill Vibes", "thumb": "https://i.ytimg.com/vi/LIco9ShmdYI/mqdefault.jpg", "dur": "2:10:24"}, {"id": "freFq1o-qbw", "title": "Flamenco Rhythms ~ Mediterranean Guitar Podcast | Exotic Sunset Sounds for Peace", "thumb": "https://i.ytimg.com/vi/freFq1o-qbw/mqdefault.jpg", "dur": "2:02:24"}, {"id": "1jHFi3KEACY", "title": "Behind the Scenes How We Create Videos for the Rumba Guitar Spirit Channel", "thumb": "https://i.ytimg.com/vi/1jHFi3KEACY/mqdefault.jpg", "dur": "20:57"}, {"id": "ztas1o54DLc", "title": "Flamenco Guitar Podcast | Rumba & Spanish Guitar for Soulful Sunset Relaxation Vibes", "thumb": "https://i.ytimg.com/vi/ztas1o54DLc/mqdefault.jpg", "dur": "2:12:27"}, {"id": "Lx4rYYi3otk", "title": "Spanish Guitar Vibes ~ Flamenco Journey for Deep Relaxation & Focus | World Music Oasis", "thumb": "https://i.ytimg.com/vi/Lx4rYYi3otk/mqdefault.jpg", "dur": "2:07:29"}, {"id": "5CO8veq-i3U", "title": "Flamenco Guitar Podcast | Rumba Vibes & Soulful Spanish Sunset Music Chill", "thumb": "https://i.ytimg.com/vi/5CO8veq-i3U/mqdefault.jpg", "dur": "2:06:19"}, {"id": "Y0gu5css_OQ", "title": "Flamenco Rhythms | Mediterranean Guitar Podcast ~ Exotic Chill Sounds", "thumb": "https://i.ytimg.com/vi/Y0gu5css_OQ/mqdefault.jpg", "dur": "2:01:13"}, {"id": "gLj67C6gqWo", "title": "Flamenco Rhythms & Mediterranean Guitar Sounds - Relaxing Rumba Chillout Music 🌅", "thumb": "https://i.ytimg.com/vi/gLj67C6gqWo/mqdefault.jpg", "dur": "2:02:16"}, {"id": "DyWzx2IXC70", "title": "Flamenco Rhythms | Mediterranean Guitar Podcast & Exotic Sounds Journey", "thumb": "https://i.ytimg.com/vi/DyWzx2IXC70/mqdefault.jpg", "dur": "2:02:01"}, {"id": "k8q-s7MmlgI", "title": "Spanish Guitar Vibes | Flamenco Journey ~ Relaxing World Music Podcast", "thumb": "https://i.ytimg.com/vi/k8q-s7MmlgI/mqdefault.jpg", "dur": "2:03:16"}, {"id": "zHMkSfbNGgw", "title": "Flamenco Rhythms – Mediterranean Guitar Podcast | Exotic Sounds for Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/zHMkSfbNGgw/mqdefault.jpg", "dur": "2:10:08"}, {"id": "Qle49TOU8mQ", "title": "Flamenco Guitar Podcast | Rumba Rhythms ~ Soulful Spanish Melodies Live", "thumb": "https://i.ytimg.com/vi/Qle49TOU8mQ/mqdefault.jpg", "dur": "2:05:02"}, {"id": "br8ZX68doC4", "title": "Spanish Guitar Vibes | Flamenco Journey - Relaxing Latin Music & Oud Inspiration", "thumb": "https://i.ytimg.com/vi/br8ZX68doC4/mqdefault.jpg", "dur": "2:10:20"}, {"id": "SOKMyQP-SC0", "title": "Flamenco Rhythms ~ Mediterranean Guitar Podcast & Relaxing Instrumental Sounds", "thumb": "https://i.ytimg.com/vi/SOKMyQP-SC0/mqdefault.jpg", "dur": "2:07:48"}, {"id": "KskJfGadX5A", "title": "Flamenco Guitar Podcast ~ Soulful Spanish Melodies & Rumba Vibes for Relaxation", "thumb": "https://i.ytimg.com/vi/KskJfGadX5A/mqdefault.jpg", "dur": "2:08:46"}, {"id": "2vD9YlVlbOk", "title": "Spanish Guitar Vibes | Chill Flamenco Journey for Relaxation", "thumb": "https://i.ytimg.com/vi/2vD9YlVlbOk/mqdefault.jpg", "dur": "2:08:12"}, {"id": "mA2VKU5MdtM", "title": "Flamenco Rhythms for Sunset Serenity | Relaxing Mediterranean Guitar Instrumental Chill", "thumb": "https://i.ytimg.com/vi/mA2VKU5MdtM/mqdefault.jpg", "dur": "2:00:34"}, {"id": "nAs40bi_9Ss", "title": "Flamenco Guitar Dreams | Relaxing Spanish Rumba Sounds for a Soulful Night", "thumb": "https://i.ytimg.com/vi/nAs40bi_9Ss/mqdefault.jpg", "dur": "2:04:38"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

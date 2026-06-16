@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qajar Jazz</title>
+<!-- categories: Jazz, Weltmusik -->
+<!-- channel-id: UC6Xw8Jrwf009nHTV165UuQw -->
+<!-- channel-url: https://www.youtube.com/@Qajarjazz -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Qajar_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/JIOs2ZCUrBEi-OQLlC9qEvQMhtWAL3ZRvEJACjF1H-u72LHM9xvPS_EASRLWsK_BSyyWnEHi=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Qajar Jazz</div>
+      <div class="channel-count">64 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Qajar Jazz";
+const VIDEOS = [{"id": "-Hl3hSkvvcQ", "title": "Persian Jazz · Where Were You at Midnight? | 1 Hour Late Night Jazz", "thumb": "https://i.ytimg.com/vi/-Hl3hSkvvcQ/mqdefault.jpg", "dur": "1:03:25"}, {"id": "S4m_xII6e34", "title": "Persian Jazz · Autumn Leaves And Empty Chairs | 1 Hour Vintage Jazz Fusion", "thumb": "https://i.ytimg.com/vi/S4m_xII6e34/mqdefault.jpg", "dur": "1:03:05"}, {"id": "brN-ilsHPqs", "title": "Persian Jazz • Exotic Nights & Midnight Vibes | 1 Hour Smooth Jazz Fusion", "thumb": "https://i.ytimg.com/vi/brN-ilsHPqs/mqdefault.jpg", "dur": "1:04:46"}, {"id": "xjm1wdFx54s", "title": "Persian Jazz Society · Exotic Beauty & Hypnotic Groove | 1 Hour Cinematic Jazz", "thumb": "https://i.ytimg.com/vi/xjm1wdFx54s/mqdefault.jpg", "dur": "1:03:19"}, {"id": "S2odrz-Qyzg", "title": "Persian Jazz · Mystical Tombak Lounge | 1 Hour Middle Eastern Groove", "thumb": "https://i.ytimg.com/vi/S2odrz-Qyzg/mqdefault.jpg", "dur": "1:05:45"}, {"id": "9h4vuYxQSM4", "title": "Iranian Jazz · Nostalgic Solitude Season | 1 Hour Persian Jazz Mix", "thumb": "https://i.ytimg.com/vi/9h4vuYxQSM4/mqdefault.jpg", "dur": "1:03:58"}, {"id": "FI_aRQHG9f0", "title": "Arabic Jazz · A River Called Time | 1 Hour Late Night Arabic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/FI_aRQHG9f0/mqdefault.jpg", "dur": "1:10:09"}, {"id": "nDA4PbWLGJ0", "title": "Arabic Jazz · A Delicate Song of Absences | 1 Hour Middle Eastern Jazz", "thumb": "https://i.ytimg.com/vi/nDA4PbWLGJ0/mqdefault.jpg", "dur": "1:05:16"}, {"id": "gUL6jpw8i-I", "title": "Persian Noir Jazz · A Subtle Dance of Goodbye | 1 Hour Noir Jazz for Late Night Relief", "thumb": "https://i.ytimg.com/vi/gUL6jpw8i-I/mqdefault.jpg", "dur": "1:06:52"}, {"id": "7vWcL0Rx25k", "title": "Persian Noir Jazz · A Night at the Qajar Court | 1 Hour Vintage Noir Jazz", "thumb": "https://i.ytimg.com/vi/7vWcL0Rx25k/mqdefault.jpg", "dur": "1:04:37"}, {"id": "e8Z-IkJLj0U", "title": "Iranian Jazz · Our First Photographs | 1 Hour Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/e8Z-IkJLj0U/mqdefault.jpg", "dur": "1:07:55"}, {"id": "INk4WCoiwyM", "title": "Persian Noir Jazz · Some Creatures Were Born for 3 A.M | 1 Hour Jazz Dreamy", "thumb": "https://i.ytimg.com/vi/INk4WCoiwyM/mqdefault.jpg", "dur": "1:06:08"}, {"id": "ovcdzZHhZZ8", "title": "Iranian Jazz · Eastern Nights Instrumental Vibes | 1 Hour Hypnotic Nights", "thumb": "https://i.ytimg.com/vi/ovcdzZHhZZ8/mqdefault.jpg", "dur": "1:04:23"}, {"id": "FatjFVvMvyg", "title": "Iranian Jazz · Letters Never Sent | 1 Hour Melancholic Jazz Fusion", "thumb": "https://i.ytimg.com/vi/FatjFVvMvyg/mqdefault.jpg", "dur": "1:03:46"}, {"id": "eCRcHDQI9QA", "title": "Persian Jazz · Where Love Used to Grow | 1 Hour Solitary Lo-Fi Jazz", "thumb": "https://i.ytimg.com/vi/eCRcHDQI9QA/mqdefault.jpg", "dur": "1:03:01"}, {"id": "S55_Clp31d8", "title": "Iranian Jazz · Last Light in Old Tehran | 1 Hour Late Night Tehran Jazz", "thumb": "https://i.ytimg.com/vi/S55_Clp31d8/mqdefault.jpg", "dur": "1:04:39"}, {"id": "DAgK6LbbzuA", "title": "Iranian Jazz • Mystic Nights Instrumental Vibes | 1 Hour Jazz Fusion", "thumb": "https://i.ytimg.com/vi/DAgK6LbbzuA/mqdefault.jpg", "dur": "1:02:47"}, {"id": "fw46x8O1HTw", "title": "Persian Jazz · Pages Turn, Lessons Learned | 1 Hour Solitude Season", "thumb": "https://i.ytimg.com/vi/fw46x8O1HTw/mqdefault.jpg", "dur": "1:05:27"}, {"id": "OO3OVh6V5vs", "title": "Farsi Jazz · A Tasteless Tea For You And Me | 1 Hour Farsi Jazz Fusion", "thumb": "https://i.ytimg.com/vi/OO3OVh6V5vs/mqdefault.jpg", "dur": "1:08:29"}, {"id": "PIkNd9nuX4w", "title": "Desert Jazz · Royal Spring | 1 Hour Noir Jazz For Smokie Nights", "thumb": "https://i.ytimg.com/vi/PIkNd9nuX4w/mqdefault.jpg", "dur": "1:06:26"}, {"id": "FQlQud8pGpg", "title": "Persian Jazz · Our First Caffee In Chattanooga | 1 Hour Tehran Jazz Fusion", "thumb": "https://i.ytimg.com/vi/FQlQud8pGpg/mqdefault.jpg", "dur": "1:01:49"}, {"id": "lpSEXfVFc70", "title": "Persian Jazz  · The Last Dance In Tehran | 1 Hour Jazz For Comtemplation", "thumb": "https://i.ytimg.com/vi/lpSEXfVFc70/mqdefault.jpg", "dur": "1:03:53"}, {"id": "ODuWcTOgozQ", "title": "Iranian Jazz · Persian Nights Under Desert Lights| 1 Hour Instrumental Jazz Fusion", "thumb": "https://i.ytimg.com/vi/ODuWcTOgozQ/mqdefault.jpg", "dur": "1:18:48"}, {"id": "aaKrmYwaOkk", "title": "Iranian Jazz • Our Ceilings Fell Apart | 1 Hour Instrumental Jazz Melodies", "thumb": "https://i.ytimg.com/vi/aaKrmYwaOkk/mqdefault.jpg", "dur": "1:06:49"}, {"id": "8m63V-A-mt4", "title": "Iranian Jazz • Twilight By The Sea | 1 Hour Instrumental Jazz Fusion", "thumb": "https://i.ytimg.com/vi/8m63V-A-mt4/mqdefault.jpg", "dur": "1:01:35"}, {"id": "z8Dz-IFFFY4", "title": "Iranian Jazz • Like Tears In Rain | 1 Hour Lofi Jazz Fusion", "thumb": "https://i.ytimg.com/vi/z8Dz-IFFFY4/mqdefault.jpg", "dur": "1:04:10"}, {"id": "CEuz_4qjqms", "title": "Iranian Jazz • Souls We Couldn't Save Instrumental Wave | 1 Hour Iranian Memories", "thumb": "https://i.ytimg.com/vi/CEuz_4qjqms/mqdefault.jpg", "dur": "1:01:06"}, {"id": "KAlp9Ew3yT0", "title": "Iranian Jazz · Shadows Dance in Velvet Night | 1 Hour Retro Jazz Fusion", "thumb": "https://i.ytimg.com/vi/KAlp9Ew3yT0/mqdefault.jpg", "dur": "1:03:22"}, {"id": "VC17T2y_Fvo", "title": "Iranian Jazz · Silk roads fade, but melodies remain | 1 Hour Endless Night", "thumb": "https://i.ytimg.com/vi/VC17T2y_Fvo/mqdefault.jpg", "dur": "1:09:44"}, {"id": "Sf36e7w70pg", "title": "Iranian Jazz · Persian Soul Instrumental Fusion | 1 Hour Iranian Fever", "thumb": "https://i.ytimg.com/vi/Sf36e7w70pg/mqdefault.jpg", "dur": "1:12:08"}, {"id": "lOAgzdrbnn8", "title": "Iranian Jazz • Tehran in 1970 Instrumental City Dreams | 1 Hour Jazz fusion", "thumb": "https://i.ytimg.com/vi/lOAgzdrbnn8/mqdefault.jpg", "dur": "1:42:54"}, {"id": "S-VxOTxjwWM", "title": "Persian Jazz • Late Night Driving Instrumental Fusion | 1 Hour Jazz fusion", "thumb": "https://i.ytimg.com/vi/S-VxOTxjwWM/mqdefault.jpg", "dur": "1:24:47"}, {"id": "75q8g710dZs", "title": "Persian Jazz • Coffee & Contemplation | قهوه و تأمل – Morning Ritual Sessions", "thumb": "https://i.ytimg.com/vi/75q8g710dZs/mqdefault.jpg", "dur": "1:37:04"}, {"id": "PhngACEPsOg", "title": "Persian Jazz • Googoosh Nostalgia Reborn | نوستالژی گوگوش بازآفرینی Cozy Jazz Lounge", "thumb": "https://i.ytimg.com/vi/PhngACEPsOg/mqdefault.jpg", "dur": "1:18:47"}, {"id": "lKufPPoz1mA", "title": "Persian Jazz • Mahasti & Homeyra Nostalgia | نوستالژی مهستی و حمیرا – 1-Hour Relaxing", "thumb": "https://i.ytimg.com/vi/lKufPPoz1mA/mqdefault.jpg", "dur": "1:29:41"}, {"id": "ngmgk3bO6h8", "title": "1 Hour Persian Jazz Blend • Hayedeh & Delkash Reimagined بازآفرینی آثار هایده و دلکش – 1", "thumb": "https://i.ytimg.com/vi/ngmgk3bO6h8/mqdefault.jpg", "dur": "1:27:12"}, {"id": "Z4cnaFc9l3A", "title": "Persian Jazz · The poems of Forough Farrokhzad | 1 Hour Deep Reflection", "thumb": "https://i.ytimg.com/vi/Z4cnaFc9l3A/mqdefault.jpg", "dur": "1:23:21"}, {"id": "5fS43Qb2dfI", "title": "Persian Jazz • Smooth Eastern 1 Hour Instrumental Fusion", "thumb": "https://i.ytimg.com/vi/5fS43Qb2dfI/mqdefault.jpg", "dur": "1:03:35"}, {"id": "Cey_mEW4c-4", "title": "Persian Jazz • Eastern Nights | 1Hour Instrumental Flow", "thumb": "https://i.ytimg.com/vi/Cey_mEW4c-4/mqdefault.jpg", "dur": "1:00:00"}, {"id": "OzCVTbik0Fs", "title": "Persian Jazz • Dreamy Silk Road Instrumental Fusion", "thumb": "https://i.ytimg.com/vi/OzCVTbik0Fs/mqdefault.jpg", "dur": "1:11:01"}, {"id": "EaTGpSKYBbA", "title": "Persian Jazz • Midnight Tehran Instrumental Fusion", "thumb": "https://i.ytimg.com/vi/EaTGpSKYBbA/mqdefault.jpg", "dur": "1:02:31"}, {"id": "Wt-ohqWEFQY", "title": "Persian Jazz · Mashhad Sacred Nights | 1 Hour Shrine Whispers", "thumb": "https://i.ytimg.com/vi/Wt-ohqWEFQY/mqdefault.jpg", "dur": "1:03:24"}, {"id": "_dYEmH578qM", "title": "Persian Jazz · The Poets of Negarestan | 1 Hour Royal Gardens", "thumb": "https://i.ytimg.com/vi/_dYEmH578qM/mqdefault.jpg", "dur": "1:34:17"}, {"id": "4-SyIZUmInM", "title": "Persian Jazz · for people who carry their ancestors | 1 Hour Of Imperial Twilight", "thumb": "https://i.ytimg.com/vi/4-SyIZUmInM/mqdefault.jpg", "dur": "1:26:18"}, {"id": "ZznkG7yrPZY", "title": "Persian Jazz · It tastes like nostalgia | 1 Hour Qajar Era Symphony", "thumb": "https://i.ytimg.com/vi/ZznkG7yrPZY/mqdefault.jpg", "dur": "1:53:10"}, {"id": "SdiI4SaUaEs", "title": "Persian Jazz for people who miss someone | Wine & Silence", "thumb": "https://i.ytimg.com/vi/SdiI4SaUaEs/mqdefault.jpg", "dur": "1:45:37"}, {"id": "jtgpBr7DcYM", "title": "I Know You Are Tired · Persian Noir Jazz", "thumb": "https://i.ytimg.com/vi/jtgpBr7DcYM/mqdefault.jpg", "dur": "2:01:09"}, {"id": "6Qtw8iQYuJQ", "title": "Retro Persian Jazz  ·  Headlines & Solitude", "thumb": "https://i.ytimg.com/vi/6Qtw8iQYuJQ/mqdefault.jpg", "dur": "1:40:59"}, {"id": "iccX_VyuLGg", "title": "Smooth Jazz for You to Relax · Iranian Jazz سال نو، عصر جدید", "thumb": "https://i.ytimg.com/vi/iccX_VyuLGg/mqdefault.jpg", "dur": "1:15:44"}, {"id": "ExsMolU7es8", "title": "Farsi Jazz · Soft sounds help you calibrate | شیراز، باغ حافظ", "thumb": "https://i.ytimg.com/vi/ExsMolU7es8/mqdefault.jpg", "dur": "1:44:52"}, {"id": "7lk_zxZ9aGQ", "title": "Qajar Jazz · for Insomniacs | تهران پس از نیمه‌شب", "thumb": "https://i.ytimg.com/vi/7lk_zxZ9aGQ/mqdefault.jpg", "dur": "58:01"}, {"id": "hAELKN28vdk", "title": "Persian Jazz Tribute to Googoosh | پژواک صدای جاودانه", "thumb": "https://i.ytimg.com/vi/hAELKN28vdk/mqdefault.jpg", "dur": "1:20:07"}, {"id": "W5d-0W7cr2I", "title": "1 Hour Persian Jazz · The Photographer's Arrival  | نگاه نو (Vintage Vibes)", "thumb": "https://i.ytimg.com/vi/W5d-0W7cr2I/mqdefault.jpg", "dur": "1:04:15"}, {"id": "kPMSgk14JPk", "title": "1 Hour Persian Jazz · Caspian Coast Exile 1890 | ساحل تنهایی (Melancholic Noir)", "thumb": "https://i.ytimg.com/vi/kPMSgk14JPk/mqdefault.jpg", "dur": "1:11:59"}, {"id": "6n95fEohbkI", "title": "1 Hour Persian Jazz · Amir Kabir's Final Days | آخرین روزها", "thumb": "https://i.ytimg.com/vi/6n95fEohbkI/mqdefault.jpg", "dur": "1:01:09"}, {"id": "eftiYpgR0dQ", "title": "1 Hour Persian Jazz · Last Caravan on Silk Road | شبِ کویر", "thumb": "https://i.ytimg.com/vi/eftiYpgR0dQ/mqdefault.jpg", "dur": "1:05:23"}, {"id": "DJqxlO0_t5U", "title": "1 Hour Persian Jazz · Golestan Palace After Midnight | Silk & Smoke", "thumb": "https://i.ytimg.com/vi/DJqxlO0_t5U/mqdefault.jpg", "dur": "1:12:11"}, {"id": "0xNqMtRW8sc", "title": "Persian Jazz · Constitutional Revolution 1906 | 1 Hour Rebel Sessions", "thumb": "https://i.ytimg.com/vi/0xNqMtRW8sc/mqdefault.jpg", "dur": "1:09:00"}, {"id": "oE4DjjC8EjE", "title": "Persian Jazz · Shiraz: Where Hafez Met the Court | 1 Hour of Garden Whispers", "thumb": "https://i.ytimg.com/vi/oE4DjjC8EjE/mqdefault.jpg", "dur": "1:11:32"}, {"id": "wvrwBUfRfZk", "title": "Persian Jazz · The Last Night of Shah Naser al-Din | 1 Hour of Imperial Twilight", "thumb": "https://i.ytimg.com/vi/wvrwBUfRfZk/mqdefault.jpg", "dur": "1:08:58"}, {"id": "NL91ZJ7kf_A", "title": "Persian Jazz · Tehran 1880: Capital of Transformation | 1 Hour of Qajar Era Ambience", "thumb": "https://i.ytimg.com/vi/NL91ZJ7kf_A/mqdefault.jpg", "dur": "1:11:20"}, {"id": "5xJglUMsdCo", "title": "AGGRESSIVE Persian Jazz: Mozaffar ad-Din Shah Qajar (I literally told you)", "thumb": "https://i.ytimg.com/vi/5xJglUMsdCo/mqdefault.jpg", "dur": "8:37"}, {"id": "Zd_K_ihz-z0", "title": "Persian Jazz · Isfahan Half the World | 1 Hour Qajar Era Symphony", "thumb": "https://i.ytimg.com/vi/Zd_K_ihz-z0/mqdefault.jpg", "dur": "1:09:28"}, {"id": "XzE1Bdw6K5k", "title": "The Last Night of Shah Naser al-Din | 1 Hour Persian Jazz (1896)", "thumb": "https://i.ytimg.com/vi/XzE1Bdw6K5k/mqdefault.jpg", "dur": "1:29:31"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

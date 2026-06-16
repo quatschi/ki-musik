@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFRICA SONUS</title>
+<!-- categories: Funk, Soul, Weltmusik -->
+<!-- channel-id: UCVnv6faOBsring1t_1wmJsw -->
+<!-- channel-url: https://www.youtube.com/@AFRICASONUS -->
+<!-- created: 2026-06-16 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=AFRICA_SONUS.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/gU8m-k06i5CyALvJMgQDKhD66mGMSJHGI2Z4-HagUwNpuBHMCBN6wPu0qjlRQqXjv2cTGYkX=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">AFRICA SONUS</div>
+      <div class="channel-count">36 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "AFRICA SONUS";
+const VIDEOS = [{"id": "WiWa72khDSk", "title": "African Healing Music — Angelic Voices, Tribal Drums & Zulu Chants for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/WiWa72khDSk/mqdefault.jpg", "dur": "2:05:37"}, {"id": "UXAgfJGZVjw", "title": "The Sound of Africa — Epic Tribal Drums & Choir for Deep Focus, Study & Inner Peace", "thumb": "https://i.ytimg.com/vi/UXAgfJGZVjw/mqdefault.jpg", "dur": "2:39:26"}, {"id": "83sT727h2l8", "title": "African Healing Music — Valiha, Kora & Angelic Voices for Deep Sleep, Meditation & Inner Peace", "thumb": "https://i.ytimg.com/vi/83sT727h2l8/mqdefault.jpg", "dur": "2:22:39"}, {"id": "MK1DWdNDwUI", "title": "African Angelic Voices & Tribal Drums — For Deep Sleep, Meditation & Stress Relief", "thumb": "https://i.ytimg.com/vi/MK1DWdNDwUI/mqdefault.jpg", "dur": "3:18:27"}, {"id": "8eiOMOoWXSQ", "title": "African Cinematic Ambient — Powerful Drums & Ethereal Vocals | Sleep, Meditation, Deep Focus", "thumb": "https://i.ytimg.com/vi/8eiOMOoWXSQ/mqdefault.jpg", "dur": "2:15:25"}, {"id": "xyqobNHee8Y", "title": "African Tribal Music That Heals Without Words - Surreal Africa 2", "thumb": "https://i.ytimg.com/vi/xyqobNHee8Y/mqdefault.jpg", "dur": "2:44:59"}, {"id": "3CRoQF6R0co", "title": "AFRICAN ANCESTRAL HEALING: Deep Relaxation with Native Tribal Instruments (Echoes of the Elements 2)", "thumb": "https://i.ytimg.com/vi/3CRoQF6R0co/mqdefault.jpg", "dur": "2:26:35"}, {"id": "oBSzhl_qhKA", "title": "Relaxing African Tribal Music: Cinematic Ambient with Traditional Instruments & Zulu Vocals", "thumb": "https://i.ytimg.com/vi/oBSzhl_qhKA/mqdefault.jpg", "dur": "2:23:46"}, {"id": "tx_Xbm_j5D8", "title": "Deep African Focus Music | 63 BPM Cinematic Soundstage", "thumb": "https://i.ytimg.com/vi/tx_Xbm_j5D8/mqdefault.jpg", "dur": "2:25:47"}, {"id": "CCKlZb7COmU", "title": "African Soundscapes for Anxiety Relief & Study", "thumb": "https://i.ytimg.com/vi/CCKlZb7COmU/mqdefault.jpg", "dur": "2:08:53"}, {"id": "ls4nGdqXa-c", "title": "AFRICAN RELAXING MUSIC: 80 BPM Grounding Rhythms for Deep Focus & Mental Clarity", "thumb": "https://i.ytimg.com/vi/ls4nGdqXa-c/mqdefault.jpg", "dur": "2:56:34"}, {"id": "6CrTByAnL64", "title": "African Meditation Music | Relaxing Song 🌍✨ AFRICA MOTHER EARTH", "thumb": "https://i.ytimg.com/vi/6CrTByAnL64/mqdefault.jpg", "dur": "3:29:30"}, {"id": "_9VGA8OVLZo", "title": "African Relaxation Music | PEACE OF MIND", "thumb": "https://i.ytimg.com/vi/_9VGA8OVLZo/mqdefault.jpg", "dur": "3:46:26"}, {"id": "Uiht6SxVpZA", "title": "AFRICAN ANCESTRAL HEALING: Deep Relaxation with Native Tribal Instruments", "thumb": "https://i.ytimg.com/vi/Uiht6SxVpZA/mqdefault.jpg", "dur": "3:28:14"}, {"id": "dioHI7jjL1E", "title": "Native African Soundscapes | DRUMS OF DAWN", "thumb": "https://i.ytimg.com/vi/dioHI7jjL1E/mqdefault.jpg", "dur": "2:40:51"}, {"id": "Fq5syudeULk", "title": "HEALING AFRICAN SOUNDS: Songs for Mindfulness & Inner Peace", "thumb": "https://i.ytimg.com/vi/Fq5syudeULk/mqdefault.jpg", "dur": "3:36:46"}, {"id": "pozW9qQENIQ", "title": "African relaxing music: African Tribal Drums for Sleep & Stress Relief", "thumb": "https://i.ytimg.com/vi/pozW9qQENIQ/mqdefault.jpg", "dur": "3:31:37"}, {"id": "ns_sg8LLwpc", "title": "African Meditation Music | Relaxing Song FLOATING WITH AFRICA |", "thumb": "https://i.ytimg.com/vi/ns_sg8LLwpc/mqdefault.jpg", "dur": "2:19:29"}, {"id": "6n_H6X_-Q8I", "title": "African Tribal Sounds that Heal the Mind | Africa Mama - The Most Calming Experience on YouTube", "thumb": "https://i.ytimg.com/vi/6n_H6X_-Q8I/mqdefault.jpg", "dur": "3:30:17"}, {"id": "w3pWMjdSP_A", "title": "African Tribal Relaxation Music 🌿 Deep Calm & Meditation | Natural Journey", "thumb": "https://i.ytimg.com/vi/w3pWMjdSP_A/mqdefault.jpg", "dur": "2:40:15"}, {"id": "Ng5F8e38kRY", "title": "African Music to Relax | Sounds of the Savannah & Ancestral Tradition", "thumb": "https://i.ytimg.com/vi/Ng5F8e38kRY/mqdefault.jpg", "dur": "2:38:27"}, {"id": "rXtsGUxkJqE", "title": "TRIBAL AFRICA VIBES - Deep Healing Sounds for Instant Inner Peace", "thumb": "https://i.ytimg.com/vi/rXtsGUxkJqE/mqdefault.jpg", "dur": "2:48:22"}, {"id": "QReIyUbWZHc", "title": "AFRICAN ANCESTRAL HEALING: Deep Relaxation with Native Tribal Instruments (Echoes of the Elements)", "thumb": "https://i.ytimg.com/vi/QReIyUbWZHc/mqdefault.jpg", "dur": "2:12:28"}, {"id": "hvp6tWY94yQ", "title": "African Tribal Music for Deep Meditation | Calm Your Mind NOW", "thumb": "https://i.ytimg.com/vi/hvp6tWY94yQ/mqdefault.jpg", "dur": "2:44:27"}, {"id": "ddrLhDtPeAw", "title": "Relaxing African Tribal Music – Deep Ancestral Drums for Meditation - My African Heart", "thumb": "https://i.ytimg.com/vi/ddrLhDtPeAw/mqdefault.jpg", "dur": "3:34:31"}, {"id": "6tCyiif8Agc", "title": "African Relaxation Music | AFRICA NATURAL PEACE", "thumb": "https://i.ytimg.com/vi/6tCyiif8Agc/mqdefault.jpg", "dur": "2:26:16"}, {"id": "GrM8A95S1MA", "title": "African Meditation Music | Relaxing Song 🌍✨FLOAT WITH THE WIND |", "thumb": "https://i.ytimg.com/vi/GrM8A95S1MA/mqdefault.jpg", "dur": "2:30:57"}, {"id": "tkA-wX0--oE", "title": "African Tribal Drums (WAV/Hi-Fi) | Deep Focus & Relaxation (2 Hours)", "thumb": "https://i.ytimg.com/vi/tkA-wX0--oE/mqdefault.jpg", "dur": "2:30:57"}, {"id": "x8cl-aklYE4", "title": "African Tribal Drums – Music for Relaxation and Inner Peace ✨Relaxing Tribal Music for Deep Calm🌍✨", "thumb": "https://i.ytimg.com/vi/x8cl-aklYE4/mqdefault.jpg", "dur": "2:39:20"}, {"id": "66ofNbEV_Gk", "title": "UBUNTU FLOW | 🌍✨The Rhythm of Togetherness🌍✨", "thumb": "https://i.ytimg.com/vi/66ofNbEV_Gk/mqdefault.jpg", "dur": "2:31:18"}, {"id": "MUUH00GzR88", "title": "AFRICA SOUNDSCAPE – 🌍 ✨Peaceful Tribal Atmosphere & Soothing Drums for Mindful Relaxation 🌍 ✨", "thumb": "https://i.ytimg.com/vi/MUUH00GzR88/mqdefault.jpg", "dur": "2:19:06"}, {"id": "Qx9TdhT9vCs", "title": "Glowing African Melodies – Tribal Voices and Serene Ambience 🌍 AFRICA BEATS✨🌿", "thumb": "https://i.ytimg.com/vi/Qx9TdhT9vCs/mqdefault.jpg", "dur": "2:35:05"}, {"id": "r85vo0fstP4", "title": "African Tribal Sounds for Focus – Calm Rhythms with Deep Drums 🌍 AFRICA DRUMS ✨🌿", "thumb": "https://i.ytimg.com/vi/r85vo0fstP4/mqdefault.jpg", "dur": "2:40:58"}, {"id": "4Ubtq84dBWM", "title": "Relaxing African Tribal Music – Deep Ancestral Drums for Meditation 🌍 AFRICA BEAUTY✨🌿", "thumb": "https://i.ytimg.com/vi/4Ubtq84dBWM/mqdefault.jpg", "dur": "2:34:21"}, {"id": "7qWjHJqj9fM", "title": "TRIBAL MUSIC FOR RELAXATION | 🌍✨Meditation and Connection with the Earth 🌍✨", "thumb": "https://i.ytimg.com/vi/7qWjHJqj9fM/mqdefault.jpg", "dur": "2:11:47"}, {"id": "ZyB3vLXX36k", "title": "AFRICA SOUNDS🌍✨ – Relaxing Tribal Music for Inner Peace 🪘🌿", "thumb": "https://i.ytimg.com/vi/ZyB3vLXX36k/mqdefault.jpg", "dur": "2:41:26"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
