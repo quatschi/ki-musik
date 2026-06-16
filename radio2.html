@@ -198,10 +198,21 @@
     // Neue Struktur: VIDEOS-Array im Script-Tag (konvertierte Seiten)
     const scriptTags = doc.querySelectorAll('script');
     for (const script of scriptTags) {
-      const m = script.textContent.match(/const VIDEOS\s*=\s*(\[[\s\S]*?\]);/);
-      if (m) {
+      const scriptText = script.textContent;
+      const startIdx = scriptText.indexOf('const VIDEOS = [');
+      if (startIdx !== -1) {
         try {
-          const arr = JSON.parse(m[1]);
+          // Bracket-counting um das Array korrekt zu extrahieren
+          let bracket = 0, arrStart = scriptText.indexOf('[', startIdx), arrEnd = -1;
+          for (let j = arrStart; j < scriptText.length; j++) {
+            if (scriptText[j] === '[') bracket++;
+            else if (scriptText[j] === ']') { bracket--; if (bracket === 0) { arrEnd = j; break; } }
+          }
+          if (arrEnd === -1) continue;
+          let arrStr = scriptText.slice(arrStart, arrEnd + 1);
+          // JS unquoted keys -> JSON
+          arrStr = arrStr.replace(/\{(\w+):/g, '{"$1":').replace(/,\s*(\w+):/g, ', "$1":');
+          const arr = JSON.parse(arrStr);
           arr.forEach(v => {
             if (v.id && v.title) {
               videos.push({
@@ -213,7 +224,7 @@
             }
           });
           return videos;
-        } catch(e) {}
+        } catch(e) { console.log('VIDEOS parse error:', e); }
       }
     }
 
@@ -279,7 +290,7 @@
       try {
         const videos = await loadOneChannel(channel);
         for (const v of videos) {
-          if (topSet.has(v.videoId) && !window.allMeta[v.videoId]?.title) {
+          if (topSet.has(v.videoId)) {
             window.allMeta[v.videoId] = { title: v.title, channel: channel.name };
             found++;
           }
