@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re:Music</title>
+<!-- categories: Jazz, Funk, Smooth Jazz -->
+<!-- channel-id: UCr4oD9oop5RbudN7TeGac6g -->
+<!-- channel-url: https://www.youtube.com/@remusicmylife -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=ReMusic.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/5i07qIUf4GXeEyge0C_EH3XAbzi7mpcfBA21U5Sn0-beHFG0TNBcAHG6SQDqk8OYHu6NKA5UeJg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Re:Music</div>
+      <div class="channel-count">162 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Re:Music";
+const VIDEOS = [{"id": "rXsDQ0kvFnM", "title": "90s Funk Jazz Fusion: Slap Bass Grooves for Study & Focus", "thumb": "https://i.ytimg.com/vi/rXsDQ0kvFnM/mqdefault.jpg", "dur": "59:12"}, {"id": "KwlBj9W1FJk", "title": "90s Funk Jazz Fusion: Virtuosic Slap Bass Grooves (Deep Focus)", "thumb": "https://i.ytimg.com/vi/KwlBj9W1FJk/mqdefault.jpg", "dur": "58:13"}, {"id": "U0noF6Cp-24", "title": "Slap Bass Jazz Grooves — 90s Funk Fusion Music for Study & Productivity", "thumb": "https://i.ytimg.com/vi/U0noF6Cp-24/mqdefault.jpg", "dur": "1:02:16"}, {"id": "KzGBstH4BfE", "title": "90s Funk Jazz Fusion Grooves — Slap Bass Instrumental for Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/KzGBstH4BfE/mqdefault.jpg", "dur": "1:00:24"}, {"id": "qJg5iD7Ub0Q", "title": "90s Funk Jazz Fusion Grooves — Slap Bass Instrumental for Study & Motivation", "thumb": "https://i.ytimg.com/vi/qJg5iD7Ub0Q/mqdefault.jpg", "dur": "57:34"}, {"id": "kXcdybXSUwM", "title": "90s Funk Slap Bass Grooves — Smooth Jazz Fusion for Focus & Work", "thumb": "https://i.ytimg.com/vi/kXcdybXSUwM/mqdefault.jpg", "dur": "1:00:05"}, {"id": "_WyK4WF4SXU", "title": "90s Funk Fusion Grooves — Slap Bass Jazz | Background Music for Work & Productivity", "thumb": "https://i.ytimg.com/vi/_WyK4WF4SXU/mqdefault.jpg", "dur": "52:11"}, {"id": "p0MDH4Cq3x8", "title": "Slap Bass Jazz Grooves — 90s Funk Fusion | Jazz Background Music for Study & Work", "thumb": "https://i.ytimg.com/vi/p0MDH4Cq3x8/mqdefault.jpg", "dur": "1:01:22"}, {"id": "Jp5I8tWVki0", "title": "Slap Bass Jazz Fusion — 90s Funk Grooves | Jazz Background Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/Jp5I8tWVki0/mqdefault.jpg", "dur": "46:35"}, {"id": "ZDrucvYdfrg", "title": "Funky Slap Bass Grooves — 90s Funk Jazz Fusion | Jazz Background Music for Study & Work", "thumb": "https://i.ytimg.com/vi/ZDrucvYdfrg/mqdefault.jpg", "dur": "1:04:33"}, {"id": "egDHqbsHbOo", "title": "90s Jazz Fusion Feels | Slap Bass, Smooth Keys & Pocket Drums", "thumb": "https://i.ytimg.com/vi/egDHqbsHbOo/mqdefault.jpg", "dur": "1:02:15"}, {"id": "_h1U_cHzamI", "title": "Upbeat Funk Jazz Fusion | Groovy Jazz Background Music for Work & Study Sessions", "thumb": "https://i.ytimg.com/vi/_h1U_cHzamI/mqdefault.jpg", "dur": "1:04:28"}, {"id": "2dt4lAGyiy4", "title": "Smooth Funk Jazz Fusion | Jazz Background Music for Focus, Work & Good Vibes", "thumb": "https://i.ytimg.com/vi/2dt4lAGyiy4/mqdefault.jpg", "dur": "1:05:04"}, {"id": "v3eXWHuKqWw", "title": "90s Funk Jazz Fusion — Slap Bass Grooves | Jazz Background Music for Deep Focus", "thumb": "https://i.ytimg.com/vi/v3eXWHuKqWw/mqdefault.jpg", "dur": "1:02:54"}, {"id": "ugStteijaeI", "title": "Night Jazz Groove 🌙 Midnight Funk Jazz Instrumental for Late Night Vibes & Jazz Bar Energy", "thumb": "https://i.ytimg.com/vi/ugStteijaeI/mqdefault.jpg", "dur": "1:03:47"}, {"id": "dCCZZ4FBr8U", "title": "After Work Jazz Funk 🍸 Dinner Jazz Party Instrumental for Relaxing Evenings & Good Times", "thumb": "https://i.ytimg.com/vi/dCCZZ4FBr8U/mqdefault.jpg", "dur": "1:04:29"}, {"id": "zC_XKGJe71w", "title": "Summer Jazz Funk 🌞 Smooth Neo Funk Instrumental for Good Drives, Sunny Days & Warm Vibes", "thumb": "https://i.ytimg.com/vi/zC_XKGJe71w/mqdefault.jpg", "dur": "1:04:10"}, {"id": "QxyUHdnKkAY", "title": "All-Day 90s Retro Jazz Fusion | Funk Jazz Slap Bass Instrumental & Chill Vibes", "thumb": "https://i.ytimg.com/vi/QxyUHdnKkAY/mqdefault.jpg", "dur": "1:03:46"}, {"id": "7eLKERfNR9o", "title": "90s Retro Funk Jazz Groove | Slap Bass Jazz Fusion Instrumental & Vintage Chill Vibes", "thumb": "https://i.ytimg.com/vi/7eLKERfNR9o/mqdefault.jpg", "dur": "1:09:17"}, {"id": "XM-ZqGl6hwM", "title": "Vintage 90s Jazz Fusion Groove | Funk Jazz Slap Bass Instrumental Chill Vibes Morning Boost", "thumb": "https://i.ytimg.com/vi/XM-ZqGl6hwM/mqdefault.jpg", "dur": "1:11:03"}, {"id": "ahfMlIs3-G4", "title": "Retro 90s Jazz Fusion Slap Bass | Funk Jazz Instrumental & Vintage Chill Vibes for Focus", "thumb": "https://i.ytimg.com/vi/ahfMlIs3-G4/mqdefault.jpg", "dur": "1:12:21"}, {"id": "QJVbcaxzsoA", "title": "Retro City Groove 90s | Jazz Fusion Slap Bass Funk Jazz Instrumental Chill Vibes", "thumb": "https://i.ytimg.com/vi/QJVbcaxzsoA/mqdefault.jpg", "dur": "1:11:31"}, {"id": "05EZgozl6aQ", "title": "Analog 90s Funk Jazz Groove | Slap Bass Jazz Fusion Instrumental Chill Vibes", "thumb": "https://i.ytimg.com/vi/05EZgozl6aQ/mqdefault.jpg", "dur": "1:14:03"}, {"id": "Z4-2TsH52qs", "title": "90s Funk Jazz Groove Loop | Jazz Fusion Slap Bass Instrumental & Chill Vibes", "thumb": "https://i.ytimg.com/vi/Z4-2TsH52qs/mqdefault.jpg", "dur": "1:14:10"}, {"id": "DgUUg-fvXSE", "title": "90s Retro Jazz Fusion Slap Bass | Funk Jazz Instrumental & Vintage Chill Vibes", "thumb": "https://i.ytimg.com/vi/DgUUg-fvXSE/mqdefault.jpg", "dur": "1:17:24"}, {"id": "EDdn8Cf0AgM", "title": "Groovy Jazz Fusion Slap Bass | Funk Jazz Instrumental Chill Vibes Session", "thumb": "https://i.ytimg.com/vi/EDdn8Cf0AgM/mqdefault.jpg", "dur": "1:16:52"}, {"id": "61kSx59xgMw", "title": "Jazz Fusion Slap Bass Groove | Funk Jazz Instrumental for Focus & Chill Vibes", "thumb": "https://i.ytimg.com/vi/61kSx59xgMw/mqdefault.jpg", "dur": "1:15:00"}, {"id": "-XfTn13eQB8", "title": "Morning Jazz Groove 🌅 Happy Funk Jazz Instrumental for Good Vibes & Positive Energy", "thumb": "https://i.ytimg.com/vi/-XfTn13eQB8/mqdefault.jpg", "dur": "1:17:09"}, {"id": "t-r7sjMIcbc", "title": "Retro Funk Jazz Beats 🎹 Fusion Jazz Instrumental for Coding, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/t-r7sjMIcbc/mqdefault.jpg", "dur": "1:12:10"}, {"id": "BQ4xxwBb3fk", "title": "Funk Jazz Groove Mix 🎷 Upbeat Jazz Fusion Playlist for Work, Study & Good Energy", "thumb": "https://i.ytimg.com/vi/BQ4xxwBb3fk/mqdefault.jpg", "dur": "1:13:14"}, {"id": "tKTyOTYDwx0", "title": "Upbeat Funk Jazz Fusion 🎸 Groovy Jazz Instrumental for Energy, Study & Good Vibes", "thumb": "https://i.ytimg.com/vi/tKTyOTYDwx0/mqdefault.jpg", "dur": "1:15:13"}, {"id": "rtOgVr-YMEU", "title": "Groovy Funk Jazz Instrumental 🎷 Smooth Soul Jazz for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/rtOgVr-YMEU/mqdefault.jpg", "dur": "1:15:47"}, {"id": "aGPbqidW8yE", "title": "High-Energy Groovy Funk Jazz Fusion Slap Bass for Power Focus & Deep Work", "thumb": "https://i.ytimg.com/vi/aGPbqidW8yE/mqdefault.jpg", "dur": "1:08:47"}, {"id": "5P_6tzYzNIk", "title": "All-Day High-Energy Funk Jazz Slap Bass Mix for Work & Focus", "thumb": "https://i.ytimg.com/vi/5P_6tzYzNIk/mqdefault.jpg", "dur": "1:14:50"}, {"id": "ovPDssnBhIc", "title": "Fast Groovy 90s Funk Jazz Slap Bass for Creative Momentum", "thumb": "https://i.ytimg.com/vi/ovPDssnBhIc/mqdefault.jpg", "dur": "1:17:54"}, {"id": "LbVpIWupnPc", "title": "Energetic 90s Funk Jazz Bass to Kickstart Your Day", "thumb": "https://i.ytimg.com/vi/LbVpIWupnPc/mqdefault.jpg", "dur": "1:19:46"}, {"id": "fA5qCT-hUOw", "title": "Fast Paced Funk Jazz - 90s Slap Bass Grooves to Boost Energy", "thumb": "https://i.ytimg.com/vi/fA5qCT-hUOw/mqdefault.jpg", "dur": "1:13:20"}, {"id": "TTJEX0R0tCA", "title": "High-Energy Funk Jazz Fusion Slap Bass for Intense Focus & Deep Work", "thumb": "https://i.ytimg.com/vi/TTJEX0R0tCA/mqdefault.jpg", "dur": "1:12:30"}, {"id": "yoNP-OfvtZM", "title": "Smooth 90's Jazz Funk Grooves for Studying & Productivity", "thumb": "https://i.ytimg.com/vi/yoNP-OfvtZM/mqdefault.jpg", "dur": "1:10:19"}, {"id": "SRFVY28vQNI", "title": "Groovy Funk Jazz Slap Bass for Coding & Creative Flow", "thumb": "https://i.ytimg.com/vi/SRFVY28vQNI/mqdefault.jpg", "dur": "1:18:44"}, {"id": "-DfU6U_zc9I", "title": "Smooth Funk Jazz Bass Grooves for Deep Focus & Flow State", "thumb": "https://i.ytimg.com/vi/-DfU6U_zc9I/mqdefault.jpg", "dur": "1:13:56"}, {"id": "5u8QNGWTatg", "title": "90s Funk Jazz Slap Bass | Groovy Background Music for Work & Study", "thumb": "https://i.ytimg.com/vi/5u8QNGWTatg/mqdefault.jpg", "dur": "1:03:00"}, {"id": "tvlGbxUbSXQ", "title": "90s Funk Slap Bass 2026 | High Energy Jazz Fusion for Deep Work", "thumb": "https://i.ytimg.com/vi/tvlGbxUbSXQ/mqdefault.jpg", "dur": "1:12:53"}, {"id": "vKd8tj4KpVQ", "title": "90s Funk Slap Bass | Energetic Jazz Fusion for Productivity [2026]", "thumb": "https://i.ytimg.com/vi/vKd8tj4KpVQ/mqdefault.jpg", "dur": "1:17:03"}, {"id": "D-qwX01ILyY", "title": "High Energy 90s Funk Slap Bass • Jazz Fusion for Deep Work [2026]", "thumb": "https://i.ytimg.com/vi/D-qwX01ILyY/mqdefault.jpg", "dur": "1:00:13"}, {"id": "PGeAuN7zLfE", "title": "90s Funk Slap Bass • Jazz Fusion for Work & Focus [2026]", "thumb": "https://i.ytimg.com/vi/PGeAuN7zLfE/mqdefault.jpg", "dur": "1:25:38"}, {"id": "AZjFe7U_164", "title": "The 90s Fusion Secret That's CHANGING Jazz Funk", "thumb": "https://i.ytimg.com/vi/AZjFe7U_164/mqdefault.jpg", "dur": "1:15:59"}, {"id": "cH5B8TF5UzM", "title": "Ultimate Slap Bass Fusion • 90s Funk Jazz for Work", "thumb": "https://i.ytimg.com/vi/cH5B8TF5UzM/mqdefault.jpg", "dur": "1:17:06"}, {"id": "6sja07mNSy4", "title": "90s Funk Jazz Instrumentals That Make Working Feel Effortless", "thumb": "https://i.ytimg.com/vi/6sja07mNSy4/mqdefault.jpg", "dur": "1:14:45"}, {"id": "JvVyuplvr00", "title": "Ultimate 90s Funk Jazz • Instrumental Grooves for Study & Work", "thumb": "https://i.ytimg.com/vi/JvVyuplvr00/mqdefault.jpg", "dur": "1:17:36"}, {"id": "Zu5wSyrWtQ0", "title": "[2-Hour Special] 2026 New Year Groove | Funky Slap Bass Jazz Fusion For Fresh Start & Focus", "thumb": "https://i.ytimg.com/vi/Zu5wSyrWtQ0/mqdefault.jpg", "dur": "2:36:35"}, {"id": "KOVC-gJLNDo", "title": "High-Voltage Funk Jazz Fusion 2025 • Ultimate Slap Bass Mix", "thumb": "https://i.ytimg.com/vi/KOVC-gJLNDo/mqdefault.jpg", "dur": "1:15:08"}, {"id": "IhjqkE_9puM", "title": "Ultimate 90s Funk Groove - High Energy Slap Bass Fusion", "thumb": "https://i.ytimg.com/vi/IhjqkE_9puM/mqdefault.jpg", "dur": "1:08:57"}, {"id": "vWgcOrtpwr8", "title": "High-Energy Jazz Fusion 2025 • Intense Slap Bass Grooves Mix", "thumb": "https://i.ytimg.com/vi/vWgcOrtpwr8/mqdefault.jpg", "dur": "1:18:22"}, {"id": "lr8NtEu_zC8", "title": "1 Hour of Groovy Funk Basslines for Focus & Productivity in 2025", "thumb": "https://i.ytimg.com/vi/lr8NtEu_zC8/mqdefault.jpg", "dur": "1:16:37"}, {"id": "ezgyyuIZgw8", "title": "80s Funk Jazz Fusion - Slap Bass Grooves & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/ezgyyuIZgw8/mqdefault.jpg", "dur": "1:14:03"}, {"id": "Kwt_-fYBKoo", "title": "90s Funky Bass Jazz Fusion - Smooth Grooves for Work & Exercise", "thumb": "https://i.ytimg.com/vi/Kwt_-fYBKoo/mqdefault.jpg", "dur": "1:10:11"}, {"id": "16aebSkKeAU", "title": "Smooth Jazz Instrumental - Funky Bass Grooves for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/16aebSkKeAU/mqdefault.jpg", "dur": "1:13:02"}, {"id": "be_t7_i6ZKY", "title": "Retro Jazz Fusion - Funky Slap Bass Grooves to Chill & Work", "thumb": "https://i.ytimg.com/vi/be_t7_i6ZKY/mqdefault.jpg", "dur": "1:08:13"}, {"id": "RcEx9sYfzf4", "title": "Funky Slap Bass Jazz - Background Music for Studying & Relaxation", "thumb": "https://i.ytimg.com/vi/RcEx9sYfzf4/mqdefault.jpg", "dur": "1:12:35"}, {"id": "8gJF76L9cGw", "title": "90s Funk Slap Bass - Jazz Fusion Grooves for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/8gJF76L9cGw/mqdefault.jpg", "dur": "1:14:25"}, {"id": "BP2c9tzIwhs", "title": "90s Slap Bass Fusion Jazz - Funky Grooves & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/BP2c9tzIwhs/mqdefault.jpg", "dur": "1:19:00"}, {"id": "y2F3rYEEAfM", "title": "Smooth Soulful Jazz for Late Night Focus and Relaxation", "thumb": "https://i.ytimg.com/vi/y2F3rYEEAfM/mqdefault.jpg", "dur": "1:19:58"}, {"id": "JOPe8J_7-Dw", "title": "Fiery Slap Bass Grooves in High-Octane Jazz Fusion", "thumb": "https://i.ytimg.com/vi/JOPe8J_7-Dw/mqdefault.jpg", "dur": "1:10:58"}, {"id": "VL9l5q22l08", "title": "Cool Soul Jazz Fusion Instrumental Music for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/VL9l5q22l08/mqdefault.jpg", "dur": "1:20:34"}, {"id": "hEid74OVW9c", "title": "90s Funk Jazz Fusion Instrumental | Vintage Grooves for Study & Chill", "thumb": "https://i.ytimg.com/vi/hEid74OVW9c/mqdefault.jpg", "dur": "37:46"}, {"id": "DjDDHr7LI9w", "title": "Midnight Soul Jazz for Deep Focus & Relaxation | 40 Min Study Music 2025", "thumb": "https://i.ytimg.com/vi/DjDDHr7LI9w/mqdefault.jpg", "dur": "40:58"}, {"id": "rUcG_YnXiY4", "title": "1 hour of Funky Jazz Bass Grooves in 2025 | Instrumental Music for Study & Work", "thumb": "https://i.ytimg.com/vi/rUcG_YnXiY4/mqdefault.jpg", "dur": "1:11:47"}, {"id": "nFGc_zzXPTY", "title": "Night Jazz Escape | Smooth Instrumentals to End Your Week Right", "thumb": "https://i.ytimg.com/vi/nFGc_zzXPTY/mqdefault.jpg", "dur": "1:19:48"}, {"id": "bNYG8mZpIAA", "title": "Relaxing Jazz & Funk Mix for Stress Relief", "thumb": "https://i.ytimg.com/vi/bNYG8mZpIAA/mqdefault.jpg", "dur": "1:13:36"}, {"id": "CY946r7xlqw", "title": "Smooth Jazz Essence | Soulful Rhythms for Every Mood", "thumb": "https://i.ytimg.com/vi/CY946r7xlqw/mqdefault.jpg", "dur": "1:22:44"}, {"id": "HlH1JKYmgnU", "title": "[Funk Jazz] City Nights, Funky Vibes | Urban Jazz Grooves to Move Your Soul", "thumb": "https://i.ytimg.com/vi/HlH1JKYmgnU/mqdefault.jpg", "dur": "1:10:05"}, {"id": "8PsQtt86kNg", "title": "Endless Soul Jazz | Smooth Grooves That Never Fade", "thumb": "https://i.ytimg.com/vi/8PsQtt86kNg/mqdefault.jpg", "dur": "1:20:12"}, {"id": "X_scukMQSCo", "title": "Urban Funk Flow | Jazz Beats That Move the Streets", "thumb": "https://i.ytimg.com/vi/X_scukMQSCo/mqdefault.jpg", "dur": "1:29:07"}, {"id": "cLyFA6aMois", "title": "Smooth Jazz & Soul R&B: Perfect Study Soundtrack 🎶", "thumb": "https://i.ytimg.com/vi/cLyFA6aMois/mqdefault.jpg", "dur": "1:26:00"}, {"id": "HXipQdZ3DK0", "title": "[Funk Jazz] Bassline Therapy | Deep Funk Grooves to Recharge Your Mood", "thumb": "https://i.ytimg.com/vi/HXipQdZ3DK0/mqdefault.jpg", "dur": "1:16:44"}, {"id": "l4bpzibHzHQ", "title": "Smooth Soul Jazz Flow | Relaxing Grooves for Every Mood", "thumb": "https://i.ytimg.com/vi/l4bpzibHzHQ/mqdefault.jpg", "dur": "1:21:47"}, {"id": "Bt4sbhxL4iM", "title": "Wild Funk Jazz Grooves | Irresistible Madness & High-Energy Vibes", "thumb": "https://i.ytimg.com/vi/Bt4sbhxL4iM/mqdefault.jpg", "dur": "1:15:36"}, {"id": "JN7dt4VkhRc", "title": "Smooth Soul Jazz | Relaxing Grooves for Heart & Mind", "thumb": "https://i.ytimg.com/vi/JN7dt4VkhRc/mqdefault.jpg", "dur": "1:22:05"}, {"id": "f2JsTrEqnS8", "title": "[Funk Jazz] 90s Funk Jazz Fusion | Jazz Rhythms You’ll Love 🎷🔥", "thumb": "https://i.ytimg.com/vi/f2JsTrEqnS8/mqdefault.jpg", "dur": "1:27:46"}, {"id": "l4BohHsvkCA", "title": "[Soul Jazz] Cool Jazz, Groovy Soul | The Ultimate Groove Experience 🎷🔥", "thumb": "https://i.ytimg.com/vi/l4BohHsvkCA/mqdefault.jpg", "dur": "1:26:46"}, {"id": "Qk3ZTUE1HRA", "title": "[Jazz Funk] Madness | Wild Grooves You Can’t Resist 🎷🔥", "thumb": "https://i.ytimg.com/vi/Qk3ZTUE1HRA/mqdefault.jpg", "dur": "2:52:13"}, {"id": "1hReP_4H1RU", "title": "[Soul Jazz] of Cool & Funky Soul Jazz Collection Livestream", "thumb": "https://i.ytimg.com/vi/1hReP_4H1RU/mqdefault.jpg", "dur": "9:54:55"}, {"id": "VzCj1FdhQbs", "title": "3 Hours+ of Cool & Funky Soul Jazz Collection", "thumb": "https://i.ytimg.com/vi/VzCj1FdhQbs/mqdefault.jpg", "dur": "3:27:38"}, {"id": "hJ2pTX41u3Q", "title": "Almost 2 Hours of Unstoppable Funk Jazz | Grooves That Hit Hard", "thumb": "https://i.ytimg.com/vi/hJ2pTX41u3Q/mqdefault.jpg", "dur": "1:43:57"}, {"id": "xAlAupCqkG0", "title": "Twilight Soul Grooves | Smooth Jazz for the Perfect Evening", "thumb": "https://i.ytimg.com/vi/xAlAupCqkG0/mqdefault.jpg", "dur": "46:04"}, {"id": "02Lz-qXWhQU", "title": "Funk Fever Reloaded | Explosive Jazz Grooves to Keep the Energy Alive", "thumb": "https://i.ytimg.com/vi/02Lz-qXWhQU/mqdefault.jpg", "dur": "1:06:26"}, {"id": "xbDBT9-dGBc", "title": "Funk Fusion Heat Live | Jazz Rhythms to Keep You Alive", "thumb": "https://i.ytimg.com/vi/xbDBT9-dGBc/mqdefault.jpg", "dur": "11:47:31"}, {"id": "LiIjChxHrIE", "title": "Unwind with Soul Jazz | Golden Hour Grooves for the Evening", "thumb": "https://i.ytimg.com/vi/LiIjChxHrIE/mqdefault.jpg", "dur": "1:36:21"}, {"id": "KU1ZQO8vd9w", "title": "Funk Fusion Heat | Jazz Rhythms to Keep You Alive", "thumb": "https://i.ytimg.com/vi/KU1ZQO8vd9w/mqdefault.jpg", "dur": "1:31:29"}, {"id": "aKkon5ulvdE", "title": "Golden Hour Grooves | Soul Jazz to Unwind", "thumb": "https://i.ytimg.com/vi/aKkon5ulvdE/mqdefault.jpg", "dur": "1:27:33"}, {"id": "peh4g5Q9HCA", "title": "Funk Fever | High-Octane Jazz Grooves to Keep You Moving", "thumb": "https://i.ytimg.com/vi/peh4g5Q9HCA/mqdefault.jpg", "dur": "1:12:32"}, {"id": "gO63hSpGzjE", "title": "The Soul Jazz Flow | Grooves That Move You", "thumb": "https://i.ytimg.com/vi/gO63hSpGzjE/mqdefault.jpg", "dur": "1:36:20"}, {"id": "KhtOHMFUXJE", "title": "Jazz Funk On Repeat | Grooves So Good You’ll Dance All Day", "thumb": "https://i.ytimg.com/vi/KhtOHMFUXJE/mqdefault.jpg", "dur": "1:05:43"}, {"id": "brHSQ4YmMQg", "title": "Soul Jazz Reverie | Smooth Sounds to Feel Alive", "thumb": "https://i.ytimg.com/vi/brHSQ4YmMQg/mqdefault.jpg", "dur": "1:16:02"}, {"id": "-yqttPc27SI", "title": "Nonstop Funk Jazz | High-Energy Beats for Every Mood", "thumb": "https://i.ytimg.com/vi/-yqttPc27SI/mqdefault.jpg", "dur": "1:14:57"}, {"id": "grdKJgBEXJc", "title": "Groove & Glow | Soulful Jazz to Wind Down", "thumb": "https://i.ytimg.com/vi/grdKJgBEXJc/mqdefault.jpg", "dur": "51:39"}, {"id": "kQTelTPbjJI", "title": "Midnight Soul Jazz | Deep Grooves & Warm Vibes", "thumb": "https://i.ytimg.com/vi/kQTelTPbjJI/mqdefault.jpg", "dur": "1:20:55"}, {"id": "MeL7s2e_zyc", "title": "The Funk Won’t Stop | Jazz Grooves for Work & Play", "thumb": "https://i.ytimg.com/vi/MeL7s2e_zyc/mqdefault.jpg", "dur": "1:17:25"}, {"id": "ssCbomtdOa4", "title": "Sunset Soul | Smooth Jazz for Heart, Mind & Soul", "thumb": "https://i.ytimg.com/vi/ssCbomtdOa4/mqdefault.jpg", "dur": "1:08:16"}, {"id": "EYqnEv5vOyg", "title": "Funky Jazz Rhythms That Don’t Quit", "thumb": "https://i.ytimg.com/vi/EYqnEv5vOyg/mqdefault.jpg", "dur": "1:20:31"}, {"id": "e_5IW42GQhs", "title": "Soul in the Pocket | Deep Grooves & Smooth Jazz", "thumb": "https://i.ytimg.com/vi/e_5IW42GQhs/mqdefault.jpg", "dur": "1:31:41"}, {"id": "_shOjkfac-g", "title": "Full Throttle Funk | Explosive Jazz Grooves for the Bold", "thumb": "https://i.ytimg.com/vi/_shOjkfac-g/mqdefault.jpg", "dur": "1:20:35"}, {"id": "DxPQi7Ap4UM", "title": "Velvet Funk | Smooth Soul Jazz Vibes to Unwind", "thumb": "https://i.ytimg.com/vi/DxPQi7Ap4UM/mqdefault.jpg", "dur": "1:17:00"}, {"id": "YrtaFxH2gzc", "title": "🎸 Funk Jazz Riot | Nonstop Grooves & Killer Vibes", "thumb": "https://i.ytimg.com/vi/YrtaFxH2gzc/mqdefault.jpg", "dur": "58:40"}, {"id": "0E_BRb1fyw0", "title": "Groove Lounge | Soulful Jazz Funk for Chill Sessions", "thumb": "https://i.ytimg.com/vi/0E_BRb1fyw0/mqdefault.jpg", "dur": "1:18:34"}, {"id": "K0Hsvj0vABc", "title": "Cool Soul Jazz Grooves | Funky Instrumentals for Smooth Vibes", "thumb": "https://i.ytimg.com/vi/K0Hsvj0vABc/mqdefault.jpg", "dur": "1:31:02"}, {"id": "YZ4JCkjacYs", "title": "🎷 Soul Jazz Lounge | Smooth Grooves for the Heart & Mind", "thumb": "https://i.ytimg.com/vi/YZ4JCkjacYs/mqdefault.jpg", "dur": "38:56"}, {"id": "6yHY_sndkOo", "title": "Late Night Soul Jazz Funk | Smooth Grooves to Unwind Your Mind", "thumb": "https://i.ytimg.com/vi/6yHY_sndkOo/mqdefault.jpg", "dur": "1:16:03"}, {"id": "PdEO1WR0Vnc", "title": "Smooth & Funky Soul Jazz Grooves | Chill Vibes for Work, Study, or Relaxation", "thumb": "https://i.ytimg.com/vi/PdEO1WR0Vnc/mqdefault.jpg", "dur": "1:18:10"}, {"id": "J1SnmG-1Tgw", "title": "Funky Soul Jazz Groove for Summer Nights", "thumb": "https://i.ytimg.com/vi/J1SnmG-1Tgw/mqdefault.jpg", "dur": "1:03:17"}, {"id": "aa15T2YyVZs", "title": "Cool & Funky Latin Soul Fusion", "thumb": "https://i.ytimg.com/vi/aa15T2YyVZs/mqdefault.jpg", "dur": "36:15"}, {"id": "hRlIsoTNQy8", "title": "🎷 Midnight Funk Flow | Soulful Jazz Grooves for Late Night Vibes", "thumb": "https://i.ytimg.com/vi/hRlIsoTNQy8/mqdefault.jpg", "dur": "37:31"}, {"id": "9bq5iPkqWZQ", "title": "🎶 Soulful Acid Jazz Background Music | Smooth Grooves for Work, Relaxation, or Reading 🎶", "thumb": "https://i.ytimg.com/vi/9bq5iPkqWZQ/mqdefault.jpg", "dur": "39:20"}, {"id": "gYjuWeVDfpY", "title": "Slap Bass Funk Jam 💿 | Soul Jazz Fusion Groove Session", "thumb": "https://i.ytimg.com/vi/gYjuWeVDfpY/mqdefault.jpg", "dur": "1:04:03"}, {"id": "c9X7QI-ouUs", "title": "Brazilian Fusion Groove 🌴 | Jazz-Funk Vibes", "thumb": "https://i.ytimg.com/vi/c9X7QI-ouUs/mqdefault.jpg", "dur": "39:27"}, {"id": "213zrfEVyxs", "title": "What Soul Jazz Will Look Like in 2025", "thumb": "https://i.ytimg.com/vi/213zrfEVyxs/mqdefault.jpg", "dur": "1:17:36"}, {"id": "LNzivFinED8", "title": "🎷 \"Sunset Sax Serenade | Smooth Jazz for the Soul\"", "thumb": "https://i.ytimg.com/vi/LNzivFinED8/mqdefault.jpg", "dur": "40:14"}, {"id": "1d394Cnc9L4", "title": "🎸 Soul Funk Jazz Fusion Jam | Slap Bass Groove Explosion 🎷", "thumb": "https://i.ytimg.com/vi/1d394Cnc9L4/mqdefault.jpg", "dur": "1:14:36"}, {"id": "Z44fQ5eFt6g", "title": "City Pulse | Late Night Smooth Jazz Guitar Vibes", "thumb": "https://i.ytimg.com/vi/Z44fQ5eFt6g/mqdefault.jpg", "dur": "43:37"}, {"id": "qjKc9M8hjys", "title": "Cool & Funky Soul Jazz Vol. 8", "thumb": "https://i.ytimg.com/vi/qjKc9M8hjys/mqdefault.jpg", "dur": "1:06:48"}, {"id": "doXQ68oxDOg", "title": "Late Night Jazz Flow 🌙 | Chill Fusion Guitar for the Soul", "thumb": "https://i.ytimg.com/vi/doXQ68oxDOg/mqdefault.jpg", "dur": "41:05"}, {"id": "ur0U21yuOYA", "title": "Funky Soul Jazz Vibes 💿 | The Ultimate Cool Groove Experience", "thumb": "https://i.ytimg.com/vi/ur0U21yuOYA/mqdefault.jpg", "dur": "1:15:47"}, {"id": "nJ3mi8FKnmk", "title": "Cool & Funky Soul Jazz Vol. 7", "thumb": "https://i.ytimg.com/vi/nJ3mi8FKnmk/mqdefault.jpg", "dur": "53:22"}, {"id": "pgN2bW4_oAA", "title": "🎷 Smooth 90s Jazz Fusion Escape | Relax, Unwind, Groove", "thumb": "https://i.ytimg.com/vi/pgN2bW4_oAA/mqdefault.jpg", "dur": "1:29:04"}, {"id": "VUBAmwTJ02I", "title": "Cool & Funky Soul Jazz Vol. 6", "thumb": "https://i.ytimg.com/vi/VUBAmwTJ02I/mqdefault.jpg", "dur": "40:46"}, {"id": "3wUf5yFhL8U", "title": "🎷 Cool & Relaxing Smooth Jazz Instrumental – Chill Background Music for Work, Study & Relaxation", "thumb": "https://i.ytimg.com/vi/3wUf5yFhL8U/mqdefault.jpg", "dur": "38:51"}, {"id": "AzmYRSpOifc", "title": "Neon Groove : A Modern Funk & Disco Jam!", "thumb": "https://i.ytimg.com/vi/AzmYRSpOifc/mqdefault.jpg", "dur": "1:52:31"}, {"id": "eGwV8V08-f0", "title": "Neon Groove : A Modern Funk & Disco Jam!", "thumb": "https://i.ytimg.com/vi/eGwV8V08-f0/mqdefault.jpg", "dur": "43:56"}, {"id": "lgzjM1q5E0Q", "title": "Cool & Funky Soul Jazz Vol. 5", "thumb": "https://i.ytimg.com/vi/lgzjM1q5E0Q/mqdefault.jpg", "dur": "1:14:54"}, {"id": "DZEIQvTippE", "title": "Cool & Funky Soul Jazz Vol. 4", "thumb": "https://i.ytimg.com/vi/DZEIQvTippE/mqdefault.jpg", "dur": "1:13:13"}, {"id": "ov-H3eBWK5k", "title": "Smooth Jazz: The Secret to Stress-Free Living", "thumb": "https://i.ytimg.com/vi/ov-H3eBWK5k/mqdefault.jpg", "dur": "11:54:58"}, {"id": "hkfhcudnzBc", "title": "Cool & Relaxing Smooth Jazz Vol  13", "thumb": "https://i.ytimg.com/vi/hkfhcudnzBc/mqdefault.jpg", "dur": "1:09:12"}, {"id": "ZeBJRPlxUkg", "title": "Chill & Relaxing Bossa Nova Vol. 13", "thumb": "https://i.ytimg.com/vi/ZeBJRPlxUkg/mqdefault.jpg", "dur": "1:07:20"}, {"id": "xwLcp7SKnSM", "title": "Cool & Funky Soul Jazz Vol. 3", "thumb": "https://i.ytimg.com/vi/xwLcp7SKnSM/mqdefault.jpg", "dur": "1:23:36"}, {"id": "NoDNGVKVOLY", "title": "Smooth Jazz That Feels Like A Vacation", "thumb": "https://i.ytimg.com/vi/NoDNGVKVOLY/mqdefault.jpg", "dur": "11:54:56"}, {"id": "hzwClEPj9KM", "title": "Cool & Relaxing Smooth Jazz Vol. 12", "thumb": "https://i.ytimg.com/vi/hzwClEPj9KM/mqdefault.jpg", "dur": "1:09:09"}, {"id": "6uoVEciIwh8", "title": "Cool & Funky Soul Jazz Vol. 2", "thumb": "https://i.ytimg.com/vi/6uoVEciIwh8/mqdefault.jpg", "dur": "11:54:59"}, {"id": "gUKx7JkPaHU", "title": "Cool & Funky Soul Jazz Vol. 2", "thumb": "https://i.ytimg.com/vi/gUKx7JkPaHU/mqdefault.jpg", "dur": "1:16:15"}, {"id": "WwXmHh7Rmsg", "title": "Cool & Relaxing Smooth Jazz Vol. 11", "thumb": "https://i.ytimg.com/vi/WwXmHh7Rmsg/mqdefault.jpg", "dur": "1:13:10"}, {"id": "B2yODpqvHJQ", "title": "Cool & Funky Soul Jazz Vol. 1", "thumb": "https://i.ytimg.com/vi/B2yODpqvHJQ/mqdefault.jpg", "dur": "1:26:24"}, {"id": "aa1SXXjyl2A", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 10", "thumb": "https://i.ytimg.com/vi/aa1SXXjyl2A/mqdefault.jpg", "dur": "1:26:01"}, {"id": "1bZ04ZuN5Nk", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 9", "thumb": "https://i.ytimg.com/vi/1bZ04ZuN5Nk/mqdefault.jpg", "dur": "51:23"}, {"id": "KlRJ1CSU8Ac", "title": "Relaxing & Smooth Jazz Cafe Vibes Vol. 3", "thumb": "https://i.ytimg.com/vi/KlRJ1CSU8Ac/mqdefault.jpg", "dur": "57:47"}, {"id": "huGyHzhSDYI", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 8", "thumb": "https://i.ytimg.com/vi/huGyHzhSDYI/mqdefault.jpg", "dur": "53:48"}, {"id": "IBev60vL8HE", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 7", "thumb": "https://i.ytimg.com/vi/IBev60vL8HE/mqdefault.jpg", "dur": "57:35"}, {"id": "6nRrMOpHwiw", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 6", "thumb": "https://i.ytimg.com/vi/6nRrMOpHwiw/mqdefault.jpg", "dur": "1:03:03"}, {"id": "L_MqVYceuNw", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 5", "thumb": "https://i.ytimg.com/vi/L_MqVYceuNw/mqdefault.jpg", "dur": "52:29"}, {"id": "43Bj-ad0y_M", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 4", "thumb": "https://i.ytimg.com/vi/43Bj-ad0y_M/mqdefault.jpg", "dur": "52:34"}, {"id": "t9esZXJUOsI", "title": "Relaxing Laid Back Groovy Jazz Mix Vol. 3", "thumb": "https://i.ytimg.com/vi/t9esZXJUOsI/mqdefault.jpg", "dur": "56:36"}, {"id": "5JjUjKmzxfM", "title": "Relaxing & Smooth Jazz Cafe Vibes Vol. 2", "thumb": "https://i.ytimg.com/vi/5JjUjKmzxfM/mqdefault.jpg", "dur": "56:47"}, {"id": "bNuJ6dVblQE", "title": "Relaxing Laid-Back Groovy Jazz Mix Vol. 2", "thumb": "https://i.ytimg.com/vi/bNuJ6dVblQE/mqdefault.jpg", "dur": "57:15"}, {"id": "8JS-qqmZF3c", "title": "Cool & Relaxing Smooth Jazz Collection Vol. 3", "thumb": "https://i.ytimg.com/vi/8JS-qqmZF3c/mqdefault.jpg", "dur": "1:07:36"}, {"id": "zhk1SPoeQrw", "title": "Cool & Relaxing Smooth Jazz Collection Vol 2", "thumb": "https://i.ytimg.com/vi/zhk1SPoeQrw/mqdefault.jpg", "dur": "58:05"}, {"id": "_SJz16SC3CM", "title": "Cool & Relaxing Smooth Jazz Collection", "thumb": "https://i.ytimg.com/vi/_SJz16SC3CM/mqdefault.jpg", "dur": "1:02:40"}, {"id": "zfMV9ElPvsE", "title": "Relaxing Laid-back Groovy Jazz Mix", "thumb": "https://i.ytimg.com/vi/zfMV9ElPvsE/mqdefault.jpg", "dur": "1:23:34"}, {"id": "5v5Vche9tFw", "title": "Escape Your Busy Day With Some Cool Jazz", "thumb": "https://i.ytimg.com/vi/5v5Vche9tFw/mqdefault.jpg", "dur": "1:01:46"}, {"id": "HZHNH6kSSAo", "title": "Relaxing Evening Jazz After A Hard Day's Work", "thumb": "https://i.ytimg.com/vi/HZHNH6kSSAo/mqdefault.jpg", "dur": "1:00:44"}, {"id": "8G9S011PvjY", "title": "Relaxing And Smooth Jazz Cafe Vibe", "thumb": "https://i.ytimg.com/vi/8G9S011PvjY/mqdefault.jpg", "dur": "1:05:48"}, {"id": "2RoxeqtPUcI", "title": "Smooth & Soulful Jazz Compilations", "thumb": "https://i.ytimg.com/vi/2RoxeqtPUcI/mqdefault.jpg", "dur": "1:09:43"}, {"id": "hTvkZwKlozc", "title": "Cozy And Relaxing Smooth Jazz After A Busy Day", "thumb": "https://i.ytimg.com/vi/hTvkZwKlozc/mqdefault.jpg", "dur": "1:07:35"}, {"id": "DKFmJVaEoe0", "title": "Soothing Smooth Jazzy Tunes To Ease Your Mood", "thumb": "https://i.ytimg.com/vi/DKFmJVaEoe0/mqdefault.jpg", "dur": "1:09:03"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

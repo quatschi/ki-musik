@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wah House Factory</title>
+<!-- categories: Jazz, Weltmusik -->
+<!-- channel-id: UCGCGV3h99BwILsWPtMihPSw -->
+<!-- channel-url: https://www.youtube.com/@wahhouse1969 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Wah_House_Factory.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/8qvyKIWjnd8ZZplG-IfzN7f_A4GAOtrG52MFrXVjY__tA2ScYNij-7tu2NUZB6Fut3FJK6dX_n0=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Wah House Factory</div>
+      <div class="channel-count">126 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Wah House Factory";
+const VIDEOS = [{"id": "KvVT3HsP1XY", "title": "Gypsy Swing Jazz - Shanghai Cruise - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/KvVT3HsP1XY/mqdefault.jpg", "dur": "4:26"}, {"id": "vO6yY3SGeHQ", "title": "Gypsy Swing Jazz - Morning Kitchen - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/vO6yY3SGeHQ/mqdefault.jpg", "dur": "4:32"}, {"id": "AGqHrMIPe_o", "title": "Gypsy Swing Jazz - Chimey Brown - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/AGqHrMIPe_o/mqdefault.jpg", "dur": "4:03"}, {"id": "fqcu5vo-49Y", "title": "Gypsy Swing Jazz - Autumn Promenade - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/fqcu5vo-49Y/mqdefault.jpg", "dur": "4:19"}, {"id": "yjVCw_Nms9c", "title": "Gypsy Swing Jazz - Midnight Dream - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/yjVCw_Nms9c/mqdefault.jpg", "dur": "4:37"}, {"id": "i8NCBZ5OXk4", "title": "Guitar Inst Rock - Flower in the Asphalt - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/i8NCBZ5OXk4/mqdefault.jpg", "dur": "3:13"}, {"id": "PN_GwizifVo", "title": "Guitar Inst Rock - Paper Crown - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/PN_GwizifVo/mqdefault.jpg", "dur": "2:49"}, {"id": "8bv9tq_ATjo", "title": "Jazz Guitar BGM - Mare de sal - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/8bv9tq_ATjo/mqdefault.jpg", "dur": "3:31"}, {"id": "xyadg1ThwNc", "title": "Jazz Guitar BGM - Nightfull Collage - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/xyadg1ThwNc/mqdefault.jpg", "dur": "3:11"}, {"id": "aVksGm8ptW8", "title": "Jazz Guitar BGM - Passarinho Bebop - Gypsy valley BGM", "thumb": "https://i.ytimg.com/vi/aVksGm8ptW8/mqdefault.jpg", "dur": "2:36"}, {"id": "Sl69uTujtQ0", "title": "Jazz Guitar BGM - Midnight Tides - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/Sl69uTujtQ0/mqdefault.jpg", "dur": "3:25"}, {"id": "qPaLRY1E2zM", "title": "Jazz Guitar BGM - Mar de Laranja - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/qPaLRY1E2zM/mqdefault.jpg", "dur": "2:58"}, {"id": "cF2j4iH6Mz8", "title": "Jazz Guitar BGM - Casa de Areia - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/cF2j4iH6Mz8/mqdefault.jpg", "dur": "2:59"}, {"id": "_SsAzCdHvTo", "title": "Classic BGM - Velvet salon - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/_SsAzCdHvTo/mqdefault.jpg", "dur": "2:39"}, {"id": "rXj4kgY46p0", "title": "Classic BGM - Floral letter paper - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/rXj4kgY46p0/mqdefault.jpg", "dur": "2:13"}, {"id": "o8eu7UTvJM8", "title": "Classic BGM - Forest fairy - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/o8eu7UTvJM8/mqdefault.jpg", "dur": "2:32"}, {"id": "14gTTft7HE0", "title": "Classic BGM - Sunny Place - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/14gTTft7HE0/mqdefault.jpg", "dur": "2:04"}, {"id": "JLivguBptKs", "title": "Lovers Reggae - Morning Kitchen - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/JLivguBptKs/mqdefault.jpg", "dur": "4:19"}, {"id": "_GjRF1E-7Tg", "title": "Lovers Reggae - Paradigm Shift In My Room - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/_GjRF1E-7Tg/mqdefault.jpg", "dur": "3:12"}, {"id": "FYGI7Og_Ags", "title": "Lovers Reggae - Ocean Breeze - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/FYGI7Og_Ags/mqdefault.jpg", "dur": "4:22"}, {"id": "46C_E1LNxlg", "title": "Lovers Reggae - Windowside Milk - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/46C_E1LNxlg/mqdefault.jpg", "dur": "4:01"}, {"id": "smI40_YXCcA", "title": "Lovers Reggae - Shanghai Cruise - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/smI40_YXCcA/mqdefault.jpg", "dur": "4:38"}, {"id": "GaoEwAFABu4", "title": "Lovers Reggae - Bear & Honey Tea - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/GaoEwAFABu4/mqdefault.jpg", "dur": "2:06"}, {"id": "jcFiaAgzWbk", "title": "Lovers Reggae - Table for two - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/jcFiaAgzWbk/mqdefault.jpg", "dur": "5:08"}, {"id": "XsobtrLZOwk", "title": "Gypsy Valley Origin - Friday Night Melody | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/XsobtrLZOwk/mqdefault.jpg", "dur": "2:48"}, {"id": "3v5KLd43r1o", "title": "J-POP - Friday Night Melody | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/3v5KLd43r1o/mqdefault.jpg", "dur": "4:43"}, {"id": "Sq_EjXQwVsA", "title": "Guitar Inst Rock - Friday Night Melody - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/Sq_EjXQwVsA/mqdefault.jpg", "dur": "3:13"}, {"id": "5YgHhokbN7M", "title": "Gypsy Valley Origin - HI·ZU·MI  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/5YgHhokbN7M/mqdefault.jpg", "dur": "4:35"}, {"id": "W9MBofNebuU", "title": "J-POP - HI·ZU·MI  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/W9MBofNebuU/mqdefault.jpg", "dur": "3:33"}, {"id": "6O_I4mKaOWo", "title": "Guitar Inst Rock - HI·ZU·MI - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/6O_I4mKaOWo/mqdefault.jpg", "dur": "2:55"}, {"id": "yp0ij_qxKw0", "title": "Lovers Reggae - Autumn Avenue - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/yp0ij_qxKw0/mqdefault.jpg", "dur": "4:06"}, {"id": "ek_voLHOOr0", "title": "Lovers Reggae - Gradient Rain - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/ek_voLHOOr0/mqdefault.jpg", "dur": "5:12"}, {"id": "22VHd7jcbEo", "title": "Lovers Reggae - Summer Sun's Ray - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/22VHd7jcbEo/mqdefault.jpg", "dur": "4:11"}, {"id": "Sdp-jSAf51Y", "title": "Lovers Reggae - Moonlight and Good Time - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/Sdp-jSAf51Y/mqdefault.jpg", "dur": "4:53"}, {"id": "98WS2tEoMVE", "title": "Lovers Reggae - Mango Trees Samba - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/98WS2tEoMVE/mqdefault.jpg", "dur": "4:59"}, {"id": "pF24qmMMGlQ", "title": "Gypsy Swing Jazz - Biscuit de Minuit - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/pF24qmMMGlQ/mqdefault.jpg", "dur": "2:02"}, {"id": "NXxpQNl-bAw", "title": "Gypsy Swing Jazz - Moonlight and Good Time - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/NXxpQNl-bAw/mqdefault.jpg", "dur": "4:35"}, {"id": "i5D_DoB3TbY", "title": "Gypsy Swing Jazz - Summer Sun's Ray - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/i5D_DoB3TbY/mqdefault.jpg", "dur": "4:06"}, {"id": "oix_GqGHgzo", "title": "J-POP - アスファルトの花 | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/oix_GqGHgzo/mqdefault.jpg", "dur": "3:39"}, {"id": "sOx8-pR2oY0", "title": "Gypsy Valley Origin - Flower in the asphalt  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/sOx8-pR2oY0/mqdefault.jpg", "dur": "3:24"}, {"id": "Rok954-z2uA", "title": "Gypsy Swing Jazz - Windowside Milk - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/Rok954-z2uA/mqdefault.jpg", "dur": "4:08"}, {"id": "h5DkGa-cZsI", "title": "Gypsy Swing Jazz - Ocean Breeze Swing - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/h5DkGa-cZsI/mqdefault.jpg", "dur": "2:49"}, {"id": "9MQnQrbuYxk", "title": "Classic BGM - Vienna Garden Trio - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/9MQnQrbuYxk/mqdefault.jpg", "dur": "2:11"}, {"id": "V7w8gZ-72ZI", "title": "Classic BGM - Silver Lute Dialogue - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/V7w8gZ-72ZI/mqdefault.jpg", "dur": "2:43"}, {"id": "je52AzpzYps", "title": "Bossa Nova - Chimey Brown - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/je52AzpzYps/mqdefault.jpg", "dur": "4:03"}, {"id": "YTP7uXCettM", "title": "Bossa Nova - Autumn Promenade - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/YTP7uXCettM/mqdefault.jpg", "dur": "4:14"}, {"id": "PuOnOkgJI-A", "title": "Classic BGM - Etude No.29 - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/PuOnOkgJI-A/mqdefault.jpg", "dur": "2:47"}, {"id": "XopL5xrGLQU", "title": "Classic BGM - Etude No.28 - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/XopL5xrGLQU/mqdefault.jpg", "dur": "2:09"}, {"id": "8Bonnbd6vr8", "title": "Classic BGM - Etude No.27 - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/8Bonnbd6vr8/mqdefault.jpg", "dur": "2:32"}, {"id": "x9a4OL9IC58", "title": "Classic BGM - Etude No.26 - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/x9a4OL9IC58/mqdefault.jpg", "dur": "1:26"}, {"id": "rBbccbdC_Wo", "title": "Gypsy Swing Jazz - Candle Letter - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/rBbccbdC_Wo/mqdefault.jpg", "dur": "2:37"}, {"id": "_1VM5UBfpOs", "title": "Gypsy Swing Jazz - Moonlight Street - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/_1VM5UBfpOs/mqdefault.jpg", "dur": "2:28"}, {"id": "yFyk394TDQU", "title": "Gypsy Swing Jazz - Souffle sur la lumière - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/yFyk394TDQU/mqdefault.jpg", "dur": "4:11"}, {"id": "W2grBHCDgpA", "title": "Bossa Nova - Moonlight and Good Time - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/W2grBHCDgpA/mqdefault.jpg", "dur": "4:44"}, {"id": "fPmnh4jUztw", "title": "Bossa Nova - Shanghai Cruise - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/fPmnh4jUztw/mqdefault.jpg", "dur": "4:08"}, {"id": "EYyrGVjotSE", "title": "Gypsy Swing Jazz - L'ombre du cigare - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/EYyrGVjotSE/mqdefault.jpg", "dur": "4:18"}, {"id": "3E0J1t63dow", "title": "Gypsy Swing Jazz - Bistro Swing Kiss - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/3E0J1t63dow/mqdefault.jpg", "dur": "2:18"}, {"id": "-NI0KMW5BSg", "title": "Guitar Inst Rock - Gypsy Blue - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/-NI0KMW5BSg/mqdefault.jpg", "dur": "3:23"}, {"id": "VeNBsOl0Ypk", "title": "Guitar Inst Rock - Gypsy Red - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/VeNBsOl0Ypk/mqdefault.jpg", "dur": "2:52"}, {"id": "bKSQ_QHHako", "title": "Bossa Nova - Morning Kitchen - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/bKSQ_QHHako/mqdefault.jpg", "dur": "4:12"}, {"id": "P7vVonaLVL8", "title": "Bossa  Nova - Mango Trees Samba - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/P7vVonaLVL8/mqdefault.jpg", "dur": "4:39"}, {"id": "UEBZ78rI9Fc", "title": "Bossa Nova - Afternoon Garden Tea - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/UEBZ78rI9Fc/mqdefault.jpg", "dur": "4:13"}, {"id": "juXbUrS0PzI", "title": "Bossa Nova - Summer sun's ray - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/juXbUrS0PzI/mqdefault.jpg", "dur": "3:48"}, {"id": "Dz6p_lVxfy8", "title": "Bossa Nova - Table for two - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/Dz6p_lVxfy8/mqdefault.jpg", "dur": "4:29"}, {"id": "M7xxVgcooQ4", "title": "Bossa Nova - Ocean Breeze - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/M7xxVgcooQ4/mqdefault.jpg", "dur": "4:23"}, {"id": "iVjOE-8wob0", "title": "Bossa Nova - Paradigm Shift My Room - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/iVjOE-8wob0/mqdefault.jpg", "dur": "3:13"}, {"id": "2zOnkG3L2ZM", "title": "Bossa Nova - Gradient Rain - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/2zOnkG3L2ZM/mqdefault.jpg", "dur": "5:07"}, {"id": "vhdZmWGUqd4", "title": "Bossa Nova - Bear & Honey Tea - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/vhdZmWGUqd4/mqdefault.jpg", "dur": "1:47"}, {"id": "KvX9rH78BvQ", "title": "Bossa Nova - Autumn Avenue - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/KvX9rH78BvQ/mqdefault.jpg", "dur": "3:47"}, {"id": "sjBVrPlBpyg", "title": "Bossa Nova - Window-side Milk - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/sjBVrPlBpyg/mqdefault.jpg", "dur": "3:32"}, {"id": "GSHh27SuKcQ", "title": "J-POP - 月明かりの Good Time  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/GSHh27SuKcQ/mqdefault.jpg", "dur": "2:42"}, {"id": "3x3kgZi4WPU", "title": "J-POP - 上海クルーズ  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/3x3kgZi4WPU/mqdefault.jpg", "dur": "4:06"}, {"id": "3TNFI7l7F1M", "title": "J-POP - Afternoon Garden Tea  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/3TNFI7l7F1M/mqdefault.jpg", "dur": "4:59"}, {"id": "pcXTFabb-oA", "title": "Gypsy Valley Origin - Afternoon Garden Tea  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/pcXTFabb-oA/mqdefault.jpg", "dur": "4:04"}, {"id": "3i-lfAco5Vk", "title": "Classic BGM - Garden afternoon tea - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/3i-lfAco5Vk/mqdefault.jpg", "dur": "2:59"}, {"id": "fS5ByNkWN9Q", "title": "Classic BGM - Finger Waltz - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/fS5ByNkWN9Q/mqdefault.jpg", "dur": "2:22"}, {"id": "_FrHpwwme_g", "title": "Classic BGM - Gypsy Blue - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/_FrHpwwme_g/mqdefault.jpg", "dur": "2:58"}, {"id": "Pr4gvwggHHw", "title": "Classic BGM - Gypsy Red - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/Pr4gvwggHHw/mqdefault.jpg", "dur": "3:12"}, {"id": "pqQgngCx_3Q", "title": "Classic BGM - Intention in G - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/pqQgngCx_3Q/mqdefault.jpg", "dur": "3:02"}, {"id": "8gVVFybwxmE", "title": "Classic BGM - Kitty Cat - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/8gVVFybwxmE/mqdefault.jpg", "dur": "2:02"}, {"id": "889jyMAEcMA", "title": "Classic BGM - merry go round - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/889jyMAEcMA/mqdefault.jpg", "dur": "1:50"}, {"id": "ox8p6UqPSYg", "title": "Classic BGM - Paper Moon - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/ox8p6UqPSYg/mqdefault.jpg", "dur": "2:45"}, {"id": "2nXr5vqgA44", "title": "Guitar Inst Rock - Spring has come - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/2nXr5vqgA44/mqdefault.jpg", "dur": "2:21"}, {"id": "c9ioa9DCVSA", "title": "Classic BGM -  Canon in D - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/c9ioa9DCVSA/mqdefault.jpg", "dur": "1:57"}, {"id": "Hmq3_POf-Jk", "title": "Gypsy Valley Jazz -  frown collage", "thumb": "https://i.ytimg.com/vi/Hmq3_POf-Jk/mqdefault.jpg", "dur": "4:29"}, {"id": "junH7EelZrM", "title": "Classic BGM -  Baroque NEET - Gypsy Valley", "thumb": "https://i.ytimg.com/vi/junH7EelZrM/mqdefault.jpg", "dur": "2:27"}, {"id": "4yjZyCIwfic", "title": "J-POP - ただ、抱きよせて  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/4yjZyCIwfic/mqdefault.jpg", "dur": "4:03"}, {"id": "0vhgnn7veF8", "title": "Gypsy Valley Origin - Gradient Rain  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/0vhgnn7veF8/mqdefault.jpg", "dur": "5:09"}, {"id": "77BIiVkmEBg", "title": "Guitar Inst Rock - Canon in D - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/77BIiVkmEBg/mqdefault.jpg", "dur": "2:39"}, {"id": "jZ0WZZlTW2g", "title": "Guitar Inst Rock - Promise Day - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/jZ0WZZlTW2g/mqdefault.jpg", "dur": "2:35"}, {"id": "t05rcz2T4IA", "title": "Guitar Inst Rock - Chimey Brown - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/t05rcz2T4IA/mqdefault.jpg", "dur": "2:23"}, {"id": "vEVe6DStYRQ", "title": "Gypsy Valley Origin - Chimey Brown  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/vEVe6DStYRQ/mqdefault.jpg", "dur": "3:49"}, {"id": "14XXf_iPpTM", "title": "Guitar Inst Rock - Kitty Cat 仔猫のエチュード -  Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/14XXf_iPpTM/mqdefault.jpg", "dur": "1:05"}, {"id": "_S1C6PvQYME", "title": "Guitar Inst Rock - Merry go round 丸太のポニー - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/_S1C6PvQYME/mqdefault.jpg", "dur": "1:49"}, {"id": "mxGyf77ZClk", "title": "Guitar Inst Rock - Paper moon シチューの王子様 - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/mxGyf77ZClk/mqdefault.jpg", "dur": "2:59"}, {"id": "nevvnGi7By8", "title": "Guitar Inst Rock - Baroque NEET - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/nevvnGi7By8/mqdefault.jpg", "dur": "1:17"}, {"id": "xspl3R69SS8", "title": "Gypsy Valley Origin - Until Dusk  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/xspl3R69SS8/mqdefault.jpg", "dur": "4:17"}, {"id": "QGG58bvRYUo", "title": "Guitar Inst Rock - Until Dusk 黄昏まで - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/QGG58bvRYUo/mqdefault.jpg", "dur": "3:10"}, {"id": "cQ7kwBhOkB8", "title": "J-POP - 黄昏まで  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/cQ7kwBhOkB8/mqdefault.jpg", "dur": "4:18"}, {"id": "S16JR5ZV8Mc", "title": "Guitar Inst Rock - Mosquito Fly - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/S16JR5ZV8Mc/mqdefault.jpg", "dur": "2:37"}, {"id": "HArkCrIL3Xw", "title": "Guitar Inst Rock - Asian Moon - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/HArkCrIL3Xw/mqdefault.jpg", "dur": "2:28"}, {"id": "v-fy6mTZSKY", "title": "Guitar Inst Rock - Shanghai Cruise 上海クルーズ - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/v-fy6mTZSKY/mqdefault.jpg", "dur": "3:14"}, {"id": "jmqrKZGjYf8", "title": "Guitar Inst Rock - Unerasable memory 消せない記憶 - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/jmqrKZGjYf8/mqdefault.jpg", "dur": "3:31"}, {"id": "ChVn6wcMVII", "title": "Guitar Inst Rock - PARADIGM SHIFT - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/ChVn6wcMVII/mqdefault.jpg", "dur": "2:50"}, {"id": "l3QbFmlZqBI", "title": "Guitar Inst Rock - Nightfull Collage - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/l3QbFmlZqBI/mqdefault.jpg", "dur": "3:28"}, {"id": "aSSwV7ZFeBA", "title": "Guitar Inst Rock - Moonlight and Good time - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/aSSwV7ZFeBA/mqdefault.jpg", "dur": "3:37"}, {"id": "YowqCE4RIBA", "title": "Guitar Inst Rock - Intention ed - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/YowqCE4RIBA/mqdefault.jpg", "dur": "3:24"}, {"id": "n0sFYtPzDS0", "title": "Guitar Inst Rock - China Blue - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/n0sFYtPzDS0/mqdefault.jpg", "dur": "2:09"}, {"id": "FrvOyMXGXuk", "title": "Guitar Inst Rock - Bamboo !!! - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/FrvOyMXGXuk/mqdefault.jpg", "dur": "2:00"}, {"id": "0zlxeDx1Mno", "title": "Guitar Inst Rock - Autumn Avenue - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/0zlxeDx1Mno/mqdefault.jpg", "dur": "2:23"}, {"id": "44lQ7dMZ79c", "title": "Guitar Inst Rock - Gradient Rain - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/44lQ7dMZ79c/mqdefault.jpg", "dur": "2:57"}, {"id": "oYwgx3wAGjQ", "title": "J-POP - グラデーション・レイン  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/oYwgx3wAGjQ/mqdefault.jpg", "dur": "4:01"}, {"id": "EhsJzgJvO0E", "title": "J-POP - China Blue  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/EhsJzgJvO0E/mqdefault.jpg", "dur": "3:00"}, {"id": "x1n0KI8X2u0", "title": "J-POP - Bamboo !!  | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/x1n0KI8X2u0/mqdefault.jpg", "dur": "3:19"}, {"id": "XGXqW6sfCiU", "title": "J-POP - 甘い残像   | Girls' Rock & Pop music | Gypsy Valley", "thumb": "https://i.ytimg.com/vi/XGXqW6sfCiU/mqdefault.jpg", "dur": "3:51"}, {"id": "IDeOAK9TLVc", "title": "Guitar Inst Rock - Intention op - Gypsy Valley BGM", "thumb": "https://i.ytimg.com/vi/IDeOAK9TLVc/mqdefault.jpg", "dur": "2:37"}, {"id": "n03Smw8WTaI", "title": "Gypsy Valley Origin - Unerasable memory  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/n03Smw8WTaI/mqdefault.jpg", "dur": "4:16"}, {"id": "U3tQScMO-_I", "title": "Gypsy Valley Origin - Intention ~Beyond These Clear Horizons~  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/U3tQScMO-_I/mqdefault.jpg", "dur": "5:40"}, {"id": "KS_qQ_c9KUE", "title": "Gypsy Valley Origin - Shanghai Cruise  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/KS_qQ_c9KUE/mqdefault.jpg", "dur": "4:07"}, {"id": "hhqR1OFHoWI", "title": "Gypsy Valley Origin - Paradigm Shift In My Room  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/hhqR1OFHoWI/mqdefault.jpg", "dur": "3:13"}, {"id": "7MxUn-tUSyA", "title": "Gypsy Valley Origin - Moonlight and Good time  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/7MxUn-tUSyA/mqdefault.jpg", "dur": "4:32"}, {"id": "2-mF1OmQK80", "title": "Gypsy Valley Origin - China Blue  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/2-mF1OmQK80/mqdefault.jpg", "dur": "3:23"}, {"id": "_9fPTzZEq7s", "title": "Gypsy Valley Origin - Bear & Honey tea  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/_9fPTzZEq7s/mqdefault.jpg", "dur": "1:33"}, {"id": "tl9uynOaSuE", "title": "Gypsy Valley Origin - Bamboo !  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/tl9uynOaSuE/mqdefault.jpg", "dur": "3:17"}, {"id": "mBAhfjyN6Pc", "title": "Gypsy Valley Origin - Autumn Avenue  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/mBAhfjyN6Pc/mqdefault.jpg", "dur": "3:35"}, {"id": "l2FQmS5j4uo", "title": "Gypsy Valley Origin - Intention (humming version)  | Girls' Rock & Pop music | BGM", "thumb": "https://i.ytimg.com/vi/l2FQmS5j4uo/mqdefault.jpg", "dur": "1:04"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
