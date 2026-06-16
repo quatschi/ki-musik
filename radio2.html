@@ -378,7 +378,12 @@
       setStatus('Lade Best-Of Liste...');
       const bestOf = await getBestOfVideos();
       if (!bestOf.length) {
-        document.getElementById('info').innerHTML = '<p style="color:#9b8fc0;text-align:center;padding:10px">Keine bewerteten Videos (4-5 Sterne) gefunden.</p>';
+        const hasRatings = Object.values(allRatings).some(v => v >= 4);
+        const msg = hasRatings
+          ? 'Keine abspielbaren Videos mit 4-5 Sternen in dieser Kategorie gefunden.'
+          : 'Noch keine Videos mit 4 oder 5 Sternen bewertet. Bitte zuerst Bewertungen vergeben.';
+        document.getElementById('info').innerHTML = `<p style="color:#9b8fc0;text-align:center;padding:20px">${msg}</p>`;
+        document.getElementById('placeholder').style.display = 'none';
         isLoading = false;
         return;
       }
