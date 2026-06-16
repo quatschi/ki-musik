@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Old_Cassette.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Old Cassette";
 const VIDEOS = [{"id": "vIhzJeRGfr0", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #62", "thumb": "https://i.ytimg.com/vi/vIhzJeRGfr0/mqdefault.jpg", "dur": "1:48:57"}, {"id": "vwcX81sQEbU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #61", "thumb": "https://i.ytimg.com/vi/vwcX81sQEbU/mqdefault.jpg", "dur": "1:38:26"}, {"id": "3OdBAlfKHyI", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #60", "thumb": "https://i.ytimg.com/vi/3OdBAlfKHyI/mqdefault.jpg", "dur": "1:36:53"}, {"id": "Ipb2rgoz328", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #59", "thumb": "https://i.ytimg.com/vi/Ipb2rgoz328/mqdefault.jpg", "dur": "1:37:13"}, {"id": "6TQjG-J92jw", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #58", "thumb": "https://i.ytimg.com/vi/6TQjG-J92jw/mqdefault.jpg", "dur": "1:36:34"}, {"id": "DQKHGkdLsCk", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #57", "thumb": "https://i.ytimg.com/vi/DQKHGkdLsCk/mqdefault.jpg", "dur": "1:40:06"}, {"id": "IMVN9TAaCI4", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #56", "thumb": "https://i.ytimg.com/vi/IMVN9TAaCI4/mqdefault.jpg", "dur": "1:21:03"}, {"id": "qrxwguKiFGU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #55", "thumb": "https://i.ytimg.com/vi/qrxwguKiFGU/mqdefault.jpg", "dur": "1:37:17"}, {"id": "33i9EcJ_p5k", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs 🎧#1", "thumb": "https://i.ytimg.com/vi/33i9EcJ_p5k/mqdefault.jpg", "dur": "1:37:06"}, {"id": "fVDshujNIn0", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #54", "thumb": "https://i.ytimg.com/vi/fVDshujNIn0/mqdefault.jpg", "dur": "1:33:47"}, {"id": "zZUaTN30I2s", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs🎧", "thumb": "https://i.ytimg.com/vi/zZUaTN30I2s/mqdefault.jpg", "dur": "1:39:59"}, {"id": "N7zrytUhihs", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #53", "thumb": "https://i.ytimg.com/vi/N7zrytUhihs/mqdefault.jpg", "dur": "1:22:12"}, {"id": "nt24flyiTcY", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #52", "thumb": "https://i.ytimg.com/vi/nt24flyiTcY/mqdefault.jpg", "dur": "1:33:18"}, {"id": "axz6LNd08KU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #51", "thumb": "https://i.ytimg.com/vi/axz6LNd08KU/mqdefault.jpg", "dur": "1:37:38"}, {"id": "LNWivL0RLGA", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #50", "thumb": "https://i.ytimg.com/vi/LNWivL0RLGA/mqdefault.jpg", "dur": "1:35:35"}, {"id": "MwgCIHnMqCY", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #49", "thumb": "https://i.ytimg.com/vi/MwgCIHnMqCY/mqdefault.jpg", "dur": "1:38:38"}, {"id": "OSbs7NeBGf8", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #48", "thumb": "https://i.ytimg.com/vi/OSbs7NeBGf8/mqdefault.jpg", "dur": "1:35:40"}, {"id": "8apleiSduI4", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #47", "thumb": "https://i.ytimg.com/vi/8apleiSduI4/mqdefault.jpg", "dur": "1:32:36"}, {"id": "xc1tO9QL9Ss", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #46", "thumb": "https://i.ytimg.com/vi/xc1tO9QL9Ss/mqdefault.jpg", "dur": "1:30:13"}, {"id": "NiTqF-uGygA", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #45", "thumb": "https://i.ytimg.com/vi/NiTqF-uGygA/mqdefault.jpg", "dur": "1:34:02"}, {"id": "_HbYDkLG8N8", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #44", "thumb": "https://i.ytimg.com/vi/_HbYDkLG8N8/mqdefault.jpg", "dur": "1:35:08"}, {"id": "J-ce_kqQ8nw", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #43", "thumb": "https://i.ytimg.com/vi/J-ce_kqQ8nw/mqdefault.jpg", "dur": "1:33:20"}, {"id": "2eKzhB7j6No", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #42", "thumb": "https://i.ytimg.com/vi/2eKzhB7j6No/mqdefault.jpg", "dur": "1:32:47"}, {"id": "mS2_YTj9qao", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #41", "thumb": "https://i.ytimg.com/vi/mS2_YTj9qao/mqdefault.jpg", "dur": "1:34:48"}, {"id": "MFFq6mGeLr8", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #40", "thumb": "https://i.ytimg.com/vi/MFFq6mGeLr8/mqdefault.jpg", "dur": "1:33:50"}, {"id": "zoWnffWgKxM", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #39", "thumb": "https://i.ytimg.com/vi/zoWnffWgKxM/mqdefault.jpg", "dur": "1:39:06"}, {"id": "aZJdCWCEX5c", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #38", "thumb": "https://i.ytimg.com/vi/aZJdCWCEX5c/mqdefault.jpg", "dur": "1:36:36"}, {"id": "bctDrcfwjbk", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #37", "thumb": "https://i.ytimg.com/vi/bctDrcfwjbk/mqdefault.jpg", "dur": "1:35:57"}, {"id": "CdCztiEat8c", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #36", "thumb": "https://i.ytimg.com/vi/CdCztiEat8c/mqdefault.jpg", "dur": "1:35:53"}, {"id": "jdmHBZNNEcA", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #35", "thumb": "https://i.ytimg.com/vi/jdmHBZNNEcA/mqdefault.jpg", "dur": "1:32:53"}, {"id": "MLJy1S3mIWE", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #34", "thumb": "https://i.ytimg.com/vi/MLJy1S3mIWE/mqdefault.jpg", "dur": "1:35:14"}, {"id": "uBrSNlWnUbY", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #33", "thumb": "https://i.ytimg.com/vi/uBrSNlWnUbY/mqdefault.jpg", "dur": "1:30:47"}, {"id": "3xWhxWkSW-c", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #32", "thumb": "https://i.ytimg.com/vi/3xWhxWkSW-c/mqdefault.jpg", "dur": "1:34:54"}, {"id": "5929lzkXTG0", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #31", "thumb": "https://i.ytimg.com/vi/5929lzkXTG0/mqdefault.jpg", "dur": "1:37:46"}, {"id": "IgwucCryGjk", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #30", "thumb": "https://i.ytimg.com/vi/IgwucCryGjk/mqdefault.jpg", "dur": "1:37:40"}, {"id": "lfRo3IgJZKg", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #29", "thumb": "https://i.ytimg.com/vi/lfRo3IgJZKg/mqdefault.jpg", "dur": "1:34:57"}, {"id": "SOdfYipLzDw", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #28", "thumb": "https://i.ytimg.com/vi/SOdfYipLzDw/mqdefault.jpg", "dur": "1:36:21"}, {"id": "rBmvuj3vp_Y", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #27", "thumb": "https://i.ytimg.com/vi/rBmvuj3vp_Y/mqdefault.jpg", "dur": "1:33:20"}, {"id": "A2fn1xVRGwo", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #26", "thumb": "https://i.ytimg.com/vi/A2fn1xVRGwo/mqdefault.jpg", "dur": "1:31:51"}, {"id": "-l4szyuoSSg", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #25", "thumb": "https://i.ytimg.com/vi/-l4szyuoSSg/mqdefault.jpg", "dur": "1:33:22"}, {"id": "-lgthZurcbo", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #24", "thumb": "https://i.ytimg.com/vi/-lgthZurcbo/mqdefault.jpg", "dur": "1:33:16"}, {"id": "9lLjpX8P-so", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #23", "thumb": "https://i.ytimg.com/vi/9lLjpX8P-so/mqdefault.jpg", "dur": "1:34:14"}, {"id": "UOPySdATAgM", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #22", "thumb": "https://i.ytimg.com/vi/UOPySdATAgM/mqdefault.jpg", "dur": "1:33:21"}, {"id": "buuVbGIXlqM", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #21", "thumb": "https://i.ytimg.com/vi/buuVbGIXlqM/mqdefault.jpg", "dur": "1:36:02"}, {"id": "Ln8RIE7CyXc", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #20", "thumb": "https://i.ytimg.com/vi/Ln8RIE7CyXc/mqdefault.jpg", "dur": "3:40"}, {"id": "h9pifHGkUgM", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #19", "thumb": "https://i.ytimg.com/vi/h9pifHGkUgM/mqdefault.jpg", "dur": "1:33:58"}, {"id": "kqTn-mAWUus", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #18", "thumb": "https://i.ytimg.com/vi/kqTn-mAWUus/mqdefault.jpg", "dur": "3:51"}, {"id": "cABaWpPiW2Q", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #17", "thumb": "https://i.ytimg.com/vi/cABaWpPiW2Q/mqdefault.jpg", "dur": "10:10"}, {"id": "2jFLwkwtdDw", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #16", "thumb": "https://i.ytimg.com/vi/2jFLwkwtdDw/mqdefault.jpg", "dur": "4:23"}, {"id": "5XpVyrQTB9M", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #15", "thumb": "https://i.ytimg.com/vi/5XpVyrQTB9M/mqdefault.jpg", "dur": "4:59"}, {"id": "j68NnsxshTo", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #14", "thumb": "https://i.ytimg.com/vi/j68NnsxshTo/mqdefault.jpg", "dur": "8:00"}, {"id": "Y3_F0tYtd2A", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #13", "thumb": "https://i.ytimg.com/vi/Y3_F0tYtd2A/mqdefault.jpg", "dur": "4:48"}, {"id": "FhNYw_XMdbk", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #12", "thumb": "https://i.ytimg.com/vi/FhNYw_XMdbk/mqdefault.jpg", "dur": "4:40"}, {"id": "GGzDJMeajjc", "title": "You Left Without a WordBad Girl BluesRawVintage Female Electric DeltaBlues 1950s Southern Juke Joint", "thumb": "https://i.ytimg.com/vi/GGzDJMeajjc/mqdefault.jpg", "dur": "4:18"}, {"id": "wIjc86jFIHQ", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #11", "thumb": "https://i.ytimg.com/vi/wIjc86jFIHQ/mqdefault.jpg", "dur": "4:03"}, {"id": "h70dd3Hu-Hc", "title": "Bad Girl Don’t Cry (Anymore) | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)", "thumb": "https://i.ytimg.com/vi/h70dd3Hu-Hc/mqdefault.jpg", "dur": "4:28"}, {"id": "Db54WDLgPBM", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #10", "thumb": "https://i.ytimg.com/vi/Db54WDLgPBM/mqdefault.jpg", "dur": "4:12"}, {"id": "3v6fQPTLCts", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #09", "thumb": "https://i.ytimg.com/vi/3v6fQPTLCts/mqdefault.jpg", "dur": "1:35:22"}, {"id": "CpGZoZ2vx2c", "title": "Haunting 1940s War Blues – Female Field Recordings of Love, Loss & Endless Waiting #1", "thumb": "https://i.ytimg.com/vi/CpGZoZ2vx2c/mqdefault.jpg", "dur": "1:30:39"}, {"id": "JoH5pU8ftYQ", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #08", "thumb": "https://i.ytimg.com/vi/JoH5pU8ftYQ/mqdefault.jpg", "dur": "1:00:48"}, {"id": "2HVP1P4Lk0g", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #7", "thumb": "https://i.ytimg.com/vi/2HVP1P4Lk0g/mqdefault.jpg", "dur": "1:05:28"}, {"id": "TEvg-j3wXP0", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #6", "thumb": "https://i.ytimg.com/vi/TEvg-j3wXP0/mqdefault.jpg", "dur": "1:15:48"}, {"id": "x367fU01iec", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #5", "thumb": "https://i.ytimg.com/vi/x367fU01iec/mqdefault.jpg", "dur": "1:34:34"}, {"id": "uILnBcM4KeU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues 1950s Southern Juke Joint #4", "thumb": "https://i.ytimg.com/vi/uILnBcM4KeU/mqdefault.jpg", "dur": "1:12:10"}, {"id": "k41szc-xvZM", "title": "RARE 1940s Delta Gospel Blues🎵 – Female Vocal Field Recordings (Mono Crackle) vol.1", "thumb": "https://i.ytimg.com/vi/k41szc-xvZM/mqdefault.jpg", "dur": "11:26"}, {"id": "gLAymdYVSzk", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues🎶 (1950s Southern Juke Joint)🎧 #3", "thumb": "https://i.ytimg.com/vi/gLAymdYVSzk/mqdefault.jpg", "dur": "1:33:58"}, {"id": "BK-SsS6jLaM", "title": "RARE 1940s Delta  Blues – Female Vocal Field Recordings (Mono Crackle)#8", "thumb": "https://i.ytimg.com/vi/BK-SsS6jLaM/mqdefault.jpg", "dur": "1:31:08"}, {"id": "X_6f8VclA90", "title": "RARE 1940s Delta  Blues – Female Vocal Field Recordings (Mono Crackle)#7", "thumb": "https://i.ytimg.com/vi/X_6f8VclA90/mqdefault.jpg", "dur": "1:34:07"}, {"id": "LnumEUJ1mW0", "title": "RARE 1940s DeltaBlues – Female Vocal Field Recordings (Mono Crackle)#6", "thumb": "https://i.ytimg.com/vi/LnumEUJ1mW0/mqdefault.jpg", "dur": "1:37:16"}, {"id": "tSGo0TMkTV4", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #2", "thumb": "https://i.ytimg.com/vi/tSGo0TMkTV4/mqdefault.jpg", "dur": "1:34:17"}, {"id": "_w-jJr850yU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧 #1", "thumb": "https://i.ytimg.com/vi/_w-jJr850yU/mqdefault.jpg", "dur": "1:46:09"}, {"id": "dBy6tGhnBRg", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle)#4", "thumb": "https://i.ytimg.com/vi/dBy6tGhnBRg/mqdefault.jpg", "dur": "1:15:44"}, {"id": "p8Gngx2ryYY", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle)#3", "thumb": "https://i.ytimg.com/vi/p8Gngx2ryYY/mqdefault.jpg", "dur": "1:32:10"}, {"id": "dqm7W5_bgjc", "title": "Lost 1930s Delta Gospel-Blues Recordings – Sin, Faith & Poverty (Restored Shellac Mono) #1", "thumb": "https://i.ytimg.com/vi/dqm7W5_bgjc/mqdefault.jpg", "dur": "1:45:26"}, {"id": "rPZGoKVyQGU", "title": "Bad Girl Blues | Raw Vintage Female Electric Delta Blues (1950s Southern Juke Joint)🎧", "thumb": "https://i.ytimg.com/vi/rPZGoKVyQGU/mqdefault.jpg", "dur": "3:03"}, {"id": "KKRKQ4K-Qec", "title": "Dust, God & Desire – Women of the 1940s Singing Through Hard Times vol.1", "thumb": "https://i.ytimg.com/vi/KKRKQ4K-Qec/mqdefault.jpg", "dur": "4:40"}, {"id": "13IDNjVS03U", "title": "Under the Mercy Sky: Lost 1940s Female Gospel-Blues Field Sessions (Restored Mono)❤❤", "thumb": "https://i.ytimg.com/vi/13IDNjVS03U/mqdefault.jpg", "dur": "5:22"}, {"id": "oAyzU7Xcf6Y", "title": "Haunting 1940s War Blues – Female Field Recordings of Love, Loss & Endless Waiting", "thumb": "https://i.ytimg.com/vi/oAyzU7Xcf6Y/mqdefault.jpg", "dur": "4:10"}, {"id": "o7f7Yk52FQE", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle)#2", "thumb": "https://i.ytimg.com/vi/o7f7Yk52FQE/mqdefault.jpg", "dur": "3:11"}, {"id": "_hwL-5cluJY", "title": "Dust, Hunger & Broken Hymns | 1940s Female Gospel-Blues Field Sessions", "thumb": "https://i.ytimg.com/vi/_hwL-5cluJY/mqdefault.jpg", "dur": "3:38"}, {"id": "rTztXzkOW-c", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle)#1", "thumb": "https://i.ytimg.com/vi/rTztXzkOW-c/mqdefault.jpg", "dur": "3:40"}, {"id": "SqBwpBRjChQ", "title": "Dust, God & Desire – Women of the 1940s Singing Through Hard Times", "thumb": "https://i.ytimg.com/vi/SqBwpBRjChQ/mqdefault.jpg", "dur": "4:04"}, {"id": "-Qnzg0YycDo", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle) pt.2", "thumb": "https://i.ytimg.com/vi/-Qnzg0YycDo/mqdefault.jpg", "dur": "3:54"}, {"id": "NaGihhDFt3Y", "title": "When the Bread Ran Out, I Sang to God– A Forgotten Gospel Blues Recording (1930s Style)", "thumb": "https://i.ytimg.com/vi/NaGihhDFt3Y/mqdefault.jpg", "dur": "4:01"}, {"id": "jWFW67KurT8", "title": "RARE 1940s Delta Gospel Blues – Female Vocal Field Recordings (Mono Crackle)", "thumb": "https://i.ytimg.com/vi/jWFW67KurT8/mqdefault.jpg", "dur": "3:37"}, {"id": "hMKx5LFmzV0", "title": "Lost 1930s Delta Gospel-Blues Recordings – Sin, Faith & Poverty (Restored Shellac Mono)", "thumb": "https://i.ytimg.com/vi/hMKx5LFmzV0/mqdefault.jpg", "dur": "3:48"}, {"id": "DgpVEwnaOWY", "title": "Sacred Blues of the American 1940s – Lost Field Sessions & Prayer Songs (Mono Crackle)", "thumb": "https://i.ytimg.com/vi/DgpVEwnaOWY/mqdefault.jpg", "dur": "4:13"}, {"id": "mquU0oWpJSc", "title": "Forgotten Letters From The Warfront (1939–1947) – Lost Delta Blues | Restored Field Recordings", "thumb": "https://i.ytimg.com/vi/mquU0oWpJSc/mqdefault.jpg", "dur": "3:45"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

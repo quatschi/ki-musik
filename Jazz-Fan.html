@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Jazz-Fan.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Jazz-Fan";
 const VIDEOS = [{"id": "aHmiWdBitcE", "title": "Smooth Bossa Nova by the Ocean 🌴 Relaxing Beach Ambience 🎷Vintage Music Playlist / Vol.108 #jazzfan", "thumb": "https://i.ytimg.com/vi/aHmiWdBitcE/mqdefault.jpg", "dur": "2:30:26"}, {"id": "mZeKZ8QQw8A", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.107 #jazzfan", "thumb": "https://i.ytimg.com/vi/mZeKZ8QQw8A/mqdefault.jpg", "dur": "2:26:39"}, {"id": "w-MJ9M2HOdY", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.106 #jazzfan", "thumb": "https://i.ytimg.com/vi/w-MJ9M2HOdY/mqdefault.jpg", "dur": "2:06:37"}, {"id": "wmYf23yJ3Aw", "title": "Vintage Tropical Lounge 🍹 Island Rhythms & Ocean Ambience 🌺Vintage Music Playlist / Vol.105 #jazzfan", "thumb": "https://i.ytimg.com/vi/wmYf23yJ3Aw/mqdefault.jpg", "dur": "55:10"}, {"id": "3WH7gUpASHE", "title": "BOSSA NOVA BIG BAND 🌴 This Feels Like Summer / Jazz Vintage Music Playlist / Vol.104 #jazzfan", "thumb": "https://i.ytimg.com/vi/3WH7gUpASHE/mqdefault.jpg", "dur": "2:27:53"}, {"id": "bOLHTLo_3ro", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Vibes / Jazz Vintage Music Playlist / Vol.103 #jazzfan", "thumb": "https://i.ytimg.com/vi/bOLHTLo_3ro/mqdefault.jpg", "dur": "2:29:12"}, {"id": "p-UUBIXNg2g", "title": "BOSSA NOVA BIG BAND 🌅 Sunset Jazz by the Ocean 🎷 Jazz Vintage Music Playlist / Vol.102 #jazzfan", "thumb": "https://i.ytimg.com/vi/p-UUBIXNg2g/mqdefault.jpg", "dur": "2:31:53"}, {"id": "9INNLZ1M7fs", "title": "BIG BAND JAZZ 🎷🎺🔥 GOLDEN ERA / Old Swing & Jazz Vintage Music Playlist / Vol.101 #jazzfan", "thumb": "https://i.ytimg.com/vi/9INNLZ1M7fs/mqdefault.jpg", "dur": "2:05:15"}, {"id": "2_Lov2LfFjE", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.100 #jazzfan", "thumb": "https://i.ytimg.com/vi/2_Lov2LfFjE/mqdefault.jpg", "dur": "2:20:24"}, {"id": "g17-Vu6UaRQ", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Evening Mix / Jazz Vintage Music Playlist / Vol.99 #jazzfan", "thumb": "https://i.ytimg.com/vi/g17-Vu6UaRQ/mqdefault.jpg", "dur": "2:14:27"}, {"id": "tFMweSUfc4c", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Evening Vibes / Jazz Vintage Music Playlist / Vol.98 #jazzfan", "thumb": "https://i.ytimg.com/vi/tFMweSUfc4c/mqdefault.jpg", "dur": "2:21:04"}, {"id": "LOTAB2AbhY0", "title": "SMOOTH JAZZ 🌙🎷🎺 Late Night Groove / Swing & Jazz Vintage Music Playlist / Vol.97 #jazzfan", "thumb": "https://i.ytimg.com/vi/LOTAB2AbhY0/mqdefault.jpg", "dur": "2:00:59"}, {"id": "nwKoQ_mlBmc", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Evening Vibes / Jazz Vintage Music Playlist / Vol.96 #jazzfan", "thumb": "https://i.ytimg.com/vi/nwKoQ_mlBmc/mqdefault.jpg", "dur": "2:24:51"}, {"id": "GcYJ5QxAR50", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.95 #jazzfan", "thumb": "https://i.ytimg.com/vi/GcYJ5QxAR50/mqdefault.jpg", "dur": "2:04:30"}, {"id": "8jBQwkfa4Vg", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.94 #jazzfan", "thumb": "https://i.ytimg.com/vi/8jBQwkfa4Vg/mqdefault.jpg", "dur": "2:12:18"}, {"id": "O5DPkJmoEyA", "title": "🇫🇷 French Chanson Classics ☕ Romantic Paris Music for Relax & Good Mood 🌸 Vol.93 #jazzfan", "thumb": "https://i.ytimg.com/vi/O5DPkJmoEyA/mqdefault.jpg", "dur": "2:05:07"}, {"id": "aTtxLIqkkZQ", "title": "BIG BAND 🎷🎺🔥 This Groove Is Pure Fire / Old Swing & Jazz Vintage Music Playlist / Vol.92 #jazzfan", "thumb": "https://i.ytimg.com/vi/aTtxLIqkkZQ/mqdefault.jpg", "dur": "1:31:14"}, {"id": "pUFcwJ5jxyk", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Vibes / Jazz Vintage Music Playlist / Vol.91 #jazzfan", "thumb": "https://i.ytimg.com/vi/pUFcwJ5jxyk/mqdefault.jpg", "dur": "2:17:42"}, {"id": "tCNnSqDm_wY", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Evening Vibes / Jazz Vintage Music Playlist / Vol.90 #jazzfan", "thumb": "https://i.ytimg.com/vi/tCNnSqDm_wY/mqdefault.jpg", "dur": "2:27:09"}, {"id": "mhxeapSK_a0", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening / Jazz Vintage Music Playlist / Vol.89 #jazzfan", "thumb": "https://i.ytimg.com/vi/mhxeapSK_a0/mqdefault.jpg", "dur": "2:12:13"}, {"id": "Sh0LXEw4pms", "title": "The HOTTEST Latin Groove You’ll Hear Tonight 🔥 Jazz Vintage Music Playlist / Vol.88 #jazzfan", "thumb": "https://i.ytimg.com/vi/Sh0LXEw4pms/mqdefault.jpg", "dur": "51:29"}, {"id": "PL4hySIGDt0", "title": "🔥 FLAMENCO NIGHTS 🔥 Spanish Guitar & Piano Magic / Vintage Music Playlist / Vol.87 #jazzfan", "thumb": "https://i.ytimg.com/vi/PL4hySIGDt0/mqdefault.jpg", "dur": "1:38:01"}, {"id": "FLUldxUj4gs", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.86 #jazzfan", "thumb": "https://i.ytimg.com/vi/FLUldxUj4gs/mqdefault.jpg", "dur": "2:07:35"}, {"id": "cEqSOh7toGQ", "title": "SMOOTH JAZZ BIG BAND 🌙🎷🎺 Late Night Groove / Swing & Jazz Vintage Music Playlist / Vol.85 #jazzfan", "thumb": "https://i.ytimg.com/vi/cEqSOh7toGQ/mqdefault.jpg", "dur": "2:15:40"}, {"id": "htBFFM0_RN8", "title": "BOSSA NOVA BIG BAND 🌴 This Feels Like Summer / Jazz Vintage Music Playlist / Vol.84 #jazzfan", "thumb": "https://i.ytimg.com/vi/htBFFM0_RN8/mqdefault.jpg", "dur": "2:02:25"}, {"id": "VxpTTB3BZfI", "title": "BIG BAND 🎷🎺🔥 This Groove Is Pure Fire / Old Swing & Jazz Vintage Music Playlist / Vol.83 #jazzfan", "thumb": "https://i.ytimg.com/vi/VxpTTB3BZfI/mqdefault.jpg", "dur": "2:03:01"}, {"id": "9kIhbSsBbvo", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.82 #jazzfan", "thumb": "https://i.ytimg.com/vi/9kIhbSsBbvo/mqdefault.jpg", "dur": "2:06:04"}, {"id": "Cb69RPrTZdk", "title": "Deep Brass Grooves 🎷 Vintage Baritone Jazz & Low-End Swing for Cozy Evenings / Vol.81 #jazzfan", "thumb": "https://i.ytimg.com/vi/Cb69RPrTZdk/mqdefault.jpg", "dur": "1:15:05"}, {"id": "9MZ2ZA1KMH8", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.80 #jazzfan", "thumb": "https://i.ytimg.com/vi/9MZ2ZA1KMH8/mqdefault.jpg", "dur": "2:11:16"}, {"id": "yLFXhrAUKII", "title": "SALSA JAZZ NIGHTS 🌴 Tropical Big Band Rhythms / Vintage Latin Jazz Playlist / Vol.79 #jazzfan", "thumb": "https://i.ytimg.com/vi/yLFXhrAUKII/mqdefault.jpg", "dur": "1:15:26"}, {"id": "OIuyY0XNs7M", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.78 #jazzfan", "thumb": "https://i.ytimg.com/vi/OIuyY0XNs7M/mqdefault.jpg", "dur": "2:19:40"}, {"id": "UwegRLpiytI", "title": "SALSA JAZZ NIGHTS 🌴 Tropical Big Band Rhythms / Vintage Latin Jazz Playlist / Vol.77 #jazzfan", "thumb": "https://i.ytimg.com/vi/UwegRLpiytI/mqdefault.jpg", "dur": "1:18:32"}, {"id": "gQ8ZJLbzM80", "title": "🎷 Calm Late Night Jazz – Smooth Instrumental Big Band / Vol.76 #jazzfan", "thumb": "https://i.ytimg.com/vi/gQ8ZJLbzM80/mqdefault.jpg", "dur": "2:08:07"}, {"id": "0ds1jcQ9cEA", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.75 #jazzfan", "thumb": "https://i.ytimg.com/vi/0ds1jcQ9cEA/mqdefault.jpg", "dur": "2:16:35"}, {"id": "wPVrKMzB7Ig", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.74 #jazzfan", "thumb": "https://i.ytimg.com/vi/wPVrKMzB7Ig/mqdefault.jpg", "dur": "2:08:26"}, {"id": "Fo80HcJa2Js", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.73 #jazzfan", "thumb": "https://i.ytimg.com/vi/Fo80HcJa2Js/mqdefault.jpg", "dur": "2:05:37"}, {"id": "LXiEBcnAMdw", "title": "MIDNIGHT JAZZ BIG BAND 🌙🎷🎺 Old Swing & Jazz Vintage Music Playlist / Vol.72 #jazzfan", "thumb": "https://i.ytimg.com/vi/LXiEBcnAMdw/mqdefault.jpg", "dur": "1:51:22"}, {"id": "P2KDqxRtUSg", "title": "MIDNIGHT JAZZ BIG BAND 🌙🎷🎺 Old Swing & Jazz Vintage Music Playlist / Vol.71 #jazzfan", "thumb": "https://i.ytimg.com/vi/P2KDqxRtUSg/mqdefault.jpg", "dur": "2:22:50"}, {"id": "Irov32k8t2g", "title": "MIDNIGHT JAZZ BIG BAND 🌙🎷🎺 Old Swing & Jazz Vintage Music Playlist / Vol.70 #jazzfan", "thumb": "https://i.ytimg.com/vi/Irov32k8t2g/mqdefault.jpg", "dur": "2:11:38"}, {"id": "K8cEaH6LHTY", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.69", "thumb": "https://i.ytimg.com/vi/K8cEaH6LHTY/mqdefault.jpg", "dur": "2:08:00"}, {"id": "rSSjN9ecSEU", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.68 #jazzfan", "thumb": "https://i.ytimg.com/vi/rSSjN9ecSEU/mqdefault.jpg", "dur": "2:04:26"}, {"id": "_SNkL5VLPMs", "title": "BOSSA NOVA BIG BAND 🌴 This Feels Like Summer / Jazz Vintage Music Playlist / Vol.67 #jazzfan", "thumb": "https://i.ytimg.com/vi/_SNkL5VLPMs/mqdefault.jpg", "dur": "2:05:17"}, {"id": "raMW7QOQ4CM", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.66 #jazzfan", "thumb": "https://i.ytimg.com/vi/raMW7QOQ4CM/mqdefault.jpg", "dur": "2:30:47"}, {"id": "o_IAs0wTNoA", "title": "BIG BAND EVENING JAZZ 🌙🎷🎺 Smooth, elegant, timeless vibes for your perfect night. / Vol.65 #jazzfan", "thumb": "https://i.ytimg.com/vi/o_IAs0wTNoA/mqdefault.jpg", "dur": "2:04:30"}, {"id": "UXOjQ3b0oI4", "title": "BIG BAND EVENING JAZZ 🌙🎷🎺 Smooth, elegant, timeless vibes for your perfect night. / Vol.64 #jazzfan", "thumb": "https://i.ytimg.com/vi/UXOjQ3b0oI4/mqdefault.jpg", "dur": "2:06:48"}, {"id": "EuBhA4j4hJY", "title": "BIG BAND EVENING JAZZ 🌙🎷🎺 Smooth, elegant, timeless vibes for your perfect night. / Vol.63 #jazzfan", "thumb": "https://i.ytimg.com/vi/EuBhA4j4hJY/mqdefault.jpg", "dur": "2:18:02"}, {"id": "XFsGw_i2iNg", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.62 #jazzfan", "thumb": "https://i.ytimg.com/vi/XFsGw_i2iNg/mqdefault.jpg", "dur": "2:31:46"}, {"id": "HaYvNcfWmfI", "title": "BOSSA NOVA BIG BAND 🌴 This Feels Like Summer / Jazz Vintage Music Playlist / Vol.61 #jazzfan", "thumb": "https://i.ytimg.com/vi/HaYvNcfWmfI/mqdefault.jpg", "dur": "2:23:42"}, {"id": "JNLc8WuzT1A", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.60 #jazzfan", "thumb": "https://i.ytimg.com/vi/JNLc8WuzT1A/mqdefault.jpg", "dur": "2:10:32"}, {"id": "wdfp50y3HxU", "title": "BIG BAND JAZZ 🎷🎺🔥 PURE JAZZ ENERGY / Old Swing & Jazz Vintage Music Playlist / Vol.59 #jazzfan", "thumb": "https://i.ytimg.com/vi/wdfp50y3HxU/mqdefault.jpg", "dur": "2:00:24"}, {"id": "uzF0M17ea8c", "title": "BIG BAND JAZZ 🎷🎺🔥 GOLDEN ERA / Old Swing & Jazz Vintage Music Playlist / Vol.58 #jazzfan", "thumb": "https://i.ytimg.com/vi/uzF0M17ea8c/mqdefault.jpg", "dur": "2:03:39"}, {"id": "gY_oiSH9FY0", "title": "MIDNIGHT BIG BAND mix 🌙🎷🎺 Old Swing & Jazz Vintage Music Playlist / Vol.57 #jazzfan", "thumb": "https://i.ytimg.com/vi/gY_oiSH9FY0/mqdefault.jpg", "dur": "2:24:48"}, {"id": "WrIHEH_YTXA", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Summer Evening Mix / Jazz Vintage Music Playlist / Vol.56 #jazzfan", "thumb": "https://i.ytimg.com/vi/WrIHEH_YTXA/mqdefault.jpg", "dur": "2:22:56"}, {"id": "0Fn9nQH0R60", "title": "BOSSA NOVA BIG BAND 🌴 🌴 Tropical Jazz Vibes / Jazz Vintage Music Playlist / Vol.55 #jazzfan", "thumb": "https://i.ytimg.com/vi/0Fn9nQH0R60/mqdefault.jpg", "dur": "2:00:17"}, {"id": "h47-JQYKlC0", "title": "BOSSA NOVA BIG BAND 🌴 This Feels Like Summer / Jazz Vintage Music Playlist / Vol.54 #jazzfan", "thumb": "https://i.ytimg.com/vi/h47-JQYKlC0/mqdefault.jpg", "dur": "2:14:36"}, {"id": "LSU4LAtBNgU", "title": "👉 LIVE BIG BAND 🎷🎺🔥 Old Swing & Jazz Vintage Music Playlist / Vol.53 #jazzfan", "thumb": "https://i.ytimg.com/vi/LSU4LAtBNgU/mqdefault.jpg", "dur": "2:24:06"}, {"id": "XVEG478iQ_M", "title": "BIG BAND 🎷🎺🔥 This Groove Is Pure Fire / Old Swing & Jazz Vintage Music Playlist / Vol.52 #jazzfan", "thumb": "https://i.ytimg.com/vi/XVEG478iQ_M/mqdefault.jpg", "dur": "2:05:44"}, {"id": "SH45isEXJos", "title": "BIG BAND 🎷✨ The Golden Age of Jazz / Old Swing & Jazz Vintage Music Playlist / Vol.51 #jazzfan", "thumb": "https://i.ytimg.com/vi/SH45isEXJos/mqdefault.jpg", "dur": "1:57:35"}, {"id": "BrBEfbt048k", "title": "👉 BOUNCY SWING FUNK JAZZ 🎷 Instrumental Vintage Groove | No Vocals Jazz Mix / Vol.50 #jazzfan", "thumb": "https://i.ytimg.com/vi/BrBEfbt048k/mqdefault.jpg", "dur": "45:39"}, {"id": "jRoNnKq6Lzg", "title": "FEEL THE GROOVE - You Can’t Sit Still After This 🎷 Swing Funk Mix / Vol.49 #jazzfan", "thumb": "https://i.ytimg.com/vi/jRoNnKq6Lzg/mqdefault.jpg", "dur": "42:14"}, {"id": "oZkXtGfZBXY", "title": "INSTRUMENTAL BOUNCY JAZZ SWING FUNK — You Can’t Sit Still 🎷🔥  / Vol.48 #jazzfan", "thumb": "https://i.ytimg.com/vi/oZkXtGfZBXY/mqdefault.jpg", "dur": "30:50"}, {"id": "VJQpIaZqPPo", "title": "Step It Like Charleston, Baby! / Vol.47 #jazzfan", "thumb": "https://i.ytimg.com/vi/VJQpIaZqPPo/mqdefault.jpg", "dur": "33:44"}, {"id": "AH2RGbOLB00", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.46 #jazzfan", "thumb": "https://i.ytimg.com/vi/AH2RGbOLB00/mqdefault.jpg", "dur": "50:36"}, {"id": "VhfqyLX5jRU", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.45 #jazzfan", "thumb": "https://i.ytimg.com/vi/VhfqyLX5jRU/mqdefault.jpg", "dur": "42:50"}, {"id": "M3ZAwUf6Fss", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.44 #jazzfan", "thumb": "https://i.ytimg.com/vi/M3ZAwUf6Fss/mqdefault.jpg", "dur": "42:01"}, {"id": "2Nb9fTNOKvI", "title": "Retro Jazz Classics - Old Swing & Jazz Ballads Vintage Music Playlist / Vol.43  #jazzfan", "thumb": "https://i.ytimg.com/vi/2Nb9fTNOKvI/mqdefault.jpg", "dur": "1:05:16"}, {"id": "2kU4w1ZVUQw", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.42 #jazzfan", "thumb": "https://i.ytimg.com/vi/2kU4w1ZVUQw/mqdefault.jpg", "dur": "40:13"}, {"id": "ga66BjBMWWk", "title": "Gangster Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.41 #jazzfan", "thumb": "https://i.ytimg.com/vi/ga66BjBMWWk/mqdefault.jpg", "dur": "47:31"}, {"id": "QPQQ02yX4Rs", "title": "Smooth Piano Jazz Music In Morning Coffee Shop / Vol.40 #jazzfan", "thumb": "https://i.ytimg.com/vi/QPQQ02yX4Rs/mqdefault.jpg", "dur": "1:15:01"}, {"id": "3Aw6WADg1A0", "title": "Saturday Evening, Retro Jazz Classics - Old Swing & Jazz Vintage Music / Vol.39  #jazzfan", "thumb": "https://i.ytimg.com/vi/3Aw6WADg1A0/mqdefault.jpg", "dur": "1:30:46"}, {"id": "8bLuZ5UYCaw", "title": "Friday Evening, Retro Jazz Classics - Old Swing & Jazz Vintage Music / Vol.38  #jazzfan", "thumb": "https://i.ytimg.com/vi/8bLuZ5UYCaw/mqdefault.jpg", "dur": "1:46:42"}, {"id": "CnQNpv7sZPk", "title": "Retro Jazz Classics - Old Swing & Jazz Ballads Vintage Music Playlist / Vol.25  #jazzfan", "thumb": "https://i.ytimg.com/vi/CnQNpv7sZPk/mqdefault.jpg", "dur": "1:00:56"}, {"id": "IOFwuQB_QoU", "title": "Moonlight Walking. Vintage Vibes - Old Swing & Jazz Vintage Music Playlist / Vol.24 #jazzfan", "thumb": "https://i.ytimg.com/vi/IOFwuQB_QoU/mqdefault.jpg", "dur": "55:24"}, {"id": "r37HQX2e5fA", "title": "Put Some Swing In Your Step. It's Charleston, Baby! - Old Swing & Jazz Vintage / Vol.31 #jazzfan", "thumb": "https://i.ytimg.com/vi/r37HQX2e5fA/mqdefault.jpg", "dur": "45:16"}, {"id": "RW2ZCTtQTUA", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.23 #jazzfan", "thumb": "https://i.ytimg.com/vi/RW2ZCTtQTUA/mqdefault.jpg", "dur": "53:25"}, {"id": "SU-R3lapuR0", "title": "Bootlegger Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.22 #jazzfan", "thumb": "https://i.ytimg.com/vi/SU-R3lapuR0/mqdefault.jpg", "dur": "39:50"}, {"id": "Lne-1HBTNP8", "title": "Sea Sunset / Smooth Piano Jazz Music for Relaxing, Studying and Working / Vol.32 #jazzfan", "thumb": "https://i.ytimg.com/vi/Lne-1HBTNP8/mqdefault.jpg", "dur": "1:01:40"}, {"id": "65i7BFiTmaI", "title": "Saturday evening, Retro Jazz Classics - Old Swing & Jazz Vintage Music / Vol.21  #jazzfan", "thumb": "https://i.ytimg.com/vi/65i7BFiTmaI/mqdefault.jpg", "dur": "2:12:34"}, {"id": "_TlTS00zx7o", "title": "Morning Coffee Shop with Smooth Piano Jazz Music for Relaxing, Studying and Working  Vol33 #jazzfan", "thumb": "https://i.ytimg.com/vi/_TlTS00zx7o/mqdefault.jpg", "dur": "1:09:35"}, {"id": "KKpseMqrYXY", "title": "Gangster Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.20 #jazzfan", "thumb": "https://i.ytimg.com/vi/KKpseMqrYXY/mqdefault.jpg", "dur": "43:20"}, {"id": "PbtiDrIRE_k", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.19 #jazzfan", "thumb": "https://i.ytimg.com/vi/PbtiDrIRE_k/mqdefault.jpg", "dur": "55:10"}, {"id": "BLa_NElU4Ho", "title": "Tender Light In Her Eyes. Slow, intimate jazz ballads / Vol.34 #jazzfan", "thumb": "https://i.ytimg.com/vi/BLa_NElU4Ho/mqdefault.jpg", "dur": "1:00:57"}, {"id": "CPD5H7FD404", "title": "Gangster Jazz Classics - Old Swing & Jazz Vintage Music Playlist Vol.18 #jazzfan", "thumb": "https://i.ytimg.com/vi/CPD5H7FD404/mqdefault.jpg", "dur": "44:51"}, {"id": "6JelyyGXmU0", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.17  #jazzfan", "thumb": "https://i.ytimg.com/vi/6JelyyGXmU0/mqdefault.jpg", "dur": "42:52"}, {"id": "N2UmO3P-wp4", "title": "Sakura Blooming Time / Music Therapy for Relaxation Vol.37 #jazzfan", "thumb": "https://i.ytimg.com/vi/N2UmO3P-wp4/mqdefault.jpg", "dur": "2:40:57"}, {"id": "xo7Dc985e7w", "title": "Friday Evening, Retro Jazz Classics - Old Swing & Jazz Vintage Music / Vol.16  #jazzfan", "thumb": "https://i.ytimg.com/vi/xo7Dc985e7w/mqdefault.jpg", "dur": "2:02:43"}, {"id": "KJkk_O4g_-Q", "title": "Coffee Shop with Smooth Piano Jazz Music for Relaxing, Studying and Working / Vol. 27 #jazzfan", "thumb": "https://i.ytimg.com/vi/KJkk_O4g_-Q/mqdefault.jpg", "dur": "2:44:10"}, {"id": "RNPEV49eXqc", "title": "Calm Morning Jazz at Nature / Therapy for Relaxation /  Vol. 26 #jazzfan", "thumb": "https://i.ytimg.com/vi/RNPEV49eXqc/mqdefault.jpg", "dur": "2:19:09"}, {"id": "C_Y3KQ2Ck8Y", "title": "Retro Jazz Classics - Funk & Jazz Vintage Music Playlist / Vol.15 #jazzfan", "thumb": "https://i.ytimg.com/vi/C_Y3KQ2Ck8Y/mqdefault.jpg", "dur": "41:16"}, {"id": "COAOxzHRAUM", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.14 #jazzfan", "thumb": "https://i.ytimg.com/vi/COAOxzHRAUM/mqdefault.jpg", "dur": "44:11"}, {"id": "1yYqUu95Fqc", "title": "Gangster Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.13 #jazzfan", "thumb": "https://i.ytimg.com/vi/1yYqUu95Fqc/mqdefault.jpg", "dur": "54:13"}, {"id": "gatZyefYotM", "title": "Retro Jazz Classics - Old Swing & Jazz Ballads Vintage Music Playlist / Vol.12  #jazzfan", "thumb": "https://i.ytimg.com/vi/gatZyefYotM/mqdefault.jpg", "dur": "59:42"}, {"id": "XLoDfw2pKi4", "title": "Put More Swing In Your Step. It's Charleston, Baby. / Vol.28 #jazzfan", "thumb": "https://i.ytimg.com/vi/XLoDfw2pKi4/mqdefault.jpg", "dur": "33:06"}, {"id": "F1ECOZ7u9K8", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.11 #jazzfan", "thumb": "https://i.ytimg.com/vi/F1ECOZ7u9K8/mqdefault.jpg", "dur": "31:31"}, {"id": "3mDiW1YXdpM", "title": "Retro Jazz Classics - Old Swing & Jazz Ballads Vintage Music Playlist / Vol.10 #jazzfan", "thumb": "https://i.ytimg.com/vi/3mDiW1YXdpM/mqdefault.jpg", "dur": "45:45"}, {"id": "P5gfdhNUGhM", "title": "Lounge Coffee Shop with Smooth Bossa Nova Jazz ☕ Positive Jazz for Relax Good Mood/ Vol.29 #jazzfan", "thumb": "https://i.ytimg.com/vi/P5gfdhNUGhM/mqdefault.jpg", "dur": "2:10:07"}, {"id": "Z8mXieaYzTE", "title": "Lounge Coffee Shop with Smooth Piano Jazz Music for Relaxing, Studying and Working /Vol.30 #jazzfan", "thumb": "https://i.ytimg.com/vi/Z8mXieaYzTE/mqdefault.jpg", "dur": "2:15:47"}, {"id": "65nnJsVXxOQ", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.9 #jazzfan", "thumb": "https://i.ytimg.com/vi/65nnJsVXxOQ/mqdefault.jpg", "dur": "44:30"}, {"id": "MpNBgAtFEO4", "title": "Retro Jazz Classics - Old Swing & Jazz Ballads Vintage Music / Vol.8 #jazzfan", "thumb": "https://i.ytimg.com/vi/MpNBgAtFEO4/mqdefault.jpg", "dur": "1:05:27"}, {"id": "zbaziUx3R9w", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.7 #jazzfan", "thumb": "https://i.ytimg.com/vi/zbaziUx3R9w/mqdefault.jpg", "dur": "49:16"}, {"id": "gdQdAnEDsbI", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.6 #jazzfan", "thumb": "https://i.ytimg.com/vi/gdQdAnEDsbI/mqdefault.jpg", "dur": "41:41"}, {"id": "eX9LWu-Hg58", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.5 #jazzfan", "thumb": "https://i.ytimg.com/vi/eX9LWu-Hg58/mqdefault.jpg", "dur": "32:13"}, {"id": "zXERmfUlRoU", "title": "Blue Winter Evening #jazzfan", "thumb": "https://i.ytimg.com/vi/zXERmfUlRoU/mqdefault.jpg", "dur": "3:12"}, {"id": "vH2Z8iBERSw", "title": "Put Some Swing In Your Step. It's Charleston, Baby. / Vol.36 #jazzfan", "thumb": "https://i.ytimg.com/vi/vH2Z8iBERSw/mqdefault.jpg", "dur": "36:11"}, {"id": "wjIR7CXqMb8", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.4 #jazzfan", "thumb": "https://i.ytimg.com/vi/wjIR7CXqMb8/mqdefault.jpg", "dur": "44:28"}, {"id": "z-MUoQl6s8g", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.3 #jazzfan", "thumb": "https://i.ytimg.com/vi/z-MUoQl6s8g/mqdefault.jpg", "dur": "49:46"}, {"id": "EK_KEPsjudc", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.2 #jazzfan", "thumb": "https://i.ytimg.com/vi/EK_KEPsjudc/mqdefault.jpg", "dur": "52:38"}, {"id": "S7X70B8ERHI", "title": "Retro Jazz Classics - Old Swing & Jazz Vintage Music Playlist / Vol.1 #jazzfan", "thumb": "https://i.ytimg.com/vi/S7X70B8ERHI/mqdefault.jpg", "dur": "44:41"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

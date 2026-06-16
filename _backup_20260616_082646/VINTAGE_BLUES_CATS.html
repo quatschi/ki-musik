@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VINTAGE BLUES CATS</title>
+<!-- categories: Blues -->
+<!-- channel-id: UCivz_9bawA8RkNnQ8RkZZOA -->
+<!-- channel-url: https://youtube.com/@vintagebluescats -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=VINTAGE_BLUES_CATS.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/Xo3QSCWPX5WU1WrrVcGBODGYxVg5kXydD_cAg9OJyeSxtlkWXWMpMk8ZpMoxXHr3T7h69e525w=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">VINTAGE BLUES CATS</div>
+      <div class="channel-count">49 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "VINTAGE BLUES CATS";
+const VIDEOS = [{"id": "xrQ8-eg-5ds", "title": "Delta Blues – Smooth Harmonica Blues & Catchy Blues Guitar for work | Deep Soulful Vibes", "thumb": "https://i.ytimg.com/vi/xrQ8-eg-5ds/mqdefault.jpg", "dur": "1:04:31"}, {"id": "4xVfpnd8Q20", "title": "Broken Ground Delta Blues | Raw Southern Blues from the Rust District", "thumb": "https://i.ytimg.com/vi/4xVfpnd8Q20/mqdefault.jpg", "dur": "1:32:49"}, {"id": "Uf5ggViP3Wk", "title": "Back Alley Delta Blues | Dirty Harmonica Blues in the Midnight Alley", "thumb": "https://i.ytimg.com/vi/Uf5ggViP3Wk/mqdefault.jpg", "dur": "1:53:53"}, {"id": "30uHgsCVo4o", "title": "Concrete Highway Delta Blues | Dark Street Blues Under the Overpass", "thumb": "https://i.ytimg.com/vi/30uHgsCVo4o/mqdefault.jpg", "dur": "1:44:46"}, {"id": "JpUYHZJTReE", "title": "Rustyard Delta Blues | Gritty Blues Guitar from the Freight Yard", "thumb": "https://i.ytimg.com/vi/JpUYHZJTReE/mqdefault.jpg", "dur": "1:35:13"}, {"id": "6-gbOZHGwYI", "title": "Railroad Delta Blues | Dusty Southern Blues on the Old Tracks", "thumb": "https://i.ytimg.com/vi/6-gbOZHGwYI/mqdefault.jpg", "dur": "1:56:15"}, {"id": "xDdswx1I9MY", "title": "Dusty Trailer Delta Blues | Raw Southern Blues Guitar & Harmonica Jam", "thumb": "https://i.ytimg.com/vi/xDdswx1I9MY/mqdefault.jpg", "dur": "1:40:32"}, {"id": "IxnSty4HnPs", "title": "Iron Factory Delta Blues | Smoky Blues Guitar in the Broken Warehouse", "thumb": "https://i.ytimg.com/vi/IxnSty4HnPs/mqdefault.jpg", "dur": "1:51:27"}, {"id": "HEVY8MpRZcE", "title": "Rust Road Delta Blues | Whiskey Blues Guitar from the Broken South", "thumb": "https://i.ytimg.com/vi/HEVY8MpRZcE/mqdefault.jpg", "dur": "1:21:36"}, {"id": "E66ItTLFCZA", "title": "Midnight Alley Delta Blues | Dark Smoky Blues Guitar for Late Night Driving", "thumb": "https://i.ytimg.com/vi/E66ItTLFCZA/mqdefault.jpg", "dur": "1:38:46"}, {"id": "6un0mBsj5HQ", "title": "Acoustic Blues Harmonica | Hearts of the Mississippi Delta", "thumb": "https://i.ytimg.com/vi/6un0mBsj5HQ/mqdefault.jpg", "dur": "1:37:31"}, {"id": "_N2NaTUSDT0", "title": "DEEP Southern DELTA Blues | Legendary Acoustic Blues Harmonica Performance", "thumb": "https://i.ytimg.com/vi/_N2NaTUSDT0/mqdefault.jpg", "dur": "1:36:06"}, {"id": "ajuhy0ypR7U", "title": "DEEP Southern DELTA Blues | Haunting Delta Blues Harmonica Tunes [1936]", "thumb": "https://i.ytimg.com/vi/ajuhy0ypR7U/mqdefault.jpg", "dur": "1:34:22"}, {"id": "WaaGFFOqSto", "title": "DEEP Southern DELTA Blues | Mississippi Born Delta Blues With Gritty Harmonica", "thumb": "https://i.ytimg.com/vi/WaaGFFOqSto/mqdefault.jpg", "dur": "1:31:58"}, {"id": "iZVW30ljmQk", "title": "DEEP Southern DELTA BLUES | Gospel Dust, Vintage Cats Blues, and Electric Crossroads", "thumb": "https://i.ytimg.com/vi/iZVW30ljmQk/mqdefault.jpg", "dur": "2:04:26"}, {"id": "OjBNItlK20k", "title": "Delta Blues Music - The Sound of the Mississippi Blues", "thumb": "https://i.ytimg.com/vi/OjBNItlK20k/mqdefault.jpg", "dur": "1:24:19"}, {"id": "R5H9jIeUNVg", "title": "CROSSROADS BLUES ⚡ | DARK DELTA BLUES JAM", "thumb": "https://i.ytimg.com/vi/R5H9jIeUNVg/mqdefault.jpg", "dur": "1:49:14"}, {"id": "Lxpu8FU6mYY", "title": "BROKEN STOP BLUES 🪑 | Sad & Dusty Delta Blues", "thumb": "https://i.ytimg.com/vi/Lxpu8FU6mYY/mqdefault.jpg", "dur": "1:38:21"}, {"id": "E-vpDQkC8AA", "title": "LAST MILE BLUES 🚧 | Emotional Delta Blues Guitar", "thumb": "https://i.ytimg.com/vi/E-vpDQkC8AA/mqdefault.jpg", "dur": "1:23:18"}, {"id": "fBOhunKXqCU", "title": "RUSTED BLUES 🪨 | Raw & Gritty Delta Blues Session", "thumb": "https://i.ytimg.com/vi/fBOhunKXqCU/mqdefault.jpg", "dur": "1:51:18"}, {"id": "9FUdqI4BcPU", "title": "LONELY HIGHWAY BLUES 🛣️ | Slow Delta Blues for Late Night Drives", "thumb": "https://i.ytimg.com/vi/9FUdqI4BcPU/mqdefault.jpg", "dur": "1:39:20"}, {"id": "a5tU7-L5wF0", "title": "DEEP Louisiana DELTA Blues  |  Desert Caravan Stop Jam | Lonely Sunset Mood", "thumb": "https://i.ytimg.com/vi/a5tU7-L5wF0/mqdefault.jpg", "dur": "2:16:06"}, {"id": "EuHjnNsYP4k", "title": "DEEP Mississippi DELTA Blues  |  Desert Rock Plateau Jam Slow Cinematic Mood", "thumb": "https://i.ytimg.com/vi/EuHjnNsYP4k/mqdefault.jpg", "dur": "1:56:25"}, {"id": "ntaIGDpXyEQ", "title": "Empty Fairground After Dark | DEEP Memphis DELTA Blues Moody Instrumental", "thumb": "https://i.ytimg.com/vi/ntaIGDpXyEQ/mqdefault.jpg", "dur": "2:02:02"}, {"id": "ap8GphToG0w", "title": "Old Water Tower Field | DEEP Mississippi DELTA Blues Emotional Harmonica", "thumb": "https://i.ytimg.com/vi/ap8GphToG0w/mqdefault.jpg", "dur": "2:07:36"}, {"id": "xG4aUCBZnV0", "title": "Rural Farm Sunset Groove | DEEP Mississippi DELTA Blues Slow Harmonica", "thumb": "https://i.ytimg.com/vi/xG4aUCBZnV0/mqdefault.jpg", "dur": "2:01:52"}, {"id": "ln9GVqp9j9U", "title": "Weathered Church Yard Blues | DEEP Mississippi DELTA Blues Soulful Instrumental", "thumb": "https://i.ytimg.com/vi/ln9GVqp9j9U/mqdefault.jpg", "dur": "2:16:00"}, {"id": "GNkWt78jqv0", "title": "Old Wooden Barn Session | DEEP Mississippi DELTA Blues Rustic Slow Blues", "thumb": "https://i.ytimg.com/vi/GNkWt78jqv0/mqdefault.jpg", "dur": "2:28:43"}, {"id": "Yw3FWU5wub4", "title": "Abandoned Gas Station Groove | DEEP Mississippi DELTA Blues Gritty Guitar & Harmonica", "thumb": "https://i.ytimg.com/vi/Yw3FWU5wub4/mqdefault.jpg", "dur": "2:17:37"}, {"id": "yO4UQ_iMphk", "title": "Deserted Downtown Jam | DEEP Southern DELTA Blues Dark Road Instrumental", "thumb": "https://i.ytimg.com/vi/yO4UQ_iMphk/mqdefault.jpg", "dur": "1:42:17"}, {"id": "lAYkgFbF9yI", "title": "Harbor Dock Afterglow | DEEP Louisiana DELTA Blues Swampy Guitar Session", "thumb": "https://i.ytimg.com/vi/lAYkgFbF9yI/mqdefault.jpg", "dur": "2:21:43"}, {"id": "Rs6_8y72ChI", "title": "Remote Highway Underpass | DEEP Memphis DELTA Blues Dark Harmonica", "thumb": "https://i.ytimg.com/vi/Rs6_8y72ChI/mqdefault.jpg", "dur": "1:52:08"}, {"id": "VeKlTUWwRPU", "title": "Dry Canyon Sunset Jam | DEEP Southern DELTA Blues Cinematic Guitar", "thumb": "https://i.ytimg.com/vi/VeKlTUWwRPU/mqdefault.jpg", "dur": "1:54:38"}, {"id": "F4gns4ZVzO0", "title": "Empty Oil Pump Field Groove | DEEP Southern DELTA Blues Gritty Slide", "thumb": "https://i.ytimg.com/vi/F4gns4ZVzO0/mqdefault.jpg", "dur": "2:15:39"}, {"id": "zht-jYxH2WM", "title": "Windmill Prairie Sunset | DEEP Southern DELTA Blues Acoustic Mood", "thumb": "https://i.ytimg.com/vi/zht-jYxH2WM/mqdefault.jpg", "dur": "2:16:52"}, {"id": "oygE0N_pcDA", "title": "Dusty Border Checkpoint Jam | DEEP Southern DELTA Blues Dark Road Mood", "thumb": "https://i.ytimg.com/vi/oygE0N_pcDA/mqdefault.jpg", "dur": "2:03:02"}, {"id": "ra1RN-eBOT4", "title": "Canyon Road Overlook Session | DEEP Memphis DELTA Blues Slow Guitar", "thumb": "https://i.ytimg.com/vi/ra1RN-eBOT4/mqdefault.jpg", "dur": "2:11:55"}, {"id": "HzJzXLM5AuE", "title": "Abandoned Drive-In Theater | DEEP Mississippi DELTA Blues Cinematic Slow Jam", "thumb": "https://i.ytimg.com/vi/HzJzXLM5AuE/mqdefault.jpg", "dur": "2:20:49"}, {"id": "6U3yhQJ6tWk", "title": "Riverbank Twilight Mood | DEEP Louisiana DELTA Blues Emotional Slow Blues", "thumb": "https://i.ytimg.com/vi/6U3yhQJ6tWk/mqdefault.jpg", "dur": "2:02:32"}, {"id": "uPrtK-grxxU", "title": "Rooftop Skyline Serenade | DEEP Memphis DELTA Blues Urban Night Instrumental", "thumb": "https://i.ytimg.com/vi/uPrtK-grxxU/mqdefault.jpg", "dur": "2:10:56"}, {"id": "1jqpq97vGtA", "title": "Industrial Rail Yard Blues | DEEP Memphis DELTA Blues Gritty Slide Session", "thumb": "https://i.ytimg.com/vi/1jqpq97vGtA/mqdefault.jpg", "dur": "2:05:48"}, {"id": "hLuYr2wyNAM", "title": "Forest Campfire Jam | DEEP Southern DELTA Blues Dark Acoustic Mood", "thumb": "https://i.ytimg.com/vi/hLuYr2wyNAM/mqdefault.jpg", "dur": "1:46:14"}, {"id": "5oANNuF3Ypo", "title": "Empty Roadside Diner | DEEP Memphis DELTA Blues Late Night Instrumental", "thumb": "https://i.ytimg.com/vi/5oANNuF3Ypo/mqdefault.jpg", "dur": "2:52:37"}, {"id": "M3mGEG1ig2k", "title": "Swamp Dock Afterglow | DEEP Louisiana DELTA Blues Swampy Harmonica Mood", "thumb": "https://i.ytimg.com/vi/M3mGEG1ig2k/mqdefault.jpg", "dur": "1:48:12"}, {"id": "tgpX87T-CbI", "title": "Abandoned Roadside Motel | DEEP Louisiana DELTA Blues Lonely Highway Mood", "thumb": "https://i.ytimg.com/vi/tgpX87T-CbI/mqdefault.jpg", "dur": "1:52:44"}, {"id": "JXcD1E6t8tI", "title": "Forgotten Mining Town Jam | DEEP Memphis DELTA Blues Dusty Instrumental", "thumb": "https://i.ytimg.com/vi/JXcD1E6t8tI/mqdefault.jpg", "dur": "2:01:03"}, {"id": "Vu93_zxATPQ", "title": "Route 66 Bridge Session | DEEP Southern DELTA Blues Classic Road Guitar", "thumb": "https://i.ytimg.com/vi/Vu93_zxATPQ/mqdefault.jpg", "dur": "2:38:29"}, {"id": "Yts8WsoIdps", "title": "Small Town Train Track Session | DEEP Memphis DELTA Blues Slow Slide Guitar", "thumb": "https://i.ytimg.com/vi/Yts8WsoIdps/mqdefault.jpg", "dur": "2:02:02"}, {"id": "DpRFpxM73qA", "title": "Lonely Desert Highway Jam | DEEP Southern DELTA Blues Slow Road Instrumental", "thumb": "https://i.ytimg.com/vi/DpRFpxM73qA/mqdefault.jpg", "dur": "2:07:46"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

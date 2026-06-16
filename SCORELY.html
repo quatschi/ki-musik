@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=SCORELY.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "SCORELY";
 const VIDEOS = [{"id": "PZpQ5-Zy8-U", "title": "A-HA — Atmospheric Orchestral Instrumentals | Symphonic Classics | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/PZpQ5-Zy8-U/mqdefault.jpg", "dur": "47:05"}, {"id": "pQk5nVAzdX0", "title": "Europe Orchestral Reimagined | Emotional Symphonic Versions of Classic Hits", "thumb": "https://i.ytimg.com/vi/pQk5nVAzdX0/mqdefault.jpg", "dur": "50:09"}, {"id": "5vfCSpnkLFA", "title": "2Pac Reimagined — Orchestra Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/5vfCSpnkLFA/mqdefault.jpg", "dur": "39:22"}, {"id": "p8JkUYTzv0I", "title": "U2 Reimagined — Symphonic Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/p8JkUYTzv0I/mqdefault.jpg", "dur": "44:02"}, {"id": "MBT2mGmi0lc", "title": "Joe Cocker — Soulful Orchestral Instrumentals | Symphonic Classics | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/MBT2mGmi0lc/mqdefault.jpg", "dur": "46:03"}, {"id": "tMXmPvrtHDo", "title": "George Michael — Elegant Orchestral Interpretations | No Vocals", "thumb": "https://i.ytimg.com/vi/tMXmPvrtHDo/mqdefault.jpg", "dur": "36:15"}, {"id": "342BXfwCkVk", "title": "Sting — Elegant Orchestral Instrumentals | Symphonic Sound | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/342BXfwCkVk/mqdefault.jpg", "dur": "46:14"}, {"id": "A2Yb0nsamJk", "title": "The Doors Reimagined — Symphonic Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/A2Yb0nsamJk/mqdefault.jpg", "dur": "43:07"}, {"id": "kPWzcH6IxUw", "title": "The Who — Symphonic Rock Interpretations | No Vocals", "thumb": "https://i.ytimg.com/vi/kPWzcH6IxUw/mqdefault.jpg", "dur": "47:10"}, {"id": "VBQsLtEdDtM", "title": "Green Day — Orchestral Instrumental Energy | Symphonic Punk Rock | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/VBQsLtEdDtM/mqdefault.jpg", "dur": "35:35"}, {"id": "gxyUnr-SgvI", "title": "Michael Jackson — Orchestral Instrumental Collection | Symphonic Pop | No Vocals", "thumb": "https://i.ytimg.com/vi/gxyUnr-SgvI/mqdefault.jpg", "dur": "26:48"}, {"id": "nl0evLl1fpg", "title": "Travis Scott — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/nl0evLl1fpg/mqdefault.jpg", "dur": "44:51"}, {"id": "SXOGNmsqa18", "title": "Radiohead — Orchestral Instrumental Atmosphere | Symphonic Sound | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/SXOGNmsqa18/mqdefault.jpg", "dur": "40:47"}, {"id": "e-WMu0H2P1M", "title": "Deep Purple — Orchestral Instrumental Experience | Symphonic Rock | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/e-WMu0H2P1M/mqdefault.jpg", "dur": "39:11"}, {"id": "4zsxhdqOqk8", "title": "Bon Jovi — Orchestral Instrumental Collection | Symphonic Sound | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/4zsxhdqOqk8/mqdefault.jpg", "dur": "43:40"}, {"id": "_AYZ1tR6_2Q", "title": "Prince — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/_AYZ1tR6_2Q/mqdefault.jpg", "dur": "51:25"}, {"id": "nIDcqP0OGeQ", "title": "AC/DC — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/nIDcqP0OGeQ/mqdefault.jpg", "dur": "36:52"}, {"id": "0w7Oa14RNck", "title": "Kanye West — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/0w7Oa14RNck/mqdefault.jpg", "dur": "44:04"}, {"id": "uIqEFfkQDeE", "title": "Marilyn Manson — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/uIqEFfkQDeE/mqdefault.jpg", "dur": "44:46"}, {"id": "Hnmrwyb5FrM", "title": "Fleetwood Mac — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/Hnmrwyb5FrM/mqdefault.jpg", "dur": "48:57"}, {"id": "fOBYalMzxiA", "title": "Stromae — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/fOBYalMzxiA/mqdefault.jpg", "dur": "39:04"}, {"id": "OqjX2v_JBRA", "title": "Linkin Park — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/OqjX2v_JBRA/mqdefault.jpg", "dur": "49:14"}, {"id": "bM-q0AlG014", "title": "Dire Straits — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/bM-q0AlG014/mqdefault.jpg", "dur": "38:25"}, {"id": "_E7QxOfn0ss", "title": "ABBA — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/_E7QxOfn0ss/mqdefault.jpg", "dur": "42:58"}, {"id": "eBKkTsoXJrs", "title": "Evanescence — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/eBKkTsoXJrs/mqdefault.jpg", "dur": "44:05"}, {"id": "l5TWhFpiCtc", "title": "The Rolling Stones — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/l5TWhFpiCtc/mqdefault.jpg", "dur": "44:35"}, {"id": "LC5fIpq46OU", "title": "Coldplay — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/LC5fIpq46OU/mqdefault.jpg", "dur": "39:07"}, {"id": "Y0umYlXL7uY", "title": "Dr. Dre — Symphonic Orchestra Instrumentals | No Vocals | Hip-Hop Classics (1 Hour)", "thumb": "https://i.ytimg.com/vi/Y0umYlXL7uY/mqdefault.jpg", "dur": "42:49"}, {"id": "1VP728XvGH4", "title": "Aerosmith Instrumental | Symphonic Orchestral Rock Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/1VP728XvGH4/mqdefault.jpg", "dur": "44:36"}, {"id": "Ru8ZXJzRWaA", "title": "Iron Maiden Instrumental | Symphonic Orchestral Metal Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/Ru8ZXJzRWaA/mqdefault.jpg", "dur": "38:54"}, {"id": "DSHy6wfH3NI", "title": "Nirvana Instrumental | Symphonic Orchestral Rock Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/DSHy6wfH3NI/mqdefault.jpg", "dur": "38:27"}, {"id": "FpZ7xdm7bcs", "title": "Led Zeppelin Instrumental | Symphonic Orchestral Rock Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/FpZ7xdm7bcs/mqdefault.jpg", "dur": "32:24"}, {"id": "kuHGa6x9rew", "title": "Michael Jackson Instrumental | Symphonic Orchestral Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/kuHGa6x9rew/mqdefault.jpg", "dur": "20:37"}, {"id": "Yon596b27Xg", "title": "KISS Instrumental | Symphonic Orchestral Rock Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/Yon596b27Xg/mqdefault.jpg", "dur": "36:19"}, {"id": "pUB0d5EUBvo", "title": "Luciano Pavarotti Instrumental | Symphonic Orchestral Music | Epic Orchestra (No Vocals)", "thumb": "https://i.ytimg.com/vi/pUB0d5EUBvo/mqdefault.jpg", "dur": "32:04"}, {"id": "bRNskwMmsh0", "title": "Metallica Greatest Hits | Symphonic Orchestra Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/bRNskwMmsh0/mqdefault.jpg", "dur": "30:19"}, {"id": "Vhtgby7Pacw", "title": "Elvis Presley Instrumental | Symphonic Orchestral Covers | Epic Orchestra Music (No Vocals)", "thumb": "https://i.ytimg.com/vi/Vhtgby7Pacw/mqdefault.jpg", "dur": "40:16"}, {"id": "nOiKLDy2pUg", "title": "Pink Floyd — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/nOiKLDy2pUg/mqdefault.jpg", "dur": "35:20"}, {"id": "A41xbNqVo0E", "title": "Eminem — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits", "thumb": "https://i.ytimg.com/vi/A41xbNqVo0E/mqdefault.jpg", "dur": "51:08"}, {"id": "T7GoTAZwYk8", "title": "Queen — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/T7GoTAZwYk8/mqdefault.jpg", "dur": "1:07:47"}, {"id": "BCkLbzf5bhQ", "title": "Madonna — Symphonic Orchestra Instrumentals | No Vocals | Greatest Hits (1 Hour)", "thumb": "https://i.ytimg.com/vi/BCkLbzf5bhQ/mqdefault.jpg", "dur": "42:43"}, {"id": "4cliZoq3dBI", "title": "Rammstein — Symphonic Orchestra Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/4cliZoq3dBI/mqdefault.jpg", "dur": "44:42"}, {"id": "RjFQsK-gP3s", "title": "The Beatles — Symphonic Orchestra Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/RjFQsK-gP3s/mqdefault.jpg", "dur": "35:55"}, {"id": "IrHyQ3a8X08", "title": "Elton John — Symphonic Orchestra Instrumentals | No Vocals", "thumb": "https://i.ytimg.com/vi/IrHyQ3a8X08/mqdefault.jpg", "dur": "42:12"}, {"id": "B4levrgre1w", "title": "System Of A Down — Symphonic Orchestra Instrumentals | Epic Cinematic Covers", "thumb": "https://i.ytimg.com/vi/B4levrgre1w/mqdefault.jpg", "dur": "27:12"}, {"id": "agcsE9XkNi0", "title": "Orchestral Instrumentals | No Vocals — Depeche Mode", "thumb": "https://i.ytimg.com/vi/agcsE9XkNi0/mqdefault.jpg", "dur": "32:15"}, {"id": "Ki1nMeCj00M", "title": "Phil Collins — Symphonic Orchestra and Instrumentals | No Vocals (1 Hour)", "thumb": "https://i.ytimg.com/vi/Ki1nMeCj00M/mqdefault.jpg", "dur": "39:36"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

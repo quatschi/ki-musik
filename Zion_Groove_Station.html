@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Zion_Groove_Station.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Zion Groove Station";
 const VIDEOS = [{"id": "28MAT2l9obc", "title": "Adele & Gregory Isaacs - Velvet Rain 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/28MAT2l9obc/mqdefault.jpg", "dur": "1:57:09"}, {"id": "tJ7iZ3J2sgQ", "title": "Adele & Gregory Isaacs - Golden Shore 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/tJ7iZ3J2sgQ/mqdefault.jpg", "dur": "1:46:46"}, {"id": "bmk4EYeWlDc", "title": "Adele & Gregory Isaacs - Dangerous Rumours 🔊 | Neo-Soul Reggae Sessions 2026", "thumb": "https://i.ytimg.com/vi/bmk4EYeWlDc/mqdefault.jpg", "dur": "1:38:11"}, {"id": "aVwOixvzQd0", "title": "Adele & Gregory Isaacs - The Midnight Remedy 🔊 | Neo-Soul Reggae Sessions 2026", "thumb": "https://i.ytimg.com/vi/aVwOixvzQd0/mqdefault.jpg", "dur": "1:45:51"}, {"id": "V3oXRvm6Q2U", "title": "Adele & Gregory Isaacs - The Midnight Confession 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/V3oXRvm6Q2U/mqdefault.jpg", "dur": "1:36:06"}, {"id": "LolajGVy2yE", "title": "Adele & Gregory Isaacs - The Golden Awakening 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/LolajGVy2yE/mqdefault.jpg", "dur": "1:40:43"}, {"id": "O6a_GAqLbQo", "title": "Adele & Gregory Isaacs - The Weightless Hour 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/O6a_GAqLbQo/mqdefault.jpg", "dur": "1:46:50"}, {"id": "aqEvh2XhH4U", "title": "Adele & Gregory Isaacs - The Unspoken Truth 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/aqEvh2XhH4U/mqdefault.jpg", "dur": "1:38:58"}, {"id": "kI0xAsTCfMI", "title": "Adele & Gregory Isaacs - Diamond Horizon 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/kI0xAsTCfMI/mqdefault.jpg", "dur": "1:46:12"}, {"id": "KzmFgDR71z8", "title": "Adele & Gregory Isaacs - Stellar Reflection 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/KzmFgDR71z8/mqdefault.jpg", "dur": "1:32:53"}, {"id": "hfYSIFlm5yk", "title": "Adele & Gregory Isaacs - Nocturnal Pulse 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/hfYSIFlm5yk/mqdefault.jpg", "dur": "1:44:36"}, {"id": "DBiHD9uxzHo", "title": "Adele & Gregory Isaacs - Crystalline Echo 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/DBiHD9uxzHo/mqdefault.jpg", "dur": "1:43:59"}, {"id": "zxtY-4WbHWk", "title": "Adele & Gregory Isaacs - Midnight Silhouette 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/zxtY-4WbHWk/mqdefault.jpg", "dur": "1:33:34"}, {"id": "Q16mlu3jAqA", "title": "Adele & Gregory Isaacs - Celestial Swing 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/Q16mlu3jAqA/mqdefault.jpg", "dur": "1:37:47"}, {"id": "_qQpfNyp2rs", "title": "Adele & Gregory Isaacs - Amber Midnight 🔊 | Jazz-Reggae Midnight Sessions", "thumb": "https://i.ytimg.com/vi/_qQpfNyp2rs/mqdefault.jpg", "dur": "1:51:44"}, {"id": "wEc4H0KKcIU", "title": "Adele & Gregory Isaacs - Satin Rain 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/wEc4H0KKcIU/mqdefault.jpg", "dur": "1:39:53"}, {"id": "C-1gPc4TWjs", "title": "Adele & Gregory Isaacs - Indigo Midnight 🔊 | Jazz-Reggae Midnight Sessions", "thumb": "https://i.ytimg.com/vi/C-1gPc4TWjs/mqdefault.jpg", "dur": "1:39:50"}, {"id": "7XuO7M3klQo", "title": "Adele & Gregory Isaacs - Velvet Midnight 🔊 | Jazz-Reggae Midnight Sessions 2026", "thumb": "https://i.ytimg.com/vi/7XuO7M3klQo/mqdefault.jpg", "dur": "1:44:52"}, {"id": "E1reMSuyIv0", "title": "Adele & Gregory Isaacs - Golden Midnight  🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/E1reMSuyIv0/mqdefault.jpg", "dur": "1:44:40"}, {"id": "DGwupCTUgEE", "title": "Adele & Gregory Isaacs - Steady Horizon 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/DGwupCTUgEE/mqdefault.jpg", "dur": "1:49:47"}, {"id": "SCotR06MBN8", "title": "Adele & Gregory Isaacs - Moonlight Shadows 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/SCotR06MBN8/mqdefault.jpg", "dur": "1:55:07"}, {"id": "hrhdZaTz90M", "title": "Adele & Gregory Isaacs - Whisper of the Tide 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/hrhdZaTz90M/mqdefault.jpg", "dur": "1:49:51"}, {"id": "r6OZdWSAG68", "title": "Adele & Gregory Isaacs - Still Waters 🔊 | Acoustic Reggae Blues Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/r6OZdWSAG68/mqdefault.jpg", "dur": "1:38:55"}, {"id": "OwQs3up2P4o", "title": "Adele & Gregory Isaacs - Timeless Shore  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/OwQs3up2P4o/mqdefault.jpg", "dur": "1:51:33"}, {"id": "vnNwRWYs4co", "title": "Adele & Gregory Isaacs - Silent Prayer 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/vnNwRWYs4co/mqdefault.jpg", "dur": "1:47:58"}, {"id": "3NCRy9N8Sh0", "title": "Adele & Gregory Isaacs - Everlasting Bond  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/3NCRy9N8Sh0/mqdefault.jpg", "dur": "1:45:10"}, {"id": "7oLtEOi3ZWQ", "title": "Adele & Gregory Isaacs - Island Mirage  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/7oLtEOi3ZWQ/mqdefault.jpg", "dur": "1:35:08"}, {"id": "9RNBp3mS3lk", "title": "Adele & Gregory Isaacs - Echoes of Healing  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/9RNBp3mS3lk/mqdefault.jpg", "dur": "1:42:53"}, {"id": "eJfDoeFzV2E", "title": "Adele & Gregory Isaacs - Golden Hour Groove 🔊 | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/eJfDoeFzV2E/mqdefault.jpg", "dur": "1:40:35"}, {"id": "ELSAdOH1oxk", "title": "Adele & Gregory Isaacs - Midnight Rain  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/ELSAdOH1oxk/mqdefault.jpg", "dur": "1:35:27"}, {"id": "9CURzyiMC08", "title": "Adele & Gregory Isaacs - Zion Shelter (Version 2)  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/9CURzyiMC08/mqdefault.jpg", "dur": "1:36:47"}, {"id": "l1soosoKjLY", "title": "Adele & Gregory Isaacs - Velvet Horizon  🔊  |  Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/l1soosoKjLY/mqdefault.jpg", "dur": "1:43:37"}, {"id": "Z2SSTOpb7A4", "title": "Adele & Gregory Isaacs - Rolling in the Deep Roots  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/Z2SSTOpb7A4/mqdefault.jpg", "dur": "1:30:17"}, {"id": "GBxYujcsRbA", "title": "Adele & Gregory Isaacs - Morning Mercy  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/GBxYujcsRbA/mqdefault.jpg", "dur": "1:31:57"}, {"id": "wxEnKWiAdew", "title": "Adele & Gregory Isaacs - Zion Shelter  🔊  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/wxEnKWiAdew/mqdefault.jpg", "dur": "1:46:12"}, {"id": "uSXfwve__ag", "title": "Adele & Gregory Isaacs - Tide of Regret Mix | Deep Reggae Blues & Soulful Grooves", "thumb": "https://i.ytimg.com/vi/uSXfwve__ag/mqdefault.jpg", "dur": "1:32:13"}, {"id": "vF4hmQxBgDc", "title": "Adele & Gregory Isaacs - Cold Remedy  | Reggae Blues Pop Timeless Grooves 2026", "thumb": "https://i.ytimg.com/vi/vF4hmQxBgDc/mqdefault.jpg", "dur": "1:49:32"}, {"id": "11f-86vCPo0", "title": "Adele & Gregory Isaacs - Night Nurse Soul Mix | Smooth Reggae Blues & Pop Grooves 2026", "thumb": "https://i.ytimg.com/vi/11f-86vCPo0/mqdefault.jpg", "dur": "1:20:30"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

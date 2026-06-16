@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=MUSIC_IS_MY_THERAPY.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "MUSIC IS MY THERAPY";
 const VIDEOS = [{"id": "9JmDvEskJ5M", "title": "Soft Saxophone Jazz Therapy for Calm Mind | Chillout Ambient Lounge Music", "thumb": "https://i.ytimg.com/vi/9JmDvEskJ5M/mqdefault.jpg", "dur": "1:06:51"}, {"id": "Vnz4cQu_yXY", "title": "ETERNAL SERENITY | Relaxing Saxophone Jazz | Golden Hour Chillout", "thumb": "https://i.ytimg.com/vi/Vnz4cQu_yXY/mqdefault.jpg", "dur": "1:00:05"}, {"id": "ptRJLV1-Rds", "title": "SMOOTH LOUNGE JAZZ | Golden Hour Relaxing Saxophone", "thumb": "https://i.ytimg.com/vi/ptRJLV1-Rds/mqdefault.jpg", "dur": "59:04"}, {"id": "MFWytp2xPr8", "title": "Relaxing Saxophone Jazz Therapy | 10-Minute Reset", "thumb": "https://i.ytimg.com/vi/MFWytp2xPr8/mqdefault.jpg", "dur": "10:01"}, {"id": "LDwyHcAHx1s", "title": "DEEP BREATHING RESET | Relaxing Saxophone Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/LDwyHcAHx1s/mqdefault.jpg", "dur": "15:56"}, {"id": "duKfofIJjI0", "title": "Smooth Summer Mix Lounge | Relaxing Saxophone & Sunset Vibes For Evening Chillout", "thumb": "https://i.ytimg.com/vi/duKfofIJjI0/mqdefault.jpg", "dur": "1:05:48"}, {"id": "dIjDZyHFiN0", "title": "CHILL SAXOPHONE BACKGROUND MUSIC | Summer Deep Relaxation Vibes", "thumb": "https://i.ytimg.com/vi/dIjDZyHFiN0/mqdefault.jpg", "dur": "1:01:44"}, {"id": "cojKL0jfFCE", "title": "Smooth Sax Journey | Lounge Jazz for Evening Relaxation", "thumb": "https://i.ytimg.com/vi/cojKL0jfFCE/mqdefault.jpg", "dur": "1:00:11"}, {"id": "AwRWGr22GzM", "title": "GOLDEN REVERIE | Smooth Saxophone Therapy", "thumb": "https://i.ytimg.com/vi/AwRWGr22GzM/mqdefault.jpg", "dur": "57:48"}, {"id": "63_5jAYL9HE", "title": "Relaxing Saxophone Therapy | Deep Calm Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/63_5jAYL9HE/mqdefault.jpg", "dur": "1:00:33"}, {"id": "3vYVDPpZwxw", "title": "BALEARIC CHILLOUT LOUNGE | Golden Hour Deep Relax", "thumb": "https://i.ytimg.com/vi/3vYVDPpZwxw/mqdefault.jpg", "dur": "51:10"}, {"id": "qrqhZemrpI0", "title": "GENTLE SAX FLOW | Deep Relax Jazz Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/qrqhZemrpI0/mqdefault.jpg", "dur": "1:02:44"}, {"id": "3pN9HXV9tPA", "title": "Deep Relax Jazz Session | Relaxing Smooth Sax Music", "thumb": "https://i.ytimg.com/vi/3pN9HXV9tPA/mqdefault.jpg", "dur": "1:03:29"}, {"id": "N98oPxV95B8", "title": "Healing Saxophone Melodies for Restoring Inner Harmony and Peace of Mind", "thumb": "https://i.ytimg.com/vi/N98oPxV95B8/mqdefault.jpg", "dur": "15:16"}, {"id": "ic82O3DCqEE", "title": "Relaxing Saxophone Jazz for Mental Healing and Soothing the Soul | Stress Relief Background Music", "thumb": "https://i.ytimg.com/vi/ic82O3DCqEE/mqdefault.jpg", "dur": "1:06:20"}, {"id": "KfsQwruFnXo", "title": "Deep Relax Jazz Therapy | Healing Saxophone Music for Calm Mind", "thumb": "https://i.ytimg.com/vi/KfsQwruFnXo/mqdefault.jpg", "dur": "1:09:10"}, {"id": "vrf_oFs1v4s", "title": "Soulful Saxophone Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/vrf_oFs1v4s/mqdefault.jpg", "dur": "54:15"}, {"id": "28N9BFUM4uo", "title": "Smooth Jazz Chill Out Lounge | GOLDEN HOUR SAX Vol 2 | MUSIC IS MY THERAPY", "thumb": "https://i.ytimg.com/vi/28N9BFUM4uo/mqdefault.jpg", "dur": "1:27:36"}, {"id": "f_i-Xh6SIO4", "title": "Smooth Lounge Jazz & Relaxing Saxophone | Positive Vibes", "thumb": "https://i.ytimg.com/vi/f_i-Xh6SIO4/mqdefault.jpg", "dur": "49:53"}, {"id": "4Q2GTlcCtQU", "title": "CHILL JAZZ SESSION VOL.2 | Relaxing Sax Vibes", "thumb": "https://i.ytimg.com/vi/4Q2GTlcCtQU/mqdefault.jpg", "dur": "1:00:36"}, {"id": "_Kt-65L4K9k", "title": "Deep Relax Smooth Lounge Jazz | 20-Minute Reset", "thumb": "https://i.ytimg.com/vi/_Kt-65L4K9k/mqdefault.jpg", "dur": "21:45"}, {"id": "6FT8obUaGxU", "title": "Soft Healing Jazz for Stress Relief & Quiet Evening | PEACEFUL HOUR", "thumb": "https://i.ytimg.com/vi/6FT8obUaGxU/mqdefault.jpg", "dur": "1:02:15"}, {"id": "oNZahVcx7hk", "title": "SMOOTH LOUNGE JAZZ | Sunset Relaxation", "thumb": "https://i.ytimg.com/vi/oNZahVcx7hk/mqdefault.jpg", "dur": "1:00:35"}, {"id": "Gr4jHck86W4", "title": "RELAXING SAXOPHONE MELODIES FOR CALM MIND", "thumb": "https://i.ytimg.com/vi/Gr4jHck86W4/mqdefault.jpg", "dur": "1:02:54"}, {"id": "hk6KwF5OXe8", "title": "SMOOTH SAX MUSIC | RELAXING SAXOPHONE MELODIES INSTRUMENTAL", "thumb": "https://i.ytimg.com/vi/hk6KwF5OXe8/mqdefault.jpg", "dur": "1:10:03"}, {"id": "EI8OxlhTOJs", "title": "2 HOURS SOFT SAX HARMONY | Jazz Relaxing Music", "thumb": "https://i.ytimg.com/vi/EI8OxlhTOJs/mqdefault.jpg", "dur": "1:50:36"}, {"id": "MFjrZrYNnxM", "title": "PARADISE ESCAPE Vol.2 | Golden Hour Lounge | Summer Vibes", "thumb": "https://i.ytimg.com/vi/MFjrZrYNnxM/mqdefault.jpg", "dur": "1:00:48"}, {"id": "nJ4kqZQ7LG0", "title": "Summer Road Trip Vibes | Energetic Vacation Flow", "thumb": "https://i.ytimg.com/vi/nJ4kqZQ7LG0/mqdefault.jpg", "dur": "55:49"}, {"id": "cxLgDHBCBbg", "title": "DREAMY LOUNGE SAX | Relaxing Saxophone Melodies and Summer Vibes", "thumb": "https://i.ytimg.com/vi/cxLgDHBCBbg/mqdefault.jpg", "dur": "40:40"}, {"id": "rNqSOufNaoE", "title": "SUMMER CHILL | Paradise Lounge Vibes", "thumb": "https://i.ytimg.com/vi/rNqSOufNaoE/mqdefault.jpg", "dur": "44:00"}, {"id": "zYsQMtLlGK4", "title": "Smooth Jazz & Chill Mix | GOLDEN DREAMS Vol.2", "thumb": "https://i.ytimg.com/vi/zYsQMtLlGK4/mqdefault.jpg", "dur": "1:02:17"}, {"id": "rpMwOHOmQHo", "title": "CHILL SAX THERAPY Vol.3 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/rpMwOHOmQHo/mqdefault.jpg", "dur": "1:06:44"}, {"id": "B3PlMExomr4", "title": "SUNSET LUXURY CHILLOUT MUSIC", "thumb": "https://i.ytimg.com/vi/B3PlMExomr4/mqdefault.jpg", "dur": "45:09"}, {"id": "ifUKszkonl8", "title": "CALM YOUR MIND | Relaxing Saxophone Music", "thumb": "https://i.ytimg.com/vi/ifUKszkonl8/mqdefault.jpg", "dur": "58:10"}, {"id": "mBVfGPgaTVg", "title": "SUNSET SAX | Relaxing Saxophone Melodies for Evening Relax", "thumb": "https://i.ytimg.com/vi/mBVfGPgaTVg/mqdefault.jpg", "dur": "1:06:04"}, {"id": "21QNw2fxzc8", "title": "Relaxing Background Music for a Calm Evening", "thumb": "https://i.ytimg.com/vi/21QNw2fxzc8/mqdefault.jpg", "dur": "1:59:58"}, {"id": "OOzfsQssD2E", "title": "CHILL JAZZ | Relaxing Sax for Stress Relief", "thumb": "https://i.ytimg.com/vi/OOzfsQssD2E/mqdefault.jpg", "dur": "1:19:41"}, {"id": "WKZ-CqqFACI", "title": "CHILL JAZZ for Evening Relaxation", "thumb": "https://i.ytimg.com/vi/WKZ-CqqFACI/mqdefault.jpg", "dur": "1:00:27"}, {"id": "qdE9N5O2-Jo", "title": "SUNSET SERENITY | Relaxing Jazz Ambience | Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/qdE9N5O2-Jo/mqdefault.jpg", "dur": "1:08:35"}, {"id": "R8AT1Btd4LU", "title": "SMOOTH LOUNGE JAZZ | Relaxing Sax Flow for Evening Chill", "thumb": "https://i.ytimg.com/vi/R8AT1Btd4LU/mqdefault.jpg", "dur": "1:01:57"}, {"id": "bAdT-nS3Yk8", "title": "CHILL JAZZ SESSION | Relaxing Saxophone Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/bAdT-nS3Yk8/mqdefault.jpg", "dur": "1:03:51"}, {"id": "q8uS5o3pl5g", "title": "GOLDEN HORIZON | Smooth Lounge Jazz for Sunset & Evening Chill", "thumb": "https://i.ytimg.com/vi/q8uS5o3pl5g/mqdefault.jpg", "dur": "54:55"}, {"id": "GfS457OqQZI", "title": "CHILL & RELAX", "thumb": "https://i.ytimg.com/vi/GfS457OqQZI/mqdefault.jpg", "dur": "43:49"}, {"id": "Q9vehxpCsDI", "title": "SMOOTH SAX CHILL | LUXURY EVENING GLOW | Sunset Relaxation", "thumb": "https://i.ytimg.com/vi/Q9vehxpCsDI/mqdefault.jpg", "dur": "45:08"}, {"id": "p1Y6NbXX974", "title": "RELAX NOW | CHILL VIBES", "thumb": "https://i.ytimg.com/vi/p1Y6NbXX974/mqdefault.jpg", "dur": "54:36"}, {"id": "UfPaSgDkFpw", "title": "SMOOTH JAZZ MELODIES | Fall Season Relax & Warm Autumn Vibes for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/UfPaSgDkFpw/mqdefault.jpg", "dur": "47:27"}, {"id": "I1m-DJyxKbw", "title": "EVENING CHILLOUT | SUNSET LOUNGE FLOW", "thumb": "https://i.ytimg.com/vi/I1m-DJyxKbw/mqdefault.jpg", "dur": "52:01"}, {"id": "z1Nm3fu3raA", "title": "CHILL SAX THERAPY Vol.2 | Smooth Relaxing Saxophone Melodies for Stress Relief", "thumb": "https://i.ytimg.com/vi/z1Nm3fu3raA/mqdefault.jpg", "dur": "1:53:21"}, {"id": "TOl-pXlyaEI", "title": "PARADISE ESCAPE | Summer Deep Relaxation Vibes", "thumb": "https://i.ytimg.com/vi/TOl-pXlyaEI/mqdefault.jpg", "dur": "1:00:14"}, {"id": "P37xKPiK4YA", "title": "NIGHT LOUNGE JAZZ | Soft Saxophone & Gentle Piano | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/P37xKPiK4YA/mqdefault.jpg", "dur": "53:48"}, {"id": "SZ0ZNSe20xM", "title": "GOLDEN HOUR SAX | SMOOTH LOUNGE JAZZ", "thumb": "https://i.ytimg.com/vi/SZ0ZNSe20xM/mqdefault.jpg", "dur": "39:53"}, {"id": "5v9lKBUS3ns", "title": "HEAVEN ON EARTH | RELAXING SAXOPHONE MELODIES FOR STRESS RELIEF", "thumb": "https://i.ytimg.com/vi/5v9lKBUS3ns/mqdefault.jpg", "dur": "1:01:34"}, {"id": "IivHh1nbzKQ", "title": "MIDNIGHT SAX | Sensual Smooth Jazz for Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/IivHh1nbzKQ/mqdefault.jpg", "dur": "1:00:01"}, {"id": "vMi4lfxC224", "title": "COZY JAZZ | Smooth Piano Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/vMi4lfxC224/mqdefault.jpg", "dur": "50:58"}, {"id": "VSvWDg5yLaw", "title": "SMOOTH JAZZ | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/VSvWDg5yLaw/mqdefault.jpg", "dur": "1:04:21"}, {"id": "fRkxjkvFLOY", "title": "SUNSET CHILLOUT | Smooth Jazz & Chill Mix for Evening Relaxation", "thumb": "https://i.ytimg.com/vi/fRkxjkvFLOY/mqdefault.jpg", "dur": "59:03"}, {"id": "AD5dCzzB2Ks", "title": "CHILL SAX THERAPY | Relaxing Saxophone Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/AD5dCzzB2Ks/mqdefault.jpg", "dur": "2:00:00"}, {"id": "Q7okXHQIPJE", "title": "GOLDEN DREAMS | 1 Hour Smooth Jazz & Chill Mix", "thumb": "https://i.ytimg.com/vi/Q7okXHQIPJE/mqdefault.jpg", "dur": "1:04:55"}, {"id": "2ZensWBXaik", "title": "SMOOTH SAX Vol.2 | SUNSET CHILLOUT", "thumb": "https://i.ytimg.com/vi/2ZensWBXaik/mqdefault.jpg", "dur": "52:02"}, {"id": "V1a6a3knXVo", "title": "SMOOTH LOUNGE JAZZ Vol.3 | SUNSET CHILLOUT | 1 Hour of Relaxing Saxophone Melodies", "thumb": "https://i.ytimg.com/vi/V1a6a3knXVo/mqdefault.jpg", "dur": "1:33:53"}, {"id": "tch_V55R5qk", "title": "SMOOTH JAZZ & SOULFUL R&B | Mellow Background Music", "thumb": "https://i.ytimg.com/vi/tch_V55R5qk/mqdefault.jpg", "dur": "1:05:20"}, {"id": "lbJuC5lckNc", "title": "SUNSET CHILL | SMOOTH LOUNGE JAZZ | WEEKEND SAX", "thumb": "https://i.ytimg.com/vi/lbJuC5lckNc/mqdefault.jpg", "dur": "51:05"}, {"id": "SXOTOmkv7us", "title": "SOFT PIANO JAZZ | Cozy Evening with Soft Piano Jazz – Instrumental Jazz Music", "thumb": "https://i.ytimg.com/vi/SXOTOmkv7us/mqdefault.jpg", "dur": "46:24"}, {"id": "Asi2G8uQwZM", "title": "SMOOTH SAX | SUNSET CHILLOUT | 1 Hour of Relaxing Saxophone Melodies", "thumb": "https://i.ytimg.com/vi/Asi2G8uQwZM/mqdefault.jpg", "dur": "1:00:05"}, {"id": "JfRJrynVXdI", "title": "RELAXING JAZZ MUSIC | Soulful Background Music for Work, Study & Chill", "thumb": "https://i.ytimg.com/vi/JfRJrynVXdI/mqdefault.jpg", "dur": "1:00:02"}, {"id": "NDnLStYUAfw", "title": "SMOOTH LOUNGE JAZZ VOL.2 | Relaxing Saxophone Melodies | 1 Hour Evening Chill", "thumb": "https://i.ytimg.com/vi/NDnLStYUAfw/mqdefault.jpg", "dur": "1:01:12"}, {"id": "-EibncRvS24", "title": "CHILLOUT MUSIC ESCAPE | 5-MINUTE RESET", "thumb": "https://i.ytimg.com/vi/-EibncRvS24/mqdefault.jpg", "dur": "5:56"}, {"id": "UepL341_1u8", "title": "RELAXING SMOOTH JAZZ | Mellow Vibes", "thumb": "https://i.ytimg.com/vi/UepL341_1u8/mqdefault.jpg", "dur": "37:23"}, {"id": "zhcDMf3GG68", "title": "SMOOTH LOUNGE JAZZ  | Sunset Luxury Chillout | Relaxing Saxophone Melodies | 1 Hour Evening Chill", "thumb": "https://i.ytimg.com/vi/zhcDMf3GG68/mqdefault.jpg", "dur": "1:05:06"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinyl Seduction</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCSpLZ3MDSV1e9EJia4jB1jA -->
+<!-- channel-url: https://www.youtube.com/@vinylseduction -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Vinyl_Seduction.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/EsrtPOEhVmXZn-_uKBmZMcDAOmxscIpsPOkT0MJcwjb56avB-4lC5NRu5NWHUp1vIB0VK49usw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Vinyl Seduction</div>
+      <div class="channel-count">57 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Vinyl Seduction";
+const VIDEOS = [{"id": "IbNxXzRux4A", "title": "Unspoken Bond // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/IbNxXzRux4A/mqdefault.jpg", "dur": "3:02:29"}, {"id": "VJySgds-8ks", "title": "Sweet Game [Full Album] // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/VJySgds-8ks/mqdefault.jpg", "dur": "3:09:06"}, {"id": "5oeitRNr_XA", "title": "Voltaic Slowdance (Full Album) // Sensual Trip-Hop Jazz Mix 💋", "thumb": "https://i.ytimg.com/vi/5oeitRNr_XA/mqdefault.jpg", "dur": "3:03:56"}, {"id": "WeCAwCAswkI", "title": "Dark Trip-Hop Jazz // Mute Design // Analog Vibes 🍸", "thumb": "https://i.ytimg.com/vi/WeCAwCAswkI/mqdefault.jpg", "dur": "3:25:25"}, {"id": "F17Fv1I7GXQ", "title": "Dark Trip-Hop Jazz Mix // Cinematic & Analog // Nightfall's Embrace", "thumb": "https://i.ytimg.com/vi/F17Fv1I7GXQ/mqdefault.jpg", "dur": "2:52:35"}, {"id": "10AeQgaGEQY", "title": "Cinematic Trip-Hop Jazz Mix // Unsteady Glow // 3 hour MIX", "thumb": "https://i.ytimg.com/vi/10AeQgaGEQY/mqdefault.jpg", "dur": "3:11:56"}, {"id": "Gaqo7vFZgvE", "title": "Sensual Trip-Hop Jazz Mix // Back In Time", "thumb": "https://i.ytimg.com/vi/Gaqo7vFZgvE/mqdefault.jpg", "dur": "2:56:41"}, {"id": "D55iqobAK2k", "title": "Dark Trip-Hop Jazz // 1.5 hour MIX // Hollow Echo", "thumb": "https://i.ytimg.com/vi/D55iqobAK2k/mqdefault.jpg", "dur": "1:30:24"}, {"id": "gX6eVYX4oPg", "title": "Fading into You // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/gX6eVYX4oPg/mqdefault.jpg", "dur": "2:58:13"}, {"id": "Xdmh__MzYzg", "title": "Thread Undone // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/Xdmh__MzYzg/mqdefault.jpg", "dur": "2:59:55"}, {"id": "jNQYbq-mGHY", "title": "Gain Control // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/jNQYbq-mGHY/mqdefault.jpg", "dur": "3:08:32"}, {"id": "h-WsE37vAps", "title": "Dancing in the Dark // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/h-WsE37vAps/mqdefault.jpg", "dur": "3:00:18"}, {"id": "dn7aD59lKkU", "title": "Shadowed Confessions // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/dn7aD59lKkU/mqdefault.jpg", "dur": "2:56:47"}, {"id": "gbROfr9lreM", "title": "Shadows Dance // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/gbROfr9lreM/mqdefault.jpg", "dur": "3:01:14"}, {"id": "84ORAd_7MhA", "title": "Hollow Vessel // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/84ORAd_7MhA/mqdefault.jpg", "dur": "2:59:00"}, {"id": "TTAd4E3M3UE", "title": "Man For Breakfast // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/TTAd4E3M3UE/mqdefault.jpg", "dur": "2:59:33"}, {"id": "nrG3x6PFu30", "title": "Smooth Embrace // Sensual Trip-Hop Jazz & Dark Cinematic Downtempo (3 Hours)", "thumb": "https://i.ytimg.com/vi/nrG3x6PFu30/mqdefault.jpg", "dur": "2:59:20"}, {"id": "mjE361xxXqE", "title": "Nocturnal Grip // Dark Trip-Hop Jazz & Sensual Noir Cinematic (2.5+ Hours)", "thumb": "https://i.ytimg.com/vi/mjE361xxXqE/mqdefault.jpg", "dur": "2:53:16"}, {"id": "ZTJsBWM3rRw", "title": "Concrete Throb // Dark Trip-Hop Jazz & Sensual Cinematic Downtempo (2.5+ Hours)", "thumb": "https://i.ytimg.com/vi/ZTJsBWM3rRw/mqdefault.jpg", "dur": "2:46:47"}, {"id": "YnFlNvY236Q", "title": "Twilight Echo // Sensual Trip-Hop Jazz & Dark Noir Aesthetics (2.5+ Hours)", "thumb": "https://i.ytimg.com/vi/YnFlNvY236Q/mqdefault.jpg", "dur": "2:36:03"}, {"id": "UBU8KxQ-KPE", "title": "Solar Flare // Sensual Trip-Hop Jazz Mix // Dark Cinematic Downtempo", "thumb": "https://i.ytimg.com/vi/UBU8KxQ-KPE/mqdefault.jpg", "dur": "2:42:05"}, {"id": "Y_i5ZhDdn1A", "title": "Love // Dark Cinematic Trip-Hop Jazz Mix // Sensual Late Night Vibes", "thumb": "https://i.ytimg.com/vi/Y_i5ZhDdn1A/mqdefault.jpg", "dur": "2:36:08"}, {"id": "Mhqj9JE9g8w", "title": "Broken Heart // Sensual Trip-Hop Jazz Mix // Dark Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/Mhqj9JE9g8w/mqdefault.jpg", "dur": "2:47:44"}, {"id": "vSNkvFJoV0s", "title": "Mirrors Lie // Dark Noir & Sensual Trip-Hop Jazz Mix // Cinematic Downtempo", "thumb": "https://i.ytimg.com/vi/vSNkvFJoV0s/mqdefault.jpg", "dur": "2:47:57"}, {"id": "DiBeGsFCg2w", "title": "Sensual Trip-Hop Jazz Mix // Dark Cinematic & Analog Vibes // Colors Bleed", "thumb": "https://i.ytimg.com/vi/DiBeGsFCg2w/mqdefault.jpg", "dur": "2:54:01"}, {"id": "QZUKEzcBvQY", "title": "Something Near // Sensual Trip-Hop Jazz Mix // Dark Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/QZUKEzcBvQY/mqdefault.jpg", "dur": "2:49:44"}, {"id": "dyNFQiuc22s", "title": "Sensual Trip-Hop Jazz Mix 💋 Dark Cinematic & Analog Vibes //Silk Currents", "thumb": "https://i.ytimg.com/vi/dyNFQiuc22s/mqdefault.jpg", "dur": "2:49:01"}, {"id": "IprUIPAvZAY", "title": "Sensual Trip-Hop Jazz Mix 💋 Dark Cinematic & Analog // Intoxicated", "thumb": "https://i.ytimg.com/vi/IprUIPAvZAY/mqdefault.jpg", "dur": "2:44:28"}, {"id": "tx9Df_WnXiM", "title": "Dark Cinematic & Noir Vibes // Sensual Trip-Hop Jazz Mix 💋 // Amber Clarity", "thumb": "https://i.ytimg.com/vi/tx9Df_WnXiM/mqdefault.jpg", "dur": "2:51:17"}, {"id": "FDKty_M4xWU", "title": "Sensual Trip-Hop Jazz Mix 💋 Dark Cinematic & Noir Vibes // Tainted Kiss", "thumb": "https://i.ytimg.com/vi/FDKty_M4xWU/mqdefault.jpg", "dur": "2:51:01"}, {"id": "wpvcWUH9puA", "title": "Sensual Trip-Hop Jazz & Dark Noir Vibes (3 Hours) // Crazy Queen", "thumb": "https://i.ytimg.com/vi/wpvcWUH9puA/mqdefault.jpg", "dur": "2:52:39"}, {"id": "imKowIsfbwY", "title": "Sensual Trip-Hop Jazz & Dark Cinematic Mix (2.5 Hours) // Midnight Riot", "thumb": "https://i.ytimg.com/vi/imKowIsfbwY/mqdefault.jpg", "dur": "2:40:23"}, {"id": "8aN4ZhXeQFI", "title": "Late Night Noir Jazz & Dark Trip-Hop Mix (3 Hours) // Tailored Reason", "thumb": "https://i.ytimg.com/vi/8aN4ZhXeQFI/mqdefault.jpg", "dur": "2:57:26"}, {"id": "_dQFpq6MhSs", "title": "Sensual Trip-Hop Jazz Mix // Dark Cinematic & Analog Vibes //Ghostly Gaze 🍷", "thumb": "https://i.ytimg.com/vi/_dQFpq6MhSs/mqdefault.jpg", "dur": "2:32:21"}, {"id": "XFJX7Ocb0Tw", "title": "Veiled Anticipation 💋 Sensual Trip-Hop Jazz Mix & Dark Noir Vibes", "thumb": "https://i.ytimg.com/vi/XFJX7Ocb0Tw/mqdefault.jpg", "dur": "2:36:29"}, {"id": "y_WRfboiSXM", "title": "Gilded Desires 💋 Sensual Trip-Hop Jazz Mix & Dark Cinematic Noir Vibes", "thumb": "https://i.ytimg.com/vi/y_WRfboiSXM/mqdefault.jpg", "dur": "2:42:04"}, {"id": "cFXs5jJ-gAI", "title": "Blueprint // Sensual Trip-Hop Jazz Mix 🍷 Dark, Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/cFXs5jJ-gAI/mqdefault.jpg", "dur": "2:44:22"}, {"id": "tY-jNUbCRlk", "title": "Final Encounter 🍷 Dark Noir Trip-Hop Jazz Mix // Sensual Cinematic Downtempo", "thumb": "https://i.ytimg.com/vi/tY-jNUbCRlk/mqdefault.jpg", "dur": "2:22:07"}, {"id": "gwUrtWj-K88", "title": "SECRETS 💋 Late Night Trip-Hop Jazz Mix // Dark Cinematic & Sensual Noir Vibes", "thumb": "https://i.ytimg.com/vi/gwUrtWj-K88/mqdefault.jpg", "dur": "2:29:14"}, {"id": "ADUgxxBzGws", "title": "Bitter Symphony 🍷 Dark Noir Trip-Hop Jazz Mix // Sensual Cinematic Downtempo", "thumb": "https://i.ytimg.com/vi/ADUgxxBzGws/mqdefault.jpg", "dur": "2:22:52"}, {"id": "TY7arVQgpQ0", "title": "Sensual Trip-Hop Jazz Mix 💋 Pink Dreams // Dark Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/TY7arVQgpQ0/mqdefault.jpg", "dur": "2:30:11"}, {"id": "Sgh24KMAhsc", "title": "Sensual Trip-Hop Jazz Mix 🌙 Mystic Soundscapes // Dark Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/Sgh24KMAhsc/mqdefault.jpg", "dur": "2:36:57"}, {"id": "62nFsHg7wgw", "title": "Late Night Trip-Hop Jazz 💋 Dark Cinematic & Vintage", "thumb": "https://i.ytimg.com/vi/62nFsHg7wgw/mqdefault.jpg", "dur": "2:46:29"}, {"id": "1dp9vPBbKck", "title": "Deep & Sensual // 2 Hours of Relaxing Trip-Hop Jazz (Late Night Cinematic Mix)", "thumb": "https://i.ytimg.com/vi/1dp9vPBbKck/mqdefault.jpg", "dur": "2:08:23"}, {"id": "wncNH86pJ44", "title": "Sensual Trip-Hop Jazz Mix // Dark Cinematic & Analog // Dust And Dynamite", "thumb": "https://i.ytimg.com/vi/wncNH86pJ44/mqdefault.jpg", "dur": "2:25:56"}, {"id": "wIS1nWK6SuE", "title": "Psychedelic Trip-Hop Jazz // Seductive Slow-burning Beats // Smoky Vocals", "thumb": "https://i.ytimg.com/vi/wIS1nWK6SuE/mqdefault.jpg", "dur": "2:47:58"}, {"id": "cwHEP-7zsGI", "title": "Late Night Noir Jazz & Dark Trip-Hop Mix // Sensual Cinematic Downtempo", "thumb": "https://i.ytimg.com/vi/cwHEP-7zsGI/mqdefault.jpg", "dur": "2:49:31"}, {"id": "zl2AuJ4eA3Y", "title": "Noir Vibes & Cinematic Downtempo // Trip-Hop Jazz Mix // Swipe and Hush", "thumb": "https://i.ytimg.com/vi/zl2AuJ4eA3Y/mqdefault.jpg", "dur": "2:37:53"}, {"id": "LYbRdZvqrWI", "title": "Hypnotic Noir Vibes // Deep Trip-Hop & Seductive Jazz MIX // Wicked Whisper", "thumb": "https://i.ytimg.com/vi/LYbRdZvqrWI/mqdefault.jpg", "dur": "2:38:43"}, {"id": "XOMvD34Wb88", "title": "Psychedelic Trip-Hop Jazz Seductive Mix // Downtempo & Analog", "thumb": "https://i.ytimg.com/vi/XOMvD34Wb88/mqdefault.jpg", "dur": "2:44:30"}, {"id": "agzdYrInZFo", "title": "Psychedelic Trip-Hop Jazz // Sensual & Cinematic Mix", "thumb": "https://i.ytimg.com/vi/agzdYrInZFo/mqdefault.jpg", "dur": "2:43:19"}, {"id": "X9HOVh3A1QQ", "title": "Cinematic Downtempo // Sensual Trip-Hop Jazz Mix // VINYL SEDUCTION", "thumb": "https://i.ytimg.com/vi/X9HOVh3A1QQ/mqdefault.jpg", "dur": "2:53:23"}, {"id": "Ka7lBerHHzk", "title": "Sensual Trip-Hop Jazz Mix 🍷 Dark, Cinematic & Analog Vibes", "thumb": "https://i.ytimg.com/vi/Ka7lBerHHzk/mqdefault.jpg", "dur": "1:20:05"}, {"id": "QXU-kxTA7Fk", "title": "Dark Noir Jazz Mix [3 Hours] 💋 Deep Atmospheric Trip-Hop for Love", "thumb": "https://i.ytimg.com/vi/QXU-kxTA7Fk/mqdefault.jpg", "dur": "2:54:55"}, {"id": "5niPI4WC2h8", "title": "Sensual Trip-Hop Jazz Mix 💋 Slow Burn & Sexy Vibes (3 Hours)", "thumb": "https://i.ytimg.com/vi/5niPI4WC2h8/mqdefault.jpg", "dur": "2:56:59"}, {"id": "KKXqpQLzT14", "title": "Late Night Lounge Jazz 🍷 Dark & Sensual Trip-Hop Mix", "thumb": "https://i.ytimg.com/vi/KKXqpQLzT14/mqdefault.jpg", "dur": "2:38:50"}, {"id": "LY2L_xxp284", "title": "Cinematic Downtempo & Noir Vibes // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/LY2L_xxp284/mqdefault.jpg", "dur": "2:19:38"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Easy_Soul_Funk.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Easy Soul Funk";
 const VIDEOS = [{"id": "a5v6TmpHMgc", "title": "Soul Funk Groove | Let It Drift", "thumb": "https://i.ytimg.com/vi/a5v6TmpHMgc/mqdefault.jpg", "dur": "1:13:19"}, {"id": "FuuqLgnLDXg", "title": "Soul Funk Groove | Light on My Feet", "thumb": "https://i.ytimg.com/vi/FuuqLgnLDXg/mqdefault.jpg", "dur": "1:17:13"}, {"id": "UuXyHrxdwVo", "title": "Soul Funk Groove | Easy on the Mind", "thumb": "https://i.ytimg.com/vi/UuXyHrxdwVo/mqdefault.jpg", "dur": "1:13:31"}, {"id": "mJh8tFKarIg", "title": "Soul Funk Groove | In Your Own Time – Coffee & Quiet Days", "thumb": "https://i.ytimg.com/vi/mJh8tFKarIg/mqdefault.jpg", "dur": "1:15:29"}, {"id": "vjZ9H6i93SE", "title": "Soul Funk Groove | Good as It Gets – Right Here Feels Good", "thumb": "https://i.ytimg.com/vi/vjZ9H6i93SE/mqdefault.jpg", "dur": "1:07:25"}, {"id": "8r2Hnk1GC18", "title": "Soul Funk Groove | Walk It Off – No Rush, Just Rhythm", "thumb": "https://i.ytimg.com/vi/8r2Hnk1GC18/mqdefault.jpg", "dur": "1:53:09"}, {"id": "agcPIM1q1e4", "title": "Soul Funk Groove | No Clock Here", "thumb": "https://i.ytimg.com/vi/agcPIM1q1e4/mqdefault.jpg", "dur": "1:18:55"}, {"id": "NoEpgRw_hpI", "title": "Soul Funk Groove | Still, Moving Easy", "thumb": "https://i.ytimg.com/vi/NoEpgRw_hpI/mqdefault.jpg", "dur": "1:22:09"}, {"id": "8RiPLTca1Mw", "title": "Soul Funk Groove | Just Like That", "thumb": "https://i.ytimg.com/vi/8RiPLTca1Mw/mqdefault.jpg", "dur": "1:20:27"}, {"id": "KZ10QoYACgk", "title": "Soul Funk Groove | Just Breathe, Stay Easy", "thumb": "https://i.ytimg.com/vi/KZ10QoYACgk/mqdefault.jpg", "dur": "1:05:29"}, {"id": "0V5ilvCwWsc", "title": "Soul Funk Groove | Slow It Down", "thumb": "https://i.ytimg.com/vi/0V5ilvCwWsc/mqdefault.jpg", "dur": "1:08:13"}, {"id": "w_tpx-gt_ns", "title": "Soul Funk Groove | Keep It Smooth", "thumb": "https://i.ytimg.com/vi/w_tpx-gt_ns/mqdefault.jpg", "dur": "1:06:45"}, {"id": "xeqPW472Idw", "title": "Soul Funk Groove | Easy Does It", "thumb": "https://i.ytimg.com/vi/xeqPW472Idw/mqdefault.jpg", "dur": "1:10:15"}, {"id": "zE_n5jkJf7U", "title": "Soul Funk Groove | No Rush Needed – Take It Slow", "thumb": "https://i.ytimg.com/vi/zE_n5jkJf7U/mqdefault.jpg", "dur": "1:12:49"}, {"id": "Be0vUCaBvo4", "title": "Soul Funk Groove | You’re All Good", "thumb": "https://i.ytimg.com/vi/Be0vUCaBvo4/mqdefault.jpg", "dur": "1:48:21"}, {"id": "h0OpQyth4LU", "title": "Soul Funk Groove | Let It Ride", "thumb": "https://i.ytimg.com/vi/h0OpQyth4LU/mqdefault.jpg", "dur": "1:13:35"}, {"id": "G4WdFfL6c8o", "title": "Soul Funk Groove | Stay in the Groove", "thumb": "https://i.ytimg.com/vi/G4WdFfL6c8o/mqdefault.jpg", "dur": "1:11:18"}, {"id": "zDfL1nE1Kdk", "title": "Soul Funk Groove | Open, Yet Calm", "thumb": "https://i.ytimg.com/vi/zDfL1nE1Kdk/mqdefault.jpg", "dur": "1:04:36"}, {"id": "O_wHVOK2fAE", "title": "Soul Funk Groove | No Distance Left", "thumb": "https://i.ytimg.com/vi/O_wHVOK2fAE/mqdefault.jpg", "dur": "1:01:23"}, {"id": "1ZtrI1Ib8DI", "title": "Soul Funk Groove | Quietly Blending In", "thumb": "https://i.ytimg.com/vi/1ZtrI1Ib8DI/mqdefault.jpg", "dur": "1:00:07"}, {"id": "1tv0JLESdNs", "title": "Soul Funk Groove | Here, With It All", "thumb": "https://i.ytimg.com/vi/1tv0JLESdNs/mqdefault.jpg", "dur": "1:05:02"}, {"id": "RAexZAJh5Ig", "title": "Soul Funk Groove | No Lines Between", "thumb": "https://i.ytimg.com/vi/RAexZAJh5Ig/mqdefault.jpg", "dur": "1:03:29"}, {"id": "7mYCX5IC4_U", "title": "Soul Funk Groove | Right Distance", "thumb": "https://i.ytimg.com/vi/7mYCX5IC4_U/mqdefault.jpg", "dur": "1:03:13"}, {"id": "JtyOXgK0phQ", "title": "Soul Funk Groove | Same Air, Same Time", "thumb": "https://i.ytimg.com/vi/JtyOXgK0phQ/mqdefault.jpg", "dur": "1:08:00"}, {"id": "uv-0xQAVg2Q", "title": "Soul Funk Groove | Between Inside and Out", "thumb": "https://i.ytimg.com/vi/uv-0xQAVg2Q/mqdefault.jpg", "dur": "1:07:15"}, {"id": "Gp65MXNkPp0", "title": "Soul Funk Groove | Air Moving Through", "thumb": "https://i.ytimg.com/vi/Gp65MXNkPp0/mqdefault.jpg", "dur": "1:08:45"}, {"id": "wtNT0X2OmEo", "title": "Soul Funk Groove | Just Outside the Window", "thumb": "https://i.ytimg.com/vi/wtNT0X2OmEo/mqdefault.jpg", "dur": "1:08:57"}, {"id": "xUjIq4B-xNo", "title": "Soul Funk Groove | Same Place, New Day", "thumb": "https://i.ytimg.com/vi/xUjIq4B-xNo/mqdefault.jpg", "dur": "1:04:42"}, {"id": "Z3js7IqKGmg", "title": "Soul Funk Groove | Nothing Else Needed", "thumb": "https://i.ytimg.com/vi/Z3js7IqKGmg/mqdefault.jpg", "dur": "1:05:14"}, {"id": "0AMAy-0Fd3s", "title": "Soul Funk Groove | Somewhere Between", "thumb": "https://i.ytimg.com/vi/0AMAy-0Fd3s/mqdefault.jpg", "dur": "1:08:37"}, {"id": "hWHvjlVQ5iY", "title": "Soul Funk Groove | Same Quiet Rhythm", "thumb": "https://i.ytimg.com/vi/hWHvjlVQ5iY/mqdefault.jpg", "dur": "1:00:38"}, {"id": "hXw6Gu4Wsjk", "title": "Soul Funk Groove | A Little Space", "thumb": "https://i.ytimg.com/vi/hXw6Gu4Wsjk/mqdefault.jpg", "dur": "1:04:26"}, {"id": "ym1HR1AO67o", "title": "Soul Funk Groove | Soft Corners", "thumb": "https://i.ytimg.com/vi/ym1HR1AO67o/mqdefault.jpg", "dur": "1:06:19"}, {"id": "ko8i1yfdPm4", "title": "Soul Funk Groove | Nothing Out of Place", "thumb": "https://i.ytimg.com/vi/ko8i1yfdPm4/mqdefault.jpg", "dur": "1:07:59"}, {"id": "mpHDul-VJRE", "title": "Soul Funk Groove | Quietly Working", "thumb": "https://i.ytimg.com/vi/mpHDul-VJRE/mqdefault.jpg", "dur": "1:03:27"}, {"id": "WhBDXDevYEk", "title": "Soul Funk Groove | Just Passing Through", "thumb": "https://i.ytimg.com/vi/WhBDXDevYEk/mqdefault.jpg", "dur": "1:05:58"}, {"id": "gSGUb2XYdzM", "title": "Soul Funk Groove | No Rush Today", "thumb": "https://i.ytimg.com/vi/gSGUb2XYdzM/mqdefault.jpg", "dur": "1:08:29"}, {"id": "QIr5D61ljOM", "title": "Soul Funk Groove | Just Enough", "thumb": "https://i.ytimg.com/vi/QIr5D61ljOM/mqdefault.jpg", "dur": "1:12:45"}, {"id": "EnE6RXOhS2U", "title": "Soul Funk Groove | Take It Easy, Still", "thumb": "https://i.ytimg.com/vi/EnE6RXOhS2U/mqdefault.jpg", "dur": "1:07:43"}, {"id": "io1LuVLzIR4", "title": "Soul Funk Groove | Keep It Light", "thumb": "https://i.ytimg.com/vi/io1LuVLzIR4/mqdefault.jpg", "dur": "1:12:26"}, {"id": "cxH9Mes_iH8", "title": "Soul Funk Groove | Soften the Edges", "thumb": "https://i.ytimg.com/vi/cxH9Mes_iH8/mqdefault.jpg", "dur": "1:05:20"}, {"id": "sgluPOsM2WM", "title": "Soul Funk Groove | Still, Moving", "thumb": "https://i.ytimg.com/vi/sgluPOsM2WM/mqdefault.jpg", "dur": "1:06:17"}, {"id": "rVY6F_Q1JR4", "title": "Soul Funk Groove | Nowhere Else To Be", "thumb": "https://i.ytimg.com/vi/rVY6F_Q1JR4/mqdefault.jpg", "dur": "1:08:33"}, {"id": "v1BSWrBsf8c", "title": "Soul Funk Groove | Simple Feels Better", "thumb": "https://i.ytimg.com/vi/v1BSWrBsf8c/mqdefault.jpg", "dur": "1:15:50"}, {"id": "9KQjwAuG840", "title": "Soul Funk Groove | Quiet Power", "thumb": "https://i.ytimg.com/vi/9KQjwAuG840/mqdefault.jpg", "dur": "1:02:42"}, {"id": "k3ZIcmI4tuk", "title": "Soul Funk Groove | Nothing to Add", "thumb": "https://i.ytimg.com/vi/k3ZIcmI4tuk/mqdefault.jpg", "dur": "1:05:16"}, {"id": "DxabYq0LYNw", "title": "Soul Funk Groove | Just As You Are", "thumb": "https://i.ytimg.com/vi/DxabYq0LYNw/mqdefault.jpg", "dur": "1:02:38"}, {"id": "H8Lg_g4I8Bs", "title": "Soul Funk Groove | Time Stood Still", "thumb": "https://i.ytimg.com/vi/H8Lg_g4I8Bs/mqdefault.jpg", "dur": "1:06:14"}, {"id": "7xP09Ji9td4", "title": "Easy Soul Funk Groove | Lean Back & Let Go", "thumb": "https://i.ytimg.com/vi/7xP09Ji9td4/mqdefault.jpg", "dur": "1:15:04"}, {"id": "G80tXfCD9HI", "title": "Easy Soul Funk Groove | Dim Lights, Clear Mind", "thumb": "https://i.ytimg.com/vi/G80tXfCD9HI/mqdefault.jpg", "dur": "1:08:16"}, {"id": "fw1yVCSE6U0", "title": "Easy Soul Funk Groove | The Space Between", "thumb": "https://i.ytimg.com/vi/fw1yVCSE6U0/mqdefault.jpg", "dur": "1:04:35"}, {"id": "_rNqfHI3DUM", "title": "Easy Soul Funk Groove | Nothing to Prove", "thumb": "https://i.ytimg.com/vi/_rNqfHI3DUM/mqdefault.jpg", "dur": "1:05:36"}, {"id": "nJS2g5m5HLE", "title": "Easy Soul Funk Grooves | Where the Groove Stays", "thumb": "https://i.ytimg.com/vi/nJS2g5m5HLE/mqdefault.jpg", "dur": "1:07:25"}, {"id": "7mOjwflBomM", "title": "Easy Soul Funk Grooves | Let the Noise Pass", "thumb": "https://i.ytimg.com/vi/7mOjwflBomM/mqdefault.jpg", "dur": "1:16:11"}, {"id": "tgec9WNAtAc", "title": "Soul Funk Grooves | Where the Groove Stay", "thumb": "https://i.ytimg.com/vi/tgec9WNAtAc/mqdefault.jpg", "dur": "1:16:42"}, {"id": "ZkSAskrKsbI", "title": "Easy Soul Funk Grooves | Just Stay Here", "thumb": "https://i.ytimg.com/vi/ZkSAskrKsbI/mqdefault.jpg", "dur": "1:13:44"}, {"id": "qNmcxJh64Mo", "title": "Easy Soul Funk Grooves | Warm Vibes, Clear Mind", "thumb": "https://i.ytimg.com/vi/qNmcxJh64Mo/mqdefault.jpg", "dur": "1:20:36"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

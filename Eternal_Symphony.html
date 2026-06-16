@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Eternal_Symphony.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Eternal Symphony";
 const VIDEOS = [{"id": "KVquc_IEUI8", "title": "GREATEST HITS SYMPHONY LOVE SONGS  80'S 90'S 🌿 The Best Relaxing Instrumental Love Songs Ever", "thumb": "https://i.ytimg.com/vi/KVquc_IEUI8/mqdefault.jpg", "dur": "3:16:31"}, {"id": "80Yof7kYWsg", "title": "Beautiful Symphony Melodies Of All Time🎼Greatest Hits Love Songs Ever✨Best Relaxing Symphony Music", "thumb": "https://i.ytimg.com/vi/80Yof7kYWsg/mqdefault.jpg", "dur": "11:51:51"}, {"id": "zR6YpRvuyqs", "title": "100 of the Best Romantic Symphony Pieces - Music That Brings Back Sweet Memories🌙Timeless Love Songs", "thumb": "https://i.ytimg.com/vi/zR6YpRvuyqs/mqdefault.jpg", "dur": "3:30:43"}, {"id": "pXUv0nT6bsg", "title": "100 Most Beautiful Emotional Symphony Love Songs Of All Time ✨ Relaxing Instrumental Love Songs Ever", "thumb": "https://i.ytimg.com/vi/pXUv0nT6bsg/mqdefault.jpg", "dur": "3:20:15"}, {"id": "3ea6C5BI1dQ", "title": "GREATEST HITS SYMPHONY LOVE SONGS 70'S 80'S 90'S 🌿 The Best Relaxing Instrumental Love Songs Ever#1", "thumb": "https://i.ytimg.com/vi/3ea6C5BI1dQ/mqdefault.jpg", "dur": "3:24:22"}, {"id": "PLGz27h6h5U", "title": "Top 100 Romantic Symphony Songs Ever ✨ This Symphony Piece Is Perfect For Relaxing After A Long Day", "thumb": "https://i.ytimg.com/vi/PLGz27h6h5U/mqdefault.jpg", "dur": "3:30:49"}, {"id": "zOVDHQ4BZ-o", "title": "BEAUTIFUL SYMPHONY MELODIES: Romance,Dreamy&Sweet✨The Most Famous Symphony Love Songs for Your Heart", "thumb": "https://i.ytimg.com/vi/zOVDHQ4BZ-o/mqdefault.jpg", "dur": "3:35:26"}, {"id": "6z38hfm_TA8", "title": "The Best Symphony Instrumental Love Songs of 80s 90s🎼Sensual Mindset ✨ Soft Relaxing Symphony Melody", "thumb": "https://i.ytimg.com/vi/6z38hfm_TA8/mqdefault.jpg", "dur": "3:00:05"}, {"id": "lCZRwFqK_0M", "title": "100 Most Old Beautiful Symphony Melodies ✨ Sweet and Soothing Love Songs 🎼 Gentle Relaxing Music", "thumb": "https://i.ytimg.com/vi/lCZRwFqK_0M/mqdefault.jpg", "dur": "3:34:56"}, {"id": "E5oHTowb4_0", "title": "The Most Symphony Famous Melodies of All Time✨Relaxing Symphony Music to Relieve Stress & Love Life", "thumb": "https://i.ytimg.com/vi/E5oHTowb4_0/mqdefault.jpg", "dur": "3:36:34"}, {"id": "43mtXYv8f3Q", "title": "ROMANTIC SYMPHONY 🎼 Top 100 Legendary Instrumental Symphony Love Songs Of All Time ✨ Relaxing Music", "thumb": "https://i.ytimg.com/vi/43mtXYv8f3Q/mqdefault.jpg", "dur": "3:06:25"}, {"id": "1QJ7x7aE7U4", "title": "100 Most Symphony Relaxing Beautiful Music Ever 🎼  Easy Smooth Inspirational ✨ Symphony Love Songs", "thumb": "https://i.ytimg.com/vi/1QJ7x7aE7U4/mqdefault.jpg", "dur": "3:13:04"}, {"id": "1OKkqpImXkQ", "title": "Greatest 99 Beautiful Romantic Symphony Love Songs🎼Timeless And Enduring✨Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/1OKkqpImXkQ/mqdefault.jpg", "dur": "2:43:39"}, {"id": "1RLAYwnoTMw", "title": "GREATEST HITS SYMPHONY LOVE SONGS 70'S 80'S 90'S 🎼 Timeless And Enduring Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/1RLAYwnoTMw/mqdefault.jpg", "dur": "2:22:19"}, {"id": "24creUYhPfs", "title": "GREATEST HITS SYMPHONY LOVE SONGS 70'S 80'S 90'S 🌿 The Best Relaxing Instrumental Love Songs Ever", "thumb": "https://i.ytimg.com/vi/24creUYhPfs/mqdefault.jpg", "dur": "2:58:12"}, {"id": "sZ9b7c4YAag", "title": "The Best Relaxing Symphony Music 💖 This Symphony Melody Will Help You Forget The Pressures Of Life", "thumb": "https://i.ytimg.com/vi/sZ9b7c4YAag/mqdefault.jpg", "dur": "4:37:16"}, {"id": "BtRoqQjne1E", "title": "The Best Symphony Melodies in History 🎼 The Best Romantic Classic Symphony Love Songs for Relaxation", "thumb": "https://i.ytimg.com/vi/BtRoqQjne1E/mqdefault.jpg", "dur": "3:40:54"}, {"id": "jmM0h0vpQY8", "title": "Relaxing Symphony Music Brings Romance To The Soul 🎼 The Most Beautiful Melodies For Deep Relaxation", "thumb": "https://i.ytimg.com/vi/jmM0h0vpQY8/mqdefault.jpg", "dur": "3:48:04"}, {"id": "vL_rMR_I6-U", "title": "Classical Symphony Music With A Stunning Natural Landscape", "thumb": "https://i.ytimg.com/vi/vL_rMR_I6-U/mqdefault.jpg", "dur": "3:24"}, {"id": "L6Bun1XPktk", "title": "50 Of The Most Famous And Beautiful Instrumental Symphony Love Songs 💖 The Best Relaxing Symphony", "thumb": "https://i.ytimg.com/vi/L6Bun1XPktk/mqdefault.jpg", "dur": "3:15:39"}, {"id": "x4O2EcpRy5Q", "title": "Top 50 Symphony Romantic Love Song Instrumental 2026 ✨ The Best Of Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/x4O2EcpRy5Q/mqdefault.jpg", "dur": "5:29:27"}, {"id": "TXp8umSnqsc", "title": "A Collection of 200 Of The Most Romantic Symphony Love Songs of All Time 🎼 The Most Relaxing  Piece", "thumb": "https://i.ytimg.com/vi/TXp8umSnqsc/mqdefault.jpg", "dur": "2:34:40"}, {"id": "mW6tm08jKqA", "title": "Beautiful Symphony Melodies Make Your Soul Ecstatic 🎼 Relaxing Symphony Music Gives You A Happy Feel", "thumb": "https://i.ytimg.com/vi/mW6tm08jKqA/mqdefault.jpg", "dur": "4:53:16"}, {"id": "S6nZakl1dSo", "title": "40 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/S6nZakl1dSo/mqdefault.jpg", "dur": "5:38:29"}, {"id": "6d-Xm3ZCzlg", "title": "Top 10 Romantic Symphony Songs Ever ✨ This Symphony Piece Is Perfect For Relaxing After A Long Day", "thumb": "https://i.ytimg.com/vi/6d-Xm3ZCzlg/mqdefault.jpg", "dur": "4:52:33"}, {"id": "NkOxNtgHacw", "title": "Relaxing Symphony Music With Mellow And Romantic Melodies✨The Best Instrumental Music In The World", "thumb": "https://i.ytimg.com/vi/NkOxNtgHacw/mqdefault.jpg", "dur": "6:13:40"}, {"id": "EBbUzqNSO_I", "title": "30 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/EBbUzqNSO_I/mqdefault.jpg", "dur": "4:41:24"}, {"id": "IQJ0e85sJAk", "title": "The Most Emotional Philharmonic Orchestra Love Songs ✨ Relaxing Music for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/IQJ0e85sJAk/mqdefault.jpg", "dur": "4:52:51"}, {"id": "wVc6QM-AaaU", "title": "Relaxing Romantic Philharmonic Orchestra Love Songs ✨ Soothing Timeless Melodies", "thumb": "https://i.ytimg.com/vi/wVc6QM-AaaU/mqdefault.jpg", "dur": "6:47:23"}, {"id": "aIAQthx57LE", "title": "100 BEST MELODIES IN SYMPHONY HISTORY 🎼 The best instrumental music of the 50s, 60s and 70s", "thumb": "https://i.ytimg.com/vi/aIAQthx57LE/mqdefault.jpg", "dur": "4:11:58"}, {"id": "VkOU-Baeb1Y", "title": "The Most Romantic Philharmonic Orchestra Music to Relax You✨ Timeless Melodies for You to Enjoy Life", "thumb": "https://i.ytimg.com/vi/VkOU-Baeb1Y/mqdefault.jpg", "dur": "3:46:02"}, {"id": "K7M7f1q66Uc", "title": "Romantic Relaxing Philharmonic Orchestra Love Songs ✨ Calm, Timeless Music for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/K7M7f1q66Uc/mqdefault.jpg", "dur": "4:43:52"}, {"id": "cVcQMQN94QE", "title": "50 Of The Most Symphony Famous Classical Pieces ✨ Playlist of the Best Classical Symphony Love Songs", "thumb": "https://i.ytimg.com/vi/cVcQMQN94QE/mqdefault.jpg", "dur": "6:34:02"}, {"id": "_ydELgx1b_Q", "title": "The Best Seductive And Romantic Symphony Love Songs Of All Time", "thumb": "https://i.ytimg.com/vi/_ydELgx1b_Q/mqdefault.jpg", "dur": "3:52"}, {"id": "PRiPAQcyXAM", "title": "Romantic Relaxing Philharmonic Orchestra Classics ✨ Timeless Music to Relax & Enjoy Life", "thumb": "https://i.ytimg.com/vi/PRiPAQcyXAM/mqdefault.jpg", "dur": "5:22:18"}, {"id": "LMPmkOIDjM8", "title": "Classical Philharmonic Orchestra Music for You to Enjoy Wonderful Moments of Relaxation And Mellow 🎼", "thumb": "https://i.ytimg.com/vi/LMPmkOIDjM8/mqdefault.jpg", "dur": "7:52:26"}, {"id": "f0cTRuLxa-I", "title": "The World's Most Romantic Symphony Music That Evokes Emotions 🎼 Listen to it to Nourish Your Heart 5", "thumb": "https://i.ytimg.com/vi/f0cTRuLxa-I/mqdefault.jpg", "dur": "2:22:19"}, {"id": "ZxrQRBPyhnQ", "title": "Classical Philharmonic Orchestra Music That's Absolutely Wonderful With Romantic Emotional Melodies🎼", "thumb": "https://i.ytimg.com/vi/ZxrQRBPyhnQ/mqdefault.jpg", "dur": "7:28:30"}, {"id": "XSaI2BD0oKA", "title": "Deeply Relaxing Philharmonic Orchestra  Love Songs ✨ Beautiful Melodies to Keep Your Soul Young", "thumb": "https://i.ytimg.com/vi/XSaI2BD0oKA/mqdefault.jpg", "dur": "4:05:26"}, {"id": "3JsQzcy_xp0", "title": "The Most Symphony Beautiful Melodies For You To Enjoy A Meaningful Life🎼Relaxing Music For A New Day", "thumb": "https://i.ytimg.com/vi/3JsQzcy_xp0/mqdefault.jpg", "dur": "8:01:24"}, {"id": "nN_OT69JGgY", "title": "100 Beautiful Classical Symphony Love Songs 🎼 Sensual and Elegant Music 💖 The Best Romantic Music", "thumb": "https://i.ytimg.com/vi/nN_OT69JGgY/mqdefault.jpg", "dur": "3:49:46"}, {"id": "OLhsH_Ri6Io", "title": "Deeply Relaxing Classical Symphony Music Helps Relieve Stress ✨ Melodies To Forget Your Worries", "thumb": "https://i.ytimg.com/vi/OLhsH_Ri6Io/mqdefault.jpg", "dur": "8:29:53"}, {"id": "1ySLdxL-t8M", "title": "100 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring Relaxing Instrumental Music#1", "thumb": "https://i.ytimg.com/vi/1ySLdxL-t8M/mqdefault.jpg", "dur": "2:58:12"}, {"id": "Xl7Q_P8Kn9o", "title": "Timeless Symphony Music Will Bring You a Wonderful Feeling of Relaxation✨Soothing Instrumental Music", "thumb": "https://i.ytimg.com/vi/Xl7Q_P8Kn9o/mqdefault.jpg", "dur": "3:36:15"}, {"id": "0F1MbJRt7as", "title": "99 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/0F1MbJRt7as/mqdefault.jpg", "dur": "3:39:36"}, {"id": "QCIzsvmmW4U", "title": "The World's Most Romantic Symphony Music That Evokes Emotions 🎼 Listen to it to Nourish Your Heart#1", "thumb": "https://i.ytimg.com/vi/QCIzsvmmW4U/mqdefault.jpg", "dur": "4:24:28"}, {"id": "osIoDAAHdig", "title": "The Most Impressive Symphony In History Alongside The Ambiance Of A Traditional Vintage Coffee Shop", "thumb": "https://i.ytimg.com/vi/osIoDAAHdig/mqdefault.jpg", "dur": "7:08"}, {"id": "XgP1fMkn4OA", "title": "The Best Classical Symphonies From The 80s,90s✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/XgP1fMkn4OA/mqdefault.jpg", "dur": "6:08:52"}, {"id": "b_PQIw17MMg", "title": "300 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/b_PQIw17MMg/mqdefault.jpg", "dur": "3:38:40"}, {"id": "g11CBiR3cCc", "title": "The Best Symphony Old Melodies You'll Remember Forever 🎼 Sweet Instrumental Symphony Music", "thumb": "https://i.ytimg.com/vi/g11CBiR3cCc/mqdefault.jpg", "dur": "9:25:51"}, {"id": "yor0gx-W4Ac", "title": "600 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/yor0gx-W4Ac/mqdefault.jpg", "dur": "6:17:43"}, {"id": "A-iNXdd2-DU", "title": "The Most Beautiful Symphony Eternal of All Time 🎼 A List Of The Best Romantic Symphony Love Songs", "thumb": "https://i.ytimg.com/vi/A-iNXdd2-DU/mqdefault.jpg", "dur": "3:16:57"}, {"id": "25W_N-KOq9Q", "title": "Top 100 The Greatest Classical Symphonies Of All Time 🎼 Music Classical Symphonies Timeless Classics", "thumb": "https://i.ytimg.com/vi/25W_N-KOq9Q/mqdefault.jpg", "dur": "3:28:58"}, {"id": "kdPWczUoOGA", "title": "Top 100 The World Best Instrumental Symphony Music✨Timeless And Enduring-Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/kdPWczUoOGA/mqdefault.jpg", "dur": "7:32:24"}, {"id": "WhWKtz8kJKk", "title": "Symphony Music Is Incredibly Captivating And Romantic ✨ Let This Music Heal Your Heart and Mind", "thumb": "https://i.ytimg.com/vi/WhWKtz8kJKk/mqdefault.jpg", "dur": "3:08:59"}, {"id": "cFcZtuCO29A", "title": "100 Timeless Romantic Philharmonic Orchestral Masterpieces 🎼 Let This Music Heal Your Heart and Mind", "thumb": "https://i.ytimg.com/vi/cFcZtuCO29A/mqdefault.jpg", "dur": "6:20:44"}, {"id": "N3MhR6mEnLs", "title": "A Collection of 20 Of The Most Romantic Eternal Symphony of All Time 🎼 The Most Relaxing  Pieces", "thumb": "https://i.ytimg.com/vi/N3MhR6mEnLs/mqdefault.jpg", "dur": "3:03:02"}, {"id": "M5KNhIBafaQ", "title": "The Best Symphony Melodies in History 🎼 The Best Romantic Classic Symphony Love Songs for Relaxation", "thumb": "https://i.ytimg.com/vi/M5KNhIBafaQ/mqdefault.jpg", "dur": "2:38:45"}, {"id": "BxuInDFm1gE", "title": "100 Of The Best Romantic Love Songs For Symphony✨Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/BxuInDFm1gE/mqdefault.jpg", "dur": "2:58:12"}, {"id": "KDW8bsKLRFI", "title": "The World's Greatest Romantic Symphony Music That Evokes Emotions🎼Listen To It To Nourish Your Heart", "thumb": "https://i.ytimg.com/vi/KDW8bsKLRFI/mqdefault.jpg", "dur": "3:24:06"}, {"id": "45uj89XH07g", "title": "The Most Beautiful Romantic Symphony Love Songs of All Time 🎼 Sweet Music That Touches Your Heart", "thumb": "https://i.ytimg.com/vi/45uj89XH07g/mqdefault.jpg", "dur": "2:49:23"}, {"id": "_2g7JLoN7jk", "title": "The Best Romantic Classical Philharmonic Orchestra 💖 Sweet And Emotional Symphony Music For The Soul", "thumb": "https://i.ytimg.com/vi/_2g7JLoN7jk/mqdefault.jpg", "dur": "3:00:24"}, {"id": "aY-pJqKoj9E", "title": "The Best Classic Philharmonic Orchestra Love Songs of All Time 🎼 Famous Music for Great Relaxation", "thumb": "https://i.ytimg.com/vi/aY-pJqKoj9E/mqdefault.jpg", "dur": "3:09:10"}, {"id": "G6ZSjTqFAh8", "title": "100 Of The Most Famous And Beautiful Instrumental Symphony Love Songs 💖 The Best Relaxing Symphony", "thumb": "https://i.ytimg.com/vi/G6ZSjTqFAh8/mqdefault.jpg", "dur": "2:48:13"}, {"id": "fU1xI_LH7hA", "title": "A Collection of 100 Of The Most Romantic Symphony Love Songs of All Time 🎼 The Most Relaxing  Pieces", "thumb": "https://i.ytimg.com/vi/fU1xI_LH7hA/mqdefault.jpg", "dur": "2:34:40"}, {"id": "oQ50hubPZv0", "title": "Top 10 The Most Famous Beautiful Symphony Melodie🎼The Best Relaxing Symphony Instrumental Love Songs", "thumb": "https://i.ytimg.com/vi/oQ50hubPZv0/mqdefault.jpg", "dur": "3:00:46"}, {"id": "r2hL4WYq7dE", "title": "The World's Most Romantic Symphony Music That Evokes Emotions 🎼 Listen to it to Nourish Your Heart", "thumb": "https://i.ytimg.com/vi/r2hL4WYq7dE/mqdefault.jpg", "dur": "2:22:19"}, {"id": "burYNLd6qIc", "title": "Top 20 Most Captivating And Best Philharmonic Orchestra Of All Time To Help You Reduce Stress", "thumb": "https://i.ytimg.com/vi/burYNLd6qIc/mqdefault.jpg", "dur": "2:16:26"}, {"id": "BEzF6yoPjRM", "title": "The Most Philharmonic Orchestra Captivating And Romantic 🎼 Relaxing Melodies That Soothe The Soul", "thumb": "https://i.ytimg.com/vi/BEzF6yoPjRM/mqdefault.jpg", "dur": "3:03:04"}, {"id": "gZ2BLozmqJs", "title": "The Most Romantic and Captivating Symphony 🎼 Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/gZ2BLozmqJs/mqdefault.jpg", "dur": "3:05:25"}, {"id": "XKbp6Hj1G_c", "title": "Philharmonic Orchestra Songs of All Time That Help You Relax Deeply 🎼 Classical Music Brings Romance", "thumb": "https://i.ytimg.com/vi/XKbp6Hj1G_c/mqdefault.jpg", "dur": "2:49:56"}, {"id": "Yj4sqJ4O-1w", "title": "The Most Captivating Classical Symphony Songs You Must Listen to At Least Once in Your Life.", "thumb": "https://i.ytimg.com/vi/Yj4sqJ4O-1w/mqdefault.jpg", "dur": "3:32:16"}, {"id": "oTz8Juo_XKg", "title": "The Best Symphony Music  Relaxing 🎼 Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/oTz8Juo_XKg/mqdefault.jpg", "dur": "2:26:39"}, {"id": "m1q2IKI-NUk", "title": "Symphony Relaxing Deep Classical Music for Sleep🎼Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/m1q2IKI-NUk/mqdefault.jpg", "dur": "2:56:54"}, {"id": "QAy-u3cDCXM", "title": "The Best Classical Symphony You Should Listen 🎼 Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/QAy-u3cDCXM/mqdefault.jpg", "dur": "3:05:39"}, {"id": "44SxkMYTNuc", "title": "The Best of Symphony Classical  Music  🎼 Timeless And Enduring - Relaxing Instrumental Music", "thumb": "https://i.ytimg.com/vi/44SxkMYTNuc/mqdefault.jpg", "dur": "3:29:59"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

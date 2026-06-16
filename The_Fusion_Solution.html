@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=The_Fusion_Solution.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "The Fusion Solution";
 const VIDEOS = [{"id": "9cFDTTXgRpE", "title": "The Fusion Solution is now streaming  on Amazon Prime!", "thumb": "https://i.ytimg.com/vi/9cFDTTXgRpE/mqdefault.jpg", "dur": "0:15"}, {"id": "4F8gzSyeoro", "title": "The Fusion Solution: Official Trailer  (2025)", "thumb": "https://i.ytimg.com/vi/4F8gzSyeoro/mqdefault.jpg", "dur": "1:47"}, {"id": "WG8VE0X8Vu0", "title": "The Fusion Solution: 1 Minute Teaser", "thumb": "https://i.ytimg.com/vi/WG8VE0X8Vu0/mqdefault.jpg", "dur": "1:01"}, {"id": "5gcls4jbSjg", "title": "02 Billy Cobham -  I LEFT MY BODY", "thumb": "https://i.ytimg.com/vi/5gcls4jbSjg/mqdefault.jpg", "dur": "2:06"}, {"id": "PeYodjtTu9Y", "title": "The Dean Brown Group  - 2012  TOUR PROMO", "thumb": "https://i.ytimg.com/vi/PeYodjtTu9Y/mqdefault.jpg", "dur": "3:37"}, {"id": "USr19Ar06V8", "title": "Dean Brown Interview  Select:    MY FIRST RECORD", "thumb": "https://i.ytimg.com/vi/USr19Ar06V8/mqdefault.jpg", "dur": "2:07"}, {"id": "7jSa5a8cz0k", "title": "The Dean Brown Band - Live At Proberaum - TWO NUMBERS", "thumb": "https://i.ytimg.com/vi/7jSa5a8cz0k/mqdefault.jpg", "dur": "15:05"}, {"id": "MtB00dARPQo", "title": "Mike Stern's Comments - followed by Dean Brown’s AMAZING solo", "thumb": "https://i.ytimg.com/vi/MtB00dARPQo/mqdefault.jpg", "dur": "4:37"}, {"id": "5TQIXKPNQKM", "title": "Dean Brown Band   Live At Proberaun   TWO NUMBERS EXCERPT 1", "thumb": "https://i.ytimg.com/vi/5TQIXKPNQKM/mqdefault.jpg", "dur": "2:26"}, {"id": "r4o-8EW_Lhw", "title": "Happy Birthday Dean Brown!", "thumb": "https://i.ytimg.com/vi/r4o-8EW_Lhw/mqdefault.jpg", "dur": "0:10"}, {"id": "MpZ8YnQkG_U", "title": "The Fusion Solution: Production Trailer (2013)", "thumb": "https://i.ytimg.com/vi/MpZ8YnQkG_U/mqdefault.jpg", "dur": "5:28"}, {"id": "PAMIEdWEq6U", "title": "Randy Brecker - THE START OF THE BRECKER BROTHERS - Short", "thumb": "https://i.ytimg.com/vi/PAMIEdWEq6U/mqdefault.jpg", "dur": "0:36"}, {"id": "VrVdScuDKi8", "title": "Dean Brown Band -  Live At Proberaun -  Zülpich, Germany -  2013  -  SHOW ME - Short  - JazzrockTV", "thumb": "https://i.ytimg.com/vi/VrVdScuDKi8/mqdefault.jpg", "dur": "0:50"}, {"id": "3w2FaMlA1do", "title": "Dean Brown Band Live At Proberaum in  Zülpich, Germany - SHOW ME - Filmed By: JazzrockTV", "thumb": "https://i.ytimg.com/vi/3w2FaMlA1do/mqdefault.jpg", "dur": "11:38"}, {"id": "5kcsSVqBD3M", "title": "Dean Brown Band Live At Proberaum in  Zülpich, Germany -  RECON -  Filmed by: JazzrockTV", "thumb": "https://i.ytimg.com/vi/5kcsSVqBD3M/mqdefault.jpg", "dur": "10:56"}, {"id": "SMWZ-6S4QsY", "title": "Roberta Flack - DEAN BROWN’s GENEROSITY- Short", "thumb": "https://i.ytimg.com/vi/SMWZ-6S4QsY/mqdefault.jpg", "dur": "0:30"}, {"id": "QoDVPtNdrDw", "title": "35 Roberta Flack - DEAN BROWN'S STAGE PRESENCE", "thumb": "https://i.ytimg.com/vi/QoDVPtNdrDw/mqdefault.jpg", "dur": "1:44"}, {"id": "zts9sH5sjc8", "title": "Gary Husband - WRITING Short", "thumb": "https://i.ytimg.com/vi/zts9sH5sjc8/mqdefault.jpg", "dur": "0:38"}, {"id": "YYwfRLPR4Cs", "title": "27 Gary Husband - WE ALL SOUND LIKE OURSELVES", "thumb": "https://i.ytimg.com/vi/YYwfRLPR4Cs/mqdefault.jpg", "dur": "2:16"}, {"id": "982H2VgSqCo", "title": "Robert Flack -  SAY WHAT YOU MEAN - Short", "thumb": "https://i.ytimg.com/vi/982H2VgSqCo/mqdefault.jpg", "dur": "0:31"}, {"id": "6IRqjsLigHw", "title": "34 Roberta Flack - SAY IT WITH MUSIC", "thumb": "https://i.ytimg.com/vi/6IRqjsLigHw/mqdefault.jpg", "dur": "1:36"}, {"id": "d_P1g-61poA", "title": "Billy Cobham - WHERE WE NEED TO GO - Short", "thumb": "https://i.ytimg.com/vi/d_P1g-61poA/mqdefault.jpg", "dur": "0:21"}, {"id": "v3ipdfacAeI", "title": "01 Billy Cobham - MAKING MISTAKES", "thumb": "https://i.ytimg.com/vi/v3ipdfacAeI/mqdefault.jpg", "dur": "1:36"}, {"id": "K9Ue2EnZUFw", "title": "Dean Brown - SOLO CLIPS II - Short", "thumb": "https://i.ytimg.com/vi/K9Ue2EnZUFw/mqdefault.jpg", "dur": "0:43"}, {"id": "s8PMRHrxZ_I", "title": "Dean Brown Live - SOLO SELECTS II", "thumb": "https://i.ytimg.com/vi/s8PMRHrxZ_I/mqdefault.jpg", "dur": "6:59"}, {"id": "sNet82Hgs94", "title": "Dean Brown Band - Live At Proberaum in  Zülpich, Germany  - TWO NUMBERS -  Filmed By: JazzrockTV", "thumb": "https://i.ytimg.com/vi/sNet82Hgs94/mqdefault.jpg", "dur": "15:05"}, {"id": "3Ow0BgMs47w", "title": "Dean Brown - TECHNIQUE", "thumb": "https://i.ytimg.com/vi/3Ow0BgMs47w/mqdefault.jpg", "dur": "0:52"}, {"id": "hlfybfbnBw8", "title": "Marcus Miller - MILES", "thumb": "https://i.ytimg.com/vi/hlfybfbnBw8/mqdefault.jpg", "dur": "0:22"}, {"id": "wxVakCZODwY", "title": "Randy Brecker:  BLOOD SWEAT & TEARS  - DREAMS & BILLY COBHAM", "thumb": "https://i.ytimg.com/vi/wxVakCZODwY/mqdefault.jpg", "dur": "0:58"}, {"id": "xeSE0eu2qDY", "title": "Randy Brecker - BLOOD SWEAT & TEARS - DREAMS & BILLY COBHAM", "thumb": "https://i.ytimg.com/vi/xeSE0eu2qDY/mqdefault.jpg", "dur": "3:39"}, {"id": "CUEmb6cotaQ", "title": "18 Randy Brecker - THE START OF THE BRECKER BROTHERS", "thumb": "https://i.ytimg.com/vi/CUEmb6cotaQ/mqdefault.jpg", "dur": "2:14"}, {"id": "E8uF58JruMk", "title": "19 Randy Brecker  - BILLY COBHAM", "thumb": "https://i.ytimg.com/vi/E8uF58JruMk/mqdefault.jpg", "dur": "1:34"}, {"id": "dcmu4zlSQSA", "title": "Dean Brown - HAIL TO THE KING II - Dean Brown Live At Proberaun -  Zülpich, Germany - Short 60", "thumb": "https://i.ytimg.com/vi/dcmu4zlSQSA/mqdefault.jpg", "dur": "1:01"}, {"id": "0OC_N0kfL68", "title": "Dean Brown Band - Live At Proberaum in  Zülpich, Germany -  HAIL TO THE KING - Filmed By: JazzrockTV", "thumb": "https://i.ytimg.com/vi/0OC_N0kfL68/mqdefault.jpg", "dur": "26:01"}, {"id": "spMUcYixnNk", "title": "Dean Brown  -  HAIL TO THE KING  II -  Short", "thumb": "https://i.ytimg.com/vi/spMUcYixnNk/mqdefault.jpg", "dur": "1:01"}, {"id": "rhQoROS2vSE", "title": "Dean Brown Solo Clip  - Dean Brown with The Brecker Brothers - SONG FOR BARRY  -  Tokyo 1995", "thumb": "https://i.ytimg.com/vi/rhQoROS2vSE/mqdefault.jpg", "dur": "3:06"}, {"id": "YELJJpwRYGs", "title": "Dean Brown Solo Clip -  Live At Proberaum - BIG FOOT", "thumb": "https://i.ytimg.com/vi/YELJJpwRYGs/mqdefault.jpg", "dur": "2:32"}, {"id": "BdKDD5sReNU", "title": "Michael Leauge - MEETING DEAN BROWN", "thumb": "https://i.ytimg.com/vi/BdKDD5sReNU/mqdefault.jpg", "dur": "2:04"}, {"id": "RwkIxB4CY5Y", "title": "14 Marcus Miller - THE PENDULUM", "thumb": "https://i.ytimg.com/vi/RwkIxB4CY5Y/mqdefault.jpg", "dur": "2:48"}, {"id": "XslQNlZNjdU", "title": "13 Marcus Miller - BEING A SIDEMAN", "thumb": "https://i.ytimg.com/vi/XslQNlZNjdU/mqdefault.jpg", "dur": "2:05"}, {"id": "T8A26naO1SM", "title": "Dean Brown w Marcus Miller TEEN TOWN SOLO Short 60", "thumb": "https://i.ytimg.com/vi/T8A26naO1SM/mqdefault.jpg", "dur": "0:59"}, {"id": "-IGA37vpcQI", "title": "Marcus Miller - TEEN TIME and DEAN BROWN  - Short 60", "thumb": "https://i.ytimg.com/vi/-IGA37vpcQI/mqdefault.jpg", "dur": "1:00"}, {"id": "rJGhW5Y8d_Y", "title": "Marcus Miller & Dean Brown  TEEN TOWN : SOLOS", "thumb": "https://i.ytimg.com/vi/rJGhW5Y8d_Y/mqdefault.jpg", "dur": "5:32"}, {"id": "t-he2BWSqQw", "title": "Marcus Miller - MEETING DEAN BROWN 15", "thumb": "https://i.ytimg.com/vi/t-he2BWSqQw/mqdefault.jpg", "dur": "0:16"}, {"id": "vhUNNk6sb4A", "title": "Victor Bailey - BORN A MUSICIAN 15", "thumb": "https://i.ytimg.com/vi/vhUNNk6sb4A/mqdefault.jpg", "dur": "0:16"}, {"id": "o13Rf-Byp7c", "title": "Mike Stern - BIG UMBRELLA  30", "thumb": "https://i.ytimg.com/vi/o13Rf-Byp7c/mqdefault.jpg", "dur": "0:31"}, {"id": "UI55ztxpcHI", "title": "Bob James - FIRST SOLO ALBUM 15", "thumb": "https://i.ytimg.com/vi/UI55ztxpcHI/mqdefault.jpg", "dur": "0:16"}, {"id": "NHdb8rYf3Pk", "title": "Steve Smith - DIFFERENCES 30", "thumb": "https://i.ytimg.com/vi/NHdb8rYf3Pk/mqdefault.jpg", "dur": "0:46"}, {"id": "5SENIQrkeo0", "title": "Randy Brecker - BILLY WITH DREAMS - 15", "thumb": "https://i.ytimg.com/vi/5SENIQrkeo0/mqdefault.jpg", "dur": "0:15"}, {"id": "9r6WVNffcZI", "title": "Billy Cobham - ONE NOTE  15", "thumb": "https://i.ytimg.com/vi/9r6WVNffcZI/mqdefault.jpg", "dur": "0:16"}, {"id": "yTDAs7b6goc", "title": "Dennis Chambers - FAN OF OTHER DRUMMERS 15", "thumb": "https://i.ytimg.com/vi/yTDAs7b6goc/mqdefault.jpg", "dur": "0:16"}, {"id": "g9fUa5gUlV0", "title": "Dennis Chambers - SHORT -  OTHER DRUMMERS 15", "thumb": "https://i.ytimg.com/vi/g9fUa5gUlV0/mqdefault.jpg", "dur": "0:17"}, {"id": "7CU9txUrbVc", "title": "Mike Stern - SHORT - BIG UMBRELLA 30", "thumb": "https://i.ytimg.com/vi/7CU9txUrbVc/mqdefault.jpg", "dur": "0:31"}, {"id": "WD_pCbb2crI", "title": "12 Marcus Miller - MILES DAVIS", "thumb": "https://i.ytimg.com/vi/WD_pCbb2crI/mqdefault.jpg", "dur": "2:17"}, {"id": "0UzNI3apybI", "title": "15 Mike Stern - OVERLAPPING WITH DEAN BROWN", "thumb": "https://i.ytimg.com/vi/0UzNI3apybI/mqdefault.jpg", "dur": "1:26"}, {"id": "HCf1DMc-LBU", "title": "Mike Stern - ASK VAN GOUGH", "thumb": "https://i.ytimg.com/vi/HCf1DMc-LBU/mqdefault.jpg", "dur": "1:10"}, {"id": "wTGCmW8xGd8", "title": "Marcus Miller - WHAT PEOPLE ARE LOOKING FOR FROM ARTISTS", "thumb": "https://i.ytimg.com/vi/wTGCmW8xGd8/mqdefault.jpg", "dur": "1:10"}, {"id": "U67pZi-n-k8", "title": "Dennis Chambers - FUSION:  PART ONE", "thumb": "https://i.ytimg.com/vi/U67pZi-n-k8/mqdefault.jpg", "dur": "0:41"}, {"id": "0pqItq7JA7Q", "title": "Steve Smith -  FROM JOURNEY TO JAZZ ARTIST", "thumb": "https://i.ytimg.com/vi/0pqItq7JA7Q/mqdefault.jpg", "dur": "1:18"}, {"id": "l4i94fIDOpQ", "title": "Dennis Chambers — DRUMMING IN THE DANGER ZONE", "thumb": "https://i.ytimg.com/vi/l4i94fIDOpQ/mqdefault.jpg", "dur": "1:01"}, {"id": "7lwuwRFjVtk", "title": "Mike Stern - ON PLAYING WITH DEAN BROWN", "thumb": "https://i.ytimg.com/vi/7lwuwRFjVtk/mqdefault.jpg", "dur": "0:46"}, {"id": "WFStA-3G5RU", "title": "The Fusion Solution: A Jazzman's Journey", "thumb": "https://i.ytimg.com/vi/WFStA-3G5RU/mqdefault.jpg", "dur": "0:13"}, {"id": "-MqFNsjNPo4", "title": "Marcus Miller - ON WORKING WITH DEAN BROWN", "thumb": "https://i.ytimg.com/vi/-MqFNsjNPo4/mqdefault.jpg", "dur": "1:01"}, {"id": "GMpP4d4HHlQ", "title": "Dean Brown — A FORMIDABLE QUARTET", "thumb": "https://i.ytimg.com/vi/GMpP4d4HHlQ/mqdefault.jpg", "dur": "4:55"}, {"id": "HkZxRL0UfyA", "title": "The Fusion Solution: Trailer (2021)", "thumb": "https://i.ytimg.com/vi/HkZxRL0UfyA/mqdefault.jpg", "dur": "1:47"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

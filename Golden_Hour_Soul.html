@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Golden_Hour_Soul.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Golden Hour Soul";
 const VIDEOS = [{"id": "S31DLIxLhUI", "title": "Your Romantic Evening Saxophone 🌙 Soft Music to Melt Your Stress Away", "thumb": "https://i.ytimg.com/vi/S31DLIxLhUI/mqdefault.jpg", "dur": "1:12:00"}, {"id": "ujcmNVwRJY8", "title": "Why Everyone's Moving to These Greek Villages | Aesthetic & Ambient Sounds", "thumb": "https://i.ytimg.com/vi/ujcmNVwRJY8/mqdefault.jpg", "dur": "1:31:09"}, {"id": "4BafRwX7hAU", "title": "Sensual Saxophone Collection ✨ Calming Instrumental Music Brings Beautiful Dreams", "thumb": "https://i.ytimg.com/vi/4BafRwX7hAU/mqdefault.jpg", "dur": "1:08:06"}, {"id": "wmjrEX_6ZrU", "title": "hello lionel richie instrumental inspiar", "thumb": "https://i.ytimg.com/vi/wmjrEX_6ZrU/mqdefault.jpg", "dur": "4:12"}, {"id": "oLg6VijEaAQ", "title": "KENNY G  instrumental  With Aerial Capri | Italy's Most Breathtaking Coastline Revealed", "thumb": "https://i.ytimg.com/vi/oLg6VijEaAQ/mqdefault.jpg", "dur": "1:21:26"}, {"id": "D70jh_fZTUs", "title": "Kenny G Best Collection   Hours of Pure Music", "thumb": "https://i.ytimg.com/vi/D70jh_fZTUs/mqdefault.jpg", "dur": "1:05:45"}, {"id": "vTps7mgc6Zg", "title": "This Kenny G Collection Will Ruin You for Other Saxophonists", "thumb": "https://i.ytimg.com/vi/vTps7mgc6Zg/mqdefault.jpg", "dur": "1:12:29"}, {"id": "QcLzDdL648Y", "title": "Your Next Favorite Smooth Sax Love Song – Timeless Vibes", "thumb": "https://i.ytimg.com/vi/QcLzDdL648Y/mqdefault.jpg", "dur": "1:04:59"}, {"id": "20QThz3ZpFk", "title": "Kenny G Brings Songbird To Life With Insane Smoothness", "thumb": "https://i.ytimg.com/vi/20QThz3ZpFk/mqdefault.jpg", "dur": "1:06:03"}, {"id": "GQzwBkIIRzk", "title": "Kenny G Smooth Horizons – Timeless Saxophone for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/GQzwBkIIRzk/mqdefault.jpg", "dur": "1:00:45"}, {"id": "oRIHvmLlKzs", "title": "Kenny G Slow Soprano Love Song That'll Make You Fall In Love", "thumb": "https://i.ytimg.com/vi/oRIHvmLlKzs/mqdefault.jpg", "dur": "1:10:19"}, {"id": "NnqyStLxIa4", "title": "Goulen Hour Serenade Smooth Grooves for Gentle Relaxing Weekend Moments", "thumb": "https://i.ytimg.com/vi/NnqyStLxIa4/mqdefault.jpg", "dur": "1:19:01"}, {"id": "24CzHRemZ5A", "title": "Velvet Midnight Saxophone Jazz | Intimate Romantic Grooves Best...of All Time 3", "thumb": "https://i.ytimg.com/vi/24CzHRemZ5A/mqdefault.jpg", "dur": "1:25:53"}, {"id": "4vzATXbJeJY", "title": "🌅 Smooth Jazz at the Rooftop | Candle-lit Saxophone Lounge", "thumb": "https://i.ytimg.com/vi/4vzATXbJeJY/mqdefault.jpg", "dur": "1:33:07"}, {"id": "_txVAZCFTUE", "title": "KENNY G Smooth Midnight Jazz 🎷 Sophisticated Saxophone for Study, Work & Unwinding", "thumb": "https://i.ytimg.com/vi/_txVAZCFTUE/mqdefault.jpg", "dur": "1:05:35"}, {"id": "ngBHBUI2jlM", "title": "KENNY G  Golden Night Breeze", "thumb": "https://i.ytimg.com/vi/ngBHBUI2jlM/mqdefault.jpg", "dur": "1:05:57"}, {"id": "Rh7o8IW61Wo", "title": "Vintage Record Player Saxophone – Golden Hour Lounge Music for Study & Work", "thumb": "https://i.ytimg.com/vi/Rh7o8IW61Wo/mqdefault.jpg", "dur": "1:04:14"}, {"id": "FfGRbLl_OJE", "title": "Velvet Soul Nights & Smooth R&B - Timeless Music Vibes for Chill, Focus & Unwind", "thumb": "https://i.ytimg.com/vi/FfGRbLl_OJE/mqdefault.jpg", "dur": "1:06:30"}, {"id": "-SGIC-uXcaU", "title": "Velvet Soul Nights & Smooth R&B - Timeless Music Vibes for Chill, Focus & Unwind", "thumb": "https://i.ytimg.com/vi/-SGIC-uXcaU/mqdefault.jpg", "dur": "1:06:07"}, {"id": "UELEdy_vbgI", "title": "Velvet Soul Nights Romantic Saxophone Collection | Sultry Midnight Jazz", "thumb": "https://i.ytimg.com/vi/UELEdy_vbgI/mqdefault.jpg", "dur": "1:00:41"}, {"id": "_omZ2McrZJI", "title": "Sade - Smooth Operator (Classic)", "thumb": "https://i.ytimg.com/vi/_omZ2McrZJI/mqdefault.jpg", "dur": "3:32"}, {"id": "QsDil4lpTpo", "title": "When a Man Loves a Woman – Transformative Saxophone Jazz", "thumb": "https://i.ytimg.com/vi/QsDil4lpTpo/mqdefault.jpg", "dur": "5:10"}, {"id": "JNw-1XLEzI8", "title": "What's the BEST Michael Jackson Liberian Girl instrumental COVER", "thumb": "https://i.ytimg.com/vi/JNw-1XLEzI8/mqdefault.jpg", "dur": "4:47"}, {"id": "mh_looPJxbA", "title": "kenny G Velvet Soul Nights Sultry R&B Collection | Timeless Midnight Grooves", "thumb": "https://i.ytimg.com/vi/mh_looPJxbA/mqdefault.jpg", "dur": "1:07:15"}, {"id": "EDM_IAat_hQ", "title": "Smooth Jazz & R&B – Pure HiFi Candlelight Experience", "thumb": "https://i.ytimg.com/vi/EDM_IAat_hQ/mqdefault.jpg", "dur": "1:02:14"}, {"id": "iTpZPx4OEo0", "title": "Kenny G Pays Tribute to SMOOTH Jazz Legends", "thumb": "https://i.ytimg.com/vi/iTpZPx4OEo0/mqdefault.jpg", "dur": "1:34:25"}, {"id": "JMVWGML9lfk", "title": "KENNY G MIDNIGHT GLOW  |Timeless Saxophone Melodies", "thumb": "https://i.ytimg.com/vi/JMVWGML9lfk/mqdefault.jpg", "dur": "1:37:58"}, {"id": "hBnIO0vMPGg", "title": "Kenny G  Clarinet Jazz - Timeless Smooth Collection", "thumb": "https://i.ytimg.com/vi/hBnIO0vMPGg/mqdefault.jpg", "dur": "1:44:54"}, {"id": "67ZbO4s2XIY", "title": "AMAZING Texas Has Soul Blues Nights", "thumb": "https://i.ytimg.com/vi/67ZbO4s2XIY/mqdefault.jpg", "dur": "1:08:24"}, {"id": "a8dURWMES2k", "title": "Smooth Jazz Legend Kenny G Takes You Back to the 80s", "thumb": "https://i.ytimg.com/vi/a8dURWMES2k/mqdefault.jpg", "dur": "1:02:30"}, {"id": "I7mbKpvmcO0", "title": "Sophisticated Saxophone Music – Warm Jazz Instrumental for Relaxation & Ambiance", "thumb": "https://i.ytimg.com/vi/I7mbKpvmcO0/mqdefault.jpg", "dur": "1:39:05"}, {"id": "cix4NL17ENs", "title": "Kenny G Greatest Saxophone Collection | Midnight Glow Smooth Jazz Classics", "thumb": "https://i.ytimg.com/vi/cix4NL17ENs/mqdefault.jpg", "dur": "1:41:10"}, {"id": "z2Z6BRz21jI", "title": "KENNY G Velvet Soul Nights 2025 – 2 Horas De Las Mejores Canciones Instrumentales De Los 70 80\").", "thumb": "https://i.ytimg.com/vi/z2Z6BRz21jI/mqdefault.jpg", "dur": "2:05:34"}, {"id": "FfO3ruCa1-Q", "title": "SADE Performs AMAZING SMOOTH OPERATOR Internacional Song", "thumb": "https://i.ytimg.com/vi/FfO3ruCa1-Q/mqdefault.jpg", "dur": "7:09"}, {"id": "2odfgISPzxg", "title": "Kenny G Midnight Glow Smooth Jazz Collection | Timeless Saxophone Melodies", "thumb": "https://i.ytimg.com/vi/2odfgISPzxg/mqdefault.jpg", "dur": "1:37:50"}, {"id": "ZngxRrm3WUg", "title": "Kenny G Legendary Greatest Hits Live", "thumb": "https://i.ytimg.com/vi/ZngxRrm3WUg/mqdefault.jpg", "dur": "1:37:24"}, {"id": "xwwnhG0YKwc", "title": "Enchanting Christmas Instrumental Music by the Fireplace with Soothing Melodies", "thumb": "https://i.ytimg.com/vi/xwwnhG0YKwc/mqdefault.jpg", "dur": "2:24:27"}, {"id": "SJt0bPyzfek", "title": "Soft Romantic Saxophone Melodies – Great For A Perfect Evening", "thumb": "https://i.ytimg.com/vi/SJt0bPyzfek/mqdefault.jpg", "dur": "1:34:18"}, {"id": "-H7T2QhXpag", "title": "Kenny G Festive Jazz Collection ❄️ Timeless Christmas Carols Full Album 2025", "thumb": "https://i.ytimg.com/vi/-H7T2QhXpag/mqdefault.jpg", "dur": "1:49:17"}, {"id": "4_1ZdhS9IIw", "title": "Kenny G Christmas Smooth Jazz 🎄❄️ Atmospheric Saxophone Melodies for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/4_1ZdhS9IIw/mqdefault.jpg", "dur": "1:40:36"}, {"id": "x9vGYQUFNng", "title": "Kenny G Twilight Serenade | Rare Unreleased Recordings Smooth Jazz Relaxation Mix", "thumb": "https://i.ytimg.com/vi/x9vGYQUFNng/mqdefault.jpg", "dur": "1:20:57"}, {"id": "5jcIV3_rP6M", "title": "Kenny G: The Golden Years | Best Songs & Collaborations", "thumb": "https://i.ytimg.com/vi/5jcIV3_rP6M/mqdefault.jpg", "dur": "1:52:00"}, {"id": "GI02mzfvFGU", "title": "The Golden Hour Between Night and Morning", "thumb": "https://i.ytimg.com/vi/GI02mzfvFGU/mqdefault.jpg", "dur": "1:44:41"}, {"id": "1LlaBk2jhoQ", "title": "Forever in Love: The Song That Made Kenny G a Legend", "thumb": "https://i.ytimg.com/vi/1LlaBk2jhoQ/mqdefault.jpg", "dur": "1:37:57"}, {"id": "kTTlFSqUlHA", "title": "KENNY G THE BEST OF ALL TIME", "thumb": "https://i.ytimg.com/vi/kTTlFSqUlHA/mqdefault.jpg", "dur": "1:18:47"}, {"id": "ZrcOAouQ8Hc", "title": "KENNY G  Whispered Promises  #saxophone #instrumental#jazzinstrumental #KennyG #kennygsongs", "thumb": "https://i.ytimg.com/vi/ZrcOAouQ8Hc/mqdefault.jpg", "dur": "4:35"}, {"id": "Qtkl3Z9vDX4", "title": "The Real Reason Kenny G Dominated the 90s and 2000s", "thumb": "https://i.ytimg.com/vi/Qtkl3Z9vDX4/mqdefault.jpg", "dur": "1:16:13"}, {"id": "AFpHBnDsiLg", "title": "The Song That Proves Kenny G Is Better Than Everyone Thinks", "thumb": "https://i.ytimg.com/vi/AFpHBnDsiLg/mqdefault.jpg", "dur": "1:07:44"}, {"id": "mKgOADPznFw", "title": "The Real Reason Kenny G Dominated the 90s", "thumb": "https://i.ytimg.com/vi/mKgOADPznFw/mqdefault.jpg", "dur": "1:39:27"}, {"id": "YyIO2K2m1iQ", "title": "Kenny G Style Jazz | Emotional Saxophone & Smooth Instrumentals for Productivity & Peace", "thumb": "https://i.ytimg.com/vi/YyIO2K2m1iQ/mqdefault.jpg", "dur": "1:36:43"}, {"id": "W55Z2P4haOA", "title": "Soul On – Relaxing Soul Instrumentals Smooth Guitar • Late-Night Soul Grooves", "thumb": "https://i.ytimg.com/vi/W55Z2P4haOA/mqdefault.jpg", "dur": "48:12"}, {"id": "kOLidP34xVk", "title": "Late Night Focus Jazz | Maximum Concentration Vibes 🎧✨", "thumb": "https://i.ytimg.com/vi/kOLidP34xVk/mqdefault.jpg", "dur": "1:21:35"}, {"id": "bxnAZR242v8", "title": "Golden Hour Vibes | When 80s Jazz Gets Emotional", "thumb": "https://i.ytimg.com/vi/bxnAZR242v8/mqdefault.jpg", "dur": "1:07:10"}, {"id": "Pkz-PW6mhAM", "title": "Smooth Grooves to Keep You Focused All Night Long", "thumb": "https://i.ytimg.com/vi/Pkz-PW6mhAM/mqdefault.jpg", "dur": "2:21:06"}, {"id": "8oalTTPiRbs", "title": "Silence Speaks Louder | Desert Fusion Reimagined", "thumb": "https://i.ytimg.com/vi/8oalTTPiRbs/mqdefault.jpg", "dur": "58:15"}, {"id": "gsMns6TiWLA", "title": "80s Smooth Jazz | When the City Comes Alive After Dark", "thumb": "https://i.ytimg.com/vi/gsMns6TiWLA/mqdefault.jpg", "dur": "1:20:59"}, {"id": "_rwVbYGDQSg", "title": "Soul & Smooth Jazz – Relaxing R&B Instrumentals All Day", "thumb": "https://i.ytimg.com/vi/_rwVbYGDQSg/mqdefault.jpg", "dur": "1:17:40"}, {"id": "Ifrn2c2xFls", "title": "When the Desert Breathes: Soul Music for Inner Peace", "thumb": "https://i.ytimg.com/vi/Ifrn2c2xFls/mqdefault.jpg", "dur": "3:55"}, {"id": "AzSEx1_7hJY", "title": "Retro Soul Nights – Timeless Jazz & R&B Instrumentals", "thumb": "https://i.ytimg.com/vi/AzSEx1_7hJY/mqdefault.jpg", "dur": "1:08:59"}, {"id": "D6Swiqxm-vc", "title": "Ken Navarro-Inspired Jazz Guitar – 10 Hours of Smooth Grooves", "thumb": "https://i.ytimg.com/vi/D6Swiqxm-vc/mqdefault.jpg", "dur": "1:35:48"}, {"id": "ESI43Pcj0Ik", "title": "Velvet Funk & Soul Vibes | Chill 80s Jazz Masterflow", "thumb": "https://i.ytimg.com/vi/ESI43Pcj0Ik/mqdefault.jpg", "dur": "1:34:34"}, {"id": "D89IKThz5Ew", "title": "Smooth Nights, Smoother Grooves – Pure 90s Jazz Bliss", "thumb": "https://i.ytimg.com/vi/D89IKThz5Ew/mqdefault.jpg", "dur": "1:44:49"}, {"id": "St9WSWYZU9s", "title": "Urban Jazz Funk Mix: Smooth Saxophones for Late Night Vibes", "thumb": "https://i.ytimg.com/vi/St9WSWYZU9s/mqdefault.jpg", "dur": "1:20:25"}, {"id": "3jP3ZhFhudI", "title": "Soulful Saxophone Melodies – The Perfect Unwind Mix", "thumb": "https://i.ytimg.com/vi/3jP3ZhFhudI/mqdefault.jpg", "dur": "1:28:11"}, {"id": "fK_B6wHCWWU", "title": "The Smoothest 80s Jazz – Velvet Horizon Awaits", "thumb": "https://i.ytimg.com/vi/fK_B6wHCWWU/mqdefault.jpg", "dur": "1:44:44"}, {"id": "AbP19j4_c94", "title": "✨Soul Jazz Hip-Hop & Chil Grooves of the night  2 ✨", "thumb": "https://i.ytimg.com/vi/AbP19j4_c94/mqdefault.jpg", "dur": "1:20:19"}, {"id": "NDrwctxDvDc", "title": "Soul Jazz Hip Hop Timeless Groove Compilation", "thumb": "https://i.ytimg.com/vi/NDrwctxDvDc/mqdefault.jpg", "dur": "1:03:34"}, {"id": "NbdIbjTO404", "title": "Late Night Saxophone Confessions | Romantic Slow Burn", "thumb": "https://i.ytimg.com/vi/NbdIbjTO404/mqdefault.jpg", "dur": "6:12"}, {"id": "_2gyp3nolz8", "title": "Breathy Saxophone & Vintage Vibes | Neo Soul Nights", "thumb": "https://i.ytimg.com/vi/_2gyp3nolz8/mqdefault.jpg", "dur": "4:50"}, {"id": "Dr1OIs5wxfs", "title": "Why This Jazz is the Perfect 80s Escape | Analog, Intimate, Timeless", "thumb": "https://i.ytimg.com/vi/Dr1OIs5wxfs/mqdefault.jpg", "dur": "1:31:30"}, {"id": "Zlqw9reybTo", "title": "Slow Blues Ballads timeless collection", "thumb": "https://i.ytimg.com/vi/Zlqw9reybTo/mqdefault.jpg", "dur": "1:14:05"}, {"id": "QKi60LlVelQ", "title": "🎶 Smooth Jazz & Neo Soul Instrumentals | Velvet Soul Sessions: Morning Ember", "thumb": "https://i.ytimg.com/vi/QKi60LlVelQ/mqdefault.jpg", "dur": "1:51:28"}, {"id": "4vJM--SS9f4", "title": "Velvet Saxophone Nights | 80s Funk Jazz with Rainy City Vibes", "thumb": "https://i.ytimg.com/vi/4vJM--SS9f4/mqdefault.jpg", "dur": "1:15:07"}, {"id": "TINJcdfC4QM", "title": "Smooth 80s Grooves – Timeless Jazz, Soul & Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/TINJcdfC4QM/mqdefault.jpg", "dur": "1:18:13"}, {"id": "utYLnfBL1yw", "title": "SOUL SMOOTH JAZZ VOL 2 | Smooth Jazz & Romantic Ambiance Extended", "thumb": "https://i.ytimg.com/vi/utYLnfBL1yw/mqdefault.jpg", "dur": "1:15:17"}, {"id": "rU5JbQTeqlU", "title": "Smooth Jazz 80s Neo Soul Nights Romantic City Nights", "thumb": "https://i.ytimg.com/vi/rU5JbQTeqlU/mqdefault.jpg", "dur": "1:22:35"}, {"id": "XvYYZWUqBKc", "title": "Smooth Jazz That Brings Back Analog Warmth", "thumb": "https://i.ytimg.com/vi/XvYYZWUqBKc/mqdefault.jpg", "dur": "1:15:02"}, {"id": "hbUDF4VR8KU", "title": "80s Neo Soul Grooves Late Night Vibes", "thumb": "https://i.ytimg.com/vi/hbUDF4VR8KU/mqdefault.jpg", "dur": "1:21:18"}, {"id": "Lw2zaQjyBF0", "title": "After Midnight Soundscape | Smooth Sax, Deep Grooves & Reflective Vibes", "thumb": "https://i.ytimg.com/vi/Lw2zaQjyBF0/mqdefault.jpg", "dur": "1:58:59"}, {"id": "rAXPBJKJGR0", "title": "Neo-Tropical Sax Bliss – Golden Hour Mirage 🌅 | Afro R&B Chill & Smooth Sax Vibes", "thumb": "https://i.ytimg.com/vi/rAXPBJKJGR0/mqdefault.jpg", "dur": "1:17:42"}, {"id": "dlRmyQTXG_o", "title": "Mellow Saxophone & Rhodes Piano – Golden Hour Tropical Vibes for Relaxation & Work", "thumb": "https://i.ytimg.com/vi/dlRmyQTXG_o/mqdefault.jpg", "dur": "8:33"}, {"id": "zJWKTr86GwE", "title": "The Most Magical Beach Sunset Ever Caught on Camera!", "thumb": "https://i.ytimg.com/vi/zJWKTr86GwE/mqdefault.jpg", "dur": "1:06:14"}, {"id": "GyNGwtSMVWg", "title": "Late Night Jazz Fusion | Smooth Grooves & Mellow Vibes", "thumb": "https://i.ytimg.com/vi/GyNGwtSMVWg/mqdefault.jpg", "dur": "4:07"}, {"id": "W4Iqe-u9JbM", "title": "Listening to Kenny G All Day and Night | The Results", "thumb": "https://i.ytimg.com/vi/W4Iqe-u9JbM/mqdefault.jpg", "dur": "1:02:26"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=HeatWave_Bossa.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "HeatWave Bossa";
 const VIDEOS = [{"id": "676gO5RR4SM", "title": "Tropical Chill Bossa Nova Ambience 🌺 | Warm Island Vibes for Good Mood All Day", "thumb": "https://i.ytimg.com/vi/676gO5RR4SM/mqdefault.jpg", "dur": "2:07:23"}, {"id": "FDEPjTMC16Q", "title": "Morning Cafe Bossa Jazz Ambience ~ Bossa Nova Playlist to Help Study, Work", "thumb": "https://i.ytimg.com/vi/FDEPjTMC16Q/mqdefault.jpg", "dur": "2:07:23"}, {"id": "idXff_Q_8es", "title": "Relax Bossa LIVE 24/7 - Bossa Nova Covers of Popular Songs 50 Hits 2026 For Easy Listening & Relax 🎧", "thumb": "https://i.ytimg.com/vi/idXff_Q_8es/mqdefault_live.jpg", "dur": ""}, {"id": "4aP9XrYC7k8", "title": "Breathe, listen, and drift away #bossa #meditationmusic", "thumb": "https://i.ytimg.com/vi/4aP9XrYC7k8/mqdefault.jpg", "dur": "0:58"}, {"id": "cjn2twcMYJk", "title": "Beachside Morning Cafe Jazz ~ Smooth Bossa Nova Playlist to Help Study, Focus", "thumb": "https://i.ytimg.com/vi/cjn2twcMYJk/mqdefault.jpg", "dur": "3:10:17"}, {"id": "kJ1usnLulpM", "title": "Elegant Moring Cafe Jazz ~ Seaside Style Jazz Playlist for Work, Study", "thumb": "https://i.ytimg.com/vi/kJ1usnLulpM/mqdefault.jpg", "dur": "2:07:23"}, {"id": "_ZuLjo8T8Jg", "title": "Morning Cafe Jazz Relax ~ a Bossa Nova Playlist to Help You Work & Study", "thumb": "https://i.ytimg.com/vi/_ZuLjo8T8Jg/mqdefault.jpg", "dur": "2:07:23"}, {"id": "tANM3aNS0Is", "title": "Luxury Morning Cafe Jazz ~ Bossa Nova Playlist to Help Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/tANM3aNS0Is/mqdefault.jpg", "dur": "2:14:37"}, {"id": "S5vjn7c-TnI", "title": "Morning Cafe Jazz Music ~ Relaxing Bossa Nova Playlist for Study, Work", "thumb": "https://i.ytimg.com/vi/S5vjn7c-TnI/mqdefault.jpg", "dur": "2:18:07"}, {"id": "dEJlWIDiT2c", "title": "Seaside Morning Cafe Jazz ~ Smooth Bossa Nova Playlist to Help Study, Work", "thumb": "https://i.ytimg.com/vi/dEJlWIDiT2c/mqdefault.jpg", "dur": "2:17:45"}, {"id": "wa_w6LUR0gA", "title": "Soft Morning Cafe Bossa Nova Jazz for Easy Listening And Study Flow ~ Bossa Nova Playlist", "thumb": "https://i.ytimg.com/vi/wa_w6LUR0gA/mqdefault.jpg", "dur": "2:15:09"}, {"id": "geObdqm9GQk", "title": "Summer Jazz Morning Cafe ~ Bossa Nova Playlist to Keep You Focus All Day", "thumb": "https://i.ytimg.com/vi/geObdqm9GQk/mqdefault.jpg", "dur": "2:14:05"}, {"id": "F3m_4QmAV90", "title": "Sweet Morning Cafe Jazz Music ~ Smooth Bossa Nova & Latin Jazz for Productivity & Work", "thumb": "https://i.ytimg.com/vi/F3m_4QmAV90/mqdefault.jpg", "dur": "2:07:21"}, {"id": "UnzemewLdkk", "title": "Elegant Morning Cafe Jazz Music ~ Brazilian Bossa for Productivity, Work & Study", "thumb": "https://i.ytimg.com/vi/UnzemewLdkk/mqdefault.jpg", "dur": "2:13:44"}, {"id": "po9i4dc3Nyo", "title": "Bossa Nova Tropical Beach Vibe ~ Brazilian Style Jazz Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/po9i4dc3Nyo/mqdefault.jpg", "dur": "2:11:58"}, {"id": "sgakrK_AJM8", "title": "Bossa Nova x Brazilian Jazz Music to Boost Your Energy ~ Bossa Nova BGM", "thumb": "https://i.ytimg.com/vi/sgakrK_AJM8/mqdefault.jpg", "dur": "2:11:58"}, {"id": "7rEG1YWJ89A", "title": "Morning Cafe Jazz Ambience ~ Smooth Bossa Nova Playlist for Study, Work", "thumb": "https://i.ytimg.com/vi/7rEG1YWJ89A/mqdefault.jpg", "dur": "2:21:54"}, {"id": "F1ds0I8fHf8", "title": "Tropical Paradise Bossa ☀️ Serene Beach Vibes & Warm Rhythms", "thumb": "https://i.ytimg.com/vi/F1ds0I8fHf8/mqdefault.jpg", "dur": "2:11:58"}, {"id": "nOM0bDthzi8", "title": "Bossa Nova & Samba Cafe Vibe | Sunset Beach Ambience with Warm Grooves", "thumb": "https://i.ytimg.com/vi/nOM0bDthzi8/mqdefault.jpg", "dur": "2:11:58"}, {"id": "m_PVfc-FMd0", "title": "Tropical Bossa Nova 🎷 Summer Jazz to Melt the Stress Away ~ Relaxing Playlist", "thumb": "https://i.ytimg.com/vi/m_PVfc-FMd0/mqdefault.jpg", "dur": "2:04:39"}, {"id": "yPHMFYD1Hps", "title": "Relaxing Bossa Nova Music - Smooth Brazilian Jazz & Guitar for Sunny Morning Coffee", "thumb": "https://i.ytimg.com/vi/yPHMFYD1Hps/mqdefault.jpg", "dur": "2:08:42"}, {"id": "pYRoeCIZc4I", "title": "Soft Bossa Nova & Chill Jazz for Relaxing Coffee Moments ☕️ Relaxing Chill Bossa Nova", "thumb": "https://i.ytimg.com/vi/pYRoeCIZc4I/mqdefault.jpg", "dur": "2:11:58"}, {"id": "_Ng0XoLs2aE", "title": "Bossa Nova Cafe Music 🌸 Relaxing Morning Jazz & Chill, Study & Work Vibes", "thumb": "https://i.ytimg.com/vi/_Ng0XoLs2aE/mqdefault.jpg", "dur": "2:09:10"}, {"id": "xkl21SjmsrI", "title": "Coffee & Bossa Nova Jazz - Relaxing Latin Jazz Music & Seaside Scenes for Deep Focus", "thumb": "https://i.ytimg.com/vi/xkl21SjmsrI/mqdefault.jpg", "dur": "2:07:27"}, {"id": "voPgGuoKnCs", "title": "Morning April Jazz ~ Smooth Bossa Nova Jazz for Relaxing, Working", "thumb": "https://i.ytimg.com/vi/voPgGuoKnCs/mqdefault.jpg", "dur": "2:04:08"}, {"id": "6upPYCnfL7I", "title": "Seaside Cafe Jazz Vibe ~ Good Mood Bossa Nova Music to Help Study, Work", "thumb": "https://i.ytimg.com/vi/6upPYCnfL7I/mqdefault.jpg", "dur": "2:10:22"}, {"id": "fNAGDmDLmqQ", "title": "Summer Morning Beach Cafe ☀️ Bossa Nova Coffee & Relaxing Jazz Music", "thumb": "https://i.ytimg.com/vi/fNAGDmDLmqQ/mqdefault.jpg", "dur": "2:05:39"}, {"id": "H5Z7oY2dz1U", "title": "Relaxing Chill Bossa Nova Jazz 🌴 Smooth Jazz Music for a Relaxing Weekend", "thumb": "https://i.ytimg.com/vi/H5Z7oY2dz1U/mqdefault.jpg", "dur": "2:16:18"}, {"id": "LX2iAlpY2bA", "title": "Bossa Nova Jazz Music 🌊 Relaxing Jazz Cafe Music for Focus, Calm & Positive Vibes All Day", "thumb": "https://i.ytimg.com/vi/LX2iAlpY2bA/mqdefault.jpg", "dur": "2:06:58"}, {"id": "9AJPjGWAfGA", "title": "Morning Jazz Cafe Music ~ Relaxing Bossa Nova Jazz to Help Study, Work & Relax All Day", "thumb": "https://i.ytimg.com/vi/9AJPjGWAfGA/mqdefault.jpg", "dur": "2:17:39"}, {"id": "6pFt-GXWs2g", "title": "Seaside Cafe Jazz Ambience ~ Smooth Bossa Nova Music to Help Study, Work", "thumb": "https://i.ytimg.com/vi/6pFt-GXWs2g/mqdefault.jpg", "dur": "2:07:07"}, {"id": "R19oUAUGw9Q", "title": "Coffee Shop Jazz ~ Bossa Nova Beach Vibe a Relaxing Tropical Getaway ~ Timeless Bossa Nova", "thumb": "https://i.ytimg.com/vi/R19oUAUGw9Q/mqdefault.jpg", "dur": "2:03:48"}, {"id": "SI55J40uwQ8", "title": "Seaside Cafe Jazz 🌅 Smooth Bossa Nova for Stress Relief & Relaxed Mood", "thumb": "https://i.ytimg.com/vi/SI55J40uwQ8/mqdefault.jpg", "dur": "2:10:16"}, {"id": "ZPug3fNc_90", "title": "Relaxing Chill Bossa Nova ~ Smooth Coffee Shop Jazz for Working in April", "thumb": "https://i.ytimg.com/vi/ZPug3fNc_90/mqdefault.jpg", "dur": "2:05:13"}, {"id": "Qisf33PvkW4", "title": "Positive Morning Coffee Jazz ~ Jazz & Bossa Nova for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/Qisf33PvkW4/mqdefault.jpg", "dur": "2:06:15"}, {"id": "YF-5B-rX6wM", "title": "Happy Morning Jazz Vibe ~ Bossa Nova Music for Work, Study & Stress Relief", "thumb": "https://i.ytimg.com/vi/YF-5B-rX6wM/mqdefault.jpg", "dur": "2:07:01"}, {"id": "0EsOnl4irTA", "title": "Morning Jazz Cafe Vibe ☀️ Smooth Bossa Nova to Keep You Focused All Day", "thumb": "https://i.ytimg.com/vi/0EsOnl4irTA/mqdefault.jpg", "dur": "2:13:36"}, {"id": "2RrVRB6tdEE", "title": "Jazzy Background Music for Work & Productivity ~ Summer Morning Bossa Nova", "thumb": "https://i.ytimg.com/vi/2RrVRB6tdEE/mqdefault.jpg", "dur": "2:19:18"}, {"id": "4eUQB5OU0kc", "title": "Bossa Nova Seaside Energy ~ Positive Latin Jazz for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/4eUQB5OU0kc/mqdefault.jpg", "dur": "11:54:56"}, {"id": "sZkXfnBjzUI", "title": "Bossa Nova Morning Beach Energy ~ Jazzy Latin Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/sZkXfnBjzUI/mqdefault.jpg", "dur": "2:16:13"}, {"id": "hJUFl8XNhEQ", "title": "Bossa Nova Beach Energy ~ Jazzy Latin Music for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/hJUFl8XNhEQ/mqdefault.jpg", "dur": "2:16:13"}, {"id": "PoDyV8cFMaQ", "title": "Bossa Nova x Photoshoot #bossanova #photography #summer", "thumb": "https://i.ytimg.com/vi/PoDyV8cFMaQ/mqdefault.jpg", "dur": "0:45"}, {"id": "Di1EDLogdg4", "title": "Bossa Nova Vibe Flow ~ Jazzy Bossa Nova Covers for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/Di1EDLogdg4/mqdefault.jpg", "dur": "2:06:09"}, {"id": "YnKlQCwT7us", "title": "Bossa Nova Latin Flow ~ Jazzy Brazil Music for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/YnKlQCwT7us/mqdefault.jpg", "dur": "2:11:31"}, {"id": "T1E5UWcuQRM", "title": "Bossa Nova Energy Flow Mix ~ 2H Of Chill Bossa Nova Music For Study, Work & Relax", "thumb": "https://i.ytimg.com/vi/T1E5UWcuQRM/mqdefault.jpg", "dur": "2:10:27"}, {"id": "wtZcrmx8I4I", "title": "Bossa Nova Brazilian Flow ~ Jazzy Latin Music for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/wtZcrmx8I4I/mqdefault.jpg", "dur": "2:13:22"}, {"id": "_GaNkBr6gtM", "title": "Bossa Nova Energy Flow Time ~ 2H of Latin Jazz Music to Study, Work or Relax with", "thumb": "https://i.ytimg.com/vi/_GaNkBr6gtM/mqdefault.jpg", "dur": "2:12:37"}, {"id": "aj8GKsgvlAU", "title": "Bossa Nova Energy Vibe ~ Perfect Latin Jazz Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/aj8GKsgvlAU/mqdefault.jpg", "dur": "2:18:23"}, {"id": "dGYxD3NQFKk", "title": "Bossa Nova Energy Flow Playlist ~ Morning Latin Jazz for Work, Study & Productivity", "thumb": "https://i.ytimg.com/vi/dGYxD3NQFKk/mqdefault.jpg", "dur": "2:08:46"}, {"id": "aO525QMDOH8", "title": "Bossa Nova Energy Flow Vibe ~ 2H Of Chill Bossa Nova Music For Deep Focus & Concentration", "thumb": "https://i.ytimg.com/vi/aO525QMDOH8/mqdefault.jpg", "dur": "2:07:05"}, {"id": "z9zHPFNBIG4", "title": "Bossa Nova Energy Flow ~ Jazzy Latin Music for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/z9zHPFNBIG4/mqdefault.jpg", "dur": "2:10:28"}, {"id": "eiMF8vCVgGc", "title": "Bossa Nova Energy Flow ~ Bossa Nova Covers of Popular Songs 50 Hits 2026 For Easy Listening & Relax", "thumb": "https://i.ytimg.com/vi/eiMF8vCVgGc/mqdefault.jpg", "dur": "2:03:04"}, {"id": "cQHPnwi0boI", "title": "Bossa Nova Energy Flow Mix ~ 2H Of Chill Bossa Nova Music For Study, Work & Relax", "thumb": "https://i.ytimg.com/vi/cQHPnwi0boI/mqdefault.jpg", "dur": "2:16:42"}, {"id": "e_mYNu9yzio", "title": "Bossa Nova Energy Flow ~ Brazilian Jazz Music for Concentration, Productivity & Work", "thumb": "https://i.ytimg.com/vi/e_mYNu9yzio/mqdefault.jpg", "dur": "2:17:24"}, {"id": "TENCl1wH6SE", "title": "Bossa Nova Energy Flow  ~ Jazzy Latin Music Mix for Work, Deep Focus & Productivity", "thumb": "https://i.ytimg.com/vi/TENCl1wH6SE/mqdefault.jpg", "dur": "2:14:06"}, {"id": "s4WRIonaOfI", "title": "Bossa Nova Retro Flow ~ Jazzy Brazilian Music for Deep Focus, Work, Study", "thumb": "https://i.ytimg.com/vi/s4WRIonaOfI/mqdefault.jpg", "dur": "2:14:06"}, {"id": "19tyD2IwjvU", "title": "Bossa Nova Energy Flow ~ Jazzy Latin Music for Work, Study, Focus & Productivity", "thumb": "https://i.ytimg.com/vi/19tyD2IwjvU/mqdefault.jpg", "dur": "2:09:22"}, {"id": "Xp23QxBqKhM", "title": "Relaxing Bossa Nova Covers of Popular 80 Hits (2026) ~ 2 Hours Bossa Nova Mix", "thumb": "https://i.ytimg.com/vi/Xp23QxBqKhM/mqdefault.jpg", "dur": "2:14:48"}, {"id": "7dDBeKoM5fU", "title": "Bossa Nova to Raise Your Focus ~ Latin Jazz Covers of Popular 80 Hits", "thumb": "https://i.ytimg.com/vi/7dDBeKoM5fU/mqdefault.jpg", "dur": "2:16:29"}, {"id": "fAnFXW6RGN0", "title": "Bossa Nova Work & Focus ~ Brazilian Jazz to Boost Your Vibe", "thumb": "https://i.ytimg.com/vi/fAnFXW6RGN0/mqdefault.jpg", "dur": "1:15:55"}, {"id": "6RqnkIjveZY", "title": "Bossa Nova Covers for Energy, Power, Study & Work - Bossa Nova/ Brazilian Jazz/ Samba Fusion", "thumb": "https://i.ytimg.com/vi/6RqnkIjveZY/mqdefault.jpg", "dur": "2:16:02"}, {"id": "j8AqErep18M", "title": "Bossa Nova Deep Focus ~ Brazilian Jazz to Boost Your Productivity", "thumb": "https://i.ytimg.com/vi/j8AqErep18M/mqdefault.jpg", "dur": "2:16:40"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

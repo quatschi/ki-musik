@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Lush_Tribal_Hour.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Lush Tribal Hour";
 const VIDEOS = [{"id": "63em_iPi_vk", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/63em_iPi_vk/mqdefault.jpg", "dur": "2:08:17"}, {"id": "spTkzL1Fcp0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Focus", "thumb": "https://i.ytimg.com/vi/spTkzL1Fcp0/mqdefault.jpg", "dur": "2:04:25"}, {"id": "7Vz-jut9Hpc", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Ritual Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/7Vz-jut9Hpc/mqdefault.jpg", "dur": "2:00:36"}, {"id": "qX95AgRB45E", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Ritual Jazz Instrumental for Midnight Focus & Chill", "thumb": "https://i.ytimg.com/vi/qX95AgRB45E/mqdefault.jpg", "dur": "2:02:05"}, {"id": "C5Ed0c5yPPQ", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental for Sacred Grooves & Focus", "thumb": "https://i.ytimg.com/vi/C5Ed0c5yPPQ/mqdefault.jpg", "dur": "2:02:07"}, {"id": "cfE90kYhXlg", "title": "Hypnotic Tribal Grooves | Sacred Grooves & Midnight Ritual | Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/cfE90kYhXlg/mqdefault.jpg", "dur": "2:05:04"}, {"id": "-eh34JV42Tk", "title": "Hypnotic Tribal Jazz Grooves Sacred Ritual Music for Deep Focus", "thumb": "https://i.ytimg.com/vi/-eh34JV42Tk/mqdefault.jpg", "dur": "2:03:52"}, {"id": "3xwq2iriufs", "title": "Dark Tribal Lounge Jazz ~ Midnight Afro Ritual for Deep Focus & Sacred Grooves", "thumb": "https://i.ytimg.com/vi/3xwq2iriufs/mqdefault.jpg", "dur": "2:03:16"}, {"id": "6M5E07mtLuE", "title": "Nocturnal Tribal Jazz - Deep Tribal Jazz Instrumental & Sacred Grooves for Midnight Rituals", "thumb": "https://i.ytimg.com/vi/6M5E07mtLuE/mqdefault.jpg", "dur": "2:04:41"}, {"id": "HYnvqN-RUM0", "title": "Tribal Lounge Jazz - Sacred Grooves & Deep Tribal Jazz Instrumental for Late Night Rituals", "thumb": "https://i.ytimg.com/vi/HYnvqN-RUM0/mqdefault.jpg", "dur": "2:04:05"}, {"id": "ZIXXRA9xlI8", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ Hypnotic Sacred Grooves for Focus", "thumb": "https://i.ytimg.com/vi/ZIXXRA9xlI8/mqdefault.jpg", "dur": "2:03:59"}, {"id": "hInohte5m1w", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Instrumental for Late Night Rituals and Focus Now", "thumb": "https://i.ytimg.com/vi/hInohte5m1w/mqdefault.jpg", "dur": "2:03:32"}, {"id": "SCFpL_LJl80", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for Late Night Calm", "thumb": "https://i.ytimg.com/vi/SCFpL_LJl80/mqdefault.jpg", "dur": "2:02:31"}, {"id": "1CwpYK5qstM", "title": "Tribal Lounge Jazz | Hypnotic Tribal Grooves | After Hours Ritual Jazz | Relaxing Music", "thumb": "https://i.ytimg.com/vi/1CwpYK5qstM/mqdefault.jpg", "dur": "2:04:39"}, {"id": "3a4-GtkwMSg", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves for Midnight Afro Ritual & Tribal Lounge Jazz", "thumb": "https://i.ytimg.com/vi/3a4-GtkwMSg/mqdefault.jpg", "dur": "2:07:45"}, {"id": "bNBjqGomYvg", "title": "midnight afro ritual - ritual jazz - hypnotic tribal grooves - late night tribal jazz & co", "thumb": "https://i.ytimg.com/vi/bNBjqGomYvg/mqdefault.jpg", "dur": "2:05:15"}, {"id": "sybQP86c05E", "title": "Midnight Afro Ritual | Tribal Lounge Jazz - Sacred Grooves for Late Night Deep Focus Chill", "thumb": "https://i.ytimg.com/vi/sybQP86c05E/mqdefault.jpg", "dur": "2:04:11"}, {"id": "TlaxOHLggE0", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual Music for Deep Focus and Chill", "thumb": "https://i.ytimg.com/vi/TlaxOHLggE0/mqdefault.jpg", "dur": "2:06:40"}, {"id": "YPSc9wc4Jc8", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for After Hours Study", "thumb": "https://i.ytimg.com/vi/YPSc9wc4Jc8/mqdefault_live.jpg", "dur": ""}, {"id": "hY6CHtKrR5Y", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual | Relaxing Tribal Lounge Jazz Rhythms", "thumb": "https://i.ytimg.com/vi/hY6CHtKrR5Y/mqdefault.jpg", "dur": "2:04:57"}, {"id": "fbVSadQTBO0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Grooves and Late Night Focus", "thumb": "https://i.ytimg.com/vi/fbVSadQTBO0/mqdefault.jpg", "dur": "1:01:06"}, {"id": "picE14n_xXU", "title": "After Hours Ritual Jazz | Hypnotic Tribal Grooves and Relaxing Nocturnal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/picE14n_xXU/mqdefault.jpg", "dur": "1:03:25"}, {"id": "8FqoGRXbMGU", "title": "Tribal Lounge Jazz - Sacred Grooves ~ Deep Tribal Jazz Instrumental & After Hours Ritual Jazz", "thumb": "https://i.ytimg.com/vi/8FqoGRXbMGU/mqdefault.jpg", "dur": "1:01:09"}, {"id": "R15uCApKrPc", "title": "Tribal Lounge Jazz - After Hours Ritual Jazz & Relaxing Nocturnal Tribal Jazz Melodies", "thumb": "https://i.ytimg.com/vi/R15uCApKrPc/mqdefault.jpg", "dur": "1:03:09"}, {"id": "wEW98-m9erk", "title": "Deep Tribal Jazz Instrumental | Sacred Grooves & Midnight Afro Ritual for After Hours Bliss", "thumb": "https://i.ytimg.com/vi/wEW98-m9erk/mqdefault.jpg", "dur": "1:02:28"}, {"id": "Gyl4i6DUJDc", "title": "Deep Tribal Jazz Instrumental | After Hours Ritual Jazz ~ Relaxing Midnight Afro Rituals", "thumb": "https://i.ytimg.com/vi/Gyl4i6DUJDc/mqdefault.jpg", "dur": "1:01:02"}, {"id": "ZkLorSzF468", "title": "Tribal lounge jazz - Sacred grooves - Midnight afro ritual & deep tribal jazz instrumental", "thumb": "https://i.ytimg.com/vi/ZkLorSzF468/mqdefault.jpg", "dur": "1:00:12"}, {"id": "sTfZ5D2ToPg", "title": "Hypnotic Tribal Lounge Jazz ~ Deep Focus Ritual Grooves for Relaxation", "thumb": "https://i.ytimg.com/vi/sTfZ5D2ToPg/mqdefault.jpg", "dur": "1:03:29"}, {"id": "mSQ2Dh3J-hM", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental & Sacred Grooves for Late Night Focus", "thumb": "https://i.ytimg.com/vi/mSQ2Dh3J-hM/mqdefault.jpg", "dur": "1:01:01"}, {"id": "H_1d9pISVvs", "title": "Hypnotic Tribal Grooves | After Hours Ritual Jazz | Deep Tribal Jazz Instrumental Relaxation", "thumb": "https://i.ytimg.com/vi/H_1d9pISVvs/mqdefault.jpg", "dur": "1:03:35"}, {"id": "YCnE6-V_K-4", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ After Hours Sacred Grooves Relaxing", "thumb": "https://i.ytimg.com/vi/YCnE6-V_K-4/mqdefault.jpg", "dur": "1:01:38"}, {"id": "S-dl8SIZrpA", "title": "Tribal lounge jazz | Sacred grooves for deep focus and midnight afro ritual at after hours", "thumb": "https://i.ytimg.com/vi/S-dl8SIZrpA/mqdefault.jpg", "dur": "1:00:26"}, {"id": "RdV_UxV3G-U", "title": "Midnight Afro Ritual - Hypnotic Tribal Grooves | Relaxing Tribal Lounge Jazz For Deep Focus", "thumb": "https://i.ytimg.com/vi/RdV_UxV3G-U/mqdefault.jpg", "dur": "1:01:54"}, {"id": "eZXB572z52c", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental | Sacred Grooves for Spiritual Focus", "thumb": "https://i.ytimg.com/vi/eZXB572z52c/mqdefault.jpg", "dur": "1:00:14"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

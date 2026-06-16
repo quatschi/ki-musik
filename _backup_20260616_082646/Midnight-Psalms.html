@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight-Psalms</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCpTsB8sK0Jw4Uoz-b97f9IA -->
+<!-- channel-url: https://www.youtube.com/@midnightpsalms-x7h -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Midnight-Psalms.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/RPrczntGBmrvwvAbT6VdUeQsV62g3rFMWun2po6xYhkdV2ijwzeLgxWUhLdVPDl7K0JBW9QnJug=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Midnight-Psalms</div>
+      <div class="channel-count">27 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Midnight-Psalms";
+const VIDEOS = [{"id": "yWDIbOPimSs", "title": "Tribal Lounge Jazz 2026 🌙 Warm Jazz & Hypnotic Tribal Grooves | Deep Night Ritual Vibes", "thumb": "https://i.ytimg.com/vi/yWDIbOPimSs/mqdefault.jpg", "dur": "0:23"}, {"id": "4tJDpyPaGJQ", "title": "Tribal Lounge Jazz Ritual 🌙 Deep Bass, Hypnotic Grooves & Midnight Lounge Sessions", "thumb": "https://i.ytimg.com/vi/4tJDpyPaGJQ/mqdefault.jpg", "dur": "2:04:15"}, {"id": "k5SaCEog7_w", "title": "Tribal Lounge Jazz 2026 🌙 Warm Jazz & Hypnotic Tribal Grooves | Deep Night Ritual Vibes", "thumb": "https://i.ytimg.com/vi/k5SaCEog7_w/mqdefault.jpg", "dur": "0:36"}, {"id": "96tCkCEJmn8", "title": "Tribal Lounge Jazz 2026 🌙 Warm Jazz & Hypnotic Tribal Grooves | Deep Night Ritual Vibes", "thumb": "https://i.ytimg.com/vi/96tCkCEJmn8/mqdefault.jpg", "dur": "2:27:45"}, {"id": "8o5Z5U0wRWI", "title": "Sacred Tribal Lounge Jazz 🌙 Deep Night Rituals for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/8o5Z5U0wRWI/mqdefault.jpg", "dur": "2:07:11"}, {"id": "dBUGIc-UhTI", "title": "Deep Tribal Jazz 🌒 Dark Lounge Beats for Focus, Work & Late Night Flow", "thumb": "https://i.ytimg.com/vi/dBUGIc-UhTI/mqdefault.jpg", "dur": "4:39:48"}, {"id": "TwhNBCk5rfw", "title": "Tribal Lounge Jazz ✨ Hypnotic Tribal Rhythms & Warm Midnight Jazz for Relaxation", "thumb": "https://i.ytimg.com/vi/TwhNBCk5rfw/mqdefault.jpg", "dur": "2:05:15"}, {"id": "AFq1r4Z_1fQ", "title": "Tribal Lounge Jazz 🌙 Deep Ritual Grooves for Focus, Study & Night Work", "thumb": "https://i.ytimg.com/vi/AFq1r4Z_1fQ/mqdefault.jpg", "dur": "2:10:41"}, {"id": "qFSSPjgPLiY", "title": "Sacred Tribal Lounge Jazz 🌙 Night Ritual Grooves for Deep Focus & Flow", "thumb": "https://i.ytimg.com/vi/qFSSPjgPLiY/mqdefault.jpg", "dur": "2:22:52"}, {"id": "t5FGHKV-C1k", "title": "Tribal Lounge Jazz After Dark 🌙 – Sacred Ritual Grooves | Deep Focus & Night Vibes", "thumb": "https://i.ytimg.com/vi/t5FGHKV-C1k/mqdefault.jpg", "dur": "2:11:20"}, {"id": "QGsDWu5eFME", "title": "After Hours Ritual Jazz 🌙 Tribal Lounge Grooves for Deep Focus & Sacred Vibes", "thumb": "https://i.ytimg.com/vi/QGsDWu5eFME/mqdefault.jpg", "dur": "2:04:05"}, {"id": "AZIaliPC7pk", "title": "Hypnotic Tribal Jazz Nights 🌙 Deep Instrumental Grooves for Focus & Late-Night Flow", "thumb": "https://i.ytimg.com/vi/AZIaliPC7pk/mqdefault.jpg", "dur": "2:01:59"}, {"id": "WC_09ApEt10", "title": "Hypnotic Tribal Jazz Nights 🌙 Deep Instrumental Grooves for Focus & Late Vibes", "thumb": "https://i.ytimg.com/vi/WC_09ApEt10/mqdefault.jpg", "dur": "2:08:08"}, {"id": "tXt_3DsRQrw", "title": "After Hours Tribal Lounge Jazz 🌙 Sacred Grooves for Night Vibes & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/tXt_3DsRQrw/mqdefault.jpg", "dur": "2:22:32"}, {"id": "-WqlmLul7e4", "title": "Listen for 4 Minutes… Feel the Shift 🌿 | Tibetan Flute Healing & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/-WqlmLul7e4/mqdefault.jpg", "dur": "1:14:32"}, {"id": "UP3TwBk6xFQ", "title": "An Ancient Tibetan Flute That Feels Like Healing 🎧｜Deep Calm & Inner Peace", "thumb": "https://i.ytimg.com/vi/UP3TwBk6xFQ/mqdefault.jpg", "dur": "1:21:21"}, {"id": "Ot2MAanWHwE", "title": "This Ancient Tibetan Flute Heals What Medicine Can’t | Deep Soul Cleanse", "thumb": "https://i.ytimg.com/vi/Ot2MAanWHwE/mqdefault.jpg", "dur": "1:01:34"}, {"id": "0K_bMF-PoWA", "title": "Ancient Tibetan Flute for Healing & Deep Sleep | 432Hz Miracle Meditation Music", "thumb": "https://i.ytimg.com/vi/0K_bMF-PoWA/mqdefault.jpg", "dur": "1:51:12"}, {"id": "egDjqx5jrcw", "title": "This Ancient Tibetan Flute Feels Like Healing 🌿 | Deep Relaxation Music", "thumb": "https://i.ytimg.com/vi/egDjqx5jrcw/mqdefault.jpg", "dur": "1:17:04"}, {"id": "u7o_ouQRCNQ", "title": "This Healing Flute Sound Feels Unbelievable 🌿 Deep Relaxation & Inner Peace", "thumb": "https://i.ytimg.com/vi/u7o_ouQRCNQ/mqdefault.jpg", "dur": "1:07:43"}, {"id": "7UCe_NtVkDU", "title": "Listen 5 Minutes a Day ✨ Healing Flute for Deep Relaxation & Inner Peace", "thumb": "https://i.ytimg.com/vi/7UCe_NtVkDU/mqdefault.jpg", "dur": "1:35:25"}, {"id": "9Q_NIfNUoNE", "title": "Ancient Tibetan Flute Healing 🧘‍♂️ | Deep Sleep & Meditation Music That Feels Like Magic", "thumb": "https://i.ytimg.com/vi/9Q_NIfNUoNE/mqdefault.jpg", "dur": "1:18:20"}, {"id": "4hj-Hd5bhso", "title": "Deep Healing Tibetan Flute 🧘‍♂️ | Feel Calm Instantly • Sleep & Meditation", "thumb": "https://i.ytimg.com/vi/4hj-Hd5bhso/mqdefault.jpg", "dur": "1:39:39"}, {"id": "otJNscz-XrQ", "title": "This Ancient Tibetan Flute Heals What Words Cannot 🧘‍♂️ | Deep Sleep & Inner Peace", "thumb": "https://i.ytimg.com/vi/otJNscz-XrQ/mqdefault.jpg", "dur": "2:42:12"}, {"id": "opyWOLhwzKI", "title": "Listen 5 Minutes a Day: Tibetan Healing Flute to Stop Overthinking & Relax Mind", "thumb": "https://i.ytimg.com/vi/opyWOLhwzKI/mqdefault.jpg", "dur": "2:17:59"}, {"id": "skZVcLJDkDk", "title": "This Ancient Tibetan Flute Heals What Medicine Cannot | Deep Healing Meditation Music", "thumb": "https://i.ytimg.com/vi/skZVcLJDkDk/mqdefault.jpg", "dur": "2:35:10"}, {"id": "blGdJNKvTwM", "title": "Doctors Can't Explain This Ancient Tibetan Flute! A Healing Miracle", "thumb": "https://i.ytimg.com/vi/blGdJNKvTwM/mqdefault.jpg", "dur": "13:11"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

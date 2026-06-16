@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Native Luxury Lounge</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCaLkDGvyb8iBgC1X5-qS7ig -->
+<!-- channel-url: https://www.youtube.com/@nativeluxurylounge -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Native_Luxury_Lounge.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/UUxce9rd8VF-CwuCnQFu0xyR4NXQMCzeGWeOxuc2MeAb93Zppd2JdOOSWZKgFvcqBf9E5vh76is=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Native Luxury Lounge</div>
+      <div class="channel-count">21 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Native Luxury Lounge";
+const VIDEOS = [{"id": "sdZ02urephM", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/sdZ02urephM/mqdefault.jpg", "dur": "1:05:41"}, {"id": "zAHyvApwLaQ", "title": "Tribal Luxury Jazz Lounge - Stylish Native Decor | Smooth Saxophone & Calm Vibes", "thumb": "https://i.ytimg.com/vi/zAHyvApwLaQ/mqdefault.jpg", "dur": "1:04:36"}, {"id": "f7JzVZQEMI4", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/f7JzVZQEMI4/mqdefault.jpg", "dur": "1:05:48"}, {"id": "P7RsFCtblWE", "title": "Native Tribal Lounge Jazz - Vintage Jazz Room | Smooth Sax & Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/P7RsFCtblWE/mqdefault.jpg", "dur": "1:05:57"}, {"id": "40Q_fz7u6TI", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/40Q_fz7u6TI/mqdefault.jpg", "dur": "1:04:51"}, {"id": "2ToW5tWv6is", "title": "Tribal Lounge Jazz - Cozy Native Sax & Piano Nights | Luxury Lounge Relaxing Ambience", "thumb": "https://i.ytimg.com/vi/2ToW5tWv6is/mqdefault.jpg", "dur": "1:06:26"}, {"id": "Njz1X8aaA1U", "title": "Tribal Night Jazz Lounge | Modern Cozy Interior | Elegant Sax & Lounge Piano Flow", "thumb": "https://i.ytimg.com/vi/Njz1X8aaA1U/mqdefault.jpg", "dur": "1:04:21"}, {"id": "Qg1vqUhXTj0", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/Qg1vqUhXTj0/mqdefault.jpg", "dur": "1:06:52"}, {"id": "-mvrk4na1e8", "title": "Tribal Chill Jazz Lounge - Intimate Night Ambience | Warm Sax & Soft Piano Mood", "thumb": "https://i.ytimg.com/vi/-mvrk4na1e8/mqdefault.jpg", "dur": "1:06:11"}, {"id": "XTo2_UvDmSA", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/XTo2_UvDmSA/mqdefault.jpg", "dur": "1:06:42"}, {"id": "gecAj5luNeo", "title": "Native Tribal Lounge Jazz - Vintage Jazz Room | Smooth Sax & Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/gecAj5luNeo/mqdefault.jpg", "dur": "1:05:10"}, {"id": "DhmNquxTSZc", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/DhmNquxTSZc/mqdefault.jpg", "dur": "1:04:40"}, {"id": "NMgd0dpniOE", "title": "Tribal Lounge Jazz - Native Luxury Lounge | Smooth Saxophone & Warm Vibes", "thumb": "https://i.ytimg.com/vi/NMgd0dpniOE/mqdefault.jpg", "dur": "1:06:15"}, {"id": "GAP5na3U2Dg", "title": "Tribal Jazz Lounge Music | Modern Cozy Interior & Native Luxury Lounge", "thumb": "https://i.ytimg.com/vi/GAP5na3U2Dg/mqdefault.jpg", "dur": "1:04:09"}, {"id": "xIhhr1DB0Fg", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/xIhhr1DB0Fg/mqdefault.jpg", "dur": "1:05:14"}, {"id": "VSTnN4QIaXY", "title": "Tribal Luxury Jazz Lounge - Stylish Native Decor | Smooth Saxophone & Calm Vibes", "thumb": "https://i.ytimg.com/vi/VSTnN4QIaXY/mqdefault.jpg", "dur": "1:07:13"}, {"id": "zi40KVut99A", "title": "Tribal Lounge Jazz for Intimate Nights - Warm Sax & Soft Piano Ambiance", "thumb": "https://i.ytimg.com/vi/zi40KVut99A/mqdefault.jpg", "dur": "1:05:09"}, {"id": "OjB50OdDnu4", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/OjB50OdDnu4/mqdefault.jpg", "dur": "1:04:44"}, {"id": "0ocbWg8hC6w", "title": "Native Luxury Lounge Jazz ~ Tribal Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/0ocbWg8hC6w/mqdefault.jpg", "dur": "1:06:03"}, {"id": "8UQOCjdMkOA", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/8UQOCjdMkOA/mqdefault.jpg", "dur": "1:06:06"}, {"id": "_nX8ll1GDSk", "title": "Tribal Jazz Lounge - Warm Leather Sofa Vibes | Smooth Saxophone & Late Night Piano", "thumb": "https://i.ytimg.com/vi/_nX8ll1GDSk/mqdefault.jpg", "dur": "1:01:02"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

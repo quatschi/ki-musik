@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jazz³+</title>
+<!-- categories: Lounge, Jazz -->
+<!-- channel-id: UC6fJWTS7Tvt_nqCtETt1Awg -->
+<!-- channel-url: https://www.youtube.com/@jazzcubeplus -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Jazz³.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/78f-z7wykSsgUZgyIVuPtPfFSybr0p_ZY-hFghxj8aMeg4Hcc5Ckw9xz9I8GhLlUPCLjPZzS7EU=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Jazz³+</div>
+      <div class="channel-count">83 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Jazz\u00b3+";
+const VIDEOS = [{"id": "KLjx_xGT2AY", "title": "Chick Corea Piano Solo - Live in San Francisco 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/KLjx_xGT2AY/mqdefault.jpg", "dur": "25:24"}, {"id": "YAPpr3Oe4y8", "title": "Carlos Santana & John McLaughlin - Live at the Berkeley Community Theater 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/YAPpr3Oe4y8/mqdefault.jpg", "dur": "1:42:05"}, {"id": "Vr6eBelMFwc", "title": "Mahavishnu Orchestra - Live at the Whiskey a Go Go 1972 [audio only]", "thumb": "https://i.ytimg.com/vi/Vr6eBelMFwc/mqdefault.jpg", "dur": "1:13:41"}, {"id": "UJrdNYOJZr0", "title": "Gary Burton Quartet - Live in Rotterdam 1967 [audio only]", "thumb": "https://i.ytimg.com/vi/UJrdNYOJZr0/mqdefault.jpg", "dur": "25:54"}, {"id": "eSuXDxTH_Ag", "title": "Stan Getz & Gerry Mulligan: Getz Meets Mulligan in Hi-Fi – That Old Feeling / This Can't Be Love", "thumb": "https://i.ytimg.com/vi/eSuXDxTH_Ag/mqdefault.jpg", "dur": "15:27"}, {"id": "UXJsPWLmOUQ", "title": "Oscar Peterson Trio feat. Ray Brown & Louis Hayes - Live in Montréal 1965 [audio only]", "thumb": "https://i.ytimg.com/vi/UXJsPWLmOUQ/mqdefault.jpg", "dur": "57:55"}, {"id": "_L8teq39-sU", "title": "Al Di Meola - Live at the Santa Monica Civic Auditorium 1978 [audio only]", "thumb": "https://i.ytimg.com/vi/_L8teq39-sU/mqdefault.jpg", "dur": "1:18:36"}, {"id": "PelZrBr5qm8", "title": "Milt Jackson All Stars Quartet - Live at Yoshi's 1998 [audio only]", "thumb": "https://i.ytimg.com/vi/PelZrBr5qm8/mqdefault.jpg", "dur": "1:12:46"}, {"id": "o1TN9AwaSkA", "title": "Oscar Peterson Quartet feat. Joe Pass - Live at the Blue Note 1986 [audio only]", "thumb": "https://i.ytimg.com/vi/o1TN9AwaSkA/mqdefault.jpg", "dur": "1:13:01"}, {"id": "ZBTmFy-ZUAo", "title": "Freddie Hubbard Quintet - Live in New York City 1982 [audio only]", "thumb": "https://i.ytimg.com/vi/ZBTmFy-ZUAo/mqdefault.jpg", "dur": "1:00:40"}, {"id": "knvqcIFBb8E", "title": "Ella Fitzgerald - Live at Tower Theatre 1980 [audio only]", "thumb": "https://i.ytimg.com/vi/knvqcIFBb8E/mqdefault.jpg", "dur": "58:46"}, {"id": "udy1CGWuICg", "title": "Diana Krall - Live in Dublin 1999 [audio only]", "thumb": "https://i.ytimg.com/vi/udy1CGWuICg/mqdefault.jpg", "dur": "55:50"}, {"id": "I26orEhZr7M", "title": "Ella Fitzgerald & Joe Pass - Live in Hamburg 1976 [audio only]", "thumb": "https://i.ytimg.com/vi/I26orEhZr7M/mqdefault.jpg", "dur": "54:51"}, {"id": "xM56p90aCfQ", "title": "Lou Rawls - Live in Syracuse 2004 [audio only]", "thumb": "https://i.ytimg.com/vi/xM56p90aCfQ/mqdefault.jpg", "dur": "1:26:03"}, {"id": "uXkJdNYkDsQ", "title": "McCoy Tyner Trio with Marc Ribot - Live at Yoshi's 2008 [audio only]", "thumb": "https://i.ytimg.com/vi/uXkJdNYkDsQ/mqdefault.jpg", "dur": "2:12:06"}, {"id": "RRjniK9R7Gs", "title": "Mahavishnu Orchestra - Live at Avery Fisher Hall 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/RRjniK9R7Gs/mqdefault.jpg", "dur": "1:28:57"}, {"id": "H7F9mpfY6g4", "title": "Al Di Meola Project - Live at the Chestnut Cabaret 1987 [audio only]", "thumb": "https://i.ytimg.com/vi/H7F9mpfY6g4/mqdefault.jpg", "dur": "1:42:01"}, {"id": "2OVpNRWqefk", "title": "Mahavishnu Orchestra - Live in Buffalo 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/2OVpNRWqefk/mqdefault.jpg", "dur": "1:48:11"}, {"id": "yzkfaZlPZdw", "title": "Return to Forever IV - Live in Marciac 2011 [audio only]", "thumb": "https://i.ytimg.com/vi/yzkfaZlPZdw/mqdefault.jpg", "dur": "1:32:31"}, {"id": "tFsrAVJZ4GU", "title": "Return to Forever - Live in Vienna 1975 [audio only]", "thumb": "https://i.ytimg.com/vi/tFsrAVJZ4GU/mqdefault.jpg", "dur": "2:06:27"}, {"id": "5mrOpXCrv-s", "title": "Charles Mingus Quintet - Live in Helsinki 1976 [audio only]", "thumb": "https://i.ytimg.com/vi/5mrOpXCrv-s/mqdefault.jpg", "dur": "2:27:00"}, {"id": "k1IyPQFpc9I", "title": "Chick Corea Elektric Band - Live in Calgary 1987 [audio only]", "thumb": "https://i.ytimg.com/vi/k1IyPQFpc9I/mqdefault.jpg", "dur": "1:08:40"}, {"id": "b_2IS74Jz0o", "title": "Sonny Rollins - Live at SUNY Binghamton 1979 [audio only]", "thumb": "https://i.ytimg.com/vi/b_2IS74Jz0o/mqdefault.jpg", "dur": "47:02"}, {"id": "4DLuFCiZDFU", "title": "Ralph Towner - Live in Berlin 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/4DLuFCiZDFU/mqdefault.jpg", "dur": "36:24"}, {"id": "UqakTu15gUM", "title": "Charles Lloyd Quartet feat. Michel Petrucciani - Live in Copenhagen 1983 [audio only]", "thumb": "https://i.ytimg.com/vi/UqakTu15gUM/mqdefault.jpg", "dur": "38:51"}, {"id": "lF5BvgbVfuM", "title": "Benny Golson Quartet - Live in Salzburg 2005 [audio only]", "thumb": "https://i.ytimg.com/vi/lF5BvgbVfuM/mqdefault.jpg", "dur": "1:20:36"}, {"id": "IsloD-tmUHk", "title": "Dave Brubeck Quintet feat. Gerry Mulligan - Live in Uppsala 1972 [audio only]", "thumb": "https://i.ytimg.com/vi/IsloD-tmUHk/mqdefault.jpg", "dur": "57:01"}, {"id": "rdUUOu9jIpE", "title": "Return to Forever - Live in Springfield 1974 [audio only]", "thumb": "https://i.ytimg.com/vi/rdUUOu9jIpE/mqdefault.jpg", "dur": "1:30:17"}, {"id": "XkCOC_aa7b4", "title": "Al Di Meola: Electric Rendezvous - Live in San Francisco 1982 [audio only]", "thumb": "https://i.ytimg.com/vi/XkCOC_aa7b4/mqdefault.jpg", "dur": "1:16:01"}, {"id": "bAbeFlkEdGo", "title": "Larry Coryell & The Eleventh House - Live in Boston 1973 [audio only]", "thumb": "https://i.ytimg.com/vi/bAbeFlkEdGo/mqdefault.jpg", "dur": "55:16"}, {"id": "MrT2Vq-yd2Q", "title": "Art Blakey & His Jazz Messengers feat. Wayne Shorter - Live in Munich 1959 [audio only]", "thumb": "https://i.ytimg.com/vi/MrT2Vq-yd2Q/mqdefault.jpg", "dur": "37:19"}, {"id": "ThQ4BH-p8Vg", "title": "Lionel Hampton & His All Stars - Live in Chicago 1980 [audio only]", "thumb": "https://i.ytimg.com/vi/ThQ4BH-p8Vg/mqdefault.jpg", "dur": "36:31"}, {"id": "rORWz5sIinI", "title": "Jaki Byard - Live in Chicago 1992 [audio only]", "thumb": "https://i.ytimg.com/vi/rORWz5sIinI/mqdefault.jpg", "dur": "45:59"}, {"id": "9jwOyP43S-w", "title": "Jimmy Smith Trio - Live in Paris 1968 [audio only]", "thumb": "https://i.ytimg.com/vi/9jwOyP43S-w/mqdefault.jpg", "dur": "54:39"}, {"id": "0-HeJOa7a4I", "title": "Gary Burton Quartet - Live in Vienna 1968 [audio only]", "thumb": "https://i.ytimg.com/vi/0-HeJOa7a4I/mqdefault.jpg", "dur": "53:18"}, {"id": "alzhohjUPxk", "title": "Gateway Trio: John Abercrombie / Dave Holland / Jack DeJohnette - Live in Glasgow 1994 [audio only]", "thumb": "https://i.ytimg.com/vi/alzhohjUPxk/mqdefault.jpg", "dur": "1:07:40"}, {"id": "2Tt6ZdMRrwE", "title": "Gateway Trio: John Abercrombie / Dave Holland / Jack DeJohnette - Live in Umea 1996 [audio only]", "thumb": "https://i.ytimg.com/vi/2Tt6ZdMRrwE/mqdefault.jpg", "dur": "1:15:03"}, {"id": "JiNVAxOyt_g", "title": "Gateway Trio: John Abercrombie / Dave Holland / Jack DeJohnette - Live in Bremen 1983 [audio only]", "thumb": "https://i.ytimg.com/vi/JiNVAxOyt_g/mqdefault.jpg", "dur": "2:36:59"}, {"id": "aRl47Yav1Tg", "title": "Jaco Pastorius Quintet - Live in Toulouse 1985 [audio only]", "thumb": "https://i.ytimg.com/vi/aRl47Yav1Tg/mqdefault.jpg", "dur": "1:35:21"}, {"id": "IwTl4nz2B-o", "title": "Gateway Trio: John Abercrombie / Dave Holland / Jack DeJohnette - Live in Debrecen 1983 [audio only]", "thumb": "https://i.ytimg.com/vi/IwTl4nz2B-o/mqdefault.jpg", "dur": "1:19:25"}, {"id": "cNffJwPWHjg", "title": "Peter Bernstein, Larry Goldings & Bill Stewart - Live in Paris 2000 [audio only]", "thumb": "https://i.ytimg.com/vi/cNffJwPWHjg/mqdefault.jpg", "dur": "1:09:20"}, {"id": "oij4-pXqpxY", "title": "John McLaughlin & Mahavishnu with Carlos Santana & Zakir Hussain - Live in San Francisco 1985", "thumb": "https://i.ytimg.com/vi/oij4-pXqpxY/mqdefault.jpg", "dur": "2:11:01"}, {"id": "kHG4Sjkso0Y", "title": "Dollar Brand (Abdullah Ibrahim) - Live in Hamburg 1977", "thumb": "https://i.ytimg.com/vi/kHG4Sjkso0Y/mqdefault.jpg", "dur": "41:38"}, {"id": "kLruNOaTBlk", "title": "Larry Goldings, Peter Bernstein, Bill Stewart - Live in Munich 2013 [audio only]", "thumb": "https://i.ytimg.com/vi/kLruNOaTBlk/mqdefault.jpg", "dur": "1:20:38"}, {"id": "s5QVcYeT74I", "title": "Robert Glasper with Chris Dave, Derrick Hodge & Yasiin Bey - North Sea Jazz Festival 2019", "thumb": "https://i.ytimg.com/vi/s5QVcYeT74I/mqdefault.jpg", "dur": "1:21:31"}, {"id": "SajuDaY3RYU", "title": "Arturo Sandoval - Estival Jazz Lugano 2013", "thumb": "https://i.ytimg.com/vi/SajuDaY3RYU/mqdefault.jpg", "dur": "1:36:51"}, {"id": "hu-XQ8Tclz4", "title": "Simon Phillips & Protocol: 30th Anniversary Tour - Leverkusener Jazztage 2019", "thumb": "https://i.ytimg.com/vi/hu-XQ8Tclz4/mqdefault.jpg", "dur": "55:40"}, {"id": "wmbEh9sMr54", "title": "Steve Gadd Band - North Sea Jazz Festival 2019", "thumb": "https://i.ytimg.com/vi/wmbEh9sMr54/mqdefault.jpg", "dur": "1:07:15"}, {"id": "1Fl0tSLFrs0", "title": "Billy Cobham Spectrum feat. Larry Coryell, Victor Bailey, Tom Coster - Live in Italy 2004", "thumb": "https://i.ytimg.com/vi/1Fl0tSLFrs0/mqdefault.jpg", "dur": "1:29:00"}, {"id": "kiPJjYTMYKk", "title": "Cécile McLorin Salvant - Heineken Jazzaldia 2018", "thumb": "https://i.ytimg.com/vi/kiPJjYTMYKk/mqdefault.jpg", "dur": "1:23:29"}, {"id": "YhDu7ku3fiI", "title": "Kinga Głyk - Leverkusener Jazztage 2017", "thumb": "https://i.ytimg.com/vi/YhDu7ku3fiI/mqdefault.jpg", "dur": "58:16"}, {"id": "l-Zdn0Rzvks", "title": "Toots Thielemans Quartet - JazzBaltica 1998", "thumb": "https://i.ytimg.com/vi/l-Zdn0Rzvks/mqdefault.jpg", "dur": "1:02:38"}, {"id": "ORIdBQWA0uw", "title": "Larry Carlton Quartet - Festival de Jazz de Vitoria-Gasteiz 2017", "thumb": "https://i.ytimg.com/vi/ORIdBQWA0uw/mqdefault.jpg", "dur": "59:20"}, {"id": "GO3N7fWmY6s", "title": "Madeleine Peyroux - Festival de Jazz de Vitoria-Gasteiz 2009", "thumb": "https://i.ytimg.com/vi/GO3N7fWmY6s/mqdefault.jpg", "dur": "1:11:27"}, {"id": "PWPSf1t0l0M", "title": "Sarah McKenzie  - Jazz San Javier 2016", "thumb": "https://i.ytimg.com/vi/PWPSf1t0l0M/mqdefault.jpg", "dur": "1:16:45"}, {"id": "dRX-50NjeoU", "title": "Fourplay - Live at Tokyo Jazz 2008", "thumb": "https://i.ytimg.com/vi/dRX-50NjeoU/mqdefault.jpg", "dur": "1:05:58"}, {"id": "x93MdkzXAyc", "title": "Bob James Band - Live at Tokyo Jazz 2007", "thumb": "https://i.ytimg.com/vi/x93MdkzXAyc/mqdefault.jpg", "dur": "22:08"}, {"id": "KWlBSXSjuyY", "title": "Dave Brubeck Trio feat. Gerry Mulligan & Paul Desmond - Berliner Jazztage 1972", "thumb": "https://i.ytimg.com/vi/KWlBSXSjuyY/mqdefault.jpg", "dur": "1:17:20"}, {"id": "NZphx8uT4Us", "title": "Bucky Pizzarelli Trio & Scott Hamilton - Umbria Jazz 1999", "thumb": "https://i.ytimg.com/vi/NZphx8uT4Us/mqdefault.jpg", "dur": "49:16"}, {"id": "HdLvwAPt_Vg", "title": "John Pizzarelli sings Sinatra & The Beatles - Jazz San Javier 2007", "thumb": "https://i.ytimg.com/vi/HdLvwAPt_Vg/mqdefault.jpg", "dur": "1:00:39"}, {"id": "0QsnTbZavaA", "title": "Chris Potter, Dave Holland, Lionel Loueke, Eric Harland - Festival de Jazz de Vitoria Gasteiz 2015", "thumb": "https://i.ytimg.com/vi/0QsnTbZavaA/mqdefault.jpg", "dur": "1:05:15"}, {"id": "mf2c6-Uo4KI", "title": "Pat Martino Trio (feat. Joey DeFrancesco) & John Scofield - Umbria Jazz 2002", "thumb": "https://i.ytimg.com/vi/mf2c6-Uo4KI/mqdefault.jpg", "dur": "55:07"}, {"id": "if6xrd2I-Ok", "title": "Chick Corea & Gary Burton - Live in Saint Petersburg 2008", "thumb": "https://i.ytimg.com/vi/if6xrd2I-Ok/mqdefault.jpg", "dur": "2:05:23"}, {"id": "7iWOCF4StYg", "title": "Larry Coryell, Bireli Lagrene, Aladar Pege - Live in Cologne 1994", "thumb": "https://i.ytimg.com/vi/7iWOCF4StYg/mqdefault.jpg", "dur": "1:18:12"}, {"id": "93o0IlbWCLw", "title": "Hank Jones & Ron Carter - Great Jazz in Kobe 1996", "thumb": "https://i.ytimg.com/vi/93o0IlbWCLw/mqdefault.jpg", "dur": "1:38:02"}, {"id": "gHrNLBGF1QE", "title": "James Carter Quintet - Jazz San Javier 2010", "thumb": "https://i.ytimg.com/vi/gHrNLBGF1QE/mqdefault.jpg", "dur": "1:16:44"}, {"id": "hD1RaCbK8PA", "title": "Ron Carter Quintet - Jazz San Javier 2009", "thumb": "https://i.ytimg.com/vi/hD1RaCbK8PA/mqdefault.jpg", "dur": "1:14:08"}, {"id": "pcgKwSsWkzg", "title": "Wynton Marsalis & Jazz At Lincoln Center Orchestra - Jazz San Javier 2011", "thumb": "https://i.ytimg.com/vi/pcgKwSsWkzg/mqdefault.jpg", "dur": "1:09:09"}, {"id": "HSeJSWwEyoE", "title": "Joe Pass: \"An Evening With Joe Pass\" (1994)", "thumb": "https://i.ytimg.com/vi/HSeJSWwEyoE/mqdefault.jpg", "dur": "1:26:56"}, {"id": "Ex92TZRuSAA", "title": "Incognito - Live at Baloise Session 2013", "thumb": "https://i.ytimg.com/vi/Ex92TZRuSAA/mqdefault.jpg", "dur": "1:16:14"}, {"id": "9XX7D_Q1rFg", "title": "Welcome to Jazz³+", "thumb": "https://i.ytimg.com/vi/9XX7D_Q1rFg/mqdefault.jpg", "dur": "1:30"}, {"id": "X1-rTN8UOSk", "title": "Milt Jackson & Benny Golson & Art Farmer & NHØP - JazzBaltica 1997", "thumb": "https://i.ytimg.com/vi/X1-rTN8UOSk/mqdefault.jpg", "dur": "1:13:05"}, {"id": "y6CVzxavttY", "title": "Eddie Palmieri - Estival Jazz Lugano 2013", "thumb": "https://i.ytimg.com/vi/y6CVzxavttY/mqdefault.jpg", "dur": "57:35"}, {"id": "huircINOI5w", "title": "Diana Krall - Live at North Sea Jazz Festival 2013", "thumb": "https://i.ytimg.com/vi/huircINOI5w/mqdefault.jpg", "dur": "1:18:27"}, {"id": "oFpt4Y0SlUQ", "title": "Diana Krall Trio - Live in Montreal 1996", "thumb": "https://i.ytimg.com/vi/oFpt4Y0SlUQ/mqdefault.jpg", "dur": "54:37"}, {"id": "kBy9RbmvIoY", "title": "Diana Krall - Live in Concert 2002", "thumb": "https://i.ytimg.com/vi/kBy9RbmvIoY/mqdefault.jpg", "dur": "48:06"}, {"id": "HaxNsv3oPik", "title": "Stanley Clarke Band feat. Hiromi - Heineken Jazzaldia 2010", "thumb": "https://i.ytimg.com/vi/HaxNsv3oPik/mqdefault.jpg", "dur": "1:25:38"}, {"id": "NGJ2AaIVGl8", "title": "Return To Forever: Chick Corea, Stanley Clarke, Al Di Meola, Lenny White - 43 Jazzaldia Festival", "thumb": "https://i.ytimg.com/vi/NGJ2AaIVGl8/mqdefault.jpg", "dur": "1:20:24"}, {"id": "7ne-Bd7A8EI", "title": "Bireli Lagrene Trio feat. Didier Lockwood - Festival de Jazz de Vitoria-Gasteiz 2010", "thumb": "https://i.ytimg.com/vi/7ne-Bd7A8EI/mqdefault.jpg", "dur": "1:16:26"}, {"id": "uTtilMeCnPQ", "title": "John Scofield Uberjam Band - Live in Concert 2013", "thumb": "https://i.ytimg.com/vi/uTtilMeCnPQ/mqdefault.jpg", "dur": "58:21"}, {"id": "aSBc_08GrA8", "title": "Esperanza Spalding - Live in Concert 2012", "thumb": "https://i.ytimg.com/vi/aSBc_08GrA8/mqdefault.jpg", "dur": "1:15:16"}, {"id": "Qnt4yLLJg4o", "title": "The Hang All Stars - Leverkusener Jazztage 2009", "thumb": "https://i.ytimg.com/vi/Qnt4yLLJg4o/mqdefault.jpg", "dur": "1:13:57"}, {"id": "8ohWe1PwsyI", "title": "Bob James, David Sanborn & Steve Gadd - Leverkusener Jazztage 2013", "thumb": "https://i.ytimg.com/vi/8ohWe1PwsyI/mqdefault.jpg", "dur": "47:12"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

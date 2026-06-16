@@ -34,12 +34,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Delta_Blues_Legends.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -56,20 +76,58 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Delta Blues Legends";
 const VIDEOS = [{"id": "yQRl-6yfjig", "title": "Santana – Velvet Moon Reverie (1974) | Latin Soul Blues & Midnight Guitar Fire", "thumb": "https://i.ytimg.com/vi/yQRl-6yfjig/mqdefault.jpg", "dur": "1:50:34"}, {"id": "q_vQGEuTqn4", "title": "Santana & Malo – Midnight Barrio Jam | Vintage Latin Rock Soul Session", "thumb": "https://i.ytimg.com/vi/q_vQGEuTqn4/mqdefault.jpg", "dur": "1:47:30"}, {"id": "nN31O11LhuA", "title": "Santana – Lonely Spirits & Burning Strings | Deep Latin Soul Blues Mood", "thumb": "https://i.ytimg.com/vi/nN31O11LhuA/mqdefault.jpg", "dur": "1:39:44"}, {"id": "3WgBwhrBvuw", "title": "Santana & Peter Green – Desert Moon Blues Prayer | Latin Soul Guitar Sessions", "thumb": "https://i.ytimg.com/vi/3WgBwhrBvuw/mqdefault.jpg", "dur": "1:47:40"}, {"id": "fQoEDkiPIkI", "title": "Santana & Rory Gallagher – Whiskey Shadows & Neon Blues | Latin Soul Nights", "thumb": "https://i.ytimg.com/vi/fQoEDkiPIkI/mqdefault.jpg", "dur": "1:40:55"}, {"id": "9RZD4cgoxog", "title": "Santana & Jeff Beck – Whiskey & Static 🎸 Smoky Blues Guitar Sessions After Midnight", "thumb": "https://i.ytimg.com/vi/9RZD4cgoxog/mqdefault.jpg", "dur": "1:48:24"}, {"id": "j4jFVQIdv78", "title": "Santana & War – Latin Fire & Midnight Funk 🌴 Vintage Blues Club Experience", "thumb": "https://i.ytimg.com/vi/j4jFVQIdv78/mqdefault.jpg", "dur": "1:41:01"}, {"id": "8pUUDmDeByc", "title": "Santana & B.B. King – Backstage Blues Memories 🎸 Late Night Soul Guitar Stories", "thumb": "https://i.ytimg.com/vi/8pUUDmDeByc/mqdefault.jpg", "dur": "1:57:13"}, {"id": "IBy8pIT-qMk", "title": "Santana & Jeff Beck – Electric Shadows 🎸 Noir Blues Live Sessions After Midnight", "thumb": "https://i.ytimg.com/vi/IBy8pIT-qMk/mqdefault.jpg", "dur": "1:51:19"}, {"id": "jAwXKuBz-FE", "title": "Crying Guitars in the Dark 🔥 Deep Soul Blues Rock | Santana & Gary Moore Vibes", "thumb": "https://i.ytimg.com/vi/jAwXKuBz-FE/mqdefault.jpg", "dur": "1:47:40"}, {"id": "ywGsqdU3MfI", "title": "Santana & B.B. King – Midnight Soul Crossroads 🎸 Vintage Blues Rock Sessions 1980s Style", "thumb": "https://i.ytimg.com/vi/ywGsqdU3MfI/mqdefault.jpg", "dur": "1:47:23"}, {"id": "xbIAGj2sZvA", "title": "Delta Roots, Chicago Fire | Inspired by Robert Johnson & Muddy Waters (1936–1950s)", "thumb": "https://i.ytimg.com/vi/xbIAGj2sZvA/mqdefault.jpg", "dur": "2:26:37"}, {"id": "OqJhG4GNWOc", "title": "Hendrix & Stevie Ray Vaughan 🎸 Blues Rock Power Electric Guitar Storm 432Hz (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/OqJhG4GNWOc/mqdefault.jpg", "dur": "1:18:19"}, {"id": "aDuH18sBQf4", "title": "Santana & Joe Bataan 🔥 Psychedelic Latin Soul Groove Deep Night Vibes 432Hz (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/aDuH18sBQf4/mqdefault.jpg", "dur": "1:12:41"}, {"id": "PpDjDJdp8vc", "title": "Hendrix & Clapton 🎸 Blues Rock Legends Psychedelic Guitar Journey 432Hz (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/PpDjDJdp8vc/mqdefault.jpg", "dur": "1:22:20"}, {"id": "OzxLQmSYa2o", "title": "Santana & El Chicano 🔥 Latin Soul Rock Fusion Deep Cosmic Ride 432Hz (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/OzxLQmSYa2o/mqdefault.jpg", "dur": "1:15:29"}, {"id": "LChYrY6yRQs", "title": "Forgotten Roads of Clarksdale | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/LChYrY6yRQs/mqdefault.jpg", "dur": "1:58:09"}, {"id": "fz0amTEmRNU", "title": "Moonlit Confessions of Clarksdale | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/fz0amTEmRNU/mqdefault.jpg", "dur": "1:56:36"}, {"id": "LKFmiHAZHYI", "title": "Tin Cup Gospel from the Mississippi Delta | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/LKFmiHAZHYI/mqdefault.jpg", "dur": "2:02:37"}, {"id": "LI_F9a9Tw58", "title": "Delta Ash & Soot Ballads | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/LI_F9a9Tw58/mqdefault.jpg", "dur": "2:08:13"}, {"id": "9JvLIrO3D40", "title": "Clarksdale Delta Blues | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/9JvLIrO3D40/mqdefault.jpg", "dur": "1:56:07"}, {"id": "gsq4WdieDjU", "title": "Dark Delta Blues Stories | Inspired by Robert Johnson 1936–1937", "thumb": "https://i.ytimg.com/vi/gsq4WdieDjU/mqdefault.jpg", "dur": "1:51:34"}, {"id": "vIlmAJWqHFk", "title": "Delta Blues Journey | Inspired by Robert Johnson (1936–1937)", "thumb": "https://i.ytimg.com/vi/vIlmAJWqHFk/mqdefault.jpg", "dur": "1:51:15"}, {"id": "2jae6HmUj98", "title": "Inspired by Robert Johnson (1936–1937) | Delta Blues Road Sessions", "thumb": "https://i.ytimg.com/vi/2jae6HmUj98/mqdefault.jpg", "dur": "1:51:50"}, {"id": "i1kT6l1YHHM", "title": "Robert Johnson – Two of Me (1930s) | Delta Identity Inspired Sessions | A Man Split Between Shadows", "thumb": "https://i.ytimg.com/vi/i1kT6l1YHHM/mqdefault.jpg", "dur": "1:23:01"}, {"id": "sjTW2KFT4xI", "title": "Robert Johnson – Empty Plate Don’t Cry (1930s) | Southern Hard Times Inspired Blues | Hunger, Dust", "thumb": "https://i.ytimg.com/vi/sjTW2KFT4xI/mqdefault.jpg", "dur": "1:29:56"}, {"id": "XAQQ8wXFwLs", "title": "Robert Johnson – No One Noticed (1930s) | Delta Isolation Inspired Sessions | A Life Unseen, Unheard", "thumb": "https://i.ytimg.com/vi/XAQQ8wXFwLs/mqdefault.jpg", "dur": "2:07:08"}, {"id": "hHrx5fgzZb8", "title": "Robert Johnson – River Don’t Remember Me (1930s) | Delta Inspired Sessions | Long Road Into Nowhere", "thumb": "https://i.ytimg.com/vi/hHrx5fgzZb8/mqdefault.jpg", "dur": "1:57:39"}, {"id": "82N31zR6Nco", "title": "Robert Johnson – Midnight Love Blues (1930s) | Delta Lost Sessions | Dark Desire & Broken Hearts", "thumb": "https://i.ytimg.com/vi/82N31zR6Nco/mqdefault.jpg", "dur": "2:04:52"}, {"id": "Nq3IufTJ2RU", "title": "Robert Johnson – Long Road Blues (1930s) | Delta Lost Sessions | Deep Southern Journey", "thumb": "https://i.ytimg.com/vi/Nq3IufTJ2RU/mqdefault.jpg", "dur": "1:58:38"}, {"id": "W2vR_gBmu9E", "title": "Robert Johnson – Long Way Blues (1937)[Delta Lost Sessions] | Deep Southern Roads", "thumb": "https://i.ytimg.com/vi/W2vR_gBmu9E/mqdefault.jpg", "dur": "1:28:15"}, {"id": "MoirkAA4mLs", "title": "Robert Johnson – Midnight Crossroads (1936)[Delta Lost Sessions] | Dark Delta Blues Night", "thumb": "https://i.ytimg.com/vi/MoirkAA4mLs/mqdefault.jpg", "dur": "1:23:13"}, {"id": "jLAL-9fJ06o", "title": "Robert Johnson & Muddy Waters Inspired – From Crossroads to South Side (1938–1941) [Delta–Chicago]", "thumb": "https://i.ytimg.com/vi/jLAL-9fJ06o/mqdefault.jpg", "dur": "1:20:38"}, {"id": "6Q0FoXWDRr8", "title": "Robert Johnson – Crossroads Testament (1936) [Delta Lost Sessions] | Haunted Mississippi Blues", "thumb": "https://i.ytimg.com/vi/6Q0FoXWDRr8/mqdefault.jpg", "dur": "1:13:43"}, {"id": "tl3fLvP7cn0", "title": "Robert Johnson – A blues moment you feel 🎧 | Back Road Sorrow", "thumb": "https://i.ytimg.com/vi/tl3fLvP7cn0/mqdefault.jpg", "dur": "2:08"}, {"id": "ou2Z1Q5TzD4", "title": "Robert Johnson & Son House Inspired – Church Steps & Crossroads (1936) [Delta Lost Sessions]", "thumb": "https://i.ytimg.com/vi/ou2Z1Q5TzD4/mqdefault.jpg", "dur": "1:04:39"}, {"id": "I1anIxtUqg4", "title": "Mississippi John Hurt – Gentle Hands of the Road (1928) [Avalon Lost Sessions] | Rare Country Blues", "thumb": "https://i.ytimg.com/vi/I1anIxtUqg4/mqdefault.jpg", "dur": "33:21"}, {"id": "fXG2hyfnzgw", "title": "Robert Johnson – Dreams Don’t Stay Quiet (1936) | Delta Blues Archive • AI Music", "thumb": "https://i.ytimg.com/vi/fXG2hyfnzgw/mqdefault.jpg", "dur": "1:17:41"}, {"id": "T3KDZSjp1n0", "title": "Where the Delta still sings 🎸 | Low Down Prayer | Son House", "thumb": "https://i.ytimg.com/vi/T3KDZSjp1n0/mqdefault.jpg", "dur": "1:49"}, {"id": "St-_ct42rQ4", "title": "Willie Brown – Ramblin’ & Moanin’ (1933) [Mississippi Archive] | Deep Roots Delta Blues", "thumb": "https://i.ytimg.com/vi/St-_ct42rQ4/mqdefault.jpg", "dur": "1:13:58"}, {"id": "mPQ0tCMVWN8", "title": "Blues like it’s 1931 🌑 | Back Road Sorrow", "thumb": "https://i.ytimg.com/vi/mPQ0tCMVWN8/mqdefault.jpg", "dur": "1:50"}, {"id": "CpTcus8uXC8", "title": "This part feels like the Delta 🌾 | Mississippi Moan", "thumb": "https://i.ytimg.com/vi/CpTcus8uXC8/mqdefault.jpg", "dur": "2:05"}, {"id": "mmvESsz5K7E", "title": "Bukka White – Mississippi Blues Legacy (1937) [Delta Lost Sessions] | Raw Country Blues", "thumb": "https://i.ytimg.com/vi/mmvESsz5K7E/mqdefault.jpg", "dur": "1:08:21"}, {"id": "GiSUW72hGYw", "title": "This riff tells a hard story 🌫️ | Dust on My Shoes", "thumb": "https://i.ytimg.com/vi/GiSUW72hGYw/mqdefault.jpg", "dur": "1:21"}, {"id": "zmPYPHNMLjY", "title": "Tommy Johnson – Devil’s Road Songs (1928) [Lost 78rpm Sessions] | Primitive Folklore Blues", "thumb": "https://i.ytimg.com/vi/zmPYPHNMLjY/mqdefault.jpg", "dur": "1:10:57"}, {"id": "DnaujbOOnMI", "title": "Howlin’ Wolf – Moanin’ at Midnight (1952) [South Side Lost Sessions] | Electric Delta Blues", "thumb": "https://i.ytimg.com/vi/DnaujbOOnMI/mqdefault.jpg", "dur": "1:23:31"}, {"id": "9IskfWqm-gg", "title": "Robert Johnson – Time Don’t Take Sides (1936) | Deep Delta Blues • AI Music", "thumb": "https://i.ytimg.com/vi/9IskfWqm-gg/mqdefault.jpg", "dur": "1:15:25"}, {"id": "nNogDyQHQvM", "title": "Robert Johnson – Where the Road Went Dark (1936) | Traveling Blues • AI Music", "thumb": "https://i.ytimg.com/vi/nNogDyQHQvM/mqdefault.jpg", "dur": "1:15:22"}, {"id": "y39bFMAgOnI", "title": "John Lee Hooker – Lonely Christmas Drifter (1955) | Swamp Blues Archive • AI Music", "thumb": "https://i.ytimg.com/vi/y39bFMAgOnI/mqdefault.jpg", "dur": "1:13:08"}, {"id": "zgdv41V1eyw", "title": "B.B. King – Christmas Blues Won't Fade (1960) | Legendary Blues Archive • AI Music", "thumb": "https://i.ytimg.com/vi/zgdv41V1eyw/mqdefault.jpg", "dur": "1:17:37"}, {"id": "iO4fsSxzzwI", "title": "Robert Johnson – Ain’t Looking Back No More (1936) | Delta Blues • AI Tribute", "thumb": "https://i.ytimg.com/vi/iO4fsSxzzwI/mqdefault.jpg", "dur": "1:26:48"}, {"id": "vZDHKhkAYYs", "title": "Robert Johnson Inspired – Where the Road Turns Dark (1936) [AI Sessions] | Delta Blues Reimagined", "thumb": "https://i.ytimg.com/vi/vZDHKhkAYYs/mqdefault.jpg", "dur": "1:07:39"}, {"id": "LAxUfh8cFsg", "title": "Robert Johnson Inspired – Dustbound Crossroads Tale (1936) [AI Sessions] | Reimagined Delta Blues", "thumb": "https://i.ytimg.com/vi/LAxUfh8cFsg/mqdefault.jpg", "dur": "1:13:46"}, {"id": "oVLbRuuAAsE", "title": "Muddy Waters – Can’t Rest, Can’t Forget You (1951) [Delta to Chicago Sessions] | • AI Music", "thumb": "https://i.ytimg.com/vi/oVLbRuuAAsE/mqdefault.jpg", "dur": "59:19"}, {"id": "3NUi-WBZZ7g", "title": "Son House – Preachin’ Dust Roads (1931) [Delta Lost Sessions] | Haunted Mississippi Blues • AI Music", "thumb": "https://i.ytimg.com/vi/3NUi-WBZZ7g/mqdefault.jpg", "dur": "1:20:05"}, {"id": "_KzOlVXyl_k", "title": "Robert Johnson Inspired – Crossroads Whisper Hymns (1936) [AI Delta Sessions] | Old-World Blues", "thumb": "https://i.ytimg.com/vi/_KzOlVXyl_k/mqdefault.jpg", "dur": "1:13:26"}, {"id": "XcY-mVV_leY", "title": "Robert Johnson Inspired – Crossroads Legacy (1936) [AI Delta Revival] | Recrafted Mississippi Blues", "thumb": "https://i.ytimg.com/vi/XcY-mVV_leY/mqdefault.jpg", "dur": "1:20:19"}, {"id": "WgJk7p2PgYc", "title": "Robert Johnson – Spirit Strings of the Delta (1936) [Lost Sessions] | Mississippi Blues Rarities", "thumb": "https://i.ytimg.com/vi/WgJk7p2PgYc/mqdefault.jpg", "dur": "1:14:00"}, {"id": "UZHqN06rGSE", "title": "Robert Johnson – Whiskey Moon Oath (1936-1937) [Delta Lost Sessions] | Dark Southern Blues Lore", "thumb": "https://i.ytimg.com/vi/UZHqN06rGSE/mqdefault.jpg", "dur": "40:24"}, {"id": "jbgjo-gDqdI", "title": "Skip James – Devil’s Moan Echoes (1931) [Delta Lost Sessions] | Rare Haunting Blues Reverie", "thumb": "https://i.ytimg.com/vi/jbgjo-gDqdI/mqdefault.jpg", "dur": "38:49"}, {"id": "EydVE9_E-gc", "title": "Robert Johnson – Riverbone Tales (1937) [Delta Lost Sessions] | Grisly Folk-Blues Reverie", "thumb": "https://i.ytimg.com/vi/EydVE9_E-gc/mqdefault.jpg", "dur": "37:35"}, {"id": "FX8gmiCpBow", "title": "Muddy Waters – Rolling River Spirit (1950) [Chicago Lost Sessions] | Rare Electric Blues Revival", "thumb": "https://i.ytimg.com/vi/FX8gmiCpBow/mqdefault.jpg", "dur": "39:27"}, {"id": "Ubr6eAw44W8", "title": "Son House – Dark Road Testimony (1931) [Delta Field Recordings] | Forgotten Blues Masters", "thumb": "https://i.ytimg.com/vi/Ubr6eAw44W8/mqdefault.jpg", "dur": "1:12:27"}, {"id": "DAEGQ1kCZXA", "title": "Charley Patton – PONY BLUES AGAIN (1929) [Delta Lost Sessions] | Rare Mississippi Blues", "thumb": "https://i.ytimg.com/vi/DAEGQ1kCZXA/mqdefault.jpg", "dur": "39:17"}, {"id": "Bd9C3S6_cRg", "title": "Robert Johnson – Crossroads Legacy (1936) [Delta Lost Sessions] | Rare Mississippi Blues", "thumb": "https://i.ytimg.com/vi/Bd9C3S6_cRg/mqdefault.jpg", "dur": "36:26"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -110,38 +168,42 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
-
-loadRatings();
 </script>
 </body>
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PerintisProject1</title>
+<!-- categories: Tribal, Jazz -->
+<!-- channel-id: UCUVZBedlmry826auBBLRYKg -->
+<!-- channel-url: https://youtube.com/@perintisproject1 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=PerintisProject1.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/sIhKqrwcQ8jVnpH9UTshXRvbmIVHEjZN24MCSzLdBHNmAKzNw4sLO63oCWUE0IlCCzz2A1Bz=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">PerintisProject1</div>
+      <div class="channel-count">23 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "PerintisProject1";
+const VIDEOS = [{"id": "uOLyYrtCYFQ", "title": "Deep Tribal Jazz Instrumental | Sacred Night Ceremony ~ Deep Afro Groove", "thumb": "https://i.ytimg.com/vi/uOLyYrtCYFQ/mqdefault.jpg", "dur": "1:48:35"}, {"id": "xAssqESyu8s", "title": "Deep Tribal Jazz Instrumental | Midnight Ancestral Echoes ~ Mystic Groove Flow", "thumb": "https://i.ytimg.com/vi/xAssqESyu8s/mqdefault.jpg", "dur": "1:48:40"}, {"id": "uFIec0mXtno", "title": "Deep Tribal Jazz Instrumental | Moonlight Tribal Echoes ~ Spiritual Jazz Drift", "thumb": "https://i.ytimg.com/vi/uFIec0mXtno/mqdefault.jpg", "dur": "1:48:59"}, {"id": "ShPsa7Ml_7Q", "title": "Deep Tribal Jazz Instrumental | Ancient Groove Spirits ~ Midnight Ritual Flow", "thumb": "https://i.ytimg.com/vi/ShPsa7Ml_7Q/mqdefault.jpg", "dur": "1:48:35"}, {"id": "bCk-h5KFAL0", "title": "Deep Tribal Jazz Instrumental | Mystic Night Rituals ~ Sacred Echo Vibes", "thumb": "https://i.ytimg.com/vi/bCk-h5KFAL0/mqdefault.jpg", "dur": "1:48:39"}, {"id": "LHle81Tn_g4", "title": "Deep Tribal Jazz Instrumental | Tribal Moon Ceremony ~ Deep Afro Flow", "thumb": "https://i.ytimg.com/vi/LHle81Tn_g4/mqdefault.jpg", "dur": "1:48:39"}, {"id": "KUoDpDFy_VQ", "title": "Deep Tribal Jazz Instrumental | Midnight Sacred Rhythms ~ Mystic Groove Journey", "thumb": "https://i.ytimg.com/vi/KUoDpDFy_VQ/mqdefault.jpg", "dur": "1:48:35"}, {"id": "Sn4hHhiY86A", "title": "Deep Tribal Jazz Instrumental | Midnight Ceremony ~ Deep Mystic Grooves", "thumb": "https://i.ytimg.com/vi/Sn4hHhiY86A/mqdefault.jpg", "dur": "1:48:35"}, {"id": "kqgK48IczVA", "title": "Deep Tribal Jazz Instrumental | Ethnic Moon Vibes ~ Ritual Groove Escape", "thumb": "https://i.ytimg.com/vi/kqgK48IczVA/mqdefault.jpg", "dur": "1:48:39"}, {"id": "erh1tsEwds8", "title": "Deep Tribal Jazz Instrumental | Spiritual Midnight Echoes ~ Afro Flow", "thumb": "https://i.ytimg.com/vi/erh1tsEwds8/mqdefault.jpg", "dur": "1:48:35"}, {"id": "vZqMr_pNS38", "title": "Deep Tribal Jazz Instrumental | Hypnotic Ritual Nights ~ Deep Groove Journey", "thumb": "https://i.ytimg.com/vi/vZqMr_pNS38/mqdefault.jpg", "dur": "1:48:35"}, {"id": "zz5E-QSGS3k", "title": "Deep Tribal Jazz Instrumental | Sacred Tribal Drift ~ Midnight Jazz Echoes", "thumb": "https://i.ytimg.com/vi/zz5E-QSGS3k/mqdefault.jpg", "dur": "1:48:35"}, {"id": "3Pu4q4P3FJc", "title": "Deep Tribal Jazz Instrumental | Mystic Desert Grooves ~ Tribal Soul Drift", "thumb": "https://i.ytimg.com/vi/3Pu4q4P3FJc/mqdefault.jpg", "dur": "1:48:35"}, {"id": "AB9Cwao_v0Y", "title": "Deep Tribal Jazz Instrumental | Afro Nocturnal Vibes ~ Sacred Rhythm Journey", "thumb": "https://i.ytimg.com/vi/AB9Cwao_v0Y/mqdefault.jpg", "dur": "1:48:39"}, {"id": "veckzl3d9mo", "title": "Deep Tribal Jazz Instrumental | Midnight Ritual Echoes ~ Mystic Groove Flow", "thumb": "https://i.ytimg.com/vi/veckzl3d9mo/mqdefault.jpg", "dur": "1:48:39"}, {"id": "iFapIbNahqM", "title": "Deep Tribal Jazz Instrumental | Mystic Night Grooves ~ Afro Ritual Flow", "thumb": "https://i.ytimg.com/vi/iFapIbNahqM/mqdefault.jpg", "dur": "1:48:35"}, {"id": "FpCaf2Lngqc", "title": "Deep Tribal Jazz Focus | Sacred Afro Grooves & Midnight Ritual for Study Flow", "thumb": "https://i.ytimg.com/vi/FpCaf2Lngqc/mqdefault.jpg", "dur": "1:48:35"}, {"id": "qtDnEKKl-fs", "title": "After Hours Tribal Jazz Ritual | Deep Afro Midnight Grooves for Relaxing Sacred Vibes", "thumb": "https://i.ytimg.com/vi/qtDnEKKl-fs/mqdefault.jpg", "dur": "1:50:36"}, {"id": "aTVMpJMlWr4", "title": "Midnight Tribal Jazz Ritual | Deep Afro Grooves for Sacred After-Hours Vibes", "thumb": "https://i.ytimg.com/vi/aTVMpJMlWr4/mqdefault.jpg", "dur": "1:48:35"}, {"id": "GHHvZW47OZo", "title": "Mystic Night Grooves | Deep Tribal Jazz Instrumental ~ Afro Ritual Flow", "thumb": "https://i.ytimg.com/vi/GHHvZW47OZo/mqdefault.jpg", "dur": "51:47"}, {"id": "EWEy_iJTVuc", "title": "Hidden Ritual Sound | Deep Tribal Jazz ~ Midnight Afro Groove Session", "thumb": "https://i.ytimg.com/vi/EWEy_iJTVuc/mqdefault.jpg", "dur": "51:47"}, {"id": "i6sdxnPY6JI", "title": "Dark Ritual Sessions | Deep Tribal Jazz ~ Afro Midnight Sacred Grooves", "thumb": "https://i.ytimg.com/vi/i6sdxnPY6JI/mqdefault.jpg", "dur": "51:47"}, {"id": "Zf6ubLIIq1k", "title": "Midnight Tribal Jazz Vibes | Afro Ritual Instrumental ~ Deep Sacred Flow", "thumb": "https://i.ytimg.com/vi/Zf6ubLIIq1k/mqdefault.jpg", "dur": "51:47"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>

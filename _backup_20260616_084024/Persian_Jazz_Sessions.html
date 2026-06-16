@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persian Jazz Music</title>
+<!-- categories: Lounge, Jazz -->
+<!-- channel-id:  -->
+<!-- channel-url: https://www.youtube.com/@persianjazzmusic -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+</style>
+</head>
+<body>
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Persian_Jazz_Sessions.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/7rZ_zf2QZJ-0-sls2CLH0DPUglGZmlMYz7ARsgGXM3_Wnzbhgqo2R9e3I_sXVAvUadzNFW4zvKQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Persian Jazz Music</div>
+      <div class="channel-count">33 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const CHANNEL = "Persian Jazz Music";
+const VIDEOS = [{"id": "_vl5ZtPaLHQ", "title": "ماما جان یکی یه پول خروس، به سبک جَزِ فارسی، نوستالژیک و خاطره‌انگیز", "thumb": "https://i.ytimg.com/vi/_vl5ZtPaLHQ/mqdefault.jpg", "dur": "14:18"}, {"id": "-3QJA9noIgc", "title": "کاری شنیدنی با صدای خواننده‌ی زن، غزلی از استاد مطلق سخن، و موسیقی جَز با مایه‌های تانگوی آرژانتینی", "thumb": "https://i.ytimg.com/vi/-3QJA9noIgc/mqdefault.jpg", "dur": "3:08"}, {"id": "1rzCtI_AAE8", "title": "دقایقی موسیقی جَز ایرانی، با حس و حالِ قدیمی، به لحن مدرن", "thumb": "https://i.ytimg.com/vi/1rzCtI_AAE8/mqdefault.jpg", "dur": "17:44"}, {"id": "3QnqeJYdgzE", "title": "مرغ سحر ناله سر کن I یک ساعت کامل موسیقی جَز ایرانی با حال‌وهوای نوستالژیکِ قدیمی", "thumb": "https://i.ytimg.com/vi/3QnqeJYdgzE/mqdefault.jpg", "dur": "1:14:07"}, {"id": "d7Zs8UtD3Tc", "title": "غمی که فقط خودمان می‌فهمیم‌اش: کاروان به سبک و سیاق جَز", "thumb": "https://i.ytimg.com/vi/d7Zs8UtD3Tc/mqdefault.jpg", "dur": "9:51"}, {"id": "GEsXJIfvrMg", "title": "یک‌ساعت‌ونیم موسیقی جَز؛ بازنوازی «دوکبوتر» با حال‌وهوای ایرانی، ریتم کُند، و غمناک", "thumb": "https://i.ytimg.com/vi/GEsXJIfvrMg/mqdefault.jpg", "dur": "1:35:52"}, {"id": "8_EN754Ct8A", "title": "لحظاتی از رنجِ این روزها؛ یک ساعت موسیقی جَزِ غمناک و آرام", "thumb": "https://i.ytimg.com/vi/8_EN754Ct8A/mqdefault.jpg", "dur": "1:03:52"}, {"id": "kvyCvuVFs-c", "title": "یک ساعت موسیقی جَز: ای ایران", "thumb": "https://i.ytimg.com/vi/kvyCvuVFs-c/mqdefault.jpg", "dur": "1:07:00"}, {"id": "sKlmLHswkTQ", "title": "...فردا تو می‌آیی", "thumb": "https://i.ytimg.com/vi/sKlmLHswkTQ/mqdefault.jpg", "dur": "36:30"}, {"id": "r5Q_3j2qxAA", "title": "یه توت ما رُ نجات داد: یک ساعت موسیقی جَز، با مایه‌های غم و نوستالژی", "thumb": "https://i.ytimg.com/vi/r5Q_3j2qxAA/mqdefault.jpg", "dur": "1:00:32"}, {"id": "QiqAg1Q8Vb4", "title": "یک ساعت موسیقی جَز ایرانی با «شب به گلستان تنها...»، در حال‌وهوای تنهایی", "thumb": "https://i.ytimg.com/vi/QiqAg1Q8Vb4/mqdefault.jpg", "dur": "1:16:34"}, {"id": "KXQ6B3khX1A", "title": "یک ساعت موسیقی جَز غمناکِ ایرانی، برای لحظه‌های خستگیِ این روزها", "thumb": "https://i.ytimg.com/vi/KXQ6B3khX1A/mqdefault.jpg", "dur": "1:06:38"}, {"id": "3UNbnmOm6_M", "title": "امشب شب مهتابه و آهنگ‌های دیگر با حال‌وهوای پرسه‌ای در شیراز، به سبک جَز... مناسب قدم‌زدن در شهر", "thumb": "https://i.ytimg.com/vi/3UNbnmOm6_M/mqdefault.jpg", "dur": "1:00:03"}, {"id": "lB84ZUSouKE", "title": "یک ساعت موسیقی جَز با حال و هوای غمِ ایرانی، برای لحظه‌های طولانیِ این روزها", "thumb": "https://i.ytimg.com/vi/lB84ZUSouKE/mqdefault.jpg", "dur": "1:04:19"}, {"id": "QrnnnLgc2Ww", "title": "به یاد خنیاگرِ زیبای جنوب؛ بازنوازی «مهمانی» اثر ناصر عبداللهی به سبک جَز", "thumb": "https://i.ytimg.com/vi/QrnnnLgc2Ww/mqdefault.jpg", "dur": "5:07"}, {"id": "bMoxUgw_Kho", "title": "باز اجرای یک قطعه‌ی درخشان و خاطره‌انگیز از دوران‌های طلایی: «گلنار» اثرِ داریوش رفیعی", "thumb": "https://i.ytimg.com/vi/bMoxUgw_Kho/mqdefault.jpg", "dur": "18:21"}, {"id": "WUuJ2eCbfZs", "title": "یادی از پوران، خواننده‌ی بزرگ ایرانی: نو اجرایِ قطعه‌ی خاطره‌انگیزِ «زندگی آی زندگی» به سبک جَز", "thumb": "https://i.ytimg.com/vi/WUuJ2eCbfZs/mqdefault.jpg", "dur": "9:29"}, {"id": "4_fQFgLIHhs", "title": "نوستالژی‌بازی: بازنوازی «دیگه رفته»، اثر ماندگار سامان، به سبک جَز", "thumb": "https://i.ytimg.com/vi/4_fQFgLIHhs/mqdefault.jpg", "dur": "7:30"}, {"id": "mtTrHpmSdaM", "title": "نو‌ اجرایی از شاهکار ویگن؛ قطعه‌ی «بازگشت» به سبک و سیاقِ جز، غمناک اما دل‌انگیز", "thumb": "https://i.ytimg.com/vi/mtTrHpmSdaM/mqdefault.jpg", "dur": "8:21"}, {"id": "3FUWuXbfIo4", "title": "قطعه‌ای سراسر خاطره؛ بازنوازی «کوه» گوگوش، به سبکِ جَز، خوش‌ریتم و شنیدنی", "thumb": "https://i.ytimg.com/vi/3FUWuXbfIo4/mqdefault.jpg", "dur": "3:59"}, {"id": "NVzYq6GQwm4", "title": "بازنوازیِ قطعه‌ی نوستالژیکِ «نفرین»، اثر آرتوش، به سبک جَز", "thumb": "https://i.ytimg.com/vi/NVzYq6GQwm4/mqdefault.jpg", "dur": "5:32"}, {"id": "PUghQFAm8dE", "title": "یادی از بانوی آواز ایران هایده؛ بازنوازی ترانه‌ی سال به سبک جَز - هنوز به یاد خونه، همه دلامون خونه", "thumb": "https://i.ytimg.com/vi/PUghQFAm8dE/mqdefault.jpg", "dur": "3:15"}, {"id": "Qdcu6h9RI5c", "title": "بازنوازی قطعه‌ی خاطره‌انگیزِ «شب به گلستان تنها» به سبک جَز", "thumb": "https://i.ytimg.com/vi/Qdcu6h9RI5c/mqdefault.jpg", "dur": "4:05"}, {"id": "Ewl9Ba9lCD0", "title": "بازنوازی قطعه‌ی معرکه‌ی «غریب آشنا»، به سبک جز", "thumb": "https://i.ytimg.com/vi/Ewl9Ba9lCD0/mqdefault.jpg", "dur": "12:15"}, {"id": "ghrVMXdbnYo", "title": "بازنوازی «گل یخ» کوروش یغمایی، با تنظیم تازه به سبک جَز", "thumb": "https://i.ytimg.com/vi/ghrVMXdbnYo/mqdefault.jpg", "dur": "3:24"}, {"id": "v4KzRAfKbQU", "title": "عاشقم من، عاشقی بی‌قرارم، دلکش، بازنوازی با تنظیم جدید، به سبک جَز", "thumb": "https://i.ytimg.com/vi/v4KzRAfKbQU/mqdefault.jpg", "dur": "6:32"}, {"id": "KUMImmr0JUE", "title": "بازنوازی قطعه‌ی «ای یار من» هایده به صورت جَز و غمناک", "thumb": "https://i.ytimg.com/vi/KUMImmr0JUE/mqdefault.jpg", "dur": "6:23"}, {"id": "y5OhLhzNlnE", "title": "تو اِی پری کجایی؟ بازنوازی شده با تنظیم تازه، به سبکِ جَز", "thumb": "https://i.ytimg.com/vi/y5OhLhzNlnE/mqdefault.jpg", "dur": "6:45"}, {"id": "UZIyvBnYzlo", "title": "آهنگ «گل سنگم» هایده به سبک جَز - Stone Flower", "thumb": "https://i.ytimg.com/vi/UZIyvBnYzlo/mqdefault.jpg", "dur": "2:53"}, {"id": "Yqlpydwd5bk", "title": "مرا ببوس (به زبان جَز) - Persian Jazz: Kiss Me", "thumb": "https://i.ytimg.com/vi/Yqlpydwd5bk/mqdefault.jpg", "dur": "2:43"}, {"id": "GzxBHVhOilk", "title": "عاشق شدم من (به زبان جَز) - Persian Jazz: I Fell in Love", "thumb": "https://i.ytimg.com/vi/GzxBHVhOilk/mqdefault.jpg", "dur": "3:23"}, {"id": "NBPOx0ZMEiQ", "title": "بوی جوی مولیان آید همی (به زبان جَز) - Persian Jazz: The Aroma Of The Mūliyān River Is Drawing Near", "thumb": "https://i.ytimg.com/vi/NBPOx0ZMEiQ/mqdefault.jpg", "dur": "3:20"}, {"id": "N7u2pTOQKow", "title": "جَزِ فارسی: گم‌شده در کوچه‌باغ‌های روستا - Persian Jazz: Wandering the Village's Winding Alleyways", "thumb": "https://i.ytimg.com/vi/N7u2pTOQKow/mqdefault.jpg", "dur": "2:29"}];
+let ratings = {}, changed = false, fileHandle = null;
+
+async function loadRatings() {
+  try {
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+  } catch(e) {}
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
+async function saveRatings() {
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+  }
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+}
+
+loadRatings();
+</script>
+</body>
+</html>
