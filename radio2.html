@@ -32,9 +32,38 @@
   .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(180,150,255,0.3); border-top-color: #b496ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   .status-msg { font-size: 0.78rem; color: #7a6fa0; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .rating-row { display: flex; align-items: center; gap: 8px; margin: 10px 0 14px; }
+  .rating-label { font-size: 0.78rem; color: #7a6fa0; }
+  .stars { display: flex; gap: 4px; }
+  .star { font-size: 1.5rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-star { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-star:hover { color: #fff; }
+  .save-rating-btn { background: #5a3fa0; color: white; border: none; padding: 6px 16px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; }
+  .save-rating-btn:hover { background: #7a5fc0; }
+  .save-rating-btn:disabled { background: #3a2a70; cursor: wait; }
+  .rating-status { font-size: 0.75rem; font-style: italic; color: #7a6fa0; }
+  .rating-status.ok { color: #6fcf97; }
+  .rating-status.err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+<div class="token-overlay" id="token-overlay" style="display:none">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
   <a class="back" href="index.html">← Übersicht</a>
   <h1>🎵 KI-Musik Radio</h1>
   <p class="subtitle" id="subtitle">Zufälliger Kanal · Zufälliges Video</p>
@@ -160,32 +189,8 @@
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     const videos = [];
-
-    // Neue Struktur: VIDEOS-Array im Script-Tag (konvertierte Seiten)
-    const scriptTags = doc.querySelectorAll('script');
-    for (const script of scriptTags) {
-      const m = script.textContent.match(/const VIDEOS\s*=\s*(\[[\s\S]*?\]);/);
-      if (m) {
-        try {
-          const arr = JSON.parse(m[1]);
-          arr.forEach(v => {
-            if (v.id && v.title) {
-              videos.push({
-                videoId: v.id,
-                url: 'https://www.youtube.com/watch?v=' + v.id,
-                title: v.title,
-                dur: v.dur || ''
-              });
-            }
-          });
-          return videos;
-        } catch(e) {}
-      }
-    }
-
-    // Alte Struktur: <a class="video-card" href="...">
     doc.querySelectorAll('.video-card').forEach(card => {
-      const url = card.getAttribute('href') || card.querySelector('a[href*="youtube"]')?.getAttribute('href') || '';
+      const url = card.getAttribute('href');
       const title = card.querySelector('.video-title')?.textContent?.trim() || '';
       const dur = card.querySelector('.video-dur')?.textContent?.trim() || '';
       if (url && title) {
@@ -366,6 +371,8 @@
         }, 200);
       }
 
+      currentVideoId = video.videoId;
+      currentRating = 0;
       document.getElementById('info').innerHTML = `
         <div class="channel-row">
           ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
@@ -373,8 +380,18 @@
         </div>
         <div class="video-title">${video.title}</div>
         <div class="video-dur">${video.dur}${startSec > 0 ? ' · Einstieg bei ' + Math.floor(startSec/60) + ' min' : ''}</div>
+        <div class="rating-row">
+          <span class="rating-label">Bewertung:</span>
+          <div class="stars" id="radio-stars">
+            ${[1,2,3,4,5].map(n => `<span class="star" onclick="setRadioRating(${n})">★</span>`).join('')}
+          </div>
+          <button class="clear-star" onclick="setRadioRating(0)">✕</button>
+          <button class="save-rating-btn" id="radio-save-btn" onclick="saveRadioRating()">💾</button>
+          <span class="rating-status" id="radio-status"></span>
+        </div>
         <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
       `;
+      renderRadioStars();
       isLoading = false;
       return;
     }
@@ -385,8 +402,107 @@
     isLoading = false;
   }
 
+  // GitHub Bewertung
+  const GITHUB_USER = 'quatschi';
+  const GITHUB_REPO = 'ki-musik';
+  const GITHUB_FILE = 'noten.json';
+  const TOKEN_KEY = 'gh_token_ki_musik';
+  let currentVideoId = null;
+  let currentRating = 0;
+  let allRatings = {};
+
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+  function saveToken() {
+    const t = document.getElementById('token-input').value.trim();
+    if (!t) return;
+    localStorage.setItem(TOKEN_KEY, t);
+    document.getElementById('token-overlay').style.display = 'none';
+    saveRadioRatingNow();
+  }
+
+  async function loadAllRatings() {
+    if (!getToken()) return;
+    try {
+      const resp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      if (resp.ok) {
+        const data = await resp.json();
+        const content = JSON.parse(atob(data.content));
+        allRatings = content.ratings || {};
+      }
+    } catch(e) {}
+  }
+
+  function setRadioRating(val) {
+    currentRating = val;
+    renderRadioStars();
+  }
+
+  function renderRadioStars() {
+    const stars = document.querySelectorAll('#radio-stars .star');
+    stars.forEach((s,i) => s.classList.toggle('active', i < currentRating));
+  }
+
+  function setRadioStatus(msg, cls) {
+    const el = document.getElementById('radio-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'rating-status ' + (cls || '');
+  }
+
+  async function saveRadioRating() {
+    if (!getToken()) {
+      document.getElementById('token-overlay').style.display = 'flex';
+      return;
+    }
+    saveRadioRatingNow();
+  }
+
+  async function saveRadioRatingNow() {
+    if (!currentVideoId) return;
+    const btn = document.getElementById('radio-save-btn');
+    if (btn) btn.disabled = true;
+    setRadioStatus('Speichern...', '');
+
+    allRatings[currentVideoId] = currentRating;
+    const json = JSON.stringify({ channel: 'Radio', updated: new Date().toISOString(), ratings: allRatings }, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+
+    try {
+      let sha = null;
+      const getResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+      const body = { message: 'Bewertung aktualisiert', content: encoded };
+      if (sha) body.sha = sha;
+      const putResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }
+      );
+      if (putResp.ok) {
+        setRadioStatus('✓ Gespeichert', 'ok');
+      } else {
+        const err = await putResp.json();
+        setRadioStatus('Fehler: ' + (err.message || putResp.status), 'err');
+      }
+    } catch(e) {
+      setRadioStatus('Netzwerkfehler', 'err');
+    }
+    if (btn) btn.disabled = false;
+  }
+
   async function init() {
     channelList = await loadChannelList();
+    await loadAllRatings();
 
     // Toggle-Button für zufälligen Zeiteinstieg
     const fdiv = document.getElementById('filters');
