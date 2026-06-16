@@ -47,6 +47,8 @@
   .rating-status.err { color: #eb5757; }
   .bestof-btn { background: rgba(240,192,64,0.15); border: 1px solid rgba(240,192,64,0.4); border-radius: 20px; color: #f0c040; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
   .bestof-btn.active { background: rgba(240,192,64,0.35); border-color: rgba(240,192,64,0.8); }
+  .migrate-btn { background: rgba(100,200,100,0.15); border: 1px solid rgba(100,200,100,0.4); border-radius: 20px; color: #6fc96f; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
+  .migrate-btn:disabled { opacity: 0.5; cursor: wait; }
   .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
   .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
   .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
@@ -257,6 +259,59 @@
     return result;
   }
 
+  // Einmalige Migration: meta aus Kanal-HTMLs befüllen
+  async function migrateMeta() {
+    const btn = document.getElementById('btn-migrate');
+    if (btn) { btn.disabled = true; btn.textContent = '🔧 Lese Kanäle...'; }
+
+    const topIds = Object.entries(allRatings).filter(([id, stars]) => stars >= 4).map(([id]) => id);
+    if (!topIds.length) {
+      alert('Keine Bewertungen mit 4-5 Sternen vorhanden.');
+      if (btn) { btn.disabled = false; btn.textContent = '🔧 Meta reparieren'; }
+      return;
+    }
+    const topSet = new Set(topIds);
+    if (!window.allMeta) window.allMeta = {};
+
+    let found = 0;
+    for (const channel of channelList) {
+      if (btn) btn.textContent = `🔧 Lese ${channel.name}...`;
+      try {
+        const videos = await loadOneChannel(channel);
+        for (const v of videos) {
+          if (topSet.has(v.videoId) && !window.allMeta[v.videoId]?.title) {
+            window.allMeta[v.videoId] = { title: v.title, channel: channel.name };
+            found++;
+          }
+        }
+        // Wenn alle gefunden, früh aufhören
+        if (found >= topIds.length) break;
+      } catch(e) {}
+    }
+
+    // Speichern
+    if (btn) btn.textContent = '🔧 Speichere...';
+    const json = JSON.stringify({ channel: 'Radio', updated: new Date().toISOString(), ratings: allRatings, meta: window.allMeta }, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    try {
+      let sha = null;
+      const getResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      if (getResp.ok) { const ex = await getResp.json(); sha = ex.sha; }
+      const body = { message: 'Meta-Daten migriert', content: encoded };
+      if (sha) body.sha = sha;
+      await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+        { method: 'PUT', headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+      );
+      if (btn) { btn.textContent = `✓ ${found} Titel gefunden`; btn.style.color = '#6fcf97'; }
+    } catch(e) {
+      if (btn) { btn.textContent = '✗ Fehler'; btn.style.color = '#eb5757'; btn.disabled = false; }
+    }
+  }
+
   function toggleMode() {
     excludeMode = !excludeMode;
     excludedCats.clear();
@@ -397,16 +452,20 @@
             ytPlayer.loadVideoById({ videoId: video.videoId, startSeconds: startSec });
             startPlaybackTimeout();
           }
+          const metaEntry = window.allMeta?.[video.videoId] || {};
+          const displayTitle = (video.title && video.title !== video.videoId) ? video.title : (metaEntry.title || video.videoId);
+          const displayChannel = (ch.name && ch.name !== 'Unbekannt') ? ch.name : (metaEntry.channel || 'Unbekannt');
+          const chForThumb = channelList.find(c => c.name === displayChannel) || ch;
           currentVideoId = video.videoId;
-          currentVideoTitle = video.title;
-          currentChannelName = ch.name;
+          currentVideoTitle = displayTitle;
+          currentChannelName = displayChannel;
           currentRating = allRatings[video.videoId] || 0;
           document.getElementById('info').innerHTML = `
             <div class="channel-row">
-              ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
-              <span class="channel-name">${ch.name}</span>
+              ${chForThumb.thumb ? `<img class="channel-thumb" src="${chForThumb.thumb}" onerror="this.style.display='none'">` : ''}
+              <span class="channel-name">${displayChannel}</span>
             </div>
-            <div class="video-title">${video.title}</div>
+            <div class="video-title">${displayTitle}</div>
             <div class="video-dur">${video.dur}${startSec > 0 ? ' · Einstieg bei ' + Math.floor(startSec/60) + ' min' : ''}</div>
             <div class="rating-row">
               <span class="rating-label">Bewertung:</span>
@@ -649,6 +708,15 @@
     bbtn.textContent = '⭐ Best Of';
     bbtn.onclick = toggleBestOf;
     fdiv.appendChild(bbtn);
+
+    // Migrations-Button (nur anzeigen wenn meta fehlt)
+    const mbtn = document.createElement('button');
+    mbtn.className = 'migrate-btn';
+    mbtn.id = 'btn-migrate';
+    mbtn.textContent = '🔧 Meta reparieren';
+    mbtn.title = 'Titel und Kanalnamen für Best-Of nachträglich einlesen';
+    mbtn.onclick = migrateMeta;
+    fdiv.appendChild(mbtn);
 
     if (kanalParam) {
       // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
