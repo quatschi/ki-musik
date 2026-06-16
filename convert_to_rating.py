@@ -35,13 +35,25 @@ def extract_data(content, fname):
 
     # Neue Struktur: VIDEOS-Array im Script (bereits konvertierte Dateien)
     videos = []
-    m = re.search(r'const VIDEOS\s*=\s*(\[.*?\]);', content, re.DOTALL)
-    if m:
-        import json as _json
-        try:
-            videos = _json.loads(m.group(1))
-        except Exception:
-            pass
+    # Neue Struktur: VIDEOS-Array aus JS parsen
+    start_idx = content.find('const VIDEOS = [')
+    if start_idx != -1:
+        i = content.index('[', start_idx)
+        bracket = 0
+        for j in range(i, len(content)):
+            if content[j] == '[': bracket += 1
+            elif content[j] == ']': bracket -= 1
+            if bracket == 0:
+                arr_str = content[i:j+1]
+                # JS unquoted keys -> JSON
+                arr_json = re.sub(r'\{(\w+):', r'{"\1":', arr_str)
+                arr_json = re.sub(r',\s*(\w+):', r', "\1":', arr_json)
+                try:
+                    import json as _json
+                    videos = _json.loads(arr_json)
+                except Exception:
+                    pass
+                break
 
     # Alte Struktur: <a class="video-card" href="...">
     if not videos:
