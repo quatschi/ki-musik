@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio Son Cubano</title>
+<!-- categories: Lounge, Latin -->
+<!-- channel-id:  -->
+<!-- channel-url: https://www.youtube.com/@soncubano6688 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Radio_Son_Cubano.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/DfAOsxa7swfadnYqVUz7v9VBnS2PcOwCnu1VPCmbJ6zeDCkHW243jgCgFumtIuhtk9eqez3H4c8=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Radio Son Cubano</div>
+      <div class="channel-count">97 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Radio Son Cubano";
+const VIDEOS = [{"id": "rLr_UjQqBqA", "title": "Son Cubano Playlist 💃 Havana Dance Nights – Son Cubano Mix", "thumb": "https://i.ytimg.com/vi/rLr_UjQqBqA/mqdefault_live.jpg", "dur": "1:40:31"}, {"id": "fd7Ceqz_JY0", "title": "Son Cubano Playlist 🌞 Vintage Cuban Soul, Latin Jazz & Tropical Energy", "thumb": "https://i.ytimg.com/vi/fd7Ceqz_JY0/mqdefault.jpg", "dur": "1:43:43"}, {"id": "pXYAg7VcrXE", "title": "Café Cubano Playlist 🌴 Tropical Havana – Vintage Latin Jazz Lounge", "thumb": "https://i.ytimg.com/vi/pXYAg7VcrXE/mqdefault.jpg", "dur": "1:41:26"}, {"id": "Gi5qT-Xde2U", "title": "Querida Querida Dama", "thumb": "https://i.ytimg.com/vi/Gi5qT-Xde2U/mqdefault.jpg", "dur": "3:08"}, {"id": "CM2UtdsQF7w", "title": "Son Cubano Playlist 🌺 Old Havana Atmosphere & Classic Son Hits", "thumb": "https://i.ytimg.com/vi/CM2UtdsQF7w/mqdefault.jpg", "dur": "1:00:57"}, {"id": "ao9A3ULuBR4", "title": "Café Cubano Playlist 🎶 Smooth Latin Jazz, Cuban Soul & Vintage Havana Beats", "thumb": "https://i.ytimg.com/vi/ao9A3ULuBR4/mqdefault.jpg", "dur": "1:44:32"}, {"id": "AWd56Rdm4S8", "title": "Café Cubano Playlist 🌇 Sunset Coffee – Chill Jazz & Cuban Soul", "thumb": "https://i.ytimg.com/vi/AWd56Rdm4S8/mqdefault.jpg", "dur": "1:47:06"}, {"id": "_S08OwM4Iho", "title": "La Habana", "thumb": "https://i.ytimg.com/vi/_S08OwM4Iho/mqdefault.jpg", "dur": "4:22"}, {"id": "pvDGWZxO4ss", "title": "Son Cubano Playlist 🎷 Cuban Jazz Fusion & Relaxing Son Vibes", "thumb": "https://i.ytimg.com/vi/pvDGWZxO4ss/mqdefault.jpg", "dur": "1:41:04"}, {"id": "STtXuWxFz8c", "title": "Son Cubano Playlist 🌺 Old Havana Vibes, Cuban Jazz & Tropical Café Music", "thumb": "https://i.ytimg.com/vi/STtXuWxFz8c/mqdefault.jpg", "dur": "1:46:35"}, {"id": "9BgMotouTiE", "title": "Café Cubano Playlist ☕ Relaxing Coffee Time with Latin Jazz & Cuban Soul", "thumb": "https://i.ytimg.com/vi/9BgMotouTiE/mqdefault.jpg", "dur": "1:23:45"}, {"id": "1QY_1oiv-oo", "title": "Café Cubano Playlist 🎺 Latin Jazz & Retro Son Cubano from Old Havana", "thumb": "https://i.ytimg.com/vi/1QY_1oiv-oo/mqdefault.jpg", "dur": "1:45:35"}, {"id": "9KgZ8xAqHkI", "title": "Son Cubano ✨ Vintage Cuban Guitar, Bongos & Buena Vista Style Vibes 🎺", "thumb": "https://i.ytimg.com/vi/9KgZ8xAqHkI/mqdefault.jpg", "dur": "1:28:37"}, {"id": "fMGXzxdW7FM", "title": "Son Cubano Playlist ☕ Vintage Havana Café Vibes & Latin Jazz Energy", "thumb": "https://i.ytimg.com/vi/fMGXzxdW7FM/mqdefault.jpg", "dur": "1:48:50"}, {"id": "2chmgxv3dXw", "title": "Café Cubano Playlist☕ Vintage Son Cubano & Timba – Fresh Cuban Sunrise Energy", "thumb": "https://i.ytimg.com/vi/2chmgxv3dXw/mqdefault.jpg", "dur": "1:36:16"}, {"id": "sfNWz53Y6Tg", "title": "Café Cubano Playlist ☕ Vintage Havana Latin Jazz & Son Cubano Vibes", "thumb": "https://i.ytimg.com/vi/sfNWz53Y6Tg/mqdefault.jpg", "dur": "1:45:22"}, {"id": "vKkjUjSr_Pc", "title": "Son Cubano Playlist 💃 Danceable Cuban Grooves & Latin Energy", "thumb": "https://i.ytimg.com/vi/vKkjUjSr_Pc/mqdefault.jpg", "dur": "1:28:02"}, {"id": "YxvxOijnSz4", "title": "Bebé", "thumb": "https://i.ytimg.com/vi/YxvxOijnSz4/mqdefault.jpg", "dur": "4:08"}, {"id": "TaE_Z8jdTfg", "title": "Café Cubano Playlist🌹:Buena Vista Inspired Cuban Soul & Latin Jazz", "thumb": "https://i.ytimg.com/vi/TaE_Z8jdTfg/mqdefault.jpg", "dur": "1:26:25"}, {"id": "pKndAy9rnyY", "title": "Cuban Soul Nights 🌙 Vintage Latin Jazz & Buena Vista Social Club Inspired  Son Cubano", "thumb": "https://i.ytimg.com/vi/pKndAy9rnyY/mqdefault_live.jpg", "dur": ""}, {"id": "G4o1A0kXoI0", "title": "Caballo Viejo", "thumb": "https://i.ytimg.com/vi/G4o1A0kXoI0/mqdefault.jpg", "dur": "4:07"}, {"id": "TO8_r4Uu4BY", "title": "Son Cubano Playlist 🎷 Cuban Jazz Fusion & Relaxing Son Vibes", "thumb": "https://i.ytimg.com/vi/TO8_r4Uu4BY/mqdefault.jpg", "dur": "1:43:36"}, {"id": "2Kq-84TS3AU", "title": "Waka Waka", "thumb": "https://i.ytimg.com/vi/2Kq-84TS3AU/mqdefault.jpg", "dur": "4:22"}, {"id": "kTdqLepYgXM", "title": "Fuego Interior", "thumb": "https://i.ytimg.com/vi/kTdqLepYgXM/mqdefault.jpg", "dur": "3:26"}, {"id": "zES-NOE1Cls", "title": "Café Cubano Playlist 🎷 Vintage Cuban Coffee Lounge & Jazz Grooves", "thumb": "https://i.ytimg.com/vi/zES-NOE1Cls/mqdefault.jpg", "dur": "1:47:11"}, {"id": "-SVvePVQ6eg", "title": "Oriente Está en Mi Sangre", "thumb": "https://i.ytimg.com/vi/-SVvePVQ6eg/mqdefault.jpg", "dur": "4:11"}, {"id": "Kn3c1a5X4zE", "title": "Son Cubano Playlist 💃 Danceable Cuban Grooves & Latin Energy", "thumb": "https://i.ytimg.com/vi/Kn3c1a5X4zE/mqdefault.jpg", "dur": "1:51:13"}, {"id": "07H0JWApXpg", "title": "El Tren del Son", "thumb": "https://i.ytimg.com/vi/07H0JWApXpg/mqdefault.jpg", "dur": "3:48"}, {"id": "EBMjaHmvxXM", "title": "Café Cubano Playlist ☕ Relaxing Coffee Time with Latin Jazz & Cuban Soul", "thumb": "https://i.ytimg.com/vi/EBMjaHmvxXM/mqdefault.jpg", "dur": "1:39:24"}, {"id": "Tei-98sc_O4", "title": "Son Cubano Playlist 📀 Retro Cuban Music & Timeless Son Sound", "thumb": "https://i.ytimg.com/vi/Tei-98sc_O4/mqdefault.jpg", "dur": "1:41:34"}, {"id": "ttXklop4Pk8", "title": "La Guerra Nos Robó La Canción", "thumb": "https://i.ytimg.com/vi/ttXklop4Pk8/mqdefault.jpg", "dur": "4:36"}, {"id": "WjeZ0aActk0", "title": "Matanzas No Duerme", "thumb": "https://i.ytimg.com/vi/WjeZ0aActk0/mqdefault.jpg", "dur": "3:06"}, {"id": "EioaFblU6Wk", "title": "Café Cubano Playlist☕ Vintage Son Cubano & Timba – Fresh Cuban Sunrise Energy", "thumb": "https://i.ytimg.com/vi/EioaFblU6Wk/mqdefault.jpg", "dur": "1:46:17"}, {"id": "6D-N482C724", "title": "Café Cubano Playlist 🌇 Sunset Coffee – Chill Jazz & Cuban Soul", "thumb": "https://i.ytimg.com/vi/6D-N482C724/mqdefault.jpg", "dur": "1:41:21"}, {"id": "jXtCWgC4m8g", "title": "Son para los Amigos", "thumb": "https://i.ytimg.com/vi/jXtCWgC4m8g/mqdefault.jpg", "dur": "4:05"}, {"id": "XPBKkzEMC-Y", "title": "Son Cubano Playlist 🌺 Old Havana Atmosphere & Classic Son Hits", "thumb": "https://i.ytimg.com/vi/XPBKkzEMC-Y/mqdefault.jpg", "dur": "1:41:33"}, {"id": "XIptihYbRW0", "title": "Pinar del Río Tiene Son", "thumb": "https://i.ytimg.com/vi/XIptihYbRW0/mqdefault.jpg", "dur": "3:49"}, {"id": "ujWiSuGx_Tg", "title": "Quizás, Quizás, Quizás", "thumb": "https://i.ytimg.com/vi/ujWiSuGx_Tg/mqdefault.jpg", "dur": "3:33"}, {"id": "lL3Izq3c5Qo", "title": "Rumba y Ron en Santiago", "thumb": "https://i.ytimg.com/vi/lL3Izq3c5Qo/mqdefault.jpg", "dur": "3:45"}, {"id": "vn17EZWBoSI", "title": "Prendí Fuego a la Lluvia", "thumb": "https://i.ytimg.com/vi/vn17EZWBoSI/mqdefault.jpg", "dur": "3:55"}, {"id": "PQDnkt_rjzA", "title": "Café Cubano Playlist 🌺 Traditional Cuban Son Music 🎸 Relaxing Classic Cuban Sounds", "thumb": "https://i.ytimg.com/vi/PQDnkt_rjzA/mqdefault.jpg", "dur": "1:44:39"}, {"id": "0k7F0nkEkJE", "title": "Nos Perdimos un Momento", "thumb": "https://i.ytimg.com/vi/0k7F0nkEkJE/mqdefault.jpg", "dur": "4:11"}, {"id": "r2almQscgNA", "title": "Ahora Mismo", "thumb": "https://i.ytimg.com/vi/r2almQscgNA/mqdefault.jpg", "dur": "4:20"}, {"id": "dqZW6w0lCIE", "title": "Motagem Rugada", "thumb": "https://i.ytimg.com/vi/dqZW6w0lCIE/mqdefault.jpg", "dur": "2:40"}, {"id": "Bzbzr1pV_q4", "title": "Salto Celestial", "thumb": "https://i.ytimg.com/vi/Bzbzr1pV_q4/mqdefault.jpg", "dur": "2:29"}, {"id": "64Art27Tbqc", "title": "Carta para Mamá", "thumb": "https://i.ytimg.com/vi/64Art27Tbqc/mqdefault.jpg", "dur": "3:35"}, {"id": "PcyvxDc8Oew", "title": "Camina con Ritmo", "thumb": "https://i.ytimg.com/vi/PcyvxDc8Oew/mqdefault.jpg", "dur": "3:11"}, {"id": "um1MAC3a-FI", "title": "Café Cubano Playlist ☕ Vintage Havana Jazz & Cuban Soul Classics", "thumb": "https://i.ytimg.com/vi/um1MAC3a-FI/mqdefault.jpg", "dur": "1:39:22"}, {"id": "uElUxPav2v8", "title": "Amor de Verano", "thumb": "https://i.ytimg.com/vi/uElUxPav2v8/mqdefault.jpg", "dur": "3:23"}, {"id": "5O5QbaWfBHo", "title": "Café Cubano Playlist 🌴 Tropical Havana – Vintage Latin Jazz Lounge", "thumb": "https://i.ytimg.com/vi/5O5QbaWfBHo/mqdefault.jpg", "dur": "1:44:49"}, {"id": "2hdNSCy1UHs", "title": "Son Cubano Playlist 💃 Havana Dance Nights – Son Cubano Mix", "thumb": "https://i.ytimg.com/vi/2hdNSCy1UHs/mqdefault.jpg", "dur": "1:37:47"}, {"id": "W9_xlP35L3w", "title": "Son Bajo la Lluvia", "thumb": "https://i.ytimg.com/vi/W9_xlP35L3w/mqdefault.jpg", "dur": "3:37"}, {"id": "2t_OhNTzK38", "title": "Tu Ritmo Me Llama", "thumb": "https://i.ytimg.com/vi/2t_OhNTzK38/mqdefault.jpg", "dur": "3:37"}, {"id": "4JyzPw9JdtU", "title": "Café Cubano Playlist 🎼 Retro Havana Grooves & Jazz Essentials", "thumb": "https://i.ytimg.com/vi/4JyzPw9JdtU/mqdefault.jpg", "dur": "1:41:59"}, {"id": "mkRPUFkYVU0", "title": "Son Cubano Playlist 🌅 Sunset in Cuba – Vintage Son & Jazz", "thumb": "https://i.ytimg.com/vi/mkRPUFkYVU0/mqdefault.jpg", "dur": "1:42:27"}, {"id": "tKNSYUGZ1Yc", "title": "Vivir Mi Vida", "thumb": "https://i.ytimg.com/vi/tKNSYUGZ1Yc/mqdefault.jpg", "dur": "3:20"}, {"id": "A504tT40ZBQ", "title": "Guantanamera", "thumb": "https://i.ytimg.com/vi/A504tT40ZBQ/mqdefault.jpg", "dur": "3:42"}, {"id": "QSr8snN0QK0", "title": "Omar Eterno", "thumb": "https://i.ytimg.com/vi/QSr8snN0QK0/mqdefault.jpg", "dur": "3:45"}, {"id": "2Mz6klW-M8M", "title": "Baila mi Cuba", "thumb": "https://i.ytimg.com/vi/2Mz6klW-M8M/mqdefault.jpg", "dur": "3:09"}, {"id": "qFpvXUqgUUY", "title": "Son Cubano Playlist 🌙 Night in Havana – Relaxing Cuban Jazz & Soul", "thumb": "https://i.ytimg.com/vi/qFpvXUqgUUY/mqdefault.jpg", "dur": "1:44:38"}, {"id": "F7pDd06BT9A", "title": "Me Gustas Tu", "thumb": "https://i.ytimg.com/vi/F7pDd06BT9A/mqdefault.jpg", "dur": "4:32"}, {"id": "JRC7bswh7FM", "title": "Sofia", "thumb": "https://i.ytimg.com/vi/JRC7bswh7FM/mqdefault.jpg", "dur": "3:07"}, {"id": "wGTV6CliJec", "title": "Café Cubano Playlist 🌴 Tropical Havana Grooves & Latin Jazz Chill", "thumb": "https://i.ytimg.com/vi/wGTV6CliJec/mqdefault.jpg", "dur": "1:34:57"}, {"id": "hLlHVdzwT90", "title": "Café Cubano Playlist 🎶 Classic Son Cubano & Vintage Latin Jazz", "thumb": "https://i.ytimg.com/vi/hLlHVdzwT90/mqdefault.jpg", "dur": "1:38:00"}, {"id": "U0hrWX4Lprc", "title": "La La Là en LA Habana", "thumb": "https://i.ytimg.com/vi/U0hrWX4Lprc/mqdefault.jpg", "dur": "4:19"}, {"id": "3tEIEFW-pjI", "title": "Cuba Mía", "thumb": "https://i.ytimg.com/vi/3tEIEFW-pjI/mqdefault.jpg", "dur": "3:25"}, {"id": "uCRdR6Vlrjw", "title": "Bailando", "thumb": "https://i.ytimg.com/vi/uCRdR6Vlrjw/mqdefault.jpg", "dur": "4:09"}, {"id": "s7T-vSgb7DI", "title": "El Valor de Mi Abuelo", "thumb": "https://i.ytimg.com/vi/s7T-vSgb7DI/mqdefault.jpg", "dur": "4:06"}, {"id": "dukQjGhmanw", "title": "El Perdón", "thumb": "https://i.ytimg.com/vi/dukQjGhmanw/mqdefault.jpg", "dur": "4:33"}, {"id": "EP4sBKF4_CE", "title": "Conversaciones en la Playa", "thumb": "https://i.ytimg.com/vi/EP4sBKF4_CE/mqdefault.jpg", "dur": "3:43"}, {"id": "Qvh1gbwCSwc", "title": "Vuelvo a Mi Tierra", "thumb": "https://i.ytimg.com/vi/Qvh1gbwCSwc/mqdefault.jpg", "dur": "3:54"}, {"id": "WLYsGLsjTCU", "title": "Mi Son Sabroso", "thumb": "https://i.ytimg.com/vi/WLYsGLsjTCU/mqdefault.jpg", "dur": "3:16"}, {"id": "FIpqJ0taSJU", "title": "El Cuarto de Tula", "thumb": "https://i.ytimg.com/vi/FIpqJ0taSJU/mqdefault.jpg", "dur": "4:00"}, {"id": "22sn-Q70GW0", "title": "El Tren Nocturno", "thumb": "https://i.ytimg.com/vi/22sn-Q70GW0/mqdefault.jpg", "dur": "3:30"}, {"id": "m1LiPjjZGZY", "title": "Son Cubano Playlist 🌙 Retro Cuban Café – Buena Vista Jazz & Soul Mix", "thumb": "https://i.ytimg.com/vi/m1LiPjjZGZY/mqdefault.jpg", "dur": "1:40:54"}, {"id": "Vnr1_DwHHSo", "title": "Sự kiện trực tiếp của Radio Son Cubano", "thumb": "https://i.ytimg.com/vi/Vnr1_DwHHSo/mqdefault_live.jpg", "dur": ""}, {"id": "EyUMQbl4zAg", "title": "Oye Mi Cuba", "thumb": "https://i.ytimg.com/vi/EyUMQbl4zAg/mqdefault.jpg", "dur": "4:13"}, {"id": "nScxmHC22O4", "title": "Carnaval de Santiago", "thumb": "https://i.ytimg.com/vi/nScxmHC22O4/mqdefault.jpg", "dur": "4:04"}, {"id": "EFu-GG2UpPQ", "title": "Son Cubano Playlist 🌙 Romantic Havana Soul & Classic Latin Jazz", "thumb": "https://i.ytimg.com/vi/EFu-GG2UpPQ/mqdefault.jpg", "dur": "1:16:34"}, {"id": "JY4A-5u2DRc", "title": "Tamo Bien", "thumb": "https://i.ytimg.com/vi/JY4A-5u2DRc/mqdefault.jpg", "dur": "3:27"}, {"id": "_fu_Zb8t65c", "title": "Café Cubano Playlist 🌹: Chill Havana Café Music with Son & Jazz", "thumb": "https://i.ytimg.com/vi/_fu_Zb8t65c/mqdefault.jpg", "dur": "1:28:29"}, {"id": "spx67AjGlno", "title": "Café Cubano Playlist 🌹: Relaxing Latin Jazz & Cuban Soul Classics", "thumb": "https://i.ytimg.com/vi/spx67AjGlno/mqdefault.jpg", "dur": "1:25:16"}, {"id": "ac08o1bjr4E", "title": "Havana Jazz Playlist🌹 Cuban Jazz & Soulful Guitar Grooves | Buena Vista Classics", "thumb": "https://i.ytimg.com/vi/ac08o1bjr4E/mqdefault.jpg", "dur": "1:28:07"}, {"id": "3FTNm9CqJM4", "title": "Son Cubano ✨ Vintage Cuban Guitar, Bongos & Buena Vista Style Vibes 🎺", "thumb": "https://i.ytimg.com/vi/3FTNm9CqJM4/mqdefault.jpg", "dur": "1:28:38"}, {"id": "5VnTtEz1osM", "title": "Despacito", "thumb": "https://i.ytimg.com/vi/5VnTtEz1osM/mqdefault.jpg", "dur": "5:33"}, {"id": "P0f_H00D7ss", "title": "El Carretero", "thumb": "https://i.ytimg.com/vi/P0f_H00D7ss/mqdefault.jpg", "dur": "2:56"}, {"id": "UgG8kF9gI6o", "title": "Mi Cuba Querida", "thumb": "https://i.ytimg.com/vi/UgG8kF9gI6o/mqdefault.jpg", "dur": "3:39"}, {"id": "Hhu29zJ_1sA", "title": "Cuban Soul Nights 🌙 Son Cubano, Latin Jazz & Havana Rhythms", "thumb": "https://i.ytimg.com/vi/Hhu29zJ_1sA/mqdefault.jpg", "dur": "1:26:13"}, {"id": "yS8VZ9-EqMc", "title": "Café Cubano Playlist🌹:Buena Vista Inspired Cuban Soul & Latin Jazz", "thumb": "https://i.ytimg.com/vi/yS8VZ9-EqMc/mqdefault.jpg", "dur": "1:26:26"}, {"id": "lm5Phivswjo", "title": "Cuban Soul Nights 🌙  Buena Vista Social Club Inspired  Son Cubano & Vintage Latin Jazz", "thumb": "https://i.ytimg.com/vi/lm5Phivswjo/mqdefault.jpg", "dur": "1:32:36"}, {"id": "-IHDt3VmO-k", "title": "Cuban Soul Nights 🌙 Smooth Son Cubano & Romantic Havana Nights", "thumb": "https://i.ytimg.com/vi/-IHDt3VmO-k/mqdefault.jpg", "dur": "1:32:05"}, {"id": "du-A6RqfIrM", "title": "Cuban Soul Nights 🌙 Buena Vista Social Club Style Cuban Music", "thumb": "https://i.ytimg.com/vi/du-A6RqfIrM/mqdefault.jpg", "dur": "1:28:17"}, {"id": "VeUSRpOV1_A", "title": "Cuban Soul Nights 🌙  Buena Vista Social Club Inspired  Son Cubano & Vintage Latin Jazz", "thumb": "https://i.ytimg.com/vi/VeUSRpOV1_A/mqdefault.jpg", "dur": "1:33:42"}, {"id": "7azjzHekQyk", "title": "Cuban Soul Nights 🌙 Vintage Latin Jazz & Buena Vista Social Club Inspired  Son Cubano", "thumb": "https://i.ytimg.com/vi/7azjzHekQyk/mqdefault.jpg", "dur": "1:27:48"}, {"id": "UAq-mJVjB94", "title": "Cuban Soul Nights 🌙 Buena Vista Social Club Inspired Vintage Latin Jazz & Son Cubano", "thumb": "https://i.ytimg.com/vi/UAq-mJVjB94/mqdefault.jpg", "dur": "1:27:20"}, {"id": "-6AHRwL2fTM", "title": "Cuban Nights 🌙 Vintage Latin Jazz & Buena Vista Social Club Inspired  Son Cubano", "thumb": "https://i.ytimg.com/vi/-6AHRwL2fTM/mqdefault.jpg", "dur": "1:26:10"}, {"id": "Docl-wqA6JY", "title": "Cuban Nights 🍹 Vintage Latin Jazz & Buena Vista Vibes", "thumb": "https://i.ytimg.com/vi/Docl-wqA6JY/mqdefault.jpg", "dur": "1:24:14"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

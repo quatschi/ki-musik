@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amber Lounge</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCUFH1-EUb-O5MUgmz8OpwvQ -->
+<!-- channel-url: https://www.youtube.com/@amberloungebgm -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Amber_Lounge.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/k_BL1w7EkrQiTOs2sa9kiBr_4MVl6mQYpKYl_c5INd6wxicJKmQQkZ0fUy1WuU0J07KGBPJuV1I=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Amber Lounge</div>
+      <div class="channel-count">32 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Amber Lounge";
+const VIDEOS = [{"id": "Ot4SdnN4CD0", "title": "Midnight Platform. – Vintage Noir Jazz for the Last Train Home", "thumb": "https://i.ytimg.com/vi/Ot4SdnN4CD0/mqdefault.jpg", "dur": "2:14:21"}, {"id": "LWhdpC11wbg", "title": "Rainy Alley Piano. – Vintage Noir Jazz for Slow Midnight Walks", "thumb": "https://i.ytimg.com/vi/LWhdpC11wbg/mqdefault.jpg", "dur": "2:11:14"}, {"id": "xsiCzBWvomo", "title": "Empty Alley. – Vintage Noir Jazz for Late Rainy Nights", "thumb": "https://i.ytimg.com/vi/xsiCzBWvomo/mqdefault.jpg", "dur": "2:19:18"}, {"id": "lf_q2h4FV30", "title": "Empty Crossing. – Vintage Noir Jazz for Late Rainy Nights", "thumb": "https://i.ytimg.com/vi/lf_q2h4FV30/mqdefault.jpg", "dur": "2:14:40"}, {"id": "8LV7KeNLlY8", "title": "After Hours. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/8LV7KeNLlY8/mqdefault.jpg", "dur": "2:14:30"}, {"id": "jk66EZ8sSi8", "title": "Slow Whiskey. – Vintage Noir Jazz for Unhurried Nights", "thumb": "https://i.ytimg.com/vi/jk66EZ8sSi8/mqdefault.jpg", "dur": "2:24:33"}, {"id": "RgO4SAkVDa8", "title": "Smoky Gramophone. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/RgO4SAkVDa8/mqdefault.jpg", "dur": "2:23:00"}, {"id": "EHAMbbBjBfA", "title": "Lonely Window. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/EHAMbbBjBfA/mqdefault.jpg", "dur": "2:29:39"}, {"id": "fW-07WOSGRk", "title": "Lonely Booth. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/fW-07WOSGRk/mqdefault.jpg", "dur": "2:28:50"}, {"id": "gOTPjI_i5XQ", "title": "Smoky Piano Bar. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/gOTPjI_i5XQ/mqdefault.jpg", "dur": "2:22:26"}, {"id": "4JyCi8wTkcE", "title": "Whiskey Cabinet. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/4JyCi8wTkcE/mqdefault.jpg", "dur": "2:15:33"}, {"id": "s_qtSYVWO1I", "title": "Lonely Stool. – Vintage Noir Jazz for Late Night Drinks", "thumb": "https://i.ytimg.com/vi/s_qtSYVWO1I/mqdefault.jpg", "dur": "2:26:25"}, {"id": "BvK2vfSYzFU", "title": "Empty Bench. – Vintage Noir Jazz for Empty Night Walks", "thumb": "https://i.ytimg.com/vi/BvK2vfSYzFU/mqdefault.jpg", "dur": "2:26:19"}, {"id": "-DzNtDcBdgU", "title": "Empty Corner. – Vintage Noir Jazz for Empty Night Walks", "thumb": "https://i.ytimg.com/vi/-DzNtDcBdgU/mqdefault.jpg", "dur": "2:21:38"}, {"id": "z3bmAoykpSg", "title": "Empty Lanes. – Vintage Noir Jazz for Empty Night Walks", "thumb": "https://i.ytimg.com/vi/z3bmAoykpSg/mqdefault.jpg", "dur": "2:23:18"}, {"id": "J_IyU062rT8", "title": "Empty Avenue. – Vintage Noir Jazz for Empty Night Walks", "thumb": "https://i.ytimg.com/vi/J_IyU062rT8/mqdefault.jpg", "dur": "2:25:46"}, {"id": "57dIGRYBNy8", "title": "Late Walk. – Vintage Noir Jazz for Empty Streets", "thumb": "https://i.ytimg.com/vi/57dIGRYBNy8/mqdefault.jpg", "dur": "2:23:54"}, {"id": "zqfmZmeQv6k", "title": "Empty Sidewalks. – Vintage Noir Jazz for Quiet Nights", "thumb": "https://i.ytimg.com/vi/zqfmZmeQv6k/mqdefault.jpg", "dur": "2:18:22"}, {"id": "DK_BHMupYP4", "title": "Quiet Streetlights. – Vintage Noir Jazz for Empty Sidewalks", "thumb": "https://i.ytimg.com/vi/DK_BHMupYP4/mqdefault.jpg", "dur": "2:28:04"}, {"id": "C6JmeIEzZDg", "title": "Before Dawn. – Vintage Noir Jazz for the Coldest Hours", "thumb": "https://i.ytimg.com/vi/C6JmeIEzZDg/mqdefault.jpg", "dur": "2:33:34"}, {"id": "WTwS4PFgpBE", "title": "After Midnight. – Vintage Noir Jazz for the Quiet Hours", "thumb": "https://i.ytimg.com/vi/WTwS4PFgpBE/mqdefault.jpg", "dur": "2:23:44"}, {"id": "tU2L7Z-JrEU", "title": "Empty Streets. – Vintage Noir Jazz for Late Night Walks", "thumb": "https://i.ytimg.com/vi/tU2L7Z-JrEU/mqdefault.jpg", "dur": "2:25:02"}, {"id": "TvoHbJZJHWs", "title": "No Rush. – Vintage Noir Jazz for Slow Evenings & Late Drinks", "thumb": "https://i.ytimg.com/vi/TvoHbJZJHWs/mqdefault.jpg", "dur": "2:20:46"}, {"id": "dgqJva6haDk", "title": "Last Call. – Vintage Noir Jazz for Late Drinks & After Hours", "thumb": "https://i.ytimg.com/vi/dgqJva6haDk/mqdefault.jpg", "dur": "2:07:14"}, {"id": "Ylyh6_yjj1c", "title": "Slow Pour. – Vintage Noir Jazz for Slow Mornings & First Cups", "thumb": "https://i.ytimg.com/vi/Ylyh6_yjj1c/mqdefault.jpg", "dur": "2:31:42"}, {"id": "o2xrH-e8KwQ", "title": "Page by Page. – Vintage Noir Jazz for Late Reading & Cozy Studies", "thumb": "https://i.ytimg.com/vi/o2xrH-e8KwQ/mqdefault.jpg", "dur": "2:11:42"}, {"id": "iEblXiRI4Vs", "title": "By the Fire. – Vintage Noir Jazz for Quiet Winter Evenings", "thumb": "https://i.ytimg.com/vi/iEblXiRI4Vs/mqdefault.jpg", "dur": "2:20:18"}, {"id": "NOaWqUgSXkQ", "title": "Last Train Home. – Vintage Noir Jazz for Late Commutes & Quiet Rides", "thumb": "https://i.ytimg.com/vi/NOaWqUgSXkQ/mqdefault.jpg", "dur": "2:10:07"}, {"id": "8GVemlZ9Wtk", "title": "First Light. – Vintage Noir Jazz for Slow Mornings & Soft Coffee", "thumb": "https://i.ytimg.com/vi/8GVemlZ9Wtk/mqdefault.jpg", "dur": "2:08:30"}, {"id": "wrqQZwRwacA", "title": "Quiet Pages. – Vintage Noir Jazz for Late Reading & Slow Evenings", "thumb": "https://i.ytimg.com/vi/wrqQZwRwacA/mqdefault.jpg", "dur": "2:15:50"}, {"id": "oRbCt9u91HU", "title": "Late Hours. – Vintage Noir Jazz for Late Drinks & Quiet Nights", "thumb": "https://i.ytimg.com/vi/oRbCt9u91HU/mqdefault.jpg", "dur": "2:27:21"}, {"id": "2jiAGzQvwGw", "title": "Smoky Hours. – Noir Jazz for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/2jiAGzQvwGw/mqdefault.jpg", "dur": "2:01:29"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

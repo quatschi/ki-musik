@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relaxing Blues Music</title>
+<!-- categories: Blues, Rock -->
+<!-- channel-id: UCvnYUNQKWA5AYhrF1_OXmng -->
+<!-- channel-url: https://www.youtube.com/@relaxingbluesmusicc -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Relaxing_Blues_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/1FR89Zt8fZgotO66SmXjTLoqGuwDNMI0DbJDm_UzmRoFjUERQG9n-T1AgEvBJtE_y_PJIAmQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Relaxing Blues Music</div>
+      <div class="channel-count">89 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Relaxing Blues Music";
+const VIDEOS = [{"id": "D5MGg1h0iCM", "title": "Late Night Blues Club 🍸 Smooth & Elegant Blues Music For A Luxurious Night", "thumb": "https://i.ytimg.com/vi/D5MGg1h0iCM/mqdefault.jpg", "dur": "8:29:15"}, {"id": "a6Thj9EK4P8", "title": "Late Night Blues Bar 🥃 Smooth Blues Music & Warm Whiskey Vibes To Unwind", "thumb": "https://i.ytimg.com/vi/a6Thj9EK4P8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "ew9b2YPmSKs", "title": "Vintage Blues Live Radio ✨ Cozy Coffee & Vinyl Vibes | Pure. Real. Timeless.", "thumb": "https://i.ytimg.com/vi/ew9b2YPmSKs/mqdefault.jpg", "dur": "11:54:58"}, {"id": "vDv0s8rIrU8", "title": "Pure Blues No Words 🚬 Deep & Soulful Blues Guitar Instrumental Playlist", "thumb": "https://i.ytimg.com/vi/vDv0s8rIrU8/mqdefault.jpg", "dur": "1:33:19"}, {"id": "VnDlTfzqQjA", "title": "Vintage Blues Lounge ✨ Premium Vinyl Sound & Deep Guitar Soul (Feel It. Live It.)", "thumb": "https://i.ytimg.com/vi/VnDlTfzqQjA/mqdefault.jpg", "dur": "11:54:59"}, {"id": "mE8W2F6r_ww", "title": "Midnight Blues & Bourbon | 24 Hour of Deep, Smoky Guitar Melodies for Late Night Reflection", "thumb": "https://i.ytimg.com/vi/mE8W2F6r_ww/mqdefault.jpg", "dur": ""}, {"id": "Y1B2BwQUuEI", "title": "Vintage Blues Legends | Authentic Raw Feelings & Timeless Stories of the Deep South", "thumb": "https://i.ytimg.com/vi/Y1B2BwQUuEI/mqdefault.jpg", "dur": ""}, {"id": "B-yCio3exXA", "title": "Midnight Whiskey Blues | A Soulful Journey Through Timeless Old School Classics", "thumb": "https://i.ytimg.com/vi/B-yCio3exXA/mqdefault.jpg", "dur": ""}, {"id": "FrBOp4cE01E", "title": "Deep Soulful Relaxing Blues Music for Older Generation - Slow Instrumental Mix for Late Night", "thumb": "https://i.ytimg.com/vi/FrBOp4cE01E/mqdefault.jpg", "dur": ""}, {"id": "IfeDEGBnJV8", "title": "The Whiskey Room: Deep Slow Blues Music for a Sophisticated Late Night Atmosphere & Calm Mind", "thumb": "https://i.ytimg.com/vi/IfeDEGBnJV8/mqdefault.jpg", "dur": ""}, {"id": "Fn_3h-VYmGY", "title": "Blues Music for the Soul: Deep Instrumental Guitar Melodies for Late Night Reflection & Unwinding", "thumb": "https://i.ytimg.com/vi/Fn_3h-VYmGY/mqdefault.jpg", "dur": ""}, {"id": "hSOfjYHXPQo", "title": "Whiskey Blues Music 2026 | Soulful Relaxing Blues Guitar for Late Night Chilling & Cigar Sessions", "thumb": "https://i.ytimg.com/vi/hSOfjYHXPQo/mqdefault.jpg", "dur": ""}, {"id": "TYhv0m52Nc4", "title": "How I Build the Atmosphere: A Glimpse into My Creative Process | Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/TYhv0m52Nc4/mqdefault.jpg", "dur": "5:17"}, {"id": "_7lWSQ10SiM", "title": "Vintage Soul & Midnight Tobacco: Raw Gritty Blues Harmonies to Heal the Heart of a Modern Wanderer", "thumb": "https://i.ytimg.com/vi/_7lWSQ10SiM/mqdefault.jpg", "dur": ""}, {"id": "PmjX6eK9hkc", "title": "Whiskey Blues Relaxing Music 🚬 Charcoal & Silk: Classic Smoky Slow Smooth Night", "thumb": "https://i.ytimg.com/vi/PmjX6eK9hkc/mqdefault.jpg", "dur": ""}, {"id": "9tmv54zgjoc", "title": "Deep Blues Night | Smoky Slow Instrumental for Relaxation", "thumb": "https://i.ytimg.com/vi/9tmv54zgjoc/mqdefault.jpg", "dur": ""}, {"id": "C6hnIGQ71OA", "title": "Deep Night Whiskey Blues 🥃 Smoky Relaxing Tunes | Classic & Smooth Vintage", "thumb": "https://i.ytimg.com/vi/C6hnIGQ71OA/mqdefault.jpg", "dur": ""}, {"id": "kuVTk3BvyJA", "title": "Legendary Blues Session: 24 Hour of The Best Classic Blues & Soul Music", "thumb": "https://i.ytimg.com/vi/kuVTk3BvyJA/mqdefault.jpg", "dur": ""}, {"id": "jTY-2zkIWzo", "title": "Smoky Blues Tunes & Whiskey 🚬 Classic Relaxing Radio | Slow Smooth Music", "thumb": "https://i.ytimg.com/vi/jTY-2zkIWzo/mqdefault.jpg", "dur": ""}, {"id": "inai5CghmWQ", "title": "Whiskey, Smoke & Smoky Blues Tunes 🥃 The Classic Radio: Slow Relaxing Smooth Vintage Music", "thumb": "https://i.ytimg.com/vi/inai5CghmWQ/mqdefault.jpg", "dur": ""}, {"id": "gtNbg_lpqHU", "title": "Slow Burning Whiskey & Relaxing Blues 🥃 Vintage Radio: Smooth Music for Smoke & Reflection", "thumb": "https://i.ytimg.com/vi/gtNbg_lpqHU/mqdefault.jpg", "dur": ""}, {"id": "RJuKnNFrEF0", "title": "Coffee, Smoke & Vintage Whiskey Radio 🥃 Smooth Slow Blues Music | Instrumental Guitar", "thumb": "https://i.ytimg.com/vi/RJuKnNFrEF0/mqdefault.jpg", "dur": ""}, {"id": "mXU-w6DxzbA", "title": "Aged Whiskey & Midnight Smoke 🥃 Smooth Slow Blues Instrumental | Soulful Guitar Music for Chill", "thumb": "https://i.ytimg.com/vi/mXU-w6DxzbA/mqdefault.jpg", "dur": ""}, {"id": "WOctYG6NVpA", "title": "Whiskey & Blue Smoke 🥃 Slow Smooth Blues Instrumental Guitar | Midnight Music for Reflection", "thumb": "https://i.ytimg.com/vi/WOctYG6NVpA/mqdefault.jpg", "dur": ""}, {"id": "RvSdj9KTnPU", "title": "A Slow Day at Home: Reading & Blues | Daily Vlog #2", "thumb": "https://i.ytimg.com/vi/RvSdj9KTnPU/mqdefault.jpg", "dur": "5:21"}, {"id": "V73JeJqEDMI", "title": "Relaxing Smooth Blues & Aged Whiskey 🔥 Deep Slow Instrumental for Healing the Soul at Midnight", "thumb": "https://i.ytimg.com/vi/V73JeJqEDMI/mqdefault.jpg", "dur": ""}, {"id": "XartVEBpr6U", "title": "Slow Piano & Smooth Blues 🥃 A Glass of Whiskey for Late Night Memories | Soulful Instrumental", "thumb": "https://i.ytimg.com/vi/XartVEBpr6U/mqdefault.jpg", "dur": ""}, {"id": "EHkx5jG0HQk", "title": "🥃 The Last Drop | Smooth Instrumental Blues for Rainfall & City Neon Shadows.", "thumb": "https://i.ytimg.com/vi/EHkx5jG0HQk/mqdefault.jpg", "dur": ""}, {"id": "YMQDjoWFXP8", "title": "A Day in the Life of a Video Editor | Workday Vlog", "thumb": "https://i.ytimg.com/vi/YMQDjoWFXP8/mqdefault.jpg", "dur": "5:21"}, {"id": "oe0t7EdlxwQ", "title": "🥃 The Last Drop of Whiskey | Smooth Blues for Rainfall & Neon Shadows", "thumb": "https://i.ytimg.com/vi/oe0t7EdlxwQ/mqdefault.jpg", "dur": ""}, {"id": "0Qefhjs5TLc", "title": "The Guitar Weeps & Whiskey Burns 🔥 Deep Instrumental Blues & Soul | Ballads for Broken Hearts", "thumb": "https://i.ytimg.com/vi/0Qefhjs5TLc/mqdefault.jpg", "dur": ""}, {"id": "8qyzkNMg-64", "title": "Whiskey-Drenched Guitar 🥃 Smooth Instrumental Blues for Slow Dancing & Late Night", "thumb": "https://i.ytimg.com/vi/8qyzkNMg-64/mqdefault.jpg", "dur": ""}, {"id": "b7YvDdy_tl0", "title": "Vinyl Nights & Blues Soul 🎙️ Timeless Instrumental Ballads for Whiskey & Introspection", "thumb": "https://i.ytimg.com/vi/b7YvDdy_tl0/mqdefault.jpg", "dur": ""}, {"id": "8OZGGD3nCF4", "title": "Smooth Blues & Soul Classics 🎙️ Love Ballads Inspired by Relaxing Blues Music | Deep Emotional Soul", "thumb": "https://i.ytimg.com/vi/8OZGGD3nCF4/mqdefault.jpg", "dur": ""}, {"id": "qWOe4F0UH44", "title": "Raw & Soothing Blues: Whiskey, Guitar, Honesty of a Broken Soul | Emotional Ballads for Long Nights", "thumb": "https://i.ytimg.com/vi/qWOe4F0UH44/mqdefault.jpg", "dur": ""}, {"id": "DIHbgHzZAO8", "title": "Midnight Whiskey Blues 🥃 Tales of Broken Hearts Beneath Neon Lights | Soothing Reflection", "thumb": "https://i.ytimg.com/vi/DIHbgHzZAO8/mqdefault.jpg", "dur": ""}, {"id": "96sGTQr3N9M", "title": "The Heart of Chicago Blues: Slow Blues/Rock Soundtrack & Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/96sGTQr3N9M/mqdefault.jpg", "dur": ""}, {"id": "UuZohmZQLEk", "title": "Deep Soul Blues: The Perfect Slow Blues/Rock Soundtrack for Your Whiskey Evening", "thumb": "https://i.ytimg.com/vi/UuZohmZQLEk/mqdefault.jpg", "dur": ""}, {"id": "Qb22ynpte58", "title": "My wonderful winter vacation _ Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/Qb22ynpte58/mqdefault.jpg", "dur": "5:09"}, {"id": "G1yDKNox50M", "title": "Midnight Whiskey Blues 🥃 Tales of Broken Hearts & City Lights", "thumb": "https://i.ytimg.com/vi/G1yDKNox50M/mqdefault.jpg", "dur": ""}, {"id": "uHcwCqnaeQI", "title": "Deep Blues Ballads | The Greatest Slow Blues/Rock Anthems for Struggle, Resilience", "thumb": "https://i.ytimg.com/vi/uHcwCqnaeQI/mqdefault.jpg", "dur": ""}, {"id": "ZefmBIYReQE", "title": "The Juke Joint Sessions | Deep Blues & Melancholy Guitar | Relaxing Instrumental Music for Night", "thumb": "https://i.ytimg.com/vi/ZefmBIYReQE/mqdefault.jpg", "dur": ""}, {"id": "6mG5UT-hgHk", "title": "Behind the Scenes: My YouTube Workflow #3", "thumb": "https://i.ytimg.com/vi/6mG5UT-hgHk/mqdefault.jpg", "dur": "8:25"}, {"id": "TqwgW0ZLFEM", "title": "Deep Classic Blues | Soothing Instrumental Music for Sleep & Relaxation | Late Night Reflection", "thumb": "https://i.ytimg.com/vi/TqwgW0ZLFEM/mqdefault.jpg", "dur": ""}, {"id": "XzCJpOyn1Lw", "title": "Slow Blues Instrumental | Relaxing Music to Unwind & Study | Smooth Background for a Calm Evening", "thumb": "https://i.ytimg.com/vi/XzCJpOyn1Lw/mqdefault.jpg", "dur": "11:54:57"}, {"id": "0EfcQ6HFRV8", "title": "Working with Colleagues at a Coffee Shop | Daily Vlog #1", "thumb": "https://i.ytimg.com/vi/0EfcQ6HFRV8/mqdefault.jpg", "dur": "6:20"}, {"id": "FaVKxMXyPTg", "title": "Deep Whiskey Blues || A Playlist for Relaxation, Focus & Nostalgia", "thumb": "https://i.ytimg.com/vi/FaVKxMXyPTg/mqdefault.jpg", "dur": ""}, {"id": "szs-aI_2o00", "title": "Whiskey Blues & Jazz || Smooth Instrumental Tracks for a Calm Vibe", "thumb": "https://i.ytimg.com/vi/szs-aI_2o00/mqdefault.jpg", "dur": ""}, {"id": "S0XwX3es9to", "title": "Deep Whiskey Blues || A Chill Playlist for Unwinding & Reflection", "thumb": "https://i.ytimg.com/vi/S0XwX3es9to/mqdefault.jpg", "dur": ""}, {"id": "MH3xIMreDGc", "title": "The Process of My Music Being Created", "thumb": "https://i.ytimg.com/vi/MH3xIMreDGc/mqdefault.jpg", "dur": "3:49"}, {"id": "7K4yW1E5Kt4", "title": "Smooth Whiskey Blues | A Relaxing Instrumental Playlist to Unwind and Reflect on the Past", "thumb": "https://i.ytimg.com/vi/7K4yW1E5Kt4/mqdefault.jpg", "dur": ""}, {"id": "CKn3eg02P_0", "title": "Relaxing Slow Blues || A Soulful Instrumental Playlist for Unwinding After a Long Day", "thumb": "https://i.ytimg.com/vi/CKn3eg02P_0/mqdefault.jpg", "dur": ""}, {"id": "qZxE4vJfQQo", "title": "Relaxing Deep Blues Jazz || Whiskey-Soaked Nostalgia & Soulful Melodies for a Calm Evening", "thumb": "https://i.ytimg.com/vi/qZxE4vJfQQo/mqdefault.jpg", "dur": "11:54:59"}, {"id": "eOFM7GhGWRA", "title": "Deep Blues Jazz || Whiskey-Infused Calm & Memories", "thumb": "https://i.ytimg.com/vi/eOFM7GhGWRA/mqdefault.jpg", "dur": "3:45"}, {"id": "ts7ykgFALFk", "title": "Behind the Scenes: My YouTube Workflow #2", "thumb": "https://i.ytimg.com/vi/ts7ykgFALFk/mqdefault.jpg", "dur": "12:20"}, {"id": "vUkFTFQAekI", "title": "Smooth Jazz Blues & Whiskey Nights || Unwind with Deep, Relaxing Nostalgia and Jazzy Melodies", "thumb": "https://i.ytimg.com/vi/vUkFTFQAekI/mqdefault.jpg", "dur": ""}, {"id": "4aRRjJySbps", "title": "Sweet Nostalgia Tonight | Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/4aRRjJySbps/mqdefault.jpg", "dur": "3:13"}, {"id": "oSQi-tyKCPQ", "title": "Deep South Jazz Blues || Sip Whiskey Slow, Let Nostalgia Flow – A Timeless Evening's Soundtrack", "thumb": "https://i.ytimg.com/vi/oSQi-tyKCPQ/mqdefault.jpg", "dur": ""}, {"id": "siLQ6A1bxKI", "title": "Living easy ~ Relaxing Blues Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/siLQ6A1bxKI/mqdefault.jpg", "dur": "3:47"}, {"id": "0HIwCaZUJhk", "title": "Behind the Scenes: My YouTube Workflow", "thumb": "https://i.ytimg.com/vi/0HIwCaZUJhk/mqdefault.jpg", "dur": "10:04"}, {"id": "Wf3Hy7x8OxU", "title": "Broke Down Heart || Relaxing Blues Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/Wf3Hy7x8OxU/mqdefault.jpg", "dur": "3:47"}, {"id": "wpywll50hic", "title": "Classic Whiskey Blues || Deep, Relaxing, Nostalgic Tunes for a Timeless Evening Soul", "thumb": "https://i.ytimg.com/vi/wpywll50hic/mqdefault_live.jpg", "dur": ""}, {"id": "c7JXHTjrNF8", "title": "🎶Old School Blues Grooves🥃for Late Night Reflections & Comfort | Feel the Timeless Vibes", "thumb": "https://i.ytimg.com/vi/c7JXHTjrNF8/mqdefault.jpg", "dur": "8:35"}, {"id": "UnSi912Fnms", "title": "🥃 Heartbreaking & Powerful Whiskey Blues - Deep Guitar Songs of Love & Strength", "thumb": "https://i.ytimg.com/vi/UnSi912Fnms/mqdefault.jpg", "dur": "5:29"}, {"id": "H0gOq9ysvIc", "title": "Whiskey Blues Music - Ultimate Slow Guitar Blues for Relaxing Nights and Stress Relief", "thumb": "https://i.ytimg.com/vi/H0gOq9ysvIc/mqdefault.jpg", "dur": "3:46"}, {"id": "63Q1w3uiuFc", "title": "Moody Blues Lounge Working Corner - Video Content Creation and Production Process #2", "thumb": "https://i.ytimg.com/vi/63Q1w3uiuFc/mqdefault.jpg", "dur": "32:42"}, {"id": "1gMpEsYsDVw", "title": "Soothing Blues Ballads - Relaxing Melodies for a Peaceful, Smooth Atmosphere", "thumb": "https://i.ytimg.com/vi/1gMpEsYsDVw/mqdefault.jpg", "dur": "3:42"}, {"id": "G41_hfoRF-s", "title": "Relaxing Blues Music's Working Corner - Video Content Creation and Production Process #1", "thumb": "https://i.ytimg.com/vi/G41_hfoRF-s/mqdefault.jpg", "dur": "26:33"}, {"id": "zUo3Zlxw1C0", "title": "Relaxing Vintage Blues ~ Timeless Ballads and Soothing Tunes for a Cozy Night In", "thumb": "https://i.ytimg.com/vi/zUo3Zlxw1C0/mqdefault.jpg", "dur": "4:15"}, {"id": "Wiu9BjYasAM", "title": "She Don't Like Me ( Official Video Music ) - Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/Wiu9BjYasAM/mqdefault.jpg", "dur": "3:43"}, {"id": "M2zmKZaLMKY", "title": "Bourbon Blues - Relaxing Guitar Blues & Rock for a Busy Day | Smooth Blues Break", "thumb": "https://i.ytimg.com/vi/M2zmKZaLMKY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "iyg3UZFzWJ4", "title": "Smooth Blues - Diving Deep into the Raw Emotion and Timeless Beauty | Soul-Stirring Blues", "thumb": "https://i.ytimg.com/vi/iyg3UZFzWJ4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "nqZd2o_cAYw", "title": "Dirty Blues - Soul-Stirring the Haunting Melodies and Lyrics of Blues Music | Mystical Blues Journey", "thumb": "https://i.ytimg.com/vi/nqZd2o_cAYw/mqdefault.jpg", "dur": "11:55:00"}, {"id": "L1xwUKxpdJg", "title": "Elegant Blues - Whiskey Rock Music for a Relaxing Work Blues Escape | Unwind after Hours", "thumb": "https://i.ytimg.com/vi/L1xwUKxpdJg/mqdefault.jpg", "dur": "11:54:59"}, {"id": "TWaDtExU-GQ", "title": "Classic Blues - Slow Blues Melodies as Your Relaxing Cigar Background | Unplug and Unwind", "thumb": "https://i.ytimg.com/vi/TWaDtExU-GQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "48lN7bPnJkQ", "title": "Dirty Blues - Dive into the Depths of Dirty Blues | Relax with Rock Instrumentals", "thumb": "https://i.ytimg.com/vi/48lN7bPnJkQ/mqdefault.jpg", "dur": "11:54:57"}, {"id": "85AZkC6RlkE", "title": "Smooth Blues - Traditional Sounds to Capture the Essence of Blues Music", "thumb": "https://i.ytimg.com/vi/85AZkC6RlkE/mqdefault.jpg", "dur": ""}, {"id": "dh72Dz0OqLk", "title": "Night Blues - Exquisite Slow Blues Setting the Mood with Grace | Bourbon-infused Blues", "thumb": "https://i.ytimg.com/vi/dh72Dz0OqLk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "aUjSoEm_5mE", "title": "Smooth Blues - Background Jazz to Soothe Your Soul | Soulful Blues Funk Chronicles", "thumb": "https://i.ytimg.com/vi/aUjSoEm_5mE/mqdefault.jpg", "dur": "11:54:58"}, {"id": "8wAd2k0p_qo", "title": "Positive Blues - Dark and Elegant Blues Music | Dive into Bourbon Night", "thumb": "https://i.ytimg.com/vi/8wAd2k0p_qo/mqdefault.jpg", "dur": "11:54:58"}, {"id": "h9OzynWV6vk", "title": "Dirty Blues - Dark Rock Instrumentals for Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/h9OzynWV6vk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "Mx-cYMY-4Hk", "title": "Whiskey Blues - Guitar and Piano Melodies for a Relaxing Background | Bluesy Elegance", "thumb": "https://i.ytimg.com/vi/Mx-cYMY-4Hk/mqdefault.jpg", "dur": "11:54:58"}, {"id": "qzbWRqonuhA", "title": "Chill Bluesy Tunes | Smooth Guitar Rhythms for Peaceful Relaxation | Piano Blues Night", "thumb": "https://i.ytimg.com/vi/qzbWRqonuhA/mqdefault.jpg", "dur": "3:39:09"}, {"id": "NE0tO9uo19w", "title": "Blues Ballad Night - Guitar and Piano Music for a Relaxing Instrumental", "thumb": "https://i.ytimg.com/vi/NE0tO9uo19w/mqdefault.jpg", "dur": "3:39:09"}, {"id": "1xGzqu5LRRw", "title": "Mellow Blues - Elegant Blues & Rock Instrumental Backdrops | Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/1xGzqu5LRRw/mqdefault.jpg", "dur": "3:39:09"}, {"id": "gZZzyCISmck", "title": "Smooth Blues & Rock - Timeless Instrumental Blues from the Deep South's Heart", "thumb": "https://i.ytimg.com/vi/gZZzyCISmck/mqdefault.jpg", "dur": "3:39:19"}, {"id": "LsXfmSW86hg", "title": "[ POSITIVE BLUES ] Music for a Happy and Uplifting Evening | Elevate Your Night", "thumb": "https://i.ytimg.com/vi/LsXfmSW86hg/mqdefault.jpg", "dur": "3:39:09"}, {"id": "XMTtpd8shNM", "title": "Bourbon Blues for a Dark and Moody Atmosphere | Relaxing Blues Music", "thumb": "https://i.ytimg.com/vi/XMTtpd8shNM/mqdefault.jpg", "dur": "3:39:09"}, {"id": "aJGNryWfOgI", "title": "Whiskey Blues - Beautiful Blues Instrumental Tunes and Vibes", "thumb": "https://i.ytimg.com/vi/aJGNryWfOgI/mqdefault.jpg", "dur": "3:39:09"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

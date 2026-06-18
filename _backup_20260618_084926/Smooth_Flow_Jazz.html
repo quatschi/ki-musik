@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smooth Flow Jazz</title>
+<!-- categories: Lounge, Jazz -->
+<!-- channel-id: UC6CocljmbMnlSe6nMSOyErw -->
+<!-- channel-url: https://www.youtube.com/@smoothflowjazz -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Smooth_Flow_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/xp1nY7B2XuttADIjNU9jLQ9M94xHHzHn8jjP4NiCt4KXEO1f4JRiMcnWEqVxqUDXMBG-Y9fncLE=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Smooth Flow Jazz</div>
+      <div class="channel-count">101 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Smooth Flow Jazz";
+const VIDEOS = [{"id": "TAqwd0w15lM", "title": "Nylon Jazz Guitar – 2 Hours of Warm 90s Groove for Work & Evening", "thumb": "https://i.ytimg.com/vi/TAqwd0w15lM/mqdefault.jpg", "dur": "2:17:53"}, {"id": "_H3Pr_ZheP8", "title": "Nylon Jazz Guitar – 2 Hours of Warm 70s Crossover for Work & Evening", "thumb": "https://i.ytimg.com/vi/_H3Pr_ZheP8/mqdefault.jpg", "dur": "2:12:30"}, {"id": "jr9DPK_O88I", "title": "Midnight Jazz Guitar Mix – 2 Hours of Smooth Hollow-Body Groove for Work & Focus", "thumb": "https://i.ytimg.com/vi/jr9DPK_O88I/mqdefault.jpg", "dur": "2:06:16"}, {"id": "k0AACElyoLw", "title": "Daytime Jazz Guitar – Work & Cafe Ambience | 2 Hours of Warm Groove", "thumb": "https://i.ytimg.com/vi/k0AACElyoLw/mqdefault.jpg", "dur": "2:03:33"}, {"id": "CvCIP5vNRn8", "title": "Roadside Jazz Guitar – Work & Driving | 2 Hours of Bluesy Soul Groove", "thumb": "https://i.ytimg.com/vi/CvCIP5vNRn8/mqdefault.jpg", "dur": "2:09:25"}, {"id": "hfJMQaOcwz0", "title": "Latin Groove Jazz Guitar – 2 Hours for Work & Focus | Nylon-String Smooth Jazz", "thumb": "https://i.ytimg.com/vi/hfJMQaOcwz0/mqdefault.jpg", "dur": "2:10:24"}, {"id": "JJd3SRv1y1s", "title": "Night Skyline Jazz Guitar – 2 Hours for Work & Focus | Warm Groove", "thumb": "https://i.ytimg.com/vi/JJd3SRv1y1s/mqdefault.jpg", "dur": "2:07:25"}, {"id": "4JTA9x0pdkw", "title": "LA Night Groove Jazz Guitar – 2 Hours for Work & Drive | Smooth Funk", "thumb": "https://i.ytimg.com/vi/4JTA9x0pdkw/mqdefault.jpg", "dur": "2:08:45"}, {"id": "9YFD8Dd6xzc", "title": "Smooth Jazz Guitar – After Hours Groove for Work, Reading & Unwind", "thumb": "https://i.ytimg.com/vi/9YFD8Dd6xzc/mqdefault.jpg", "dur": "2:00:37"}, {"id": "tqyleaKh7bc", "title": "Weekend Drive Jazz Guitar – West Coast Groove for Work & Cruising | 2 Hours", "thumb": "https://i.ytimg.com/vi/tqyleaKh7bc/mqdefault.jpg", "dur": "2:10:50"}, {"id": "EmVpqSronAo", "title": "Night Lounge Jazz Guitar – 2 Hours of Urban Groove for Work, Reading & Unwind", "thumb": "https://i.ytimg.com/vi/EmVpqSronAo/mqdefault.jpg", "dur": "2:05:11"}, {"id": "UbEuDAqwZV4", "title": "Morning Coffee Jazz Guitar – Smooth Start | 2 Hours of Nylon-String Groove", "thumb": "https://i.ytimg.com/vi/UbEuDAqwZV4/mqdefault.jpg", "dur": "2:03:17"}, {"id": "RR-bVRvIZc0", "title": "Urban Groove Jazz Guitar – 2 Hours for Work & After-Hours Unwind", "thumb": "https://i.ytimg.com/vi/RR-bVRvIZc0/mqdefault.jpg", "dur": "2:02:23"}, {"id": "YnjdovK7_jg", "title": "Night Drive Jazz Guitar – Groove for Work & Focus | 2 Hours of Acid Jazz", "thumb": "https://i.ytimg.com/vi/YnjdovK7_jg/mqdefault.jpg", "dur": "2:05:02"}, {"id": "dBsCoPQboMI", "title": "90s Jazz-Funk Guitar – Work & Focus | 2 Hours of Organ Groove", "thumb": "https://i.ytimg.com/vi/dBsCoPQboMI/mqdefault.jpg", "dur": "2:07:48"}, {"id": "ULAt4mkm6x4", "title": "Daytime Drive Jazz Guitar – 2 Hours of Nylon-String Funk Groove for Work & Cruising", "thumb": "https://i.ytimg.com/vi/ULAt4mkm6x4/mqdefault.jpg", "dur": "2:00:55"}, {"id": "zsoyvMU_cD8", "title": "Listening Room Jazz Guitar – 2 Hours of Warm Smooth Jazz for Work, Reading & Unwind", "thumb": "https://i.ytimg.com/vi/zsoyvMU_cD8/mqdefault.jpg", "dur": "2:03:25"}, {"id": "z9QGyI2M7KY", "title": "After Hours Jazz Guitar – 2 Hours of Urban Funk for Late Night Work & Unwind", "thumb": "https://i.ytimg.com/vi/z9QGyI2M7KY/mqdefault.jpg", "dur": "2:07:00"}, {"id": "t_c60U3MwM8", "title": "City Lights Jazz Guitar – 2 Hours of West Coast Groove for Late-Night Work & Focus", "thumb": "https://i.ytimg.com/vi/t_c60U3MwM8/mqdefault.jpg", "dur": "2:04:08"}, {"id": "cQztdH9GiVM", "title": "Sunset Jazz Guitar – 2 Hours of Acoustic Fusion for Work, Reading & Driving", "thumb": "https://i.ytimg.com/vi/cQztdH9GiVM/mqdefault.jpg", "dur": "2:02:07"}, {"id": "VZZMFhu7KCs", "title": "Sunday Afternoon Jazz Guitar – 2 Hours for Work & Weekend Listening | Nylon-String Groove", "thumb": "https://i.ytimg.com/vi/VZZMFhu7KCs/mqdefault.jpg", "dur": "2:04:26"}, {"id": "M7BDSQ2dMCI", "title": "After Hours Jazz Guitar – 2 Hours for Quiet Evenings & Late Night Unwind", "thumb": "https://i.ytimg.com/vi/M7BDSQ2dMCI/mqdefault.jpg", "dur": "2:04:58"}, {"id": "R7s-zFmxu1A", "title": "70s Funk Jazz Guitar – 2 Hours of Steady Groove with Hollow Body & Clavinet", "thumb": "https://i.ytimg.com/vi/R7s-zFmxu1A/mqdefault.jpg", "dur": "2:00:53"}, {"id": "OnAviqXe7EM", "title": "Night Lounge Jazz Guitar – 2 Hours of Smooth Groove with Guitar & Flugelhorn", "thumb": "https://i.ytimg.com/vi/OnAviqXe7EM/mqdefault.jpg", "dur": "2:02:46"}, {"id": "NQ3IuYEhd_0", "title": "After Hours Jazz-Funk Guitar – 2 Hours for Work, Reading & Focus", "thumb": "https://i.ytimg.com/vi/NQ3IuYEhd_0/mqdefault.jpg", "dur": "2:05:05"}, {"id": "68W8qATQjk0", "title": "Sunset Terrace Jazz Guitar – 2 Hours of Smooth Groove for Evening Unwind", "thumb": "https://i.ytimg.com/vi/68W8qATQjk0/mqdefault.jpg", "dur": "2:05:41"}, {"id": "FfjiMcLtR2c", "title": "Evening Jazz Guitar – 2 Hours of Warm Lounge Music to Unwind", "thumb": "https://i.ytimg.com/vi/FfjiMcLtR2c/mqdefault.jpg", "dur": "2:01:44"}, {"id": "uzEJBTWC_Pc", "title": "Spring Morning Jazz Guitar – 2 Hours of Acoustic Guitar & Piano for Calm Focus", "thumb": "https://i.ytimg.com/vi/uzEJBTWC_Pc/mqdefault.jpg", "dur": "2:04:43"}, {"id": "DHZ5ocMTnaM", "title": "Weekend Jazz Guitar – 2 Hours of Smooth Nylon-String Groove for Bar Vibes", "thumb": "https://i.ytimg.com/vi/DHZ5ocMTnaM/mqdefault.jpg", "dur": "2:03:36"}, {"id": "fMDALp3tJhQ", "title": "Rainy After Hours Jazz Guitar – 2 Hours for Work & Unwind", "thumb": "https://i.ytimg.com/vi/fMDALp3tJhQ/mqdefault.jpg", "dur": "2:05:37"}, {"id": "s-UdBXBJzFI", "title": "Spring Drive Jazz Guitar – 2 Hours of Smooth Groove for Refreshing Daytime Cruising", "thumb": "https://i.ytimg.com/vi/s-UdBXBJzFI/mqdefault.jpg", "dur": "2:01:04"}, {"id": "5RMUU3GzYcw", "title": "Night Lounge Jazz Guitar – 2 Hours for Work, Reading & Unwind", "thumb": "https://i.ytimg.com/vi/5RMUU3GzYcw/mqdefault.jpg", "dur": "2:01:32"}, {"id": "kHX2lx_5-OA", "title": "Spring Patio Jazz Guitar – 2 Hours of Nylon-String Groove for Work & Unwind", "thumb": "https://i.ytimg.com/vi/kHX2lx_5-OA/mqdefault.jpg", "dur": "2:00:25"}, {"id": "5yAL84AK80c", "title": "Smooth Jazz Guitar – Warm After Work Music for Easy Evenings & Quiet Focus", "thumb": "https://i.ytimg.com/vi/5yAL84AK80c/mqdefault.jpg", "dur": "2:02:58"}, {"id": "3YGDkjzPAfQ", "title": "Smooth Jazz Guitar – 3 Hours of Relaxing Music for Deep Sleep & Calm Nights", "thumb": "https://i.ytimg.com/vi/3YGDkjzPAfQ/mqdefault.jpg", "dur": "3:06:20"}, {"id": "0GoNPPpV99g", "title": "Miami 80s Night Drive – 2 Hours of Smooth Disco-Funk Jazz Guitar", "thumb": "https://i.ytimg.com/vi/0GoNPPpV99g/mqdefault.jpg", "dur": "2:05:44"}, {"id": "6VerSeaneME", "title": "Urban Morning Jazz Guitar – 2 Hours of Smooth Groove for Work & an Easy Start", "thumb": "https://i.ytimg.com/vi/6VerSeaneME/mqdefault.jpg", "dur": "2:04:27"}, {"id": "L7x9YuiQSfU", "title": "After Work Jazz Guitar – 2 Hours of Smooth Urban Groove for NYC Evenings", "thumb": "https://i.ytimg.com/vi/L7x9YuiQSfU/mqdefault.jpg", "dur": "2:01:48"}, {"id": "-4YrysiYF38", "title": "Evening Road Jazz Guitar – 2 Hours for Quiet Miles & Unwind", "thumb": "https://i.ytimg.com/vi/-4YrysiYF38/mqdefault.jpg", "dur": "2:06:32"}, {"id": "7Ue-Afa6k6U", "title": "80s Urban Soul Jazz Guitar – 2 Hours for After Work & Evening Unwind", "thumb": "https://i.ytimg.com/vi/7Ue-Afa6k6U/mqdefault.jpg", "dur": "2:09:55"}, {"id": "oLfHZhvgs7I", "title": "After Hours Jazz Guitar – 2 Hours of Smooth 80s Groove for Late-Night Work & Unwind", "thumb": "https://i.ytimg.com/vi/oLfHZhvgs7I/mqdefault.jpg", "dur": "2:00:58"}, {"id": "5N1SjWP332g", "title": "After Hours Jazz Guitar – 2 Hours of Warm 90s Radio Vibes for Quiet Nights", "thumb": "https://i.ytimg.com/vi/5N1SjWP332g/mqdefault.jpg", "dur": "2:05:08"}, {"id": "7_dXygaFqw4", "title": "After Hours Jazz Guitar – 2 Hours of Organ Funk Groove for Work & Unwind", "thumb": "https://i.ytimg.com/vi/7_dXygaFqw4/mqdefault.jpg", "dur": "2:10:00"}, {"id": "gwxhsRn4SJM", "title": "Smooth Jazz Guitar – 2 Hours of Late Night Lounge Music to Unwind", "thumb": "https://i.ytimg.com/vi/gwxhsRn4SJM/mqdefault.jpg", "dur": "2:11:49"}, {"id": "O5yQfovJl0s", "title": "Jazz Guitar – 2 Hours of Elegant Nylon-String Groove for Work & Unwind", "thumb": "https://i.ytimg.com/vi/O5yQfovJl0s/mqdefault.jpg", "dur": "2:05:25"}, {"id": "1QublIvpraU", "title": "Morning Coffee Jazz Guitar – 2 Hours for Work, Focus & a Smooth Start", "thumb": "https://i.ytimg.com/vi/1QublIvpraU/mqdefault.jpg", "dur": "2:09:04"}, {"id": "8smWqw7hZcU", "title": "Night Drive Jazz Guitar – 2 Hours of Smooth Urban Funk to Unwind After Work", "thumb": "https://i.ytimg.com/vi/8smWqw7hZcU/mqdefault.jpg", "dur": "2:05:56"}, {"id": "R4tFSmBYbjQ", "title": "Jazz Guitar – 2 Hours of Latin Fusion Groove for Late Work", "thumb": "https://i.ytimg.com/vi/R4tFSmBYbjQ/mqdefault.jpg", "dur": "2:04:22"}, {"id": "BnovExQII-0", "title": "Spring Morning Jazz Guitar – 2 Hours for Walking, Work & a Smooth Start", "thumb": "https://i.ytimg.com/vi/BnovExQII-0/mqdefault.jpg", "dur": "2:02:41"}, {"id": "ZTq97NhrQVA", "title": "NYC Night Drive Jazz Guitar – 2 Hours for Late-Night Roads & Unwind", "thumb": "https://i.ytimg.com/vi/ZTq97NhrQVA/mqdefault.jpg", "dur": "2:25:10"}, {"id": "xtZ-5T2YmBU", "title": "After Hours Jazz Guitar – 2 Hours of Warm, Smooth Guitar for Late Night Unwind", "thumb": "https://i.ytimg.com/vi/xtZ-5T2YmBU/mqdefault.jpg", "dur": "2:07:18"}, {"id": "XbTD4iimfYc", "title": "Smooth Jazz Guitar – 2 Hours of Warm, Luxury Sunset Music to Relax & Unwind", "thumb": "https://i.ytimg.com/vi/XbTD4iimfYc/mqdefault.jpg", "dur": "2:03:07"}, {"id": "29RtOCJzesU", "title": "Smooth Jazz Guitar – 2 Hours of Funky Groove to Keep You Moving", "thumb": "https://i.ytimg.com/vi/29RtOCJzesU/mqdefault.jpg", "dur": "2:01:04"}, {"id": "6azW84j76Mc", "title": "Jazz Guitar – 2 Hours for Garage Work, Drive & Focus", "thumb": "https://i.ytimg.com/vi/6azW84j76Mc/mqdefault.jpg", "dur": "2:30:25"}, {"id": "rzgQAs1Ay_E", "title": "Relaxing Smooth Jazz Guitar – 2 Hours to Unwind and Soothe a Tired Mind", "thumb": "https://i.ytimg.com/vi/rzgQAs1Ay_E/mqdefault.jpg", "dur": "2:18:17"}, {"id": "asQIe2wJRG0", "title": "Spring West Coast Drive Jazz Guitar – 2 Hours for Work, Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/asQIe2wJRG0/mqdefault.jpg", "dur": "2:16:23"}, {"id": "Y5b6sfXjWBE", "title": "Evening Jazz Guitar – 2 Hours of Smooth Background Music for Work & Relaxation", "thumb": "https://i.ytimg.com/vi/Y5b6sfXjWBE/mqdefault.jpg", "dur": "2:00:10"}, {"id": "dRH7E-Z7sko", "title": "Afternoon Jazz Guitar – 2 Hours for Work, Coding & Focus", "thumb": "https://i.ytimg.com/vi/dRH7E-Z7sko/mqdefault.jpg", "dur": "2:04:01"}, {"id": "HsYx29uVqq8", "title": "After Work Smooth Jazz Guitar – 2 Hours for Reading, Quiet Work & Relaxation", "thumb": "https://i.ytimg.com/vi/HsYx29uVqq8/mqdefault.jpg", "dur": "2:08:08"}, {"id": "eqHzaQmRq-A", "title": "Jazz Guitar – 2 Hours for an After-Work Sunset Drive", "thumb": "https://i.ytimg.com/vi/eqHzaQmRq-A/mqdefault.jpg", "dur": "2:17:03"}, {"id": "u51HBuxz5so", "title": "80s Jazz Guitar – 2 Hours of Smooth West Coast Fusion for Relaxed Home Listening", "thumb": "https://i.ytimg.com/vi/u51HBuxz5so/mqdefault.jpg", "dur": "2:02:43"}, {"id": "iuDVTzm0Qpw", "title": "Monday Jazz Guitar – 2 Hours of Smooth Daytime Music for Work & Home", "thumb": "https://i.ytimg.com/vi/iuDVTzm0Qpw/mqdefault.jpg", "dur": "2:05:17"}, {"id": "NeFeaKSd8HI", "title": "Sunday Afternoon Smooth Jazz Guitar – 2 Hours of Warm, Easy Groove for a Relaxed Weekend", "thumb": "https://i.ytimg.com/vi/NeFeaKSd8HI/mqdefault.jpg", "dur": "2:10:43"}, {"id": "dV3p_j_q2nw", "title": "Sunday Afternoon Jazz Guitar – West Coast Smooth Jazz for a Weekend Drive", "thumb": "https://i.ytimg.com/vi/dV3p_j_q2nw/mqdefault.jpg", "dur": "2:09:51"}, {"id": "PXYLVwzGHGs", "title": "90s Jazz Guitar – 2 Hours for Daytime Focus", "thumb": "https://i.ytimg.com/vi/PXYLVwzGHGs/mqdefault.jpg", "dur": "2:03:50"}, {"id": "hdhLwaSiBvc", "title": "Evening Jazz Guitar – 2 Hours of Warm, Smooth Mid-Tempo Groove for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/hdhLwaSiBvc/mqdefault.jpg", "dur": "2:00:18"}, {"id": "01Htghcp58o", "title": "Jazz Guitar Before Bed – 2 Hours of Slow, Quiet Guitar for Late-Night Relaxation", "thumb": "https://i.ytimg.com/vi/01Htghcp58o/mqdefault.jpg", "dur": "2:02:23"}, {"id": "SfahRmefAGU", "title": "Night Drive Jazz Guitar – 2 Hours of Smooth, Warm Guitar for Late Night Roads", "thumb": "https://i.ytimg.com/vi/SfahRmefAGU/mqdefault.jpg", "dur": "2:04:48"}, {"id": "b71wTx6MBvg", "title": "Rainy Evening Smooth Jazz Guitar – 2 Hours to Unwind", "thumb": "https://i.ytimg.com/vi/b71wTx6MBvg/mqdefault.jpg", "dur": "2:03:04"}, {"id": "kJkg2YcmvfQ", "title": "Morning Jazz Guitar – 2 Hours of Warm, Easy Groove to Start the Day", "thumb": "https://i.ytimg.com/vi/kJkg2YcmvfQ/mqdefault.jpg", "dur": "2:03:15"}, {"id": "UvDdZhv_Eeg", "title": "Late Evening Jazz Guitar – 2 Hours of Warm, Smooth After Hours Groove", "thumb": "https://i.ytimg.com/vi/UvDdZhv_Eeg/mqdefault.jpg", "dur": "2:00:12"}, {"id": "TV447iSM22o", "title": "Tokyo City Jazz – 80s City Pop Groove with Hollow Body Guitar (2 Hours)", "thumb": "https://i.ytimg.com/vi/TV447iSM22o/mqdefault.jpg", "dur": "2:00:19"}, {"id": "cT_C2XC9G-8", "title": "Smooth Jazz Guitar – 2 Hours of Steady Groove", "thumb": "https://i.ytimg.com/vi/cT_C2XC9G-8/mqdefault.jpg", "dur": "2:15:34"}, {"id": "ahHmuWLDvTk", "title": "After Work Jazz Guitar – 2 Hours of Smooth Groove to Unwind", "thumb": "https://i.ytimg.com/vi/ahHmuWLDvTk/mqdefault.jpg", "dur": "2:02:51"}, {"id": "irNJSOZzuIE", "title": "Grown-Up Soul Groove – Romantic Mid-Tempo Jazz Guitar for After Hours", "thumb": "https://i.ytimg.com/vi/irNJSOZzuIE/mqdefault.jpg", "dur": "2:02:22"}, {"id": "mrwGCKZkfso", "title": "Hollow-Body Jazz for Unwinding After Work | 2 Hours", "thumb": "https://i.ytimg.com/vi/mrwGCKZkfso/mqdefault.jpg", "dur": "2:08:16"}, {"id": "hW8iHf-_oIo", "title": "70s Jazz Guitar – Warm Analog Evening | 2 Hours for After Work Unwind", "thumb": "https://i.ytimg.com/vi/hW8iHf-_oIo/mqdefault.jpg", "dur": "2:00:05"}, {"id": "p2-GP3o0Vkc", "title": "Hollow Body Jazz Guitar | 2 Hours for an After-Work Session", "thumb": "https://i.ytimg.com/vi/p2-GP3o0Vkc/mqdefault.jpg", "dur": "2:03:54"}, {"id": "a73jDAnVyLs", "title": "Tokyo Night Jazz Guitar – Warm Hollow Tone for a Smooth Downshift (2 Hours)", "thumb": "https://i.ytimg.com/vi/a73jDAnVyLs/mqdefault.jpg", "dur": "2:04:41"}, {"id": "6EE0UM77aEM", "title": "Jazz Guitar – After Work Session | Warm Hollow Body Jazz (2 Hours)", "thumb": "https://i.ytimg.com/vi/6EE0UM77aEM/mqdefault.jpg", "dur": "2:01:50"}, {"id": "q1DbkbT0suI", "title": "Classic 70s Jazz Guitar – 2 Hours of Warm Hollow-Body Tone for Evening Listening", "thumb": "https://i.ytimg.com/vi/q1DbkbT0suI/mqdefault.jpg", "dur": "2:05:09"}, {"id": "xqD_OtBL2TQ", "title": "Jazz Guitar for Quiet Nights – 2 Hours of Warm Hollow-Body Calm", "thumb": "https://i.ytimg.com/vi/xqD_OtBL2TQ/mqdefault.jpg", "dur": "2:04:52"}, {"id": "FrPDafWFOwc", "title": "Jazz Guitar & Sax – Late Night Flow | 2 Hours of Smooth Jazz for Home Unwind", "thumb": "https://i.ytimg.com/vi/FrPDafWFOwc/mqdefault.jpg", "dur": "2:02:06"}, {"id": "G8OFSJymk44", "title": "Monday Morning Jazz Guitar – Over 2 Hours to Start the Week Steady", "thumb": "https://i.ytimg.com/vi/G8OFSJymk44/mqdefault.jpg", "dur": "2:10:41"}, {"id": "Z6UHwiQS7Bw", "title": "Smooth Jazz Guitar – 2 Hours for Late Night Lounge & Unwind", "thumb": "https://i.ytimg.com/vi/Z6UHwiQS7Bw/mqdefault.jpg", "dur": "2:26:45"}, {"id": "RjB2I3QLss0", "title": "Sunday Afternoon Jazz Guitar – 2 Hours of Smooth & Easy Jazz for Home", "thumb": "https://i.ytimg.com/vi/RjB2I3QLss0/mqdefault.jpg", "dur": "2:02:30"}, {"id": "HVdRGi2CUB4", "title": "Jazz Guitar – Calm the Mind | 2 Hours of Smooth, Unhurried Night Guitar", "thumb": "https://i.ytimg.com/vi/HVdRGi2CUB4/mqdefault.jpg", "dur": "2:01:52"}, {"id": "HgVr0ZroHZ0", "title": "Jazz Guitar – After Hours Groove | 2 Hours of Warm Nylon Guitar at Night", "thumb": "https://i.ytimg.com/vi/HgVr0ZroHZ0/mqdefault.jpg", "dur": "2:04:41"}, {"id": "Bz0XnskP6g0", "title": "Jazz Guitar – Late Night Desk | 3 Hours of Smooth, Steady Focus", "thumb": "https://i.ytimg.com/vi/Bz0XnskP6g0/mqdefault.jpg", "dur": "3:02:44"}, {"id": "s9VMOwI0fxI", "title": "Jazz Guitar – 2 Hours of Acoustic, Warm Sound for an Unwind Night", "thumb": "https://i.ytimg.com/vi/s9VMOwI0fxI/mqdefault.jpg", "dur": "2:04:41"}, {"id": "_p5-vIpIWXI", "title": "Jazz Guitar – Before Bed | 3 Hours of Smooth, Unhurried Night Guitar", "thumb": "https://i.ytimg.com/vi/_p5-vIpIWXI/mqdefault.jpg", "dur": "3:03:53"}, {"id": "QKtNGxgxsmU", "title": "Jazz Guitar – Rainy City Groove | 2 Hours for Night Drive & Clear Focus", "thumb": "https://i.ytimg.com/vi/QKtNGxgxsmU/mqdefault.jpg", "dur": "2:04:08"}, {"id": "nkeK2dNhFeI", "title": "Jazz Guitar – After Hours Flow | 2 Hours of Smooth, Unhurried Jazz", "thumb": "https://i.ytimg.com/vi/nkeK2dNhFeI/mqdefault.jpg", "dur": "2:12:46"}, {"id": "pnWqbYorJQE", "title": "Jazz Guitar – 2 Hours of Smooth, Warm Music for Night Drive Listening", "thumb": "https://i.ytimg.com/vi/pnWqbYorJQE/mqdefault.jpg", "dur": "2:02:31"}, {"id": "2gvyLePBX4k", "title": "After Hours Jazz Guitar – Late Night Reflections in Smooth Guitar (2 Hours)", "thumb": "https://i.ytimg.com/vi/2gvyLePBX4k/mqdefault.jpg", "dur": "2:04:57"}, {"id": "jtdYpETyQ5k", "title": "Smooth Jazz Guitar – 2 Hours of Warm, Mellow Music for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/jtdYpETyQ5k/mqdefault.jpg", "dur": "2:02:39"}, {"id": "MYt4CmulhfA", "title": "After Hours Jazz Guitar – 2 Hours of Smooth, Warm Guitar for Late Night Listening", "thumb": "https://i.ytimg.com/vi/MYt4CmulhfA/mqdefault.jpg", "dur": "2:02:21"}, {"id": "WQeTJG1iyuA", "title": "Jazz Guitar for a Relaxing Evening | 2 Hours", "thumb": "https://i.ytimg.com/vi/WQeTJG1iyuA/mqdefault.jpg", "dur": "2:02:20"}, {"id": "yUM7Mlp4LJw", "title": "Jazz Guitar – Late Night Groove | 2 Hours for Focus & Quiet Work", "thumb": "https://i.ytimg.com/vi/yUM7Mlp4LJw/mqdefault.jpg", "dur": "2:09:20"}, {"id": "v193FB1OEoo", "title": "90s Smooth Jazz Guitar for Work & Focus – 2 Hours of Relaxed, Sophisticated Daytime Instrumentals", "thumb": "https://i.ytimg.com/vi/v193FB1OEoo/mqdefault.jpg", "dur": "2:13:01"}, {"id": "R6WiuaWtt9k", "title": "Smooth Jazz – Electric Guitar | 2 Hours of Relaxing Night Jazz", "thumb": "https://i.ytimg.com/vi/R6WiuaWtt9k/mqdefault.jpg", "dur": "2:04:33"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

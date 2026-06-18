@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music For Event</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UC7MIQP60h2Irdo2u1EVhu5g -->
+<!-- channel-url: https://www.youtube.com/@musicforevent -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Music_For_Event.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/4HTPxQ_NFcwoI66hwRjN-g_afczHP9PLLDN5aSWe6onRI5wzxS4g9pCHwRgla_r4ZFVcLeOqXBM=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Music For Event</div>
+      <div class="channel-count">38 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Music For Event";
+const VIDEOS = [{"id": "C4Z2r_M9i_g", "title": "Dark Symphony of Legends", "thumb": "https://i.ytimg.com/vi/C4Z2r_M9i_g/mqdefault.jpg", "dur": "24:13"}, {"id": "pI9XSFANblA", "title": "Jazz Fusion Overdrive", "thumb": "https://i.ytimg.com/vi/pI9XSFANblA/mqdefault.jpg", "dur": "33:53"}, {"id": "XHai9Fn-sEw", "title": "Urban Jazz Motion", "thumb": "https://i.ytimg.com/vi/XHai9Fn-sEw/mqdefault.jpg", "dur": "32:51"}, {"id": "4uCSMnArFvs", "title": "Fading Signals & Broken Frequencies", "thumb": "https://i.ytimg.com/vi/4uCSMnArFvs/mqdefault.jpg", "dur": "26:20"}, {"id": "nDuejh0-TPE", "title": "Electric Siam EDM Nights", "thumb": "https://i.ytimg.com/vi/nDuejh0-TPE/mqdefault.jpg", "dur": "27:34"}, {"id": "AACDr4Uajqg", "title": "Siam Jazz Fusion Boulevard", "thumb": "https://i.ytimg.com/vi/AACDr4Uajqg/mqdefault.jpg", "dur": "33:02"}, {"id": "ocCpLq4dWew", "title": "Little Dreams Playground", "thumb": "https://i.ytimg.com/vi/ocCpLq4dWew/mqdefault.jpg", "dur": "11:31"}, {"id": "2dzzCAI1QP8", "title": "Golden Era Swing Jazz", "thumb": "https://i.ytimg.com/vi/2dzzCAI1QP8/mqdefault.jpg", "dur": "25:21"}, {"id": "3tZlhqc7n8A", "title": "Ocean Lights Latin Jazz", "thumb": "https://i.ytimg.com/vi/3tZlhqc7n8A/mqdefault.jpg", "dur": "31:48"}, {"id": "1WbIjt90LT8", "title": "Titanium Bass Havoc", "thumb": "https://i.ytimg.com/vi/1WbIjt90LT8/mqdefault.jpg", "dur": "25:05"}, {"id": "KfCUpK4yH5g", "title": "Cosmic Jazz Funk Syndicate", "thumb": "https://i.ytimg.com/vi/KfCUpK4yH5g/mqdefault.jpg", "dur": "33:09"}, {"id": "yDFZ41bN9tc", "title": "Golden Breeze Bossa", "thumb": "https://i.ytimg.com/vi/yDFZ41bN9tc/mqdefault.jpg", "dur": "19:22"}, {"id": "mQtFgOVufU8", "title": "Tropical Escape Routes", "thumb": "https://i.ytimg.com/vi/mQtFgOVufU8/mqdefault.jpg", "dur": "25:47"}, {"id": "laDi9zHEsbk", "title": "Reggae Paradise Motion", "thumb": "https://i.ytimg.com/vi/laDi9zHEsbk/mqdefault.jpg", "dur": "23:41"}, {"id": "slSo09nYmw4", "title": "Elegant Dixieland Jazz", "thumb": "https://i.ytimg.com/vi/slSo09nYmw4/mqdefault.jpg", "dur": "22:09"}, {"id": "g415gZ5pbK4", "title": "Whispers of Forever", "thumb": "https://i.ytimg.com/vi/g415gZ5pbK4/mqdefault.jpg", "dur": "28:23"}, {"id": "kk758s__7Mc", "title": "Luna del Fuego", "thumb": "https://i.ytimg.com/vi/kk758s__7Mc/mqdefault.jpg", "dur": "14:08"}, {"id": "9SEycMN4zeE", "title": "อีสานสะเทือนฟลอร์", "thumb": "https://i.ytimg.com/vi/9SEycMN4zeE/mqdefault.jpg", "dur": "21:03"}, {"id": "hsrQosPsUzY", "title": "NEON HORIZON PROTOCOL", "thumb": "https://i.ytimg.com/vi/hsrQosPsUzY/mqdefault.jpg", "dur": "32:52"}, {"id": "8Tt1i6K7Nc0", "title": "Echoes Beyond Goodbye", "thumb": "https://i.ytimg.com/vi/8Tt1i6K7Nc0/mqdefault.jpg", "dur": "28:13"}, {"id": "ze5V0OvA1Yg", "title": "Jazz Fusion Pulse", "thumb": "https://i.ytimg.com/vi/ze5V0OvA1Yg/mqdefault.jpg", "dur": "33:14"}, {"id": "-0TMQNVDwxM", "title": "Shadowfall: Age of War", "thumb": "https://i.ytimg.com/vi/-0TMQNVDwxM/mqdefault.jpg", "dur": "24:49"}, {"id": "k9bIq-skmKc", "title": "Velour Serenity: Timeless Lobby Ambience", "thumb": "https://i.ytimg.com/vi/k9bIq-skmKc/mqdefault.jpg", "dur": "28:17"}, {"id": "ammrLijAuNg", "title": "MIDNIGHT CIRCUITSA Deep House Instrumental Experience", "thumb": "https://i.ytimg.com/vi/ammrLijAuNg/mqdefault.jpg", "dur": "37:06"}, {"id": "L_2A-jmWR2c", "title": "BASS DOMINION: A Dubstep Instrumental Journey", "thumb": "https://i.ytimg.com/vi/L_2A-jmWR2c/mqdefault.jpg", "dur": "27:46"}, {"id": "KZ0M98M1xso", "title": "Echoes of the Wind Valley", "thumb": "https://i.ytimg.com/vi/KZ0M98M1xso/mqdefault.jpg", "dur": "26:05"}, {"id": "BPyVsJBjhmc", "title": "Pulse of the Night: A Modern House Experience", "thumb": "https://i.ytimg.com/vi/BPyVsJBjhmc/mqdefault.jpg", "dur": "30:55"}, {"id": "jIB6TlQ_dcg", "title": "Velvet Evenings: A Smooth Jazz Experience", "thumb": "https://i.ytimg.com/vi/jIB6TlQ_dcg/mqdefault.jpg", "dur": "33:07"}, {"id": "oyfitfhQCfc", "title": "Genesis of Dominion: The Grand Opening Saga", "thumb": "https://i.ytimg.com/vi/oyfitfhQCfc/mqdefault.jpg", "dur": "26:43"}, {"id": "oVngz2s3RLQ", "title": "Rhythm Ascension: From Warm-Up to Peak", "thumb": "https://i.ytimg.com/vi/oVngz2s3RLQ/mqdefault.jpg", "dur": "23:54"}, {"id": "QeZLjEDPkbE", "title": "Velvet Flow: The R&B Event Experience", "thumb": "https://i.ytimg.com/vi/QeZLjEDPkbE/mqdefault.jpg", "dur": "25:22"}, {"id": "nYH7cp_kRQw", "title": "NEON ASCENT: The EDM Event Journey", "thumb": "https://i.ytimg.com/vi/nYH7cp_kRQw/mqdefault.jpg", "dur": "29:55"}, {"id": "q9VJvlOz4dA", "title": "Midnight Pulse: Deep House Experience", "thumb": "https://i.ytimg.com/vi/q9VJvlOz4dA/mqdefault.jpg", "dur": "31:58"}, {"id": "7FBDgRceZBQ", "title": "Rising Voltage: The Rock Event Experience", "thumb": "https://i.ytimg.com/vi/7FBDgRceZBQ/mqdefault.jpg", "dur": "24:39"}, {"id": "dfEB6-4sOxE", "title": "Adrenaline Flow: From Warm-Up to Burnout", "thumb": "https://i.ytimg.com/vi/dfEB6-4sOxE/mqdefault.jpg", "dur": "22:59"}, {"id": "h-ymWs8JOjU", "title": "The Innovation Continuum", "thumb": "https://i.ytimg.com/vi/h-ymWs8JOjU/mqdefault.jpg", "dur": "25:34"}, {"id": "1cB6DByghGk", "title": "Neon Meridian: The Event Odyssey", "thumb": "https://i.ytimg.com/vi/1cB6DByghGk/mqdefault.jpg", "dur": "31:03"}, {"id": "dMW_-nxPRHY", "title": "A Taste Of Jazz", "thumb": "https://i.ytimg.com/vi/dMW_-nxPRHY/mqdefault.jpg", "dur": "26:05"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
