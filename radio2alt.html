@@ -105,7 +105,6 @@
   const urlParams = new URLSearchParams(window.location.search);
   const startFilter = urlParams.get('kategorie') || 'Alle';
   const kanalParam = urlParams.get('kanal') || null;   // z.B. radio2.html?kanal=Blue_Flame_Rock.html
-  const videoParam = urlParams.get('video') || null;   // z.B. &video=dQw4w9WgXcQ – direkt diesen Titel starten
   let kanalVideosCache = null;                          // Videos des fixierten Kanals (nur einmal laden)
   let randomStartEnabled = true;                        // Zufälliger Zeiteinstieg an/aus
 
@@ -729,47 +728,6 @@
       document.getElementById('subtitle').textContent = fixed
         ? '📌 Nur Kanal: ' + fixed.name
         : 'Kanal nicht gefunden: ' + kanalParam;
-
-      if (videoParam) {
-        // Direkt ein bestimmtes Video starten (vom ▶-Button auf der Kanalseite)
-        setStatus('Lade Kanal...');
-        const waitForPlayer0 = setInterval(async () => {
-          if (playerReady) {
-            clearInterval(waitForPlayer0);
-            if (!kanalVideosCache && fixed) kanalVideosCache = await loadOneChannel(fixed);
-            const videos = kanalVideosCache || [];
-            const video = videos.find(v => v.videoId === videoParam) || { videoId: videoParam, title: videoParam, dur: '' };
-            const ch = fixed || { name: kanalParam, thumb: '' };
-            currentVideoId = video.videoId;
-            currentVideoTitle = video.title;
-            currentChannelName = ch.name;
-            currentRating = allRatings[video.videoId] || 0;
-            ytPlayer.loadVideoById({ videoId: video.videoId, startSeconds: 0 });
-            startPlaybackTimeout();
-            document.getElementById('info').innerHTML = `
-              <div class="channel-row">
-                ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" onerror="this.style.display='none'">` : ''}
-                <span class="channel-name">${ch.name}</span>
-              </div>
-              <div class="video-title">${video.title}</div>
-              <div class="video-dur">${video.dur}</div>
-              <div class="rating-row">
-                <span class="rating-label">Bewertung:</span>
-                <div class="stars" id="radio-stars">
-                  ${[1,2,3,4,5].map(n => `<span class="star" onclick="setRadioRating(${n})">★</span>`).join('')}
-                </div>
-                <button class="clear-star" onclick="setRadioRating(0)">✕</button>
-                <button class="save-rating-btn" id="radio-save-btn" onclick="saveRadioRating()">💾</button>
-                <span class="rating-status" id="radio-status"></span>
-              </div>
-              <button class="btn-next" onclick="pickRandom()">⟳ Nächstes zufälliges Video</button>
-            `;
-            renderRadioStars();
-          }
-        }, 200);
-        return;
-      }
-
       const waitForPlayer0 = setInterval(() => {
         if (playerReady) { clearInterval(waitForPlayer0); pickRandom(); }
       }, 200);
