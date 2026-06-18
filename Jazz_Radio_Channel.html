@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jazz Radio Channel</title>
+<!-- categories: Jazz, Morning -->
+<!-- channel-id: UCQayACcGlT-lbO2XVdpJmTw -->
+<!-- channel-url: https://youtube.com/@jazzradiochannel -->
+<!-- created: 2026-06-18 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Jazz_Radio_Channel.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/vgjeI6bGloHkTjzYvvYFiJsymYX6X2IA6LlP_dVFL7Fa4kocWrgHvLxXmX5M2gwzcQeMBT2z=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Jazz Radio Channel</div>
+      <div class="channel-count">164 Videos</div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const CHANNEL = "Jazz Radio Channel";
+const VIDEOS = [{"id": "1rnSyFwAnj8", "title": "Dublin Coffee Jazz ☕ Relaxing Cafe Ambience with Historic City Views", "thumb": "https://i.ytimg.com/vi/1rnSyFwAnj8/mqdefault.jpg", "dur": "3:37:05"}, {"id": "xeAzDtZCY_A", "title": "Switzerland Coffee Jazz ☕ Relaxing Mountain Cafe Ambience for Work & Study", "thumb": "https://i.ytimg.com/vi/xeAzDtZCY_A/mqdefault.jpg", "dur": "3:33:20"}, {"id": "VTj0vt6Fdq8", "title": "NEW YORK Coffee Shop Ambience - Relaxing Riverside Coffee Jazz with City Views", "thumb": "https://i.ytimg.com/vi/VTj0vt6Fdq8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "f3wKJKUzah0", "title": "Bali Coffee Bossa Nova 🌊 Soft Beachside Music for Work & Relax", "thumb": "https://i.ytimg.com/vi/f3wKJKUzah0/mqdefault.jpg", "dur": "3:21:38"}, {"id": "Bxra75IJJAI", "title": "Amsterdam Coffee Jazz ☕ Cozy Canal Side Ambience for Work & Relax", "thumb": "https://i.ytimg.com/vi/Bxra75IJJAI/mqdefault.jpg", "dur": "2:44:16"}, {"id": "12bd3Rhv6cQ", "title": "London Rainy Jazz ☔ Cozy Cafe Jazz with Relaxing Rainy City Ambience", "thumb": "https://i.ytimg.com/vi/12bd3Rhv6cQ/mqdefault.jpg", "dur": "1:21:15"}, {"id": "LJ0rbxhLxyM", "title": "Barcelona Sunset Jazz 🌇 Rooftop Cafe Jazz with Warm Evening City Views", "thumb": "https://i.ytimg.com/vi/LJ0rbxhLxyM/mqdefault.jpg", "dur": "3:21:34"}, {"id": "H1SEnC3SbE4", "title": "Italy Street Jazz ☕ Warm Evening Cafe Jazz in Romantic European Alley, Peaceful Coffee Shop Ambience", "thumb": "https://i.ytimg.com/vi/H1SEnC3SbE4/mqdefault.jpg", "dur": "3:27:07"}, {"id": "vkQcw1YRSlM", "title": "Santorini Breeze Jazz 🌊 Relaxing Cafe Jazz by the Sea | Calm & Luxury Vibes", "thumb": "https://i.ytimg.com/vi/vkQcw1YRSlM/mqdefault.jpg", "dur": "3:28:45"}, {"id": "BxRTyga-mTY", "title": "Prague Cozy Jazz ☕ Warm Cafe Jazz in Quiet European Street Ambience", "thumb": "https://i.ytimg.com/vi/BxRTyga-mTY/mqdefault.jpg", "dur": "2:07:35"}, {"id": "LZYNwejvP80", "title": "Vienna Coffee Jazz ☕ Elegant Morning Cafe Jazz in Luxury European Street", "thumb": "https://i.ytimg.com/vi/LZYNwejvP80/mqdefault.jpg", "dur": "2:57:29"}, {"id": "JH2jNJ_dv1o", "title": "New York Cafe Jazz ☕ Relaxing Morning Coffee Jazz in Cozy City Street", "thumb": "https://i.ytimg.com/vi/JH2jNJ_dv1o/mqdefault.jpg", "dur": "2:54:41"}, {"id": "6XyOZzLw7Ek", "title": "Paris Cafe Jazz ☕ Outdoor Coffee Shop Ambience with Relaxing Bossa Nova Jazz to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/6XyOZzLw7Ek/mqdefault.jpg", "dur": "3:41:35"}, {"id": "n_HjDfndkYM", "title": "Winter Jazz Coffee Shop 🎶☕ Cozy Fireplace Sounds & Relaxing Holiday Jazz for Calm Focus and Rest", "thumb": "https://i.ytimg.com/vi/n_HjDfndkYM/mqdefault.jpg", "dur": "3:00:00"}, {"id": "q8mqCw03n2M", "title": "Soft Snow Jazz Music ☕ Cozy Fireplace Sounds & Smooth Jazz for Relaxing, Studying and Rest", "thumb": "https://i.ytimg.com/vi/q8mqCw03n2M/mqdefault.jpg", "dur": "3:01:58"}, {"id": "2hVVs1rHzOk", "title": "Winter Cafe Jazz Music | Gentle Jazz Ambience and Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/2hVVs1rHzOk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "2IL26TcDZbg", "title": "Smooth Jazz for Winter Nights ❄️ Soft Instrumental Jazz & Fireplace Ambience", "thumb": "https://i.ytimg.com/vi/2IL26TcDZbg/mqdefault.jpg", "dur": "3:03:12"}, {"id": "QaFeU6zuZEQ", "title": "Cozy Winter Porch With Relaxing Jazz Music ❄️ Snowy Cafe Jazz and Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/QaFeU6zuZEQ/mqdefault.jpg", "dur": "3:03:12"}, {"id": "ZRstQsi8mMU", "title": "Cozy Winter Porch With Relaxing Jazz Music | Gentle Jazz Ambience and Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/ZRstQsi8mMU/mqdefault.jpg", "dur": "3:03:12"}, {"id": "dCWXCgRGXcc", "title": "Cozy Winter Porch With Relaxing Jazz Music | Gentle Jazz Ambience and Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/dCWXCgRGXcc/mqdefault.jpg", "dur": "11:54:59"}, {"id": "HZaI9GNL1AI", "title": "Winter Jazz Coffee Shop 🎶☕ Cozy Fireplace Sounds & Relaxing Holiday Jazz for Calm Focus and Rest", "thumb": "https://i.ytimg.com/vi/HZaI9GNL1AI/mqdefault.jpg", "dur": "3:01:58"}, {"id": "bh7CSSH11fU", "title": "Cozy Winter Cabin Ambience ❄️ Warm Piano Jazz Music & Crackling Fireplace to Relax, Study, Work", "thumb": "https://i.ytimg.com/vi/bh7CSSH11fU/mqdefault.jpg", "dur": "11:54:59"}, {"id": "90oeQ-IKDV4", "title": "Winter Café Music ☕ Cozy Fireplace Sounds & Smooth Jazz for Relaxing, Studying and Rest", "thumb": "https://i.ytimg.com/vi/90oeQ-IKDV4/mqdefault.jpg", "dur": "3:01:58"}, {"id": "s2BKaZPQQIM", "title": "Relaxing Winter Coffee Shop ❄️Smooth Jazz Music & Christmas Jazz with Fireplace Atmosphere for Focus", "thumb": "https://i.ytimg.com/vi/s2BKaZPQQIM/mqdefault.jpg", "dur": "3:01:58"}, {"id": "cNBng1rpQAc", "title": "Instrumental Jazz Christmas Music 2026 🎄🔥Cozy Christmas Cabin Ambience with Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/cNBng1rpQAc/mqdefault.jpg", "dur": "3:01:58"}, {"id": "_jNTzp5cnMI", "title": "Smooth Christmas Jazz Music with Snowing Ambience to Relax ☕ Cozy Christmas Coffee Shop Ambience", "thumb": "https://i.ytimg.com/vi/_jNTzp5cnMI/mqdefault.jpg", "dur": "3:42:47"}, {"id": "1KOWz6CTwlM", "title": "Christmas Jazz Instrumental & Fireplace Sounds🎄Jazz Music in Cozy Christmas Ambience to Work, Study", "thumb": "https://i.ytimg.com/vi/1KOWz6CTwlM/mqdefault.jpg", "dur": "3:37:16"}, {"id": "vpLupVTIwts", "title": "Relaxing Winter Coffee Shop ❄️Smooth Jazz Music & Christmas Jazz with Fireplace Atmosphere for Focus", "thumb": "https://i.ytimg.com/vi/vpLupVTIwts/mqdefault.jpg", "dur": "3:01:58"}, {"id": "-X3ivKDDaVw", "title": "Warm Winter Night at Christmas Coffee Shop Ambience 🎄 Smooth Christmas Jazz Music for Happy Holiday", "thumb": "https://i.ytimg.com/vi/-X3ivKDDaVw/mqdefault.jpg", "dur": "11:54:59"}, {"id": "8IYtVAH1vYs", "title": "Christmas Ambience at Cozy Coffee Shop Ambience 🎄 Smooth Christmas Jazz Music for Work, Study", "thumb": "https://i.ytimg.com/vi/8IYtVAH1vYs/mqdefault.jpg", "dur": "3:38:39"}, {"id": "_ITmkeUuGMQ", "title": "A Christmas Coffee Shop Ambience with Relaxing Christmas Jazz Music, Crackling Fire, and Cafe Sounds", "thumb": "https://i.ytimg.com/vi/_ITmkeUuGMQ/mqdefault.jpg", "dur": "3:37:16"}, {"id": "-gUSDuWZt2g", "title": "Relaxing Winter Coffee Shop ❄️Smooth Jazz Music & Christmas Jazz with Fireplace Atmosphere for Focus", "thumb": "https://i.ytimg.com/vi/-gUSDuWZt2g/mqdefault.jpg", "dur": "3:37:16"}, {"id": "e-dKDDUKIXs", "title": "Instrumental Jazz Christmas Music 2026 🎄🔥Stress Relief with Warm Christmas Jazz Music", "thumb": "https://i.ytimg.com/vi/e-dKDDUKIXs/mqdefault.jpg", "dur": "11:55:00"}, {"id": "sUgUhXA9Jas", "title": "Christmas Jazz Instrumental Music to Relax 🎄 Christmas Coffee Shop Ambience & Warm Piano Jazz Music", "thumb": "https://i.ytimg.com/vi/sUgUhXA9Jas/mqdefault.jpg", "dur": "3:30:12"}, {"id": "qpP7xEd9kg4", "title": "Christmas Jazz Instrumental & Fireplace Sounds🎄Jazz Music in Cozy Christmas Ambience to Work, Study", "thumb": "https://i.ytimg.com/vi/qpP7xEd9kg4/mqdefault.jpg", "dur": "3:32:02"}, {"id": "YrM-z_dH7RY", "title": "Jazz Christmas Music 2026 🎄🔥Cozy Christmas Cabin Ambience with Fireplace for Relaxation,Happy Melody", "thumb": "https://i.ytimg.com/vi/YrM-z_dH7RY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "Wfbnuvfdw0E", "title": "Christmas Jazz Instrumental🎄Jazz Music in Cozy Christmas Ambience to Work, Study - Merry Christmas", "thumb": "https://i.ytimg.com/vi/Wfbnuvfdw0E/mqdefault.jpg", "dur": "3:32:31"}, {"id": "V3RJ9gfxQqM", "title": "Instrumental Jazz Christmas Music 2026 🎄🔥Cozy Christmas Cabin Ambience with Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/V3RJ9gfxQqM/mqdefault.jpg", "dur": "3:19:27"}, {"id": "kHq_8_BXaHY", "title": "Christmas Jazz Instrumental & Fireplace Sounds🎄Jazz Music in Cozy Christmas Ambience to Work, Study", "thumb": "https://i.ytimg.com/vi/kHq_8_BXaHY/mqdefault.jpg", "dur": "3:19:56"}, {"id": "7VuJPoJQqko", "title": "Instrumental Jazz Christmas Music 2026 🎄🔥Cozy Christmas Cabin Ambience with Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/7VuJPoJQqko/mqdefault.jpg", "dur": "11:54:59"}, {"id": "47u1KouB_MM", "title": "Instrumental Jazz Christmas Music 2026 🎄🔥Cozy Christmas Cabin Ambience with Fireplace for Relaxation", "thumb": "https://i.ytimg.com/vi/47u1KouB_MM/mqdefault.jpg", "dur": "3:09:52"}, {"id": "sDPPFwdH82s", "title": "London Autumn Jazz Music | Fresh Coffee for Chill, Relaxing jazz vibes every morning! ☕", "thumb": "https://i.ytimg.com/vi/sDPPFwdH82s/mqdefault.jpg", "dur": "3:12:37"}, {"id": "3Tz6bXfcVyM", "title": "Smooth Christmas Jazz Music with Snowing Ambience to Relax ☕ Cozy Christmas Coffee Shop Ambience", "thumb": "https://i.ytimg.com/vi/3Tz6bXfcVyM/mqdefault.jpg", "dur": "3:14:32"}, {"id": "Vp6Ppo0yr9E", "title": "NEW YORK Coffee Shop Ambience - Relaxing Jazz Music & Smooth Bossa Nova for Your Workday", "thumb": "https://i.ytimg.com/vi/Vp6Ppo0yr9E/mqdefault.jpg", "dur": "3:26:00"}, {"id": "iOBj_IOGaRk", "title": "Morning Autumn Jazz Music | Fresh Coffee for Chill, Relax and Healing your Soul", "thumb": "https://i.ytimg.com/vi/iOBj_IOGaRk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "B-aAb7nQevM", "title": "Morning Autumn Jazz | Cozy Coffee Shop Ambience 🍂 Relaxing Jazz Instrumental Music for Good Mood", "thumb": "https://i.ytimg.com/vi/B-aAb7nQevM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "FnE2BznbjZg", "title": "A Quiet Autumn 🍂 Cozy Autumn Coffee Shop Ambience & Smooth Jazz Instrumental Music to Relax, Work", "thumb": "https://i.ytimg.com/vi/FnE2BznbjZg/mqdefault.jpg", "dur": "3:19:27"}, {"id": "TH8TwmEoY2Y", "title": "Fall Coffee Shop Ambience with Warm Jazz Music for Studying, Work 🍂 Relaxing Jazz Instrumental Music", "thumb": "https://i.ytimg.com/vi/TH8TwmEoY2Y/mqdefault.jpg", "dur": "11:55:00"}, {"id": "dDIB8XbRmSg", "title": "Stress Relief with Warm Piano Jazz Music 🍂 Cozy Fall Coffee Shop ~ Smooth Jazz Instrumental Music", "thumb": "https://i.ytimg.com/vi/dDIB8XbRmSg/mqdefault.jpg", "dur": "3:12:07"}, {"id": "Jvy4p7TFmoE", "title": "Morning London 🍂 Cozy Autumn Coffee Shop Ambience & Smooth Jazz Instrumental Music to Relax, Work", "thumb": "https://i.ytimg.com/vi/Jvy4p7TFmoE/mqdefault.jpg", "dur": "3:15:57"}, {"id": "V7e1z0WuXqU", "title": "Relax Gently with Exquisite Autumn Jazz Music 🍁 The Autumn Jazz Vibes Will Make You Flutter 🎶", "thumb": "https://i.ytimg.com/vi/V7e1z0WuXqU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "34OB0dt7TlQ", "title": "NEW YORK Coffee Shop Ambience - Relaxing Jazz Music & Smooth Bossa Nova for Your Workday", "thumb": "https://i.ytimg.com/vi/34OB0dt7TlQ/mqdefault.jpg", "dur": "8:26:28"}, {"id": "h4VSbe-57iw", "title": "Jazz Radio Channel - Make my video", "thumb": "https://i.ytimg.com/vi/h4VSbe-57iw/mqdefault.jpg", "dur": "16:27"}, {"id": "_iXVgIu9kW0", "title": "Are you curious about how we produce content? Here is the answer!!! Jazz Radio Channel", "thumb": "https://i.ytimg.com/vi/_iXVgIu9kW0/mqdefault.jpg", "dur": "18:31"}, {"id": "F3V0qANooGs", "title": "Peaceful Morning at Spring Coffee Porch Ambience with Mellow Bossa Nova Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/F3V0qANooGs/mqdefault.jpg", "dur": "1:02:52"}, {"id": "j1Z33cMHdF0", "title": "Summer Jazz | Outdoor Cafe Ambience with Relaxing Smooth Jazz & Bossa Nova for Work, Study", "thumb": "https://i.ytimg.com/vi/j1Z33cMHdF0/mqdefault.jpg", "dur": "1:01:57"}, {"id": "sG0oK7OkpNs", "title": "NEW ORLEANS Coffee Shop Ambience - Relaxing Jazz Music & Smooth Bossa Nova for Your Workday", "thumb": "https://i.ytimg.com/vi/sG0oK7OkpNs/mqdefault.jpg", "dur": "11:54:58"}, {"id": "lqmPFAVsrtg", "title": "Coffee Shop Ambience ☕ Fresh Morning Atmosphere with Happy Summer Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/lqmPFAVsrtg/mqdefault.jpg", "dur": "11:54:59"}, {"id": "TuJSnofY3f4", "title": "Paris Cafe Ambience ☕ Fresh Morning Atmosphere with Happy Summer Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/TuJSnofY3f4/mqdefault.jpg", "dur": "11:54:56"}, {"id": "ErM2kTiTdX4", "title": "Morning Relaxing Jazz | Fresh Coffee for Chill, Relax and Healing your Soul", "thumb": "https://i.ytimg.com/vi/ErM2kTiTdX4/mqdefault.jpg", "dur": "11:54:56"}, {"id": "LjiFcNiOQ9Y", "title": "Spring Morning Jazz by the Lakeside Porch Ambience – Fireplace & Nature Ambience for Relaxing", "thumb": "https://i.ytimg.com/vi/LjiFcNiOQ9Y/mqdefault.jpg", "dur": "11:54:56"}, {"id": "YD7Hkau_jlI", "title": "Morning Beachside Cafe Jazz | Relaxing Bossa Nova Jazz & Background Music for Best Day", "thumb": "https://i.ytimg.com/vi/YD7Hkau_jlI/mqdefault.jpg", "dur": "3:16:04"}, {"id": "lhPcRelvIQk", "title": "Peaceful Seaside Cafe Ambience with Positive Bossa Nova Jazz Music & Wave Sounds for Joyful Moods", "thumb": "https://i.ytimg.com/vi/lhPcRelvIQk/mqdefault.jpg", "dur": "11:43:34"}, {"id": "pQ7BLteS0NQ", "title": "Positive Morning Jazz - Morning Oceanfront Ambience with Jazz Bossa Nova Music to Work, Study", "thumb": "https://i.ytimg.com/vi/pQ7BLteS0NQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "BNIedqeSFxQ", "title": "Morning Seaside Cafe Ambience For Stress Relief | Relaxing Jazz Music & Ocean Sounds for Relaxation", "thumb": "https://i.ytimg.com/vi/BNIedqeSFxQ/mqdefault.jpg", "dur": "3:31:11"}, {"id": "BPz7XzRvsIU", "title": "Morning Spring Jazz | Gentle Jazz Music at Cozy Outdoor Coffee Shop Ambience for Mood Booster, Study", "thumb": "https://i.ytimg.com/vi/BPz7XzRvsIU/mqdefault.jpg", "dur": "29:52"}, {"id": "gJ8p3OY7P8w", "title": "London Lounge – Sunset Spring Jazz by the Thames with Background Music & Lounge Jazz", "thumb": "https://i.ytimg.com/vi/gJ8p3OY7P8w/mqdefault.jpg", "dur": "3:20:32"}, {"id": "b1IUE5f3Bqo", "title": "Good Mood Jazz Vibes at Morning Spring Porch Ambience with Gentle Waterfall & Stream Flow Sounds", "thumb": "https://i.ytimg.com/vi/b1IUE5f3Bqo/mqdefault.jpg", "dur": "3:19:58"}, {"id": "_cWTtAAtvQ8", "title": "Morning Spring Escape - Enjoying Fresh Atmosphere with Gentle Bossa Nova Jazz Music", "thumb": "https://i.ytimg.com/vi/_cWTtAAtvQ8/mqdefault.jpg", "dur": "3:24:20"}, {"id": "u-bg5_Pzwto", "title": "Morning Jazz Music at the Great Wall of China - Upbeat Bossa Nova to Begin a Good Day🌥️🎶", "thumb": "https://i.ytimg.com/vi/u-bg5_Pzwto/mqdefault.jpg", "dur": "11:54:59"}, {"id": "3ieTib6rYkk", "title": "Serene Night Italy Cafe Ambience with Slow Piano Bossa Nova Jazz to Work, Relax & Sleep", "thumb": "https://i.ytimg.com/vi/3ieTib6rYkk/mqdefault.jpg", "dur": "11:51:10"}, {"id": "aNZCpnLP7Sc", "title": "Peaceful Moments at Morning Seaside Coffee Ambience with Soft Piano Bossa Nova Jazz", "thumb": "https://i.ytimg.com/vi/aNZCpnLP7Sc/mqdefault.jpg", "dur": "50:15"}, {"id": "8Mvg10b7-AI", "title": "Morning Spring Forest Villa with Positive Instrumental Jazz & Bossa Nova for Good Mood", "thumb": "https://i.ytimg.com/vi/8Mvg10b7-AI/mqdefault.jpg", "dur": "11:54:59"}, {"id": "gh8k-LBFaGs", "title": "Beautiful Spring Jazz Melodies | Playlist for a Good Day", "thumb": "https://i.ytimg.com/vi/gh8k-LBFaGs/mqdefault.jpg", "dur": "3:25:01"}, {"id": "LPGlxKzws78", "title": "Serenata Tropical - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/LPGlxKzws78/mqdefault.jpg", "dur": "4:08"}, {"id": "Gp6OKM90knA", "title": "Rhythm of the Moon - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/Gp6OKM90knA/mqdefault.jpg", "dur": "4:10"}, {"id": "oO_UoogJXFQ", "title": "Serene Garden Escape - Peaceful Spring Atmosphere with Gentle Bossa Nova Jazz Music", "thumb": "https://i.ytimg.com/vi/oO_UoogJXFQ/mqdefault.jpg", "dur": "5:22:00"}, {"id": "XKZrmqLCFbc", "title": "Silk Tide Swing - Soothing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/XKZrmqLCFbc/mqdefault.jpg", "dur": "4:02"}, {"id": "eHBkFLsClck", "title": "Azure Melodies - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/eHBkFLsClck/mqdefault.jpg", "dur": "4:04"}, {"id": "E8gUBkIUclM", "title": "Whispering Palms - Soothing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/E8gUBkIUclM/mqdefault.jpg", "dur": "4:05"}, {"id": "JFw_kINOFfY", "title": "Peaceful Morning at Spring Coffee Porch Ambience with Mellow Bossa Nova Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/JFw_kINOFfY/mqdefault.jpg", "dur": "11:54:56"}, {"id": "eWHur8NsJ4w", "title": "Paradise Groove - Elegant Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/eWHur8NsJ4w/mqdefault.jpg", "dur": "4:01"}, {"id": "p_8Ax4chPyw", "title": "Jazz Caipirinhas - Relaxing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/p_8Ax4chPyw/mqdefault.jpg", "dur": "4:07"}, {"id": "TVHRv8J8fSg", "title": "Seasonal Rhythms | A Year in Jazz - Jazz Radio Channel", "thumb": "https://i.ytimg.com/vi/TVHRv8J8fSg/mqdefault.jpg", "dur": "3:21:48"}, {"id": "rQy8RdDEgM0", "title": "Rio Rhythms - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/rQy8RdDEgM0/mqdefault.jpg", "dur": "4:06"}, {"id": "58JsAVR54T4", "title": "Island Echoes - Relaxing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/58JsAVR54T4/mqdefault.jpg", "dur": "4:05"}, {"id": "VTQAVHhNQKI", "title": "Bossa Beat Boulevard - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/VTQAVHhNQKI/mqdefault.jpg", "dur": "4:02"}, {"id": "mIwADKP54q0", "title": "Silêncio de Verão - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/mIwADKP54q0/mqdefault.jpg", "dur": "4:09"}, {"id": "OA-4Oxy5-4s", "title": "Golden Samba - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/OA-4Oxy5-4s/mqdefault.jpg", "dur": "4:04"}, {"id": "Jl00efJ5nIw", "title": "Moonlit Melodies - Soothing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/Jl00efJ5nIw/mqdefault.jpg", "dur": "4:03"}, {"id": "k3qa9bXwDU4", "title": "Satin Clouds - Elegant Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/k3qa9bXwDU4/mqdefault.jpg", "dur": "4:08"}, {"id": "vb9Fixq77cs", "title": "Noites Tropicais - Soothing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/vb9Fixq77cs/mqdefault.jpg", "dur": "4:12"}, {"id": "0Pcxou2SMs0", "title": "Gentle Spring Escape - Morning Coffee Porch Ambience with Calm Jazz Melodies & Background Music", "thumb": "https://i.ytimg.com/vi/0Pcxou2SMs0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "kKuIG0DWcQo", "title": "Brisa do Mar - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/kKuIG0DWcQo/mqdefault.jpg", "dur": "4:10"}, {"id": "4PSg2T6eF9Q", "title": "BOSSA LUNA - Relaxing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/4PSg2T6eF9Q/mqdefault.jpg", "dur": "4:11"}, {"id": "UyiVV4-tf8k", "title": "Start Your Positive Month by Early Morning Coffee Porch Ambience with Upbeat February Jazz Music", "thumb": "https://i.ytimg.com/vi/UyiVV4-tf8k/mqdefault.jpg", "dur": "11:54:57"}, {"id": "Vi_823rQldc", "title": "Sombra Suave - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/Vi_823rQldc/mqdefault.jpg", "dur": "4:13"}, {"id": "o5KfrnZxbsk", "title": "Silk Tide Swing - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/o5KfrnZxbsk/mqdefault.jpg", "dur": "4:02"}, {"id": "tV0JLiI6rFA", "title": "Peaceful Sunset Lakeside Ambience with Tranquil Jazz Melodies | Relaxing Jazz Music to Work & Study", "thumb": "https://i.ytimg.com/vi/tV0JLiI6rFA/mqdefault.jpg", "dur": "11:54:56"}, {"id": "0JS9_ITBa0A", "title": "Seafoam Serenade - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/0JS9_ITBa0A/mqdefault.jpg", "dur": "4:09"}, {"id": "feOd-k_Tdm4", "title": "Happy New Year 2025🥂🎇Beautiful Rooftop Coffee Shop Ambience with Relaxing Bossa Nova Jazz Music", "thumb": "https://i.ytimg.com/vi/feOd-k_Tdm4/mqdefault.jpg", "dur": "3:06:09"}, {"id": "bX4Mt4HRsdY", "title": "Nightcap Blues - Soothing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/bX4Mt4HRsdY/mqdefault.jpg", "dur": "4:16"}, {"id": "0Nb_fHjAG7I", "title": "Jazz in Bloom - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/0Nb_fHjAG7I/mqdefault.jpg", "dur": "4:13"}, {"id": "1T58JK6LDhE", "title": "Corcovado - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/1T58JK6LDhE/mqdefault.jpg", "dur": "4:13"}, {"id": "WbcOAUOlmzs", "title": "Merry Christmas 2025 🎄🎆 Beautiful Relaxing Christmas Jazz Music for a Happy Holiday", "thumb": "https://i.ytimg.com/vi/WbcOAUOlmzs/mqdefault.jpg", "dur": "3:09:04"}, {"id": "vIyNvZutgrU", "title": "Tarde de Verao - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/vIyNvZutgrU/mqdefault.jpg", "dur": "4:13"}, {"id": "LYZ-2PhI14w", "title": "Quiet Waves - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/LYZ-2PhI14w/mqdefault.jpg", "dur": "4:13"}, {"id": "bkxvafgnf6s", "title": "Cozy Christmas Coffee Shop Ambience with Relaxing Jazz Music🎄🎅", "thumb": "https://i.ytimg.com/vi/bkxvafgnf6s/mqdefault.jpg", "dur": "11:55:00"}, {"id": "CJM4M19D1gk", "title": "Japanese Winter Ambience with Enchanted Piano Jazz Music & Gentle Snowfalling, Crackling Fireplace", "thumb": "https://i.ytimg.com/vi/CJM4M19D1gk/mqdefault.jpg", "dur": "3:47:24"}, {"id": "pYBppLPLWYo", "title": "Luz do Sol - Smooth Jazz Music( Official Music Video)", "thumb": "https://i.ytimg.com/vi/pYBppLPLWYo/mqdefault.jpg", "dur": "4:13"}, {"id": "jzAlbbThK8U", "title": "Chilling Night at Luxury New York Lounge with Relaxing Jazz Bar Classics🍷🎶", "thumb": "https://i.ytimg.com/vi/jzAlbbThK8U/mqdefault.jpg", "dur": "3:46:20"}, {"id": "uhgU8eSLe9E", "title": "Santorini Café - Romantic Sunset Seaside Vibes with Ethereal Bossa Nova Jazz to Relax", "thumb": "https://i.ytimg.com/vi/uhgU8eSLe9E/mqdefault.jpg", "dur": "3:32:59"}, {"id": "HSjcp37pqBs", "title": "Autumn Fuji Mountain Ambience🍂Soothing Morning Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/HSjcp37pqBs/mqdefault.jpg", "dur": "3:31:26"}, {"id": "sumcbkWvafE", "title": "Sweetie Sunset at Rome Cafe Ambience ☕ Relaxing Bossa Nova Jazz Music for a Good Day", "thumb": "https://i.ytimg.com/vi/sumcbkWvafE/mqdefault.jpg", "dur": "3:24:59"}, {"id": "6PO5UfXA7k4", "title": "The Haunted Witch Band with Spooky Halloween Music under The Moon Night 🎃", "thumb": "https://i.ytimg.com/vi/6PO5UfXA7k4/mqdefault.jpg", "dur": "3:31:25"}, {"id": "4a35f4-AAyY", "title": "Saudade - Relaxing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/4a35f4-AAyY/mqdefault.jpg", "dur": "4:13"}, {"id": "0XmESCCTBLQ", "title": "Café Rio - Relaxing Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/0XmESCCTBLQ/mqdefault.jpg", "dur": "4:13"}, {"id": "gMVIxWpuSIQ", "title": "Ocean Breeze - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/gMVIxWpuSIQ/mqdefault.jpg", "dur": "4:13"}, {"id": "IFSRBTXThV0", "title": "Midnight Samba - Smooth Jazz Music ( Official Music Video)", "thumb": "https://i.ytimg.com/vi/IFSRBTXThV0/mqdefault.jpg", "dur": "4:13"}, {"id": "xY_7EPvr2Fw", "title": "Celestial Rhythms - Smooth Jazz Music (Official Music Video)", "thumb": "https://i.ytimg.com/vi/xY_7EPvr2Fw/mqdefault.jpg", "dur": "3:56"}, {"id": "IOUl-GvJ7tA", "title": "Sax & Smoke - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/IOUl-GvJ7tA/mqdefault.jpg", "dur": "3:20"}, {"id": "rw7brLInhQM", "title": "Midnight Brass - Bossa Nova Jazz (Official Music Video)", "thumb": "https://i.ytimg.com/vi/rw7brLInhQM/mqdefault.jpg", "dur": "3:20"}, {"id": "YIXwpcO2mOo", "title": "Italy Cafe Ambience ☕ Fresh Morning Atmosphere with Happy Summer Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/YIXwpcO2mOo/mqdefault.jpg", "dur": "3:38:07"}, {"id": "G0bqOfTpKr4", "title": "Fresh Morning Atmosphere at Spring Coffee Porch Ambience with Sweet February Jazz to Work, Study", "thumb": "https://i.ytimg.com/vi/G0bqOfTpKr4/mqdefault.jpg", "dur": "11:54:49"}, {"id": "IMZbSKAcQHk", "title": "Start Your New Week at Morning Summer Coffee Porch Ambience with Positive Piano Jazz Music", "thumb": "https://i.ytimg.com/vi/IMZbSKAcQHk/mqdefault.jpg", "dur": "11:55:01"}, {"id": "ydO5UsHoybU", "title": "Summer Mountain View at Morning Coffee Porch Ambience with Elegant Instrumental Jazz Music to Relax", "thumb": "https://i.ytimg.com/vi/ydO5UsHoybU/mqdefault.jpg", "dur": "11:53:16"}, {"id": "qPSPG1jZ37k", "title": "Morning Lakeside Ambience with Smooth Instrumental Jazz Music & Relaxing Campfire to Work, Study", "thumb": "https://i.ytimg.com/vi/qPSPG1jZ37k/mqdefault.jpg", "dur": "3:27:20"}, {"id": "DHzCw12pnLI", "title": "Paris Cafe Ambience with Sweet Instrumental Bossa Nova Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/DHzCw12pnLI/mqdefault.jpg", "dur": "3:18:47"}, {"id": "8NszjvAcrjs", "title": "Monday Morning Atmosphere at Summer Coffee Balcony Ambience with Upbeat Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/8NszjvAcrjs/mqdefault.jpg", "dur": "11:54:59"}, {"id": "ZtRSO_1Jy60", "title": "Morning Summer Coffee Porch Ambience by Mountain View with Sweet Piano Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/ZtRSO_1Jy60/mqdefault.jpg", "dur": "7:20:25"}, {"id": "qeVxHPrPJ8k", "title": "Morning Santorini Seaside Cafe Ambience - Smooth Bossa Nova Jazz for Work, Study", "thumb": "https://i.ytimg.com/vi/qeVxHPrPJ8k/mqdefault.jpg", "dur": "3:30:06"}, {"id": "fKdLzlWhidk", "title": "Energetic Monday Mood at Morning Summer Coffee Porch Ambience with Positive Jazz Music to Work,Study", "thumb": "https://i.ytimg.com/vi/fKdLzlWhidk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "AQ2FdItebUY", "title": "Positive Moods at Morning Summer Coffee Porch Ambience with Happy Jazz Music to Relax, Chillout", "thumb": "https://i.ytimg.com/vi/AQ2FdItebUY/mqdefault.jpg", "dur": "10:12:34"}, {"id": "_dPEhAKLwts", "title": "Italy Coffee Shop Ambience - Relaxing Jazz Music & Smooth Bossa Nova for Your Workday", "thumb": "https://i.ytimg.com/vi/_dPEhAKLwts/mqdefault.jpg", "dur": "3:16:25"}, {"id": "_8stnODhBe0", "title": "Morning Summer Coffee Porch Ambience | Elegant Instrumental Jazz Music & Bossa Nova to Work, Study", "thumb": "https://i.ytimg.com/vi/_8stnODhBe0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "Yq4FSxpVRgs", "title": "Peaceful Sunset at Seaside Coffee Shop Ambience with Relaxing Bossa Nova Jazz to Work, Study", "thumb": "https://i.ytimg.com/vi/Yq4FSxpVRgs/mqdefault.jpg", "dur": "3:14:28"}, {"id": "PssYwnrFrwA", "title": "Fresh Morning Atmosphere at Summer Lakeside Coffee Porch Ambience with Sweet Jazz to Work, Study", "thumb": "https://i.ytimg.com/vi/PssYwnrFrwA/mqdefault.jpg", "dur": "11:54:57"}, {"id": "UoGZYjyho6w", "title": "Productive Monday Morning at Summer Coffee Porch Ambience with Positive Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/UoGZYjyho6w/mqdefault.jpg", "dur": "11:54:57"}, {"id": "Uu5Aj4cYzvg", "title": "Relaxing Your Peaceful Weekend at Morning Outdoor Coffee Shop Ambience with Happy Jazz Music", "thumb": "https://i.ytimg.com/vi/Uu5Aj4cYzvg/mqdefault.jpg", "dur": "11:54:57"}, {"id": "4AB90-6P-xQ", "title": "Sunny Morning at Summer Coffee Porch Ambience with Positive Jazz Music & Waterfall to Work, Study", "thumb": "https://i.ytimg.com/vi/4AB90-6P-xQ/mqdefault.jpg", "dur": "11:54:58"}, {"id": "6lsArmnqvjo", "title": "Morning London Cafe Ambience with Elegant Coffee Shop Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/6lsArmnqvjo/mqdefault.jpg", "dur": "3:20:52"}, {"id": "ka1zcN9JD-A", "title": "Boost Your Productivity by Summer Coffee Porch Ambience with Upbeat Jazz & Morning Mountain View", "thumb": "https://i.ytimg.com/vi/ka1zcN9JD-A/mqdefault.jpg", "dur": "11:55:00"}, {"id": "PgJjj5Z36Wk", "title": "Venice Coffee Shop Ambience - Relaxing Music | Smooth Cafe Bossa Nova Jazz for Your Workday", "thumb": "https://i.ytimg.com/vi/PgJjj5Z36Wk/mqdefault.jpg", "dur": "3:28:56"}, {"id": "FzI_AUioUnY", "title": "Begin Your Week with Fresh Autumn Atmosphere at Morning Coffee Porch with Positive Jazz Music", "thumb": "https://i.ytimg.com/vi/FzI_AUioUnY/mqdefault.jpg", "dur": "11:54:59"}, {"id": "OuKmWbmjE9s", "title": "Beautiful Dawn at Summer Seaside Coffee Porch with Relaxing Bossa Nova Jazz for Good Moods", "thumb": "https://i.ytimg.com/vi/OuKmWbmjE9s/mqdefault.jpg", "dur": "3:41:52"}, {"id": "gk37OaqNQ3E", "title": "Warm Morning Jazz - Peaceful Coffee Porch Ambience with Sweet Jazz Music to Work, Study☕", "thumb": "https://i.ytimg.com/vi/gk37OaqNQ3E/mqdefault.jpg", "dur": "11:54:56"}, {"id": "pWlBFR-g6vQ", "title": "⛅Fresh Morning Atmosphere at Spring Coffee Porch Ambience with Upbeat Jazz Music for Good Mood", "thumb": "https://i.ytimg.com/vi/pWlBFR-g6vQ/mqdefault.jpg", "dur": "11:54:58"}, {"id": "l7yjIBb0RF8", "title": "Morning Coffee Porch Ambience with Gentle Spring Atmosphere 🌺 Relaxing Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/l7yjIBb0RF8/mqdefault.jpg", "dur": "3:27:45"}, {"id": "PRAGLqfNK1o", "title": "New York Coffee Shop Ambience - Sweet Bossa Nova Jazz Music to Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/PRAGLqfNK1o/mqdefault.jpg", "dur": "3:21:34"}, {"id": "sOG37INyou4", "title": "Morning Spring Jazz - Cozy Coffee Porch Ambience with Positive Jazz Music to Upbeat Your Moods", "thumb": "https://i.ytimg.com/vi/sOG37INyou4/mqdefault.jpg", "dur": "11:54:58"}, {"id": "xRPnzlG4C5A", "title": "Morning Summer Coffee Porch by Forest Waterfall with Elegant Piano Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/xRPnzlG4C5A/mqdefault.jpg", "dur": "11:54:58"}, {"id": "I8oJ5xb2JLQ", "title": "Spring Coffee Porch Ambience with Morning Lakeside View🌥️Smooth Instrumental Jazz to Work, Study", "thumb": "https://i.ytimg.com/vi/I8oJ5xb2JLQ/mqdefault.jpg", "dur": "11:54:58"}, {"id": "0LsaguZmAIw", "title": "Morning Coffee Balcony Ambience with Sweet Spring Instrumental Jazz & Soft Bossa Nova to Work, Study", "thumb": "https://i.ytimg.com/vi/0LsaguZmAIw/mqdefault.jpg", "dur": "11:54:56"}, {"id": "DK0m8Bh8xlg", "title": "Enjoy Peaceful Spring Atmosphere at Morning Coffee Porch Ambience with Delicat Piano Jazz Music", "thumb": "https://i.ytimg.com/vi/DK0m8Bh8xlg/mqdefault.jpg", "dur": "11:54:56"}, {"id": "f1uTLGfiRfw", "title": "Gentle Spring Atmosphere at Morning Coffee Porch Ambience with Soft Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/f1uTLGfiRfw/mqdefault.jpg", "dur": "11:54:59"}, {"id": "5jFEoLNW5DA", "title": "Sweet Spring Jazz Music at Cozy Coffee Porch Ambience with Morning Lakeside View to Work, Study", "thumb": "https://i.ytimg.com/vi/5jFEoLNW5DA/mqdefault.jpg", "dur": "11:54:58"}, {"id": "mFfblYoi2EQ", "title": "🌥️Morning Lakeside Porch Ambience with Sweet Spring Instrumental Jazz Music to Relax Your Weekend", "thumb": "https://i.ytimg.com/vi/mFfblYoi2EQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "Ev-qPRSwOtI", "title": "Happy Spring Ambience at Morning Coffee Porch - Soft Jazz Music for Work, Study and Relax", "thumb": "https://i.ytimg.com/vi/Ev-qPRSwOtI/mqdefault.jpg", "dur": "11:55:01"}, {"id": "oN-IAwhSxGY", "title": "🌥️Fresh Spring Morning at Cozy Coffee Porch Ambience with Relaxing Piano Jazz Music for Good Moods", "thumb": "https://i.ytimg.com/vi/oN-IAwhSxGY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "JsU_GBLfFf8", "title": "Begin a New Week at Cozy Morning Winter Porch Ambience with Positive Jazz Music & Happy Bossa Nova", "thumb": "https://i.ytimg.com/vi/JsU_GBLfFf8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "5lBKt8iZ_n4", "title": "Starting Your Day at Morning Winter Coffee Porch Ambience with Relaxing Jazz Music & Snow Falling", "thumb": "https://i.ytimg.com/vi/5lBKt8iZ_n4/mqdefault.jpg", "dur": "11:54:08"}, {"id": "4yVUH3dOKLY", "title": "🌥️Wake up at Warm Morning Winter Coffee Porch with Cozy Piano Jazz Music ☕ Soft Bossa Nova to Relax", "thumb": "https://i.ytimg.com/vi/4yVUH3dOKLY/mqdefault.jpg", "dur": "11:54:59"}, {"id": "MyVO1EUnKDk", "title": "Morning Coffee Porch Ambience with Gentle Snowfalling❄️ Relaxing Winter Jazz Music to Work, Study", "thumb": "https://i.ytimg.com/vi/MyVO1EUnKDk/mqdefault.jpg", "dur": "11:54:56"}, {"id": "yQV-CFxs3L0", "title": "Cozy Night Coffee Shop Ambience with Warm Piano Jazz Music and Fireplace Sounds to Work, Relax", "thumb": "https://i.ytimg.com/vi/yQV-CFxs3L0/mqdefault.jpg", "dur": "2:19:09"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    card.innerHTML = `
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(decodeURIComponent(escape(atob(existing.content)))); meta = Object.assign(exContent.meta || {}, meta); }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
