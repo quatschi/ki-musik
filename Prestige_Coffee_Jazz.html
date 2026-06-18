@@ -7,6 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCupl8SvYuqAvn8PNoBYylkw -->
 <!-- channel-url: https://www.youtube.com/@prestigecoffeejazz -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Prestige_Coffee_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Prestige Coffee Jazz";
+const KANAL = "Prestige_Coffee_Jazz.html";
 const VIDEOS = [{"id": "pdx9OQUuSKY", "title": "Relaxing Jazz Coffee | Morning Coffee Jazz & Smooth Jazz Coffee Shop Music for Study Work", "thumb": "https://i.ytimg.com/vi/pdx9OQUuSKY/mqdefault.jpg", "dur": "2:03:29"}, {"id": "CG9yxNa6kLM", "title": "Relaxing Jazz Coffee & Smooth Morning Coffee Jazz Music for a Positive Day and Focus Work", "thumb": "https://i.ytimg.com/vi/CG9yxNa6kLM/mqdefault.jpg", "dur": "2:06:18"}, {"id": "en4pv5UfJHI", "title": "Relaxing Jazz Coffee Music | Smooth Coffee Shop Jazz & Cafe Jazz Ambience for Focus & Chill -", "thumb": "https://i.ytimg.com/vi/en4pv5UfJHI/mqdefault.jpg", "dur": "2:04:08"}, {"id": "RpA4RiMjVbk", "title": "Relaxing Jazz Coffee | Morning Vibes & Smooth Melodies for Your Cafe", "thumb": "https://i.ytimg.com/vi/RpA4RiMjVbk/mqdefault.jpg", "dur": "2:06:44"}, {"id": "d3oQgIdM180", "title": "Jazz Coffee & Chill Cafe Ambience | Relaxing Smooth Jazz for Morning Serenity", "thumb": "https://i.ytimg.com/vi/d3oQgIdM180/mqdefault.jpg", "dur": "2:02:32"}, {"id": "Up3vJtMU_3Q", "title": "Relaxing Jazz Coffee - Soft Jazz Cafe Music for Your Morning Coffee Jazz ~ Smooth Melodies", "thumb": "https://i.ytimg.com/vi/Up3vJtMU_3Q/mqdefault.jpg", "dur": "2:01:59"}, {"id": "aE7GQFVZQb4", "title": "Relaxing Jazz Coffee Vibes ~ Smooth Jazz Music for Coffee Time", "thumb": "https://i.ytimg.com/vi/aE7GQFVZQb4/mqdefault.jpg", "dur": "2:04:09"}, {"id": "Rv46AEiZ4kA", "title": "Relaxing Jazz Coffee | Smooth Jazz Music Cafe ~ Cozy Coffee Lounge Jazz Instrumental Ambient", "thumb": "https://i.ytimg.com/vi/Rv46AEiZ4kA/mqdefault.jpg", "dur": "2:04:19"}, {"id": "iHtnPJEziqc", "title": "Morning Coffee Jazz ~ Relaxing Cafe Ambiance for Your Day", "thumb": "https://i.ytimg.com/vi/iHtnPJEziqc/mqdefault.jpg", "dur": "2:05:25"}, {"id": "IQhAClIHdBA", "title": "Relaxing Jazz Coffee - Smooth Coffee Jazz Music & Cozy Coffee Shop Jazz Cafe Ambience Rela", "thumb": "https://i.ytimg.com/vi/IQhAClIHdBA/mqdefault.jpg", "dur": "2:03:50"}, {"id": "zenFdHd_fyI", "title": "Relaxing Jazz Coffee & Smooth Morning Coffee Jazz - Chill Coffee Shop Jazz Music Ambience", "thumb": "https://i.ytimg.com/vi/zenFdHd_fyI/mqdefault.jpg", "dur": "2:01:47"}, {"id": "cxansjrBHKY", "title": "Morning coffee jazz | Relaxing jazz coffee and cafe jazz ambience for a productive day", "thumb": "https://i.ytimg.com/vi/cxansjrBHKY/mqdefault.jpg", "dur": "2:07:33"}, {"id": "FdD2M4-HRN0", "title": "Relaxing Jazz Coffee Music | Smooth Jazz Cafe Ambience for Work, Study & Morning Coffee Time", "thumb": "https://i.ytimg.com/vi/FdD2M4-HRN0/mqdefault.jpg", "dur": "2:05:08"}, {"id": "zIziueyGDpM", "title": "Morning Coffee Jazz | Relaxing Ocean View & Smooth Cafe Jazz Music Ambience", "thumb": "https://i.ytimg.com/vi/zIziueyGDpM/mqdefault.jpg", "dur": "2:01:58"}, {"id": "TF6Dxc_vslg", "title": "Relaxing Jazz Coffee & Smooth Jazz Coffee Music ~ Soft Jazz Cafe Ambience for Chill Morning-", "thumb": "https://i.ytimg.com/vi/TF6Dxc_vslg/mqdefault.jpg", "dur": "2:00:17"}, {"id": "WK2BmnSesOM", "title": "Relaxing Jazz Coffee - Smooth Morning Coffee Jazz & Chill Cafe Jazz Ambience for Studying", "thumb": "https://i.ytimg.com/vi/WK2BmnSesOM/mqdefault.jpg", "dur": "2:07:03"}, {"id": "3o7Tml9c3hU", "title": "Relaxing Jazz Coffee | Smooth Morning Coffee Jazz Music & Cozy Cafe Ambiance for Focus Now", "thumb": "https://i.ytimg.com/vi/3o7Tml9c3hU/mqdefault.jpg", "dur": "2:03:48"}, {"id": "jIux6wS4RmY", "title": "Relaxing Jazz Coffee Music | Smooth Jazz Cafe Ambience for Work, Study & Morning Focus", "thumb": "https://i.ytimg.com/vi/jIux6wS4RmY/mqdefault.jpg", "dur": "2:05:41"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

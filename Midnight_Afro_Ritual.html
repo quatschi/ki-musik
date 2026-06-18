@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCb1HTbCovYx3HAzdyDmLEJw -->
 <!-- channel-url: https://www.youtube.com/@midnightafroritual -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Midnight_Afro_Ritual.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Midnight Afro Ritual";
+const KANAL = "Midnight_Afro_Ritual.html";
 const VIDEOS = [{"id": "3WUS1iLrMwg", "title": "Tribal Groove Jazz — Desert Oracle", "thumb": "https://i.ytimg.com/vi/3WUS1iLrMwg/mqdefault_live.jpg", "dur": ""}, {"id": "Jhaqdmhsl3o", "title": "Tribal Groove Jazz — Sacred Nomad", "thumb": "https://i.ytimg.com/vi/Jhaqdmhsl3o/mqdefault.jpg", "dur": "3:09:34"}, {"id": "JtzmX33T-LE", "title": "Tribal Groove Jazz — Solar Ritual", "thumb": "https://i.ytimg.com/vi/JtzmX33T-LE/mqdefault.jpg", "dur": "3:12:35"}, {"id": "xsrWa7zNj_M", "title": "Tribal Groove Jazz — Sacred Ember Dynasty", "thumb": "https://i.ytimg.com/vi/xsrWa7zNj_M/mqdefault.jpg", "dur": "3:24:19"}, {"id": "zjUH4IRbQ44", "title": "Tribal Groove Jazz — Celestial Ember Ritual", "thumb": "https://i.ytimg.com/vi/zjUH4IRbQ44/mqdefault.jpg", "dur": "3:04:43"}, {"id": "uCsWZZYZktM", "title": "Tribal Groove Jazz — Cyber Oracle Ritual", "thumb": "https://i.ytimg.com/vi/uCsWZZYZktM/mqdefault.jpg", "dur": "3:10:34"}, {"id": "lii2v969Hzo", "title": "Tribal Groove Jazz — Velvet Oracle Ritual", "thumb": "https://i.ytimg.com/vi/lii2v969Hzo/mqdefault.jpg", "dur": "3:09:57"}, {"id": "-clSr3iUIfo", "title": "Tribal Groove Jazz — Velvet Ember Dream", "thumb": "https://i.ytimg.com/vi/-clSr3iUIfo/mqdefault.jpg", "dur": "3:14:47"}, {"id": "2XXKypYmOnY", "title": "Tribal Groove Jazz — Golden Mirage Ritual", "thumb": "https://i.ytimg.com/vi/2XXKypYmOnY/mqdefault.jpg", "dur": "3:18:40"}, {"id": "3vkyi7gx-QM", "title": "Tribal Groove Jazz — Sacred Dynasty Flow", "thumb": "https://i.ytimg.com/vi/3vkyi7gx-QM/mqdefault.jpg", "dur": "3:15:07"}, {"id": "JmzO0s6bnMU", "title": "Tribal Groove Jazz — Golden Eclipse Ritual", "thumb": "https://i.ytimg.com/vi/JmzO0s6bnMU/mqdefault.jpg", "dur": "3:30:54"}, {"id": "snWSm_sQohA", "title": "Tribal Groove Jazz — Sacred Mirage Ritual", "thumb": "https://i.ytimg.com/vi/snWSm_sQohA/mqdefault.jpg", "dur": "3:17:07"}, {"id": "77fraPEX_Nk", "title": "Tribal Groove Jazz — Sacred Ember Ritual", "thumb": "https://i.ytimg.com/vi/77fraPEX_Nk/mqdefault.jpg", "dur": "3:04:43"}, {"id": "Vi7pJsBl2qg", "title": "Tribal Groove Jazz — Golden Mirage Ritual", "thumb": "https://i.ytimg.com/vi/Vi7pJsBl2qg/mqdefault.jpg", "dur": "3:11:47"}, {"id": "kyPNt8IGgvo", "title": "Tribal Groove Jazz — Sacred Eclipse", "thumb": "https://i.ytimg.com/vi/kyPNt8IGgvo/mqdefault.jpg", "dur": "3:06:20"}, {"id": "z5mNPTwfQ9E", "title": "Tribal Groove Jazz — Golden Veil Ritual", "thumb": "https://i.ytimg.com/vi/z5mNPTwfQ9E/mqdefault.jpg", "dur": "3:11:01"}, {"id": "pEOIm5nhUUY", "title": "Sacred Echo — Mystic Tribal Soul", "thumb": "https://i.ytimg.com/vi/pEOIm5nhUUY/mqdefault.jpg", "dur": "2:01:30"}, {"id": "q4dLEIGEkDE", "title": "Golden Veil — Mystic Tribal Soul", "thumb": "https://i.ytimg.com/vi/q4dLEIGEkDE/mqdefault.jpg", "dur": "2:10:54"}, {"id": "f7y0yZCBG5Y", "title": "Mystic Veil — Sacred Tribal Soul Jazz", "thumb": "https://i.ytimg.com/vi/f7y0yZCBG5Y/mqdefault.jpg", "dur": "2:08:00"}, {"id": "CPyQNivtHfQ", "title": "Desert Soul Flow — Sacred Tribal Jazz", "thumb": "https://i.ytimg.com/vi/CPyQNivtHfQ/mqdefault.jpg", "dur": "2:08:00"}, {"id": "gHyW4CxQNio", "title": "Mystic Tribal Rhythm — Golden Groove Flow", "thumb": "https://i.ytimg.com/vi/gHyW4CxQNio/mqdefault.jpg", "dur": "2:06:41"}, {"id": "DFpWhli0HZY", "title": "Mystic Golden Spirit — Tribal Soul Jazz", "thumb": "https://i.ytimg.com/vi/DFpWhli0HZY/mqdefault.jpg", "dur": "2:17:46"}, {"id": "cfh0QnpgAOg", "title": "Golden Tribal Jazz — Deep Soul Groove", "thumb": "https://i.ytimg.com/vi/cfh0QnpgAOg/mqdefault.jpg", "dur": "2:57:34"}, {"id": "o2QcTrgQ6GI", "title": "Tribal Groove Jazz — Sacred Golden Flow", "thumb": "https://i.ytimg.com/vi/o2QcTrgQ6GI/mqdefault.jpg", "dur": "2:28:58"}, {"id": "WDUocN_FS8E", "title": "Tribal Lounge Jazz — Sacred Circle Ritual", "thumb": "https://i.ytimg.com/vi/WDUocN_FS8E/mqdefault.jpg", "dur": "2:56:15"}, {"id": "UeDwh9koT8Y", "title": "Tribal Groove Jazz — Afro Soul Sax (Deep Chill & Smooth Vibes)", "thumb": "https://i.ytimg.com/vi/UeDwh9koT8Y/mqdefault.jpg", "dur": "2:10:38"}, {"id": "FmFSavBB100", "title": "Tribal Groove Jazz — Afro Sax Ritual (Deep Focus & Night Lounge Vibes)", "thumb": "https://i.ytimg.com/vi/FmFSavBB100/mqdefault.jpg", "dur": "2:35:34"}, {"id": "qCU5EVHmd_g", "title": "Tribal Groove Jazz — Afro Sax Flow | Deep Chill & Focus Vibes", "thumb": "https://i.ytimg.com/vi/qCU5EVHmd_g/mqdefault.jpg", "dur": "2:03:33"}, {"id": "eWHKzvcVE7o", "title": "Tribal Groove Jazz — Golden Afro Sax | Deep Chill & Focus Vibes", "thumb": "https://i.ytimg.com/vi/eWHKzvcVE7o/mqdefault.jpg", "dur": "2:02:10"}, {"id": "sMpWsq8RFKI", "title": "Tribal Groove Jazz — Cosmic Ritual Afro | Deep Focus & Meditation", "thumb": "https://i.ytimg.com/vi/sMpWsq8RFKI/mqdefault.jpg", "dur": "2:00:22"}, {"id": "v5V_76N41BY", "title": "Tribal Groove Jazz — Golden Ritual Flow | Deep Focus & Meditation", "thumb": "https://i.ytimg.com/vi/v5V_76N41BY/mqdefault.jpg", "dur": "2:09:23"}, {"id": "H6cVfDS-EBc", "title": "Tribal Groove Jazz — Afro Soul Sax | Deep Focus & Chill Vibes", "thumb": "https://i.ytimg.com/vi/H6cVfDS-EBc/mqdefault.jpg", "dur": "1:26:38"}, {"id": "ynOsESFMv1s", "title": "Tribal Groove Jazz — Sacred Afro Meditation (Deep Relax & Ritual Vibes)", "thumb": "https://i.ytimg.com/vi/ynOsESFMv1s/mqdefault.jpg", "dur": "2:27:42"}, {"id": "gEkFFSwuMck", "title": "Tribal Groove Jazz — Sunset Afro Sax Ritual (Deep Cosmic Lounge Vibes)", "thumb": "https://i.ytimg.com/vi/gEkFFSwuMck/mqdefault.jpg", "dur": "1:10:24"}, {"id": "K6I_xv7Vq7k", "title": "Tribal Groove Jazz — Sacred Afro Sax Ritual (Deep Night Lounge Vibes)", "thumb": "https://i.ytimg.com/vi/K6I_xv7Vq7k/mqdefault.jpg", "dur": "1:01:23"}, {"id": "SWF8yzLJa6Q", "title": "Tribal Groove Jazz — Midnight Hookah Ritual (Deep Afro Lounge Vibes)", "thumb": "https://i.ytimg.com/vi/SWF8yzLJa6Q/mqdefault.jpg", "dur": "1:09:03"}, {"id": "Z4Z9OXK9OG0", "title": "Tribal Groove Jazz | Afro Cosmic Ritual ~ Hypnotic Golden Energy", "thumb": "https://i.ytimg.com/vi/Z4Z9OXK9OG0/mqdefault.jpg", "dur": "1:04:27"}, {"id": "FjsFIxkKx5Q", "title": "Tribal Groove Jazz | Midnight Afro Ritual ~ Deep Sacred Vibes", "thumb": "https://i.ytimg.com/vi/FjsFIxkKx5Q/mqdefault.jpg", "dur": "1:00:41"}, {"id": "QR9eJ0oG6Tc", "title": "Midnight Tribal Jazz Ritual | Deep Afro Cosmic Grooves ~ Hypnotic After Hours", "thumb": "https://i.ytimg.com/vi/QR9eJ0oG6Tc/mqdefault.jpg", "dur": "1:18:48"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

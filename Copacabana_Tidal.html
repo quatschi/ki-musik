@@ -7,6 +7,7 @@
 <!-- categories: Bossa Nova, Latin Jazz -->
 <!-- channel-id: UC_hCMSjdswv4FMvx5nvRN6g -->
 <!-- channel-url: https://www.youtube.com/@copacabanatidal -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Copacabana_Tidal.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Copacabana Tidal.";
+const KANAL = "Copacabana_Tidal.html";
 const VIDEOS = [{"id": "u_yrrr6jXa4", "title": "This Brazil Lounge Found You.", "thumb": "https://i.ytimg.com/vi/u_yrrr6jXa4/mqdefault.jpg", "dur": "1:00:10"}, {"id": "deo13eGJAmQ", "title": "The Brazilian Aura Found You.", "thumb": "https://i.ytimg.com/vi/deo13eGJAmQ/mqdefault.jpg", "dur": "1:02:02"}, {"id": "nwohwRYX1oM", "title": "This Brazilian Radio Found You.", "thumb": "https://i.ytimg.com/vi/nwohwRYX1oM/mqdefault.jpg", "dur": "1:00:19"}, {"id": "CghDjCYYzfM", "title": "How Music Feels in Brazil at Night", "thumb": "https://i.ytimg.com/vi/CghDjCYYzfM/mqdefault.jpg", "dur": "1:02:05"}, {"id": "iDnwQN0gxpg", "title": "This is what Brazilian music should feel like", "thumb": "https://i.ytimg.com/vi/iDnwQN0gxpg/mqdefault.jpg", "dur": "56:57"}, {"id": "uodCIWr8JPg", "title": "Brazil & Relax Jazz.", "thumb": "https://i.ytimg.com/vi/uodCIWr8JPg/mqdefault.jpg", "dur": "27:32"}, {"id": "7hTai3_8Jhc", "title": "Brazilian Playlist — Who Is She?", "thumb": "https://i.ytimg.com/vi/7hTai3_8Jhc/mqdefault.jpg", "dur": "59:52"}, {"id": "P2LCvKf0TZ8", "title": "This Sunset Playlist Found You.", "thumb": "https://i.ytimg.com/vi/P2LCvKf0TZ8/mqdefault.jpg", "dur": "1:00:25"}, {"id": "pYlCUHveamU", "title": "Welcome to Brazilwave.", "thumb": "https://i.ytimg.com/vi/pYlCUHveamU/mqdefault.jpg", "dur": "1:01:56"}, {"id": "QQwURaxQYLc", "title": "You've Found The Real Brazilian Music.", "thumb": "https://i.ytimg.com/vi/QQwURaxQYLc/mqdefault.jpg", "dur": "1:00:30"}, {"id": "8m1xJ-23PiU", "title": "POV: You're Drinking in Brazil at Sunset.", "thumb": "https://i.ytimg.com/vi/8m1xJ-23PiU/mqdefault.jpg", "dur": "1:01:03"}, {"id": "bOncJLJZGjg", "title": "This Brazilian Playlist Found You.", "thumb": "https://i.ytimg.com/vi/bOncJLJZGjg/mqdefault.jpg", "dur": "1:03:28"}, {"id": "SxuIfMId5o8", "title": "Brazilian Groove & Soft Music.", "thumb": "https://i.ytimg.com/vi/SxuIfMId5o8/mqdefault.jpg", "dur": "1:06:16"}, {"id": "Smq-SqfQIIo", "title": "Rio Bus Ride Jazz Playlist.", "thumb": "https://i.ytimg.com/vi/Smq-SqfQIIo/mqdefault.jpg", "dur": "1:01:02"}, {"id": "unUWLUTcDuA", "title": "This Brazilian Sunset Playlist Found You.", "thumb": "https://i.ytimg.com/vi/unUWLUTcDuA/mqdefault.jpg", "dur": "1:00:41"}, {"id": "WwpShX0fVjw", "title": "Brazil Feels Like This at 6:42 PM.", "thumb": "https://i.ytimg.com/vi/WwpShX0fVjw/mqdefault.jpg", "dur": "1:00:22"}, {"id": "PsAHLBQw1-o", "title": "This Brazilian Playlist Found You.", "thumb": "https://i.ytimg.com/vi/PsAHLBQw1-o/mqdefault.jpg", "dur": "57:38"}, {"id": "Hc9Xt4n4A7M", "title": "This Brazilian Playlist Found You.", "thumb": "https://i.ytimg.com/vi/Hc9Xt4n4A7M/mqdefault.jpg", "dur": "1:01:27"}, {"id": "JfPUKGrbzq0", "title": "This Bossa Nova Playlist Found You.", "thumb": "https://i.ytimg.com/vi/JfPUKGrbzq0/mqdefault.jpg", "dur": "1:02:06"}, {"id": "02MmX4mNU_E", "title": "This Brazilian Jazz Playlist Found You.", "thumb": "https://i.ytimg.com/vi/02MmX4mNU_E/mqdefault.jpg", "dur": "1:00:21"}, {"id": "e8VLVHq6ANk", "title": "This Brazilian Jazz Night Found You.", "thumb": "https://i.ytimg.com/vi/e8VLVHq6ANk/mqdefault.jpg", "dur": "1:01:41"}, {"id": "9nknUvHGzlU", "title": "This Brazilian Jazz Playlist Found You.", "thumb": "https://i.ytimg.com/vi/9nknUvHGzlU/mqdefault.jpg", "dur": "1:01:35"}, {"id": "gh5YZRcxArs", "title": "This Tropical Playlist Found You.", "thumb": "https://i.ytimg.com/vi/gh5YZRcxArs/mqdefault.jpg", "dur": "1:00:59"}, {"id": "JpphmAl5oAo", "title": "This Brazilian Playlist Is Calling You.", "thumb": "https://i.ytimg.com/vi/JpphmAl5oAo/mqdefault.jpg", "dur": "1:01:19"}, {"id": "33bfl6u-TEo", "title": "Relax with This Brazilian Playlist.", "thumb": "https://i.ytimg.com/vi/33bfl6u-TEo/mqdefault.jpg", "dur": "56:56"}, {"id": "0OppkRqHoFQ", "title": "This Brazilian Playlist Is Your Calm.", "thumb": "https://i.ytimg.com/vi/0OppkRqHoFQ/mqdefault.jpg", "dur": "1:00:45"}, {"id": "2Or5HD7T7QU", "title": "This Brazilian Playlist Found You.", "thumb": "https://i.ytimg.com/vi/2Or5HD7T7QU/mqdefault.jpg", "dur": "1:01:30"}, {"id": "br43NN_e7aw", "title": "This Is How Brazil Feels.", "thumb": "https://i.ytimg.com/vi/br43NN_e7aw/mqdefault.jpg", "dur": "1:03:14"}, {"id": "Q0d-leMMaRs", "title": "BORN IN BRAZIL.", "thumb": "https://i.ytimg.com/vi/Q0d-leMMaRs/mqdefault.jpg", "dur": "1:03:29"}, {"id": "xuZXS2CkuNY", "title": "Brazil – The Land of Football.", "thumb": "https://i.ytimg.com/vi/xuZXS2CkuNY/mqdefault.jpg", "dur": "59:58"}, {"id": "3SN8wdqE6DY", "title": "Rolling Brazil.", "thumb": "https://i.ytimg.com/vi/3SN8wdqE6DY/mqdefault.jpg", "dur": "1:01:58"}, {"id": "ktpMtoe9jF0", "title": "Brazil Daydream.", "thumb": "https://i.ytimg.com/vi/ktpMtoe9jF0/mqdefault.jpg", "dur": "1:02:06"}, {"id": "Toz3s57q2VM", "title": "Brazil Vibes.", "thumb": "https://i.ytimg.com/vi/Toz3s57q2VM/mqdefault.jpg", "dur": "1:00:20"}, {"id": "kYhqqWRm7oA", "title": "Endless Sunset.", "thumb": "https://i.ytimg.com/vi/kYhqqWRm7oA/mqdefault.jpg", "dur": "1:02:48"}, {"id": "WDzPswmVH9c", "title": "Golden Hour Drive.", "thumb": "https://i.ytimg.com/vi/WDzPswmVH9c/mqdefault.jpg", "dur": "1:02:39"}, {"id": "pyl9a2pWqlE", "title": "Tropical Girl.", "thumb": "https://i.ytimg.com/vi/pyl9a2pWqlE/mqdefault.jpg", "dur": "59:58"}, {"id": "4xKJJGXCuzU", "title": "Brazil Summer.", "thumb": "https://i.ytimg.com/vi/4xKJJGXCuzU/mqdefault.jpg", "dur": "1:01:19"}, {"id": "Zxs3YvPrz-E", "title": "Sounds of Brazil.", "thumb": "https://i.ytimg.com/vi/Zxs3YvPrz-E/mqdefault.jpg", "dur": "1:03:13"}, {"id": "dR2do97bCi4", "title": "Brazil Vacation.", "thumb": "https://i.ytimg.com/vi/dR2do97bCi4/mqdefault.jpg", "dur": "1:00:46"}, {"id": "VRDkru9o0UA", "title": "You're Relaxing in Brazil.", "thumb": "https://i.ytimg.com/vi/VRDkru9o0UA/mqdefault.jpg", "dur": "1:00:53"}, {"id": "CbHPhsC0wX4", "title": "Soft Brazil.", "thumb": "https://i.ytimg.com/vi/CbHPhsC0wX4/mqdefault.jpg", "dur": "54:29"}, {"id": "MaBSoaLOk3w", "title": "Brazil Breeze.", "thumb": "https://i.ytimg.com/vi/MaBSoaLOk3w/mqdefault.jpg", "dur": "59:26"}, {"id": "Z8Kgnp4kNhs", "title": "Welcome To Brazil.", "thumb": "https://i.ytimg.com/vi/Z8Kgnp4kNhs/mqdefault.jpg", "dur": "50:59"}, {"id": "yZB-eY3OVhw", "title": "Tropical Brazil.", "thumb": "https://i.ytimg.com/vi/yZB-eY3OVhw/mqdefault.jpg", "dur": "56:46"}, {"id": "1Zn4JmO6JhM", "title": "Brazil Dusk.", "thumb": "https://i.ytimg.com/vi/1Zn4JmO6JhM/mqdefault.jpg", "dur": "57:35"}, {"id": "d4H3kK-3D7Y", "title": "Brazil Nights.", "thumb": "https://i.ytimg.com/vi/d4H3kK-3D7Y/mqdefault.jpg", "dur": "57:42"}, {"id": "0MngA2z41oI", "title": "Brazil Frequency.", "thumb": "https://i.ytimg.com/vi/0MngA2z41oI/mqdefault.jpg", "dur": "54:04"}, {"id": "V6A6VhMezcs", "title": "Rio Aura.", "thumb": "https://i.ytimg.com/vi/V6A6VhMezcs/mqdefault.jpg", "dur": "1:00:57"}, {"id": "M0uc-iPUDiQ", "title": "Rio Drive.", "thumb": "https://i.ytimg.com/vi/M0uc-iPUDiQ/mqdefault.jpg", "dur": "58:07"}, {"id": "3fa0q1FyyMY", "title": "Rio Wave.", "thumb": "https://i.ytimg.com/vi/3fa0q1FyyMY/mqdefault.jpg", "dur": "1:00:07"}, {"id": "EWdhab3CDhk", "title": "Rio Relax.", "thumb": "https://i.ytimg.com/vi/EWdhab3CDhk/mqdefault.jpg", "dur": "56:46"}, {"id": "trO1EKvRf8E", "title": "Sunset Rio.", "thumb": "https://i.ytimg.com/vi/trO1EKvRf8E/mqdefault.jpg", "dur": "1:05:25"}, {"id": "ZQFRa1Aqeto", "title": "Sunlit Brazil.", "thumb": "https://i.ytimg.com/vi/ZQFRa1Aqeto/mqdefault.jpg", "dur": "1:06:02"}, {"id": "7crciI4pZoU", "title": "Evening in Rio.", "thumb": "https://i.ytimg.com/vi/7crciI4pZoU/mqdefault.jpg", "dur": "1:04:24"}, {"id": "M_JL_f2Hkq4", "title": "Brazil Life.", "thumb": "https://i.ytimg.com/vi/M_JL_f2Hkq4/mqdefault.jpg", "dur": "1:05:59"}, {"id": "i5tT9iWNidg", "title": "Brazil Twilight.", "thumb": "https://i.ytimg.com/vi/i5tT9iWNidg/mqdefault.jpg", "dur": "1:06:14"}, {"id": "0RRmc7yH-C4", "title": "Brazil Beats.", "thumb": "https://i.ytimg.com/vi/0RRmc7yH-C4/mqdefault.jpg", "dur": "1:04:38"}, {"id": "89rwlJzw4JE", "title": "Brazil Bliss.", "thumb": "https://i.ytimg.com/vi/89rwlJzw4JE/mqdefault.jpg", "dur": "1:06:00"}, {"id": "_i8gKQtebWs", "title": "Brazil Aura III.", "thumb": "https://i.ytimg.com/vi/_i8gKQtebWs/mqdefault.jpg", "dur": "1:08:28"}, {"id": "0djltVTr8lM", "title": "Bossa Brazil.", "thumb": "https://i.ytimg.com/vi/0djltVTr8lM/mqdefault.jpg", "dur": "1:10:59"}, {"id": "X4ffS09E2I8", "title": "God is Brazilian.", "thumb": "https://i.ytimg.com/vi/X4ffS09E2I8/mqdefault.jpg", "dur": "1:01:04"}, {"id": "d9H2iU17Wlg", "title": "The Girl from Brazil.", "thumb": "https://i.ytimg.com/vi/d9H2iU17Wlg/mqdefault.jpg", "dur": "1:04:49"}, {"id": "2NaSE7BbyUo", "title": "Brazil Peace.", "thumb": "https://i.ytimg.com/vi/2NaSE7BbyUo/mqdefault.jpg", "dur": "1:04:47"}, {"id": "DrgkMNC5T6M", "title": "Brazil Dreams.", "thumb": "https://i.ytimg.com/vi/DrgkMNC5T6M/mqdefault.jpg", "dur": "1:04:03"}, {"id": "Htgub-3gRoU", "title": "Brazil.", "thumb": "https://i.ytimg.com/vi/Htgub-3gRoU/mqdefault.jpg", "dur": "1:00:03"}, {"id": "ihk3tWycCKU", "title": "Brazil & Chill.", "thumb": "https://i.ytimg.com/vi/ihk3tWycCKU/mqdefault.jpg", "dur": "1:00:27"}, {"id": "GujkmemofFQ", "title": "Brazil Mood.", "thumb": "https://i.ytimg.com/vi/GujkmemofFQ/mqdefault.jpg", "dur": "58:32"}, {"id": "hvvXbK2AGSg", "title": "Brazil Escape.", "thumb": "https://i.ytimg.com/vi/hvvXbK2AGSg/mqdefault.jpg", "dur": "1:07:48"}, {"id": "YUXqv0FXTM4", "title": "Brazil Aura II.", "thumb": "https://i.ytimg.com/vi/YUXqv0FXTM4/mqdefault.jpg", "dur": "1:00:54"}, {"id": "bqlvpqRDuxU", "title": "Brazil & Coffee.", "thumb": "https://i.ytimg.com/vi/bqlvpqRDuxU/mqdefault.jpg", "dur": "1:04:26"}, {"id": "LWSHua4SNPA", "title": "Slow Brazil.", "thumb": "https://i.ytimg.com/vi/LWSHua4SNPA/mqdefault.jpg", "dur": "1:04:14"}, {"id": "fP24EApiFw4", "title": "Amazon, Brazil.", "thumb": "https://i.ytimg.com/vi/fP24EApiFw4/mqdefault.jpg", "dur": "59:55"}, {"id": "nScHhaqqDMg", "title": "Rio, Brazil.", "thumb": "https://i.ytimg.com/vi/nScHhaqqDMg/mqdefault.jpg", "dur": "1:02:05"}, {"id": "T_WOt6sKmCE", "title": "Brazil Aura.", "thumb": "https://i.ytimg.com/vi/T_WOt6sKmCE/mqdefault.jpg", "dur": "1:02:51"}, {"id": "1dShcrOFLHA", "title": "Brazilian Waves.", "thumb": "https://i.ytimg.com/vi/1dShcrOFLHA/mqdefault.jpg", "dur": "1:02:05"}, {"id": "rpU5xfk2NvE", "title": "Brazilian Soul.", "thumb": "https://i.ytimg.com/vi/rpU5xfk2NvE/mqdefault.jpg", "dur": "59:42"}, {"id": "N5uk8nHldGo", "title": "Rio de Janeiro, Brazil.", "thumb": "https://i.ytimg.com/vi/N5uk8nHldGo/mqdefault.jpg", "dur": "1:00:05"}, {"id": "v03fr423_UU", "title": "Radio Brazil.", "thumb": "https://i.ytimg.com/vi/v03fr423_UU/mqdefault.jpg", "dur": "1:00:11"}, {"id": "p9YVTskgNuw", "title": "Brazilian Feels.", "thumb": "https://i.ytimg.com/vi/p9YVTskgNuw/mqdefault.jpg", "dur": "1:02:32"}, {"id": "1RwPwuXFfCg", "title": "A Trip Around Brazil.", "thumb": "https://i.ytimg.com/vi/1RwPwuXFfCg/mqdefault.jpg", "dur": "59:03"}, {"id": "OnwWP6cam7g", "title": "Brazil Beaches.", "thumb": "https://i.ytimg.com/vi/OnwWP6cam7g/mqdefault.jpg", "dur": "58:28"}, {"id": "ccDtpxFgJ_8", "title": "1962, Brazil.", "thumb": "https://i.ytimg.com/vi/ccDtpxFgJ_8/mqdefault.jpg", "dur": "1:00:05"}, {"id": "jqBuMJIyoZA", "title": "Escape to Brazil.", "thumb": "https://i.ytimg.com/vi/jqBuMJIyoZA/mqdefault.jpg", "dur": "1:02:03"}, {"id": "Id_Cx1F9-T0", "title": "6 PM Brazil.", "thumb": "https://i.ytimg.com/vi/Id_Cx1F9-T0/mqdefault.jpg", "dur": "1:00:25"}, {"id": "kzGIcFBowrY", "title": "Tropical Brazil.", "thumb": "https://i.ytimg.com/vi/kzGIcFBowrY/mqdefault.jpg", "dur": "1:03:34"}, {"id": "N3RhLSYRf6Y", "title": "Brazilian Vibes.", "thumb": "https://i.ytimg.com/vi/N3RhLSYRf6Y/mqdefault.jpg", "dur": "58:14"}, {"id": "kkjdjk-hdB8", "title": "Intimate Brazil.", "thumb": "https://i.ytimg.com/vi/kkjdjk-hdB8/mqdefault.jpg", "dur": "1:00:32"}, {"id": "LbRrV9wFcSc", "title": "Brazilian Breeze.", "thumb": "https://i.ytimg.com/vi/LbRrV9wFcSc/mqdefault.jpg", "dur": "1:00:53"}, {"id": "EOrQSIliM2M", "title": "Timeless Brazil.", "thumb": "https://i.ytimg.com/vi/EOrQSIliM2M/mqdefault.jpg", "dur": "59:26"}, {"id": "1Huj0dH5Cwk", "title": "Sunset in Brazil.", "thumb": "https://i.ytimg.com/vi/1Huj0dH5Cwk/mqdefault.jpg", "dur": "1:04:07"}, {"id": "hLG7Gu2ViDU", "title": "Lofi Brazil.", "thumb": "https://i.ytimg.com/vi/hLG7Gu2ViDU/mqdefault.jpg", "dur": "54:58"}, {"id": "3hjQP6dGG2Q", "title": "Brazil Chill.", "thumb": "https://i.ytimg.com/vi/3hjQP6dGG2Q/mqdefault.jpg", "dur": "33:28"}, {"id": "ghNLYvlqRvE", "title": "made in BRAZIL.", "thumb": "https://i.ytimg.com/vi/ghNLYvlqRvE/mqdefault.jpg", "dur": "1:03:22"}, {"id": "Q3FvyKTCjcg", "title": "Brazilian Vibes.", "thumb": "https://i.ytimg.com/vi/Q3FvyKTCjcg/mqdefault.jpg", "dur": "1:03:10"}, {"id": "E3Gr18DDM0Q", "title": "Brazil Waves.", "thumb": "https://i.ytimg.com/vi/E3Gr18DDM0Q/mqdefault.jpg", "dur": "1:08:40"}, {"id": "BP570sGnrfY", "title": "Things From Brazil.", "thumb": "https://i.ytimg.com/vi/BP570sGnrfY/mqdefault.jpg", "dur": "58:13"}, {"id": "cBKWQ4W27q4", "title": "TROPICAL.", "thumb": "https://i.ytimg.com/vi/cBKWQ4W27q4/mqdefault.jpg", "dur": "1:00:21"}, {"id": "qGPIfAvJVOQ", "title": "''WAVE''' the serene breeze of Rio de Janeiro's waves calls you.", "thumb": "https://i.ytimg.com/vi/qGPIfAvJVOQ/mqdefault.jpg", "dur": "52:04"}, {"id": "8-WuFtm1hlM", "title": "Brazil.", "thumb": "https://i.ytimg.com/vi/8-WuFtm1hlM/mqdefault.jpg", "dur": "1:05:35"}, {"id": "iUOL4laYNMw", "title": "Intimate Brazil.", "thumb": "https://i.ytimg.com/vi/iUOL4laYNMw/mqdefault.jpg", "dur": "1:01:12"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

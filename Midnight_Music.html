@@ -7,6 +7,7 @@
 <!-- categories: Smooth Jazz -->
 <!-- channel-id: UC1u-XfSZpZjrYxiu5PDCxLw -->
 <!-- channel-url: https://www.youtube.com/@CusNgeng-o8q -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Midnight_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Midnight Music";
+const KANAL = "Midnight_Music.html";
 const VIDEOS = [{"id": "V-nwZ_rwpoo", "title": "Timeless Jazz Love Songs Covers | Ben E. King, Everly Brothers, Ray Charles", "thumb": "https://i.ytimg.com/vi/V-nwZ_rwpoo/mqdefault.jpg", "dur": "1:05:00"}, {"id": "csIRhFWey3E", "title": "Best Smooth Jazz Love Songs Covers | Gleen Mederios, Michael Bolton, Chicago", "thumb": "https://i.ytimg.com/vi/csIRhFWey3E/mqdefault.jpg", "dur": "1:03:25"}, {"id": "h39nbepUTk4", "title": "Best Romantic Jazz Covers Playlist | Whitney Houston, Queen, Eagles, Aerosmith", "thumb": "https://i.ytimg.com/vi/h39nbepUTk4/mqdefault.jpg", "dur": "1:03:35"}, {"id": "8pTVATWtrZc", "title": "Timeless Jazz Love Songs Covers | Stevie Wonder, Whitney Houston, Frank Sinatra, Lionel Richie", "thumb": "https://i.ytimg.com/vi/8pTVATWtrZc/mqdefault.jpg", "dur": "1:04:03"}, {"id": "VNFGuPJYZZ8", "title": "Smooth Jazz Love Songs Collection | Adele, Air Supply, Ben E. King", "thumb": "https://i.ytimg.com/vi/VNFGuPJYZZ8/mqdefault.jpg", "dur": "2:00:05"}, {"id": "457rFxp8zZ0", "title": "Best Smooth Jazz Covers Hits | Lady Gaga, Richard Marx, Coldplay", "thumb": "https://i.ytimg.com/vi/457rFxp8zZ0/mqdefault.jpg", "dur": "44:33"}, {"id": "7sxcjXKfQiA", "title": "Elegant Smooth Jazz Covers Hits | Coldplay, Chicago, Robbie Williams", "thumb": "https://i.ytimg.com/vi/7sxcjXKfQiA/mqdefault.jpg", "dur": "6:00:05"}, {"id": "G0OjvTvmD8E", "title": "Timeless Romantic Jazz Covers | Bon Jovi, Chicago, Diana Ross, Boyzone", "thumb": "https://i.ytimg.com/vi/G0OjvTvmD8E/mqdefault.jpg", "dur": "6:00:05"}, {"id": "RcetlLqo3VY", "title": "Classic Love Songs in Jazz Covers | The Cranberries, Scorpions, Adele", "thumb": "https://i.ytimg.com/vi/RcetlLqo3VY/mqdefault.jpg", "dur": "6:00:05"}, {"id": "yGQ3byiO0Vg", "title": "Best Romantic Jazz Covers | Adele, Christina Perri, Toni Braxton", "thumb": "https://i.ytimg.com/vi/yGQ3byiO0Vg/mqdefault.jpg", "dur": "5:59:48"}, {"id": "tclqUGntVtQ", "title": "Timeless Love Songs Jazz Covers | Stevie Wonder, Deep Purple, Whitney Houston", "thumb": "https://i.ytimg.com/vi/tclqUGntVtQ/mqdefault.jpg", "dur": "3:00:06"}, {"id": "GBcH1K-URHQ", "title": "Golden Era Love Songs Jazz Covers | Frank Sinatra, Lionel Richie, The Beatles", "thumb": "https://i.ytimg.com/vi/GBcH1K-URHQ/mqdefault.jpg", "dur": "3:00:06"}, {"id": "jimI5NEZA5o", "title": "Best Timeless Love Songs Jazz Covers | Celine Dion, Michael Jackson, Paul Anka", "thumb": "https://i.ytimg.com/vi/jimI5NEZA5o/mqdefault.jpg", "dur": "3:00:06"}, {"id": "UmZdWRQCsgE", "title": "Golden Era Love Songs Jazz Covers | The Beatles, Michael Jackson, Whitney Houston", "thumb": "https://i.ytimg.com/vi/UmZdWRQCsgE/mqdefault.jpg", "dur": "2:23:17"}, {"id": "Y6a9zeqEMUo", "title": "Timeless Love Songs Jazz Covers | Michael Jackson, Whitney Houston, The Beatles", "thumb": "https://i.ytimg.com/vi/Y6a9zeqEMUo/mqdefault.jpg", "dur": "1:02:59"}, {"id": "e8Zc0T1AwmE", "title": "Top Love Songs Jazz Covers | Adele, Ed Sheeran, Lady Gaga", "thumb": "https://i.ytimg.com/vi/e8Zc0T1AwmE/mqdefault.jpg", "dur": "41:30"}, {"id": "NuAXnTNHZW8", "title": "Slow Blues Rock Guitar Riffs 🎸 Late Night Blues | Etta James, Led Zeppelin, Janis Joplin", "thumb": "https://i.ytimg.com/vi/NuAXnTNHZW8/mqdefault.jpg", "dur": "41:21"}, {"id": "mlVowZy4tZ4", "title": "Timeless Golden Era Jazz Covers | Elvis Presley, Queen, Rod Stewart", "thumb": "https://i.ytimg.com/vi/mlVowZy4tZ4/mqdefault.jpg", "dur": "1:00:57"}, {"id": "cPYAZnyaAEY", "title": "Best Golden Era Jazz Covers Hits | Whitney Houston, John Lennon, Queen, Bon Jovi", "thumb": "https://i.ytimg.com/vi/cPYAZnyaAEY/mqdefault.jpg", "dur": "1:00:57"}, {"id": "_ttijZvyynQ", "title": "Smooth Jazz Covers Playlist | Adele, Miley Cyrus, Queen", "thumb": "https://i.ytimg.com/vi/_ttijZvyynQ/mqdefault.jpg", "dur": "1:02:39"}, {"id": "EEKH1l1-cFo", "title": "Best Smooth Jazz Love Songs | Miley Cyrus, Justin Bieber, Adele", "thumb": "https://i.ytimg.com/vi/EEKH1l1-cFo/mqdefault.jpg", "dur": "48:11"}, {"id": "6HCnMW2dtEc", "title": "Golden Era Jazz Love Songs Covers | Lobo, Foreigner, Paul Anka", "thumb": "https://i.ytimg.com/vi/6HCnMW2dtEc/mqdefault.jpg", "dur": "1:04:29"}, {"id": "zykLF_PyLRM", "title": "Smooth Jazz Love Songs Covers | Lionel Richie, Rod Stewart, Ronan Keating", "thumb": "https://i.ytimg.com/vi/zykLF_PyLRM/mqdefault.jpg", "dur": "1:04:29"}, {"id": "MpV-u1cEQ7U", "title": "Smooth Jazz Classic Love Songs Covers | Michael Learns, Leona Lewis, Ben E. King", "thumb": "https://i.ytimg.com/vi/MpV-u1cEQ7U/mqdefault.jpg", "dur": "1:06:41"}, {"id": "UU8A1f-qCMc", "title": "Smooth Jazz  Golden Era Love Songs Covers | Whitney Houston, Michael Bolton, Bryan Adams", "thumb": "https://i.ytimg.com/vi/UU8A1f-qCMc/mqdefault.jpg", "dur": "1:06:41"}, {"id": "L_6TtG_8f4E", "title": "Golden Era Jazz Love Songs Covers | Celine Dion, Whitney Houston, Lionel Richie", "thumb": "https://i.ytimg.com/vi/L_6TtG_8f4E/mqdefault.jpg", "dur": "1:08:14"}, {"id": "JxoQBvdxdBk", "title": "Classic Oldies Love Songs Jazz Covers | Ben E. King, Richard Marx, Diana Ross", "thumb": "https://i.ytimg.com/vi/JxoQBvdxdBk/mqdefault.jpg", "dur": "1:08:03"}, {"id": "kPywvyMyxk0", "title": "Smooth Jazz Legendary Love Songs 🎷| The Beatles, Aerosmith, Elvis Presley – Relaxing Night Vibes", "thumb": "https://i.ytimg.com/vi/kPywvyMyxk0/mqdefault.jpg", "dur": "1:08:13"}, {"id": "KmANOsF0aWw", "title": "Timeless Jazz Love Songs Covers 🎷💗 | Ray Charles, Chicago, Cristopher Cross", "thumb": "https://i.ytimg.com/vi/KmANOsF0aWw/mqdefault.jpg", "dur": "1:02:51"}, {"id": "BprqfBQhlzE", "title": "Smooth Jazz Golden Era Timeless Hits Covers | Christian Bautista, Glenn Mederios, Robbie William", "thumb": "https://i.ytimg.com/vi/BprqfBQhlzE/mqdefault.jpg", "dur": "45:15"}, {"id": "Revl0WmbUIw", "title": "Smooth Jazz Love Songs Covers 🎷☕ | Adele, Taylor Swift, Justin Bieber, Miia", "thumb": "https://i.ytimg.com/vi/Revl0WmbUIw/mqdefault.jpg", "dur": "1:08:49"}, {"id": "Up_EhZ0LweQ", "title": "Smooth Jazz Love Songs Covers 90s | Ben E. King, Eric Clapton, Celine Dion", "thumb": "https://i.ytimg.com/vi/Up_EhZ0LweQ/mqdefault.jpg", "dur": "43:21"}, {"id": "0DntOW2UAJ8", "title": "Top Smooth Jazz Love Songs Covers 💗🎷 | Relaxing Midnight Vibes (Elvis Presley, Ray Charles, Chicago)", "thumb": "https://i.ytimg.com/vi/0DntOW2UAJ8/mqdefault.jpg", "dur": "1:04:58"}, {"id": "ZOiXgM2rp14", "title": "Golden Era Jazz Love Songs Covers 🎷❤️ | Bon Jovi, Scorpions, Christina Perri", "thumb": "https://i.ytimg.com/vi/ZOiXgM2rp14/mqdefault.jpg", "dur": "1:03:44"}, {"id": "4VLgCpfi6A4", "title": "Top Smooth Jazz Love Songs Relaxing 🎧❤️ | Miley Cyrus, Adele, Lionel Richie", "thumb": "https://i.ytimg.com/vi/4VLgCpfi6A4/mqdefault.jpg", "dur": "1:04:48"}, {"id": "bzMAoveSjKU", "title": "Best Smooth Jazz Love Songs Covers 2026 ❤️ | Elvis Presley, Adele, Taylor Swift", "thumb": "https://i.ytimg.com/vi/bzMAoveSjKU/mqdefault.jpg", "dur": "1:04:13"}, {"id": "fUfP6AO6FxM", "title": "Golden Era Love Songs Jazz Covers | Peter Cetera, Lionel Richie, Eagles", "thumb": "https://i.ytimg.com/vi/fUfP6AO6FxM/mqdefault.jpg", "dur": "1:02:39"}, {"id": "AmSaQdEgsN4", "title": "Romantic Soulful Jazz Covers Playlist | Lionel Richie, Michael Bolton, Ben E. King", "thumb": "https://i.ytimg.com/vi/AmSaQdEgsN4/mqdefault.jpg", "dur": "1:02:39"}, {"id": "mDNOH4KFEhw", "title": "Smooth Jazz Love Songs Covers | Timeless Romantic Playlist for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/mDNOH4KFEhw/mqdefault.jpg", "dur": "1:02:16"}, {"id": "tFZjwFImUFo", "title": "Smooth Jazz Covers Legends Playlist | Elvis Presley, Diana Ross, Frank Sinatra", "thumb": "https://i.ytimg.com/vi/tFZjwFImUFo/mqdefault.jpg", "dur": "1:02:16"}, {"id": "DPEe15yHKMo", "title": "Smooth Jazz Melancholic Nights | Midnight Mood Vol. 2", "thumb": "https://i.ytimg.com/vi/DPEe15yHKMo/mqdefault.jpg", "dur": "1:06:44"}, {"id": "iZDBz0bPF-I", "title": "Timeless Hits Jazz Covers Playlist | Elvis Presley, Oasis, Bryan Adams", "thumb": "https://i.ytimg.com/vi/iZDBz0bPF-I/mqdefault.jpg", "dur": "42:29"}, {"id": "Omyp6iDLRO4", "title": "Love Songs Smooth Jazz Covers Playlist | Lobo, Whitney Houston, Ben E.King", "thumb": "https://i.ytimg.com/vi/Omyp6iDLRO4/mqdefault.jpg", "dur": "1:05:29"}, {"id": "mT2y5MjGLRA", "title": "Timeless Hits Smooth Jazz Covers Playlist | John Lennon, Oasis, Boyzone", "thumb": "https://i.ytimg.com/vi/mT2y5MjGLRA/mqdefault.jpg", "dur": "1:06:44"}, {"id": "57v6H9jSoA8", "title": "Golden Era Jazz Covers Playlist | Christopher Cross, Chicago, Michael Jackson", "thumb": "https://i.ytimg.com/vi/57v6H9jSoA8/mqdefault.jpg", "dur": "1:07:02"}, {"id": "C-WDKHj6Khw", "title": "Timeless Hits Smooth Jazz Covers | Heal The World, Dust In The Wind, I Just Called To Say I Love You", "thumb": "https://i.ytimg.com/vi/C-WDKHj6Khw/mqdefault.jpg", "dur": "1:02:57"}, {"id": "5KHRCrWZzO0", "title": "Timeless Love Songs Jazz Covers Playlist | Richard Marx, Simon & Garfunkel, Kenny Rogers", "thumb": "https://i.ytimg.com/vi/5KHRCrWZzO0/mqdefault.jpg", "dur": "42:50"}, {"id": "pSVwbHSXkIk", "title": "Love Songs Jazz Covers Playlist | Elvis Presley, Ray Charles, Whitney Houston", "thumb": "https://i.ytimg.com/vi/pSVwbHSXkIk/mqdefault.jpg", "dur": "1:01:54"}, {"id": "iFXrNNFemsk", "title": "Classic Hits Jazz Covers Playlist | White Lion, Eagles, The Beatles", "thumb": "https://i.ytimg.com/vi/iFXrNNFemsk/mqdefault.jpg", "dur": "1:06:44"}, {"id": "11ajuoGalPs", "title": "Golden Era Jazz Covers Playlist | Glenn Medeiros, Lobo, Michael Jackson", "thumb": "https://i.ytimg.com/vi/11ajuoGalPs/mqdefault.jpg", "dur": "1:03:39"}, {"id": "0lwHjP-D9hw", "title": "Best Hits Smooth Jazz Covers Playlist | Chicago, Oasis, James Ingram", "thumb": "https://i.ytimg.com/vi/0lwHjP-D9hw/mqdefault.jpg", "dur": "1:03:39"}, {"id": "UCqVVJmNGKw", "title": "Smooth Jazz Melancholic Nights | Elvis Presley, Don McLean, Bryan Adams", "thumb": "https://i.ytimg.com/vi/UCqVVJmNGKw/mqdefault.jpg", "dur": "43:09"}, {"id": "fjlSUBvRNKs", "title": "Golden Hits Jazz Covers Playlist | Somewhere Between, Sailing, Mamma Mia", "thumb": "https://i.ytimg.com/vi/fjlSUBvRNKs/mqdefault.jpg", "dur": "1:04:59"}, {"id": "IKSWLbBmhwk", "title": "Smooth Jazz Covers| Lionel Richie, Paul Anka, Righteous Brothers", "thumb": "https://i.ytimg.com/vi/IKSWLbBmhwk/mqdefault.jpg", "dur": "1:03:00"}, {"id": "tCivCaRtYlE", "title": "Smooth Jazz Golden Era Timeless Hits Covers | I Will Always Love You, My Way, Stuck On You", "thumb": "https://i.ytimg.com/vi/tCivCaRtYlE/mqdefault.jpg", "dur": "1:03:27"}, {"id": "9X42mbhGwmI", "title": "Best Jazz Covers | Paint My Love, I Will Always Love You, My Way", "thumb": "https://i.ytimg.com/vi/9X42mbhGwmI/mqdefault.jpg", "dur": "1:03:27"}, {"id": "wCTKLVpjrJY", "title": "Smooth Jazz Timeless Love Songs Playlist Vol. 5 | What's Up, Let It Be, You're Not Alone", "thumb": "https://i.ytimg.com/vi/wCTKLVpjrJY/mqdefault.jpg", "dur": "40:53"}, {"id": "ppAAA-mkIJI", "title": "Smooth Jazz Timeless Love Songs Covers | White Lion, Skeeter Davis, Leo Sayer, Don McLean", "thumb": "https://i.ytimg.com/vi/ppAAA-mkIJI/mqdefault.jpg", "dur": "1:04:21"}, {"id": "-5EQP-zIAFI", "title": "Smooth Jazz Love Songs Covers | Frank Sinatra, Lionel Richie, Whitney Houston", "thumb": "https://i.ytimg.com/vi/-5EQP-zIAFI/mqdefault.jpg", "dur": "1:03:27"}, {"id": "Ldc2wTTLmQA", "title": "Smooth Jazz Golden Era Classic | Scorpions, Eagles, Bon Jovi, Deep Purple - Vol.4", "thumb": "https://i.ytimg.com/vi/Ldc2wTTLmQA/mqdefault.jpg", "dur": "1:01:20"}, {"id": "rjjxCMQnCIk", "title": "Classic Songs in Smooth Jazz Covers | Bon Jovi, Elvis Presley, Oasis, Michael Jackson", "thumb": "https://i.ytimg.com/vi/rjjxCMQnCIk/mqdefault.jpg", "dur": "40:40"}, {"id": "BL3zxV-qVVg", "title": "Classic Ballads in Smooth Jazz | She's Gone, Soldier of Fortune, Forever and One", "thumb": "https://i.ytimg.com/vi/BL3zxV-qVVg/mqdefault.jpg", "dur": "1:01:15"}, {"id": "XwlxyMrDYQE", "title": "Timeless Songs in Smooth Jazz | Please Release Me, The Great Pretender, Imagine", "thumb": "https://i.ytimg.com/vi/XwlxyMrDYQE/mqdefault.jpg", "dur": "43:27"}, {"id": "U6BMYgK8HXI", "title": "Classic Songs in Smooth Jazz | Still Loving You, Hotel California, Don't Cry", "thumb": "https://i.ytimg.com/vi/U6BMYgK8HXI/mqdefault.jpg", "dur": "1:01:20"}, {"id": "j3JvaV67yIQ", "title": "Smooth Jazz Golden Era Classics | Ray Charles, Elvis Presley, Leona Lewis", "thumb": "https://i.ytimg.com/vi/j3JvaV67yIQ/mqdefault.jpg", "dur": "43:32"}, {"id": "X7IJfqQNGE0", "title": "Timeless Songs in Smooth Jazz | Michael Bolton, Celine Dion, Lobo", "thumb": "https://i.ytimg.com/vi/X7IJfqQNGE0/mqdefault.jpg", "dur": "1:04:04"}, {"id": "9wMX5OvxNjU", "title": "Smooth Jazz Timeless Classics | Golden Era Favorites - My Way, If Tomorrow Never Comes, Stuck On You", "thumb": "https://i.ytimg.com/vi/9wMX5OvxNjU/mqdefault.jpg", "dur": "1:00:05"}, {"id": "H8pUA0nOC5E", "title": "Smooth Jazz Timeless Love Songs Playlist Vol. 3", "thumb": "https://i.ytimg.com/vi/H8pUA0nOC5E/mqdefault.jpg", "dur": "1:01:30"}, {"id": "5Eej6H8eJOo", "title": "Smooth Jazz Timeless Classics | Elegant Evening Collection", "thumb": "https://i.ytimg.com/vi/5Eej6H8eJOo/mqdefault.jpg", "dur": "1:03:48"}, {"id": "uOYLS3munoU", "title": "Smooth Jazz Timeless Classics | Elegant Evening Collection", "thumb": "https://i.ytimg.com/vi/uOYLS3munoU/mqdefault.jpg", "dur": "1:03:48"}, {"id": "QdY2i62FrD8", "title": "Smooth Jazz The Melancholy Edition | Timeless Jazz", "thumb": "https://i.ytimg.com/vi/QdY2i62FrD8/mqdefault.jpg", "dur": "1:03:32"}, {"id": "xPZnDHau5jg", "title": "Smooth Jazz Timeless Love Songs Playlist Vol.3", "thumb": "https://i.ytimg.com/vi/xPZnDHau5jg/mqdefault.jpg", "dur": "1:03:25"}, {"id": "WWjRZCLL88g", "title": "Smooth Jazz Melancholic Nights | Midnight Mood", "thumb": "https://i.ytimg.com/vi/WWjRZCLL88g/mqdefault.jpg", "dur": "1:05:00"}, {"id": "Fd6XiBAsUCo", "title": "Smooth Jazz Romantic Classics | Golden Love Collection", "thumb": "https://i.ytimg.com/vi/Fd6XiBAsUCo/mqdefault.jpg", "dur": "1:05:50"}, {"id": "5DMjw7JCu_I", "title": "Smooth Jazz Romantic Classics | Timeless Love Songs", "thumb": "https://i.ytimg.com/vi/5DMjw7JCu_I/mqdefault.jpg", "dur": "1:08:34"}, {"id": "xeu4EbEN6nw", "title": "Smooth Jazz Timeless Golden Hits | Classic Favorites", "thumb": "https://i.ytimg.com/vi/xeu4EbEN6nw/mqdefault.jpg", "dur": "1:05:03"}, {"id": "rRzvyWz8XJk", "title": "Smooth Jazz Timeless Love Songs Playlist Vol.2", "thumb": "https://i.ytimg.com/vi/rRzvyWz8XJk/mqdefault.jpg", "dur": "1:05:25"}, {"id": "Rvqa_hC8SrA", "title": "Smooth Jazz Golden Era Timeless Hits Cover Vol.2", "thumb": "https://i.ytimg.com/vi/Rvqa_hC8SrA/mqdefault.jpg", "dur": "1:06:12"}, {"id": "Vq-ePDL5A5Y", "title": "Smooth Jazz Timeless Love Songs Playlist | Michael Jackson, Helloween, Lobo, Stellheart..", "thumb": "https://i.ytimg.com/vi/Vq-ePDL5A5Y/mqdefault.jpg", "dur": "1:05:10"}, {"id": "Ocf_Y4LL8Nc", "title": "Smooth Jazz Timeless Love Songs Playlist", "thumb": "https://i.ytimg.com/vi/Ocf_Y4LL8Nc/mqdefault.jpg", "dur": "1:04:03"}, {"id": "SuR4Oas9Ho0", "title": "Smooth Jazz Golden Era Timeless Hits Cover || Don Mclane, Righteous Brother, Lobo..", "thumb": "https://i.ytimg.com/vi/SuR4Oas9Ho0/mqdefault.jpg", "dur": "1:01:01"}, {"id": "ptn18OEUJho", "title": "Smooth Jazz Top Legend | Guns N' Roses, Scorpions, John Lennon, Eric Clapton, The Platters...", "thumb": "https://i.ytimg.com/vi/ptn18OEUJho/mqdefault.jpg", "dur": "1:03:39"}, {"id": "WhJAgWXO9zo", "title": "Best Cover Legend in Smooth Jazz | Everly Brothers, Whitney Houston, Lobo, Celline Dion...", "thumb": "https://i.ytimg.com/vi/WhJAgWXO9zo/mqdefault.jpg", "dur": "1:02:01"}, {"id": "zdqVnhL5QTg", "title": "Top Playlist Cover Hits | The Beatles, Lionel Richie, Ben E. King, Rod Stewart..", "thumb": "https://i.ytimg.com/vi/zdqVnhL5QTg/mqdefault.jpg", "dur": "1:01:39"}, {"id": "wtpuf8rw9rg", "title": "Smooth Jazz Playlist | Robbie William, Bon Jovi, Elvis Presley, Celline Dion, Oasis..", "thumb": "https://i.ytimg.com/vi/wtpuf8rw9rg/mqdefault.jpg", "dur": "1:01:35"}, {"id": "f0vgDFvjVeU", "title": "Top Playlist Cover Legend | Leonard Cohen, Leo Sayer, Rod Stewart, Paul Anka...", "thumb": "https://i.ytimg.com/vi/f0vgDFvjVeU/mqdefault.jpg", "dur": "1:01:45"}, {"id": "t4-mkvY23NQ", "title": "Best Cover Legend in Smooth Jazz | White Lion, Lionel Richie, Rod Stewart, Paul Anka, Boyzone...", "thumb": "https://i.ytimg.com/vi/t4-mkvY23NQ/mqdefault.jpg", "dur": "1:02:57"}, {"id": "6NoO0-imUos", "title": "Top Playlist Cover Hits Legend | Ronan Keating, Bon Jovi, Ben E. King, Evanescence...", "thumb": "https://i.ytimg.com/vi/6NoO0-imUos/mqdefault.jpg", "dur": "1:05:59"}, {"id": "ajEmW0-uyE4", "title": "Smooth Jazz Cover | Whitney Houston, Leona Lewis, Elvis Presley, Air Supply...", "thumb": "https://i.ytimg.com/vi/ajEmW0-uyE4/mqdefault.jpg", "dur": "1:03:25"}, {"id": "Y5-F-ZtfVwU", "title": "Best Playlist in Smooth Jazz  With John Lenon, Aerosmith, Queen, Scorpions, Whitney Houston", "thumb": "https://i.ytimg.com/vi/Y5-F-ZtfVwU/mqdefault.jpg", "dur": "1:07:43"}, {"id": "80qbVVzST2o", "title": "Top Playlist Cover Hits | The Beatles, Jason Mraz, Deep Purple, Christina Perri..", "thumb": "https://i.ytimg.com/vi/80qbVVzST2o/mqdefault.jpg", "dur": "1:04:22"}, {"id": "v6l2RXrqqpM", "title": "Best Cover Legend in Smooth Jazz White Eagles, John Lenon, Queen, Halloween, Scorpions", "thumb": "https://i.ytimg.com/vi/v6l2RXrqqpM/mqdefault.jpg", "dur": "1:07:43"}, {"id": "YZKfM5o7tUg", "title": "Smooth Jazz Vibes | Michael Jakson, Celline Dion, Oasis, Deep Purpel..", "thumb": "https://i.ytimg.com/vi/YZKfM5o7tUg/mqdefault.jpg", "dur": "1:06:20"}, {"id": "sKJy5JFrHVo", "title": "Smooth Jazz Adele, Bryan Adams, Bon Jovi, Celine Dion, Scorpions, Oasis...", "thumb": "https://i.ytimg.com/vi/sKJy5JFrHVo/mqdefault.jpg", "dur": "1:08:03"}, {"id": "0OgXg18VWrs", "title": "Top Legend Cover in Smooth Jazz White Steelheart, Ben E. King, Aerosmith, Halloween, Deep Purple", "thumb": "https://i.ytimg.com/vi/0OgXg18VWrs/mqdefault.jpg", "dur": "1:07:22"}, {"id": "jNXpaxhmAFU", "title": "Smooth Jazz Vibes - Bryan Adams, Hellowen, Celine Dion, Avenged Sevenfold, SIA", "thumb": "https://i.ytimg.com/vi/jNXpaxhmAFU/mqdefault.jpg", "dur": "1:09:38"}, {"id": "gHUEItI4zwE", "title": "Smooth Jazz Celine Dion, Bryan Adams, Bon Jovi, Adele, Oasis...", "thumb": "https://i.ytimg.com/vi/gHUEItI4zwE/mqdefault.jpg", "dur": "1:09:19"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

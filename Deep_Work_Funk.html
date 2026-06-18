@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCeFOhN-MR5pNFRQq-zxqRBQ -->
 <!-- channel-url: https://www.youtube.com/@deepworkfunk -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Deep_Work_Funk.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Deep Work Funk";
+const KANAL = "Deep_Work_Funk.html";
 const VIDEOS = [{"id": "l9Eoms4cFKk", "title": "🌃Late Night Rhythm from the Old Soul Streets   Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/l9Eoms4cFKk/mqdefault.jpg", "dur": "1:26:39"}, {"id": "APMQooCznGg", "title": "Rare Soul Funk Collection ✨ Old School Groove That Hits Different", "thumb": "https://i.ytimg.com/vi/APMQooCznGg/mqdefault.jpg", "dur": "1:26:51"}, {"id": "OT4KG6WItx4", "title": "Ultimate Vintage Soul Groove   Old School 70s Funk Mix 2026", "thumb": "https://i.ytimg.com/vi/OT4KG6WItx4/mqdefault.jpg", "dur": "1:26:11"}, {"id": "ZShEb0rlxuA", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/ZShEb0rlxuA/mqdefault.jpg", "dur": "1:26:41"}, {"id": "J3-4YErRAmQ", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/J3-4YErRAmQ/mqdefault.jpg", "dur": "1:26:33"}, {"id": "1piNEp_UFtM", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music   Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/1piNEp_UFtM/mqdefault.jpg", "dur": "1:26:11"}, {"id": "-wR7X_fHhRQ", "title": "🎵 They Don't Make Soul Funk Like This Anymore   Vintage Deep Groove Mix 2026", "thumb": "https://i.ytimg.com/vi/-wR7X_fHhRQ/mqdefault.jpg", "dur": "1:26:36"}, {"id": "4Kapsboxpu8", "title": "Best Vintage Soul Groove   Ultimate Old School 70s Funk Mix 2026", "thumb": "https://i.ytimg.com/vi/4Kapsboxpu8/mqdefault.jpg", "dur": "1:09:45"}, {"id": "LzEKtLRBxFA", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/LzEKtLRBxFA/mqdefault.jpg", "dur": "1:09:33"}, {"id": "jKZwycl6dUU", "title": "Ultimate Vintage Soul   The Best Old School 70s Funk Mix", "thumb": "https://i.ytimg.com/vi/jKZwycl6dUU/mqdefault.jpg", "dur": "1:10:00"}, {"id": "t_g93sI06iQ", "title": "Soul Funk Groove 🏅 Stay in the Groove | Soul Funk", "thumb": "https://i.ytimg.com/vi/t_g93sI06iQ/mqdefault.jpg", "dur": "1:09:25"}, {"id": "j1ejJqvOIt4", "title": "Ultimate Vintage Soul   Deep 70s Funk & Old School Groove Mix 2026", "thumb": "https://i.ytimg.com/vi/j1ejJqvOIt4/mqdefault.jpg", "dur": "1:09:08"}, {"id": "8HVmHYxtI4U", "title": "🎙️When The Groove Hits After Midnight | Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/8HVmHYxtI4U/mqdefault.jpg", "dur": "1:09:40"}, {"id": "QJR_tY7nhrk", "title": "Ultimate Vintage Soul Groove | Old School 70s Funk Mix 2026", "thumb": "https://i.ytimg.com/vi/QJR_tY7nhrk/mqdefault.jpg", "dur": "1:10:13"}, {"id": "8I6cKoWFb1I", "title": "Vintage Soul Funk Groove – Ultimate Coding & Focus Playlist", "thumb": "https://i.ytimg.com/vi/8I6cKoWFb1I/mqdefault.jpg", "dur": "1:10:01"}, {"id": "KSR5I9RVWrg", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/KSR5I9RVWrg/mqdefault.jpg", "dur": "1:09:20"}, {"id": "fWrCywQZV6w", "title": "🔥 Vintage Soul Funk Groove You’ve Been Looking For   Raw & Minimal Dry Groove", "thumb": "https://i.ytimg.com/vi/fWrCywQZV6w/mqdefault.jpg", "dur": "1:09:40"}, {"id": "yAUYZ-hZvIw", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/yAUYZ-hZvIw/mqdefault.jpg", "dur": "1:22:04"}, {"id": "_qnoWCedVWc", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/_qnoWCedVWc/mqdefault.jpg", "dur": "1:22:23"}, {"id": "Gh3ybuXD-98", "title": "Vintage 70s Soul Funk Groove 🎧 Old School Soul Funk", "thumb": "https://i.ytimg.com/vi/Gh3ybuXD-98/mqdefault.jpg", "dur": "1:21:14"}, {"id": "8JjXZaTNayc", "title": "Ultimate Vintage Soul Funk Groove | Rare 70s Funk & Deep Soul Vibes", "thumb": "https://i.ytimg.com/vi/8JjXZaTNayc/mqdefault.jpg", "dur": "1:22:05"}, {"id": "0gIejl6i7Y4", "title": "🌃Late Night Rhythm from the Old Soul Streets   Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/0gIejl6i7Y4/mqdefault.jpg", "dur": "1:21:54"}, {"id": "nE_XbQzpeSE", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/nE_XbQzpeSE/mqdefault.jpg", "dur": "1:21:58"}, {"id": "oxe5X0tgGfs", "title": "Vintage Grooves To Trush Yourself 🔥", "thumb": "https://i.ytimg.com/vi/oxe5X0tgGfs/mqdefault.jpg", "dur": "1:22:09"}, {"id": "cMgyZzIguXE", "title": "Vintage Soul Funk 🔥 Rare Groove, Deep Funk & Old School 70s Soul", "thumb": "https://i.ytimg.com/vi/cMgyZzIguXE/mqdefault.jpg", "dur": "1:21:46"}, {"id": "fuWmqTzC6Zg", "title": "Don’t Skip This Groove… Trust Me 🎧 Ultimate Old School Soul Funk Groove 🎧", "thumb": "https://i.ytimg.com/vi/fuWmqTzC6Zg/mqdefault.jpg", "dur": "1:22:08"}, {"id": "66MiWjZUMa8", "title": "Ultimate Rare Soul Funk Mix   Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/66MiWjZUMa8/mqdefault.jpg", "dur": "1:22:34"}, {"id": "M24jFWYsegY", "title": "1 Hours Deep Work Funk – Coding Music for Maximum Focus & Productivity", "thumb": "https://i.ytimg.com/vi/M24jFWYsegY/mqdefault.jpg", "dur": "1:11:14"}, {"id": "mQvkHOTXPlI", "title": "Deep Work Funk Mix – Smooth Groove Music for Programmers & Creators", "thumb": "https://i.ytimg.com/vi/mQvkHOTXPlI/mqdefault.jpg", "dur": "1:12:06"}, {"id": "bXv1srj8mEQ", "title": "Focus Better Instantly – Funk & Neo Soul Music for Deep Work Sessions", "thumb": "https://i.ytimg.com/vi/bXv1srj8mEQ/mqdefault.jpg", "dur": "1:11:52"}, {"id": "2ZA_D2aBnyc", "title": "Groove Line Flow – Smooth Funk Music for Productivity & Focus", "thumb": "https://i.ytimg.com/vi/2ZA_D2aBnyc/mqdefault.jpg", "dur": "1:10:52"}, {"id": "H_lOvGyQ9ac", "title": "Rhodes Funk for Coding – Calm, Distraction Free Work Music", "thumb": "https://i.ytimg.com/vi/H_lOvGyQ9ac/mqdefault.jpg", "dur": "1:11:17"}, {"id": "nQND2Lb-gtU", "title": "Stay in the Groove – 1 Hour Funk Music for Coding & Deep Focus", "thumb": "https://i.ytimg.com/vi/nQND2Lb-gtU/mqdefault.jpg", "dur": "1:11:56"}, {"id": "8Sc_o6xrtO4", "title": "No Distractions, Just Groove – 1 Hour Funk Music for Deep Work", "thumb": "https://i.ytimg.com/vi/8Sc_o6xrtO4/mqdefault.jpg", "dur": "1:10:53"}, {"id": "5UIkLKaLMQg", "title": "Deep Focus Funk – Stay in Flow State for Hours", "thumb": "https://i.ytimg.com/vi/5UIkLKaLMQg/mqdefault.jpg", "dur": "1:10:55"}, {"id": "hmZ0shjpJww", "title": "Vintage Soul Funk Groove – Ultimate Coding & Focus Playlist", "thumb": "https://i.ytimg.com/vi/hmZ0shjpJww/mqdefault.jpg", "dur": "1:11:45"}, {"id": "J-lhb2zcx6A", "title": "Work Faster, Focus Longer – Funk & Jazz Grooves for Deep Work", "thumb": "https://i.ytimg.com/vi/J-lhb2zcx6A/mqdefault.jpg", "dur": "1:11:14"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

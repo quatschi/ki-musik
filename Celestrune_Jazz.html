@@ -7,6 +7,7 @@
 <!-- categories: Jazz -->
 <!-- channel-id: UCyq_EWcm2g_ZBrk6Bk_blMw -->
 <!-- channel-url: https://www.youtube.com/@CelestruneJazz -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Celestrune_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Celestrune Jazz";
+const KANAL = "Celestrune_Jazz.html";
 const VIDEOS = [{"id": "sShgDQRqKg0", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/sShgDQRqKg0/mqdefault.jpg", "dur": "1:20:36"}, {"id": "jBCy8KQmFTM", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/jBCy8KQmFTM/mqdefault.jpg", "dur": "1:20:07"}, {"id": "lvo2d9ovdd4", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/lvo2d9ovdd4/mqdefault.jpg", "dur": "1:19:58"}, {"id": "0UOqR51SB8s", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/0UOqR51SB8s/mqdefault.jpg", "dur": "1:21:28"}, {"id": "CNGVVV8Gsmo", "title": "Rainy Night Jazz 🌧️ Moody Saxophone Chill for Stormy Evenings, Cozy Rain Vibes & Atmospheric Calm", "thumb": "https://i.ytimg.com/vi/CNGVVV8Gsmo/mqdefault.jpg", "dur": "1:22:47"}, {"id": "gQirgHootC0", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/gQirgHootC0/mqdefault.jpg", "dur": "1:19:03"}, {"id": "qe4OBasn8PM", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/qe4OBasn8PM/mqdefault.jpg", "dur": "1:21:13"}, {"id": "Zha1vQNzpDk", "title": "Midnight Jazz Lounge for Late Nights 🌙 Smooth Sax & Soft Ambience for Gentle Hours & Quiet Comfort", "thumb": "https://i.ytimg.com/vi/Zha1vQNzpDk/mqdefault.jpg", "dur": "1:19:47"}, {"id": "vMN1Z2JVVzQ", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/vMN1Z2JVVzQ/mqdefault.jpg", "dur": "1:20:32"}, {"id": "LwknvGF-Rjs", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/LwknvGF-Rjs/mqdefault.jpg", "dur": "1:19:34"}, {"id": "T5v5p80aaRk", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/T5v5p80aaRk/mqdefault.jpg", "dur": "1:19:50"}, {"id": "ZOpOlrNofuk", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/ZOpOlrNofuk/mqdefault.jpg", "dur": "1:18:25"}, {"id": "bYrEdLYwZHE", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/bYrEdLYwZHE/mqdefault.jpg", "dur": "1:18:32"}, {"id": "wZsWDmRPOWk", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/wZsWDmRPOWk/mqdefault.jpg", "dur": "1:20:29"}, {"id": "smcu9eBKl7w", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/smcu9eBKl7w/mqdefault.jpg", "dur": "1:19:43"}, {"id": "vbfbhNi9ZkY", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/vbfbhNi9ZkY/mqdefault.jpg", "dur": "1:19:19"}, {"id": "SDbjll-Ms34", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/SDbjll-Ms34/mqdefault.jpg", "dur": "1:18:44"}, {"id": "D-XxY-MBkvA", "title": "Midnight Jazz Lounge for Late Nights 🌙 Smooth Sax & Soft Ambience for Gentle Hours & Quiet Comfort", "thumb": "https://i.ytimg.com/vi/D-XxY-MBkvA/mqdefault.jpg", "dur": "1:19:58"}, {"id": "XbMZCQ85uOQ", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/XbMZCQ85uOQ/mqdefault.jpg", "dur": "1:19:41"}, {"id": "5KDYxn3mqwM", "title": "Rainy Night Jazz 🌧️ Moody Saxophone Chill for Stormy Evenings, Cozy Rain Vibes & Atmospheric Calm", "thumb": "https://i.ytimg.com/vi/5KDYxn3mqwM/mqdefault.jpg", "dur": "1:19:41"}, {"id": "g5uOkwn6S-U", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/g5uOkwn6S-U/mqdefault.jpg", "dur": "1:19:50"}, {"id": "2nWH0nfkMVA", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/2nWH0nfkMVA/mqdefault.jpg", "dur": "1:20:06"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

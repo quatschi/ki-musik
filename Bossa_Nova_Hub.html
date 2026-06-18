@@ -7,6 +7,7 @@
 <!-- categories: Bossa Nova, Lounge -->
 <!-- channel-id: UCHe0y9Hy4KZMK9Yw1X2vKUw -->
 <!-- channel-url: https://www.youtube.com/@bossanovahub -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Bossa_Nova_Hub.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Bossa Nova Hub";
+const KANAL = "Bossa_Nova_Hub.html";
 const VIDEOS = [{"id": "50rW0bOHfKU", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 113)", "thumb": "https://i.ytimg.com/vi/50rW0bOHfKU/mqdefault.jpg", "dur": "1:07:16"}, {"id": "azQmksvT84g", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 112)", "thumb": "https://i.ytimg.com/vi/azQmksvT84g/mqdefault.jpg", "dur": "1:13:08"}, {"id": "BURXBGOuyx4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 111)", "thumb": "https://i.ytimg.com/vi/BURXBGOuyx4/mqdefault.jpg", "dur": "44:25"}, {"id": "cA_dBge2q88", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 110)", "thumb": "https://i.ytimg.com/vi/cA_dBge2q88/mqdefault.jpg", "dur": "59:46"}, {"id": "Rh9-3v8Pp7g", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 109)", "thumb": "https://i.ytimg.com/vi/Rh9-3v8Pp7g/mqdefault.jpg", "dur": "1:07:41"}, {"id": "gqCM8cHHyw4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 108)", "thumb": "https://i.ytimg.com/vi/gqCM8cHHyw4/mqdefault.jpg", "dur": "1:09:24"}, {"id": "j93uB0zV3bI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 107)", "thumb": "https://i.ytimg.com/vi/j93uB0zV3bI/mqdefault.jpg", "dur": "59:43"}, {"id": "zjqp4-MnsKk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 106)", "thumb": "https://i.ytimg.com/vi/zjqp4-MnsKk/mqdefault.jpg", "dur": "1:00:40"}, {"id": "H-emv6bbdSw", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 105)", "thumb": "https://i.ytimg.com/vi/H-emv6bbdSw/mqdefault.jpg", "dur": "1:05:22"}, {"id": "JfE6pr2w3Qk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 104)", "thumb": "https://i.ytimg.com/vi/JfE6pr2w3Qk/mqdefault.jpg", "dur": "1:11:48"}, {"id": "MQ8mE2zSAHQ", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 103)", "thumb": "https://i.ytimg.com/vi/MQ8mE2zSAHQ/mqdefault.jpg", "dur": "1:07:30"}, {"id": "P-g2nFaopd0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 102)", "thumb": "https://i.ytimg.com/vi/P-g2nFaopd0/mqdefault.jpg", "dur": "47:50"}, {"id": "sArtxpdp650", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 101)", "thumb": "https://i.ytimg.com/vi/sArtxpdp650/mqdefault.jpg", "dur": "53:37"}, {"id": "_kZFSyKGdko", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 100)", "thumb": "https://i.ytimg.com/vi/_kZFSyKGdko/mqdefault.jpg", "dur": "1:05:45"}, {"id": "b3feCvx5PjY", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 99)", "thumb": "https://i.ytimg.com/vi/b3feCvx5PjY/mqdefault.jpg", "dur": "1:03:04"}, {"id": "pvVExZ_1AJo", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 98)", "thumb": "https://i.ytimg.com/vi/pvVExZ_1AJo/mqdefault.jpg", "dur": "1:06:37"}, {"id": "vYH5IVVErtA", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 97w)", "thumb": "https://i.ytimg.com/vi/vYH5IVVErtA/mqdefault.jpg", "dur": "59:01"}, {"id": "qHd1F5hcD5E", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 96)", "thumb": "https://i.ytimg.com/vi/qHd1F5hcD5E/mqdefault.jpg", "dur": "1:13:07"}, {"id": "mVNJlbAPKyE", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 95)", "thumb": "https://i.ytimg.com/vi/mVNJlbAPKyE/mqdefault.jpg", "dur": "1:15:54"}, {"id": "zy1ApQ8rfwI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 94)", "thumb": "https://i.ytimg.com/vi/zy1ApQ8rfwI/mqdefault.jpg", "dur": "55:23"}, {"id": "1Y80wLIlCMk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 93)", "thumb": "https://i.ytimg.com/vi/1Y80wLIlCMk/mqdefault.jpg", "dur": "54:21"}, {"id": "FwePCTa8Sc8", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 92)", "thumb": "https://i.ytimg.com/vi/FwePCTa8Sc8/mqdefault.jpg", "dur": "1:03:30"}, {"id": "RVrY56RoRXE", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 91)", "thumb": "https://i.ytimg.com/vi/RVrY56RoRXE/mqdefault.jpg", "dur": "1:01:46"}, {"id": "XOZS07DBzKg", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 90)", "thumb": "https://i.ytimg.com/vi/XOZS07DBzKg/mqdefault.jpg", "dur": "1:08:55"}, {"id": "dQrWWbg8-Es", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 89)", "thumb": "https://i.ytimg.com/vi/dQrWWbg8-Es/mqdefault.jpg", "dur": "1:02:45"}, {"id": "1II9tTNBn7U", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 88)", "thumb": "https://i.ytimg.com/vi/1II9tTNBn7U/mqdefault.jpg", "dur": "57:46"}, {"id": "Hh1sOXRFnl8", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 87)", "thumb": "https://i.ytimg.com/vi/Hh1sOXRFnl8/mqdefault.jpg", "dur": "36:42"}, {"id": "lk00FxL20_Q", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 86)", "thumb": "https://i.ytimg.com/vi/lk00FxL20_Q/mqdefault.jpg", "dur": "54:19"}, {"id": "hyVT9JIrEnM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 85)", "thumb": "https://i.ytimg.com/vi/hyVT9JIrEnM/mqdefault.jpg", "dur": "1:00:41"}, {"id": "2gdjlJqXWk4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 84)", "thumb": "https://i.ytimg.com/vi/2gdjlJqXWk4/mqdefault.jpg", "dur": "1:04:25"}, {"id": "3aqO5xk60do", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 83)", "thumb": "https://i.ytimg.com/vi/3aqO5xk60do/mqdefault.jpg", "dur": "55:30"}, {"id": "R66iIQmHhGM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 85)", "thumb": "https://i.ytimg.com/vi/R66iIQmHhGM/mqdefault.jpg", "dur": "1:00:41"}, {"id": "QQgxZjaRmac", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 82)", "thumb": "https://i.ytimg.com/vi/QQgxZjaRmac/mqdefault.jpg", "dur": "47:00"}, {"id": "r_MsqoKIfO0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 81)", "thumb": "https://i.ytimg.com/vi/r_MsqoKIfO0/mqdefault.jpg", "dur": "53:56"}, {"id": "AA2IALilyQo", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 80)", "thumb": "https://i.ytimg.com/vi/AA2IALilyQo/mqdefault.jpg", "dur": "1:03:45"}, {"id": "Ed3kvRjdTX4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 79)", "thumb": "https://i.ytimg.com/vi/Ed3kvRjdTX4/mqdefault.jpg", "dur": "1:00:09"}, {"id": "0MOHLcgqnCE", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 78)", "thumb": "https://i.ytimg.com/vi/0MOHLcgqnCE/mqdefault.jpg", "dur": "1:01:59"}, {"id": "kIE7gaaygAc", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 77)", "thumb": "https://i.ytimg.com/vi/kIE7gaaygAc/mqdefault.jpg", "dur": "49:31"}, {"id": "TSmA2jFQGZQ", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 76)", "thumb": "https://i.ytimg.com/vi/TSmA2jFQGZQ/mqdefault.jpg", "dur": "1:01:00"}, {"id": "fGAUHAXfIXI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 75)", "thumb": "https://i.ytimg.com/vi/fGAUHAXfIXI/mqdefault.jpg", "dur": "43:24"}, {"id": "Dr_QKFrPj8c", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 74)", "thumb": "https://i.ytimg.com/vi/Dr_QKFrPj8c/mqdefault.jpg", "dur": "43:44"}, {"id": "48wgHTUh5ro", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 73)", "thumb": "https://i.ytimg.com/vi/48wgHTUh5ro/mqdefault.jpg", "dur": "56:15"}, {"id": "UdyB1WG6dRo", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 72)", "thumb": "https://i.ytimg.com/vi/UdyB1WG6dRo/mqdefault.jpg", "dur": "58:10"}, {"id": "Lpw2z8ettr4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 71)", "thumb": "https://i.ytimg.com/vi/Lpw2z8ettr4/mqdefault.jpg", "dur": "59:30"}, {"id": "-Twur0Ry1o8", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 70)", "thumb": "https://i.ytimg.com/vi/-Twur0Ry1o8/mqdefault.jpg", "dur": "54:07"}, {"id": "uU70PufRP1U", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 69)", "thumb": "https://i.ytimg.com/vi/uU70PufRP1U/mqdefault.jpg", "dur": "1:34:59"}, {"id": "libC8a1Sl4k", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 68)", "thumb": "https://i.ytimg.com/vi/libC8a1Sl4k/mqdefault.jpg", "dur": "49:26"}, {"id": "j4UoFU7jg9c", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 67)", "thumb": "https://i.ytimg.com/vi/j4UoFU7jg9c/mqdefault.jpg", "dur": "55:56"}, {"id": "uF7xRqzZt6g", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 66)", "thumb": "https://i.ytimg.com/vi/uF7xRqzZt6g/mqdefault.jpg", "dur": "1:08:18"}, {"id": "YRs4FubQQqk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 65)", "thumb": "https://i.ytimg.com/vi/YRs4FubQQqk/mqdefault.jpg", "dur": "1:10:04"}, {"id": "8jB96Gooc18", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 64)", "thumb": "https://i.ytimg.com/vi/8jB96Gooc18/mqdefault.jpg", "dur": "58:28"}, {"id": "w1qavEqUNws", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 63)", "thumb": "https://i.ytimg.com/vi/w1qavEqUNws/mqdefault.jpg", "dur": "1:12:20"}, {"id": "fNwbloUdXvY", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 62)", "thumb": "https://i.ytimg.com/vi/fNwbloUdXvY/mqdefault.jpg", "dur": "1:13:43"}, {"id": "L5Ca4V5omfk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 61)", "thumb": "https://i.ytimg.com/vi/L5Ca4V5omfk/mqdefault.jpg", "dur": "1:07:55"}, {"id": "TP1j8nK-Sds", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 60)", "thumb": "https://i.ytimg.com/vi/TP1j8nK-Sds/mqdefault.jpg", "dur": "1:01:55"}, {"id": "H-dntEeSYO0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 59)", "thumb": "https://i.ytimg.com/vi/H-dntEeSYO0/mqdefault.jpg", "dur": "59:20"}, {"id": "6maZCH_3P78", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 58)", "thumb": "https://i.ytimg.com/vi/6maZCH_3P78/mqdefault.jpg", "dur": "55:40"}, {"id": "ooy6glejFBI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 57)", "thumb": "https://i.ytimg.com/vi/ooy6glejFBI/mqdefault.jpg", "dur": "55:44"}, {"id": "s_GTVifG0aA", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 56)", "thumb": "https://i.ytimg.com/vi/s_GTVifG0aA/mqdefault.jpg", "dur": "38:14"}, {"id": "0Njok3iegNQ", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 55)", "thumb": "https://i.ytimg.com/vi/0Njok3iegNQ/mqdefault.jpg", "dur": "56:56"}, {"id": "f_HwVHfOciM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 54)", "thumb": "https://i.ytimg.com/vi/f_HwVHfOciM/mqdefault.jpg", "dur": "34:07"}, {"id": "99O6BRGzgZs", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 53)", "thumb": "https://i.ytimg.com/vi/99O6BRGzgZs/mqdefault.jpg", "dur": "1:03:22"}, {"id": "eMh-vj6_Xvc", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 52)", "thumb": "https://i.ytimg.com/vi/eMh-vj6_Xvc/mqdefault.jpg", "dur": "44:06"}, {"id": "-aOlwfRM8V0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 51)", "thumb": "https://i.ytimg.com/vi/-aOlwfRM8V0/mqdefault.jpg", "dur": "58:03"}, {"id": "r8q3UyDbyG8", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 50)", "thumb": "https://i.ytimg.com/vi/r8q3UyDbyG8/mqdefault.jpg", "dur": "1:03:04"}, {"id": "a_DnzH8KKEk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 49)", "thumb": "https://i.ytimg.com/vi/a_DnzH8KKEk/mqdefault.jpg", "dur": "52:59"}, {"id": "0_p0GBnn0EI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 48)", "thumb": "https://i.ytimg.com/vi/0_p0GBnn0EI/mqdefault.jpg", "dur": "55:05"}, {"id": "bdUN6Y58dlE", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 47)", "thumb": "https://i.ytimg.com/vi/bdUN6Y58dlE/mqdefault.jpg", "dur": "43:02"}, {"id": "p7GZCQWlgu8", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 46)", "thumb": "https://i.ytimg.com/vi/p7GZCQWlgu8/mqdefault.jpg", "dur": "50:50"}, {"id": "9SrnkRAPjic", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 45)", "thumb": "https://i.ytimg.com/vi/9SrnkRAPjic/mqdefault.jpg", "dur": "1:01:29"}, {"id": "cBLYMqDbS18", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 44)", "thumb": "https://i.ytimg.com/vi/cBLYMqDbS18/mqdefault.jpg", "dur": "57:32"}, {"id": "YQ3AEOLrRcY", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 43)", "thumb": "https://i.ytimg.com/vi/YQ3AEOLrRcY/mqdefault.jpg", "dur": "43:22"}, {"id": "5r8clI0teJ0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 42)", "thumb": "https://i.ytimg.com/vi/5r8clI0teJ0/mqdefault.jpg", "dur": "50:26"}, {"id": "0Ai89VUoCy4", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 41)", "thumb": "https://i.ytimg.com/vi/0Ai89VUoCy4/mqdefault.jpg", "dur": "55:42"}, {"id": "2PgOdpDnphI", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 40)", "thumb": "https://i.ytimg.com/vi/2PgOdpDnphI/mqdefault.jpg", "dur": "1:27:49"}, {"id": "J6CTwOPmhFc", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 39)", "thumb": "https://i.ytimg.com/vi/J6CTwOPmhFc/mqdefault.jpg", "dur": "28:03"}, {"id": "InvaLQXM0No", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 38)", "thumb": "https://i.ytimg.com/vi/InvaLQXM0No/mqdefault.jpg", "dur": "50:37"}, {"id": "Glts_heoI2k", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 37)", "thumb": "https://i.ytimg.com/vi/Glts_heoI2k/mqdefault.jpg", "dur": "59:51"}, {"id": "KCbaMvZ1Aqc", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 36)", "thumb": "https://i.ytimg.com/vi/KCbaMvZ1Aqc/mqdefault.jpg", "dur": "54:21"}, {"id": "9ap1l6mVVyM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 35)", "thumb": "https://i.ytimg.com/vi/9ap1l6mVVyM/mqdefault.jpg", "dur": "48:27"}, {"id": "7Wfz0H6YK2E", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 34)", "thumb": "https://i.ytimg.com/vi/7Wfz0H6YK2E/mqdefault.jpg", "dur": "1:08:05"}, {"id": "iGsMb1Up0zU", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 33)", "thumb": "https://i.ytimg.com/vi/iGsMb1Up0zU/mqdefault.jpg", "dur": "57:16"}, {"id": "BTiEdYB8bh0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 32)", "thumb": "https://i.ytimg.com/vi/BTiEdYB8bh0/mqdefault.jpg", "dur": "44:29"}, {"id": "U00eJkONzOk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 31)", "thumb": "https://i.ytimg.com/vi/U00eJkONzOk/mqdefault.jpg", "dur": "1:08:34"}, {"id": "GQ9MpW5snaE", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 30)", "thumb": "https://i.ytimg.com/vi/GQ9MpW5snaE/mqdefault.jpg", "dur": "1:09:46"}, {"id": "8ocGB-fzct0", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 29)", "thumb": "https://i.ytimg.com/vi/8ocGB-fzct0/mqdefault.jpg", "dur": "53:24"}, {"id": "GBEYmSWndow", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 28)", "thumb": "https://i.ytimg.com/vi/GBEYmSWndow/mqdefault.jpg", "dur": "53:41"}, {"id": "3Y0gIUcmdtw", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 27)", "thumb": "https://i.ytimg.com/vi/3Y0gIUcmdtw/mqdefault.jpg", "dur": "44:58"}, {"id": "lEx0IgaqULQ", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 26)", "thumb": "https://i.ytimg.com/vi/lEx0IgaqULQ/mqdefault.jpg", "dur": "1:08:14"}, {"id": "Ypmqz6LtMIk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 25)", "thumb": "https://i.ytimg.com/vi/Ypmqz6LtMIk/mqdefault.jpg", "dur": "59:33"}, {"id": "PM7n7XcyVgM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 24)", "thumb": "https://i.ytimg.com/vi/PM7n7XcyVgM/mqdefault.jpg", "dur": "2:08:15"}, {"id": "hgR_3WsDHOM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 23)", "thumb": "https://i.ytimg.com/vi/hgR_3WsDHOM/mqdefault.jpg", "dur": "56:18"}, {"id": "qwm_AE3Q100", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 22)", "thumb": "https://i.ytimg.com/vi/qwm_AE3Q100/mqdefault.jpg", "dur": "39:47"}, {"id": "8_zsXznodfA", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 21)", "thumb": "https://i.ytimg.com/vi/8_zsXznodfA/mqdefault.jpg", "dur": "59:39"}, {"id": "pi4Z0LKnx6k", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 20)", "thumb": "https://i.ytimg.com/vi/pi4Z0LKnx6k/mqdefault.jpg", "dur": "54:03"}, {"id": "_NJ0s4f6xzc", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 19)", "thumb": "https://i.ytimg.com/vi/_NJ0s4f6xzc/mqdefault.jpg", "dur": "52:00"}, {"id": "1CplVlhuG6I", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 18)", "thumb": "https://i.ytimg.com/vi/1CplVlhuG6I/mqdefault.jpg", "dur": "52:00"}, {"id": "Hyt4e-HOxhY", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 17)", "thumb": "https://i.ytimg.com/vi/Hyt4e-HOxhY/mqdefault.jpg", "dur": "1:05:20"}, {"id": "cGzo16N-EfU", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 16)", "thumb": "https://i.ytimg.com/vi/cGzo16N-EfU/mqdefault.jpg", "dur": "49:39"}, {"id": "DGUm82vMkhM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 15)", "thumb": "https://i.ytimg.com/vi/DGUm82vMkhM/mqdefault.jpg", "dur": "58:05"}, {"id": "NamQihtSrpM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 14)", "thumb": "https://i.ytimg.com/vi/NamQihtSrpM/mqdefault.jpg", "dur": "57:01"}, {"id": "74BEOWvz70M", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 13)", "thumb": "https://i.ytimg.com/vi/74BEOWvz70M/mqdefault.jpg", "dur": "43:12"}, {"id": "_pJWzL4pP6E", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 12)", "thumb": "https://i.ytimg.com/vi/_pJWzL4pP6E/mqdefault.jpg", "dur": "43:54"}, {"id": "eIwA1WrAejg", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 11)", "thumb": "https://i.ytimg.com/vi/eIwA1WrAejg/mqdefault.jpg", "dur": "46:21"}, {"id": "Ms6K-hSCpIU", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 10)", "thumb": "https://i.ytimg.com/vi/Ms6K-hSCpIU/mqdefault.jpg", "dur": "35:59"}, {"id": "xZNe-MGATJw", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 9)", "thumb": "https://i.ytimg.com/vi/xZNe-MGATJw/mqdefault.jpg", "dur": "48:55"}, {"id": "-gm8XxZ7eks", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 8)", "thumb": "https://i.ytimg.com/vi/-gm8XxZ7eks/mqdefault.jpg", "dur": "47:24"}, {"id": "dy1ojIV9IVg", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 7)", "thumb": "https://i.ytimg.com/vi/dy1ojIV9IVg/mqdefault.jpg", "dur": "39:09"}, {"id": "epYrb5focQQ", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 6)", "thumb": "https://i.ytimg.com/vi/epYrb5focQQ/mqdefault.jpg", "dur": "52:28"}, {"id": "6ZodN-aF3Uk", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 5)", "thumb": "https://i.ytimg.com/vi/6ZodN-aF3Uk/mqdefault.jpg", "dur": "1:22:25"}, {"id": "DxTYqpjuWHg", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 4)", "thumb": "https://i.ytimg.com/vi/DxTYqpjuWHg/mqdefault.jpg", "dur": "40:49"}, {"id": "_KXXwYsWpkw", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 3)", "thumb": "https://i.ytimg.com/vi/_KXXwYsWpkw/mqdefault.jpg", "dur": "39:35"}, {"id": "N9Lo48vJbXM", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 2)", "thumb": "https://i.ytimg.com/vi/N9Lo48vJbXM/mqdefault.jpg", "dur": "53:16"}, {"id": "0lUlSHEaHxA", "title": "Bossa Nova Covers of Popular Songs 2026 🌴 Relaxing Acoustic Mix (Vol. 1)", "thumb": "https://i.ytimg.com/vi/0lUlSHEaHxA/mqdefault.jpg", "dur": "43:14"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

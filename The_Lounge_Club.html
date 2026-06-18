@@ -7,6 +7,7 @@
 <!-- categories: Weltmusik, Rock -->
 <!-- channel-id: UCOY72CLkw6bRVjS7fk6quVA -->
 <!-- channel-url: https://youtube.com/@theloungeclubmusic -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=The_Lounge_Club.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "The Lounge Club";
+const KANAL = "The_Lounge_Club.html";
 const VIDEOS = [{"id": "4aJo5R7bEDY", "title": "DESERT GROOVES — Habibi Funk & Arabic Psychedelia | The Lounge Club", "thumb": "https://i.ytimg.com/vi/4aJo5R7bEDY/mqdefault.jpg", "dur": "1:05:14"}, {"id": "HhVEu5kfB74", "title": "SURF SAFARI — Exotic Surf Grooves & Tropical Adventures | The Lounge Club", "thumb": "https://i.ytimg.com/vi/HhVEu5kfB74/mqdefault.jpg", "dur": "1:13:38"}, {"id": "IINkdFwI4DQ", "title": "LATE NIGHT RADIO — After Midnight FM Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/IINkdFwI4DQ/mqdefault.jpg", "dur": "2:25:02"}, {"id": "Tbe7TsigbOY", "title": "SPACE CUMBIA — Interplanetary Chicha & Cosmic Dreams | The Lounge Club", "thumb": "https://i.ytimg.com/vi/Tbe7TsigbOY/mqdefault.jpg", "dur": "1:38:29"}, {"id": "4AMwZ3jBp5E", "title": "THE FABULOUS GROOVES OF BOLLYWOOD — Psychedelic Soundtracks & Exotic Dreams | The Lounge Club", "thumb": "https://i.ytimg.com/vi/4AMwZ3jBp5E/mqdefault.jpg", "dur": "1:06:58"}, {"id": "Nw2g94FuFao", "title": "HABIBI FUNK — Psychedelic Arabic Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/Nw2g94FuFao/mqdefault.jpg", "dur": "1:17:56"}, {"id": "8CTNvgAjVkY", "title": "JUNGLE MADNESS — Exotic Jungle Rhythms & Tropical Dreams | The Lounge Club", "thumb": "https://i.ytimg.com/vi/8CTNvgAjVkY/mqdefault.jpg", "dur": "1:18:40"}, {"id": "Ipxq-6x8RuU", "title": "HYPNOTIC CHAMBER Vol. 4 — Exotic Dreams & Hypnotic Lounge Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/Ipxq-6x8RuU/mqdefault.jpg", "dur": "1:27:06"}, {"id": "o3UPY9T4tKE", "title": "ORGAN MANIA GOES CUMBIA — Hypnotic Tropical Hammond Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/o3UPY9T4tKE/mqdefault.jpg", "dur": "1:06:27"}, {"id": "ZTnnfckwHTs", "title": "BRAZIL EXOTICA — Psychedelic Tropical Lounge | The Lounge Club", "thumb": "https://i.ytimg.com/vi/ZTnnfckwHTs/mqdefault.jpg", "dur": "1:12:21"}, {"id": "XIABS33wqIE", "title": "PSYCHEDELIC EXOTICA — Tropical Jazz & Exotica Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/XIABS33wqIE/mqdefault.jpg", "dur": "1:04:23"}, {"id": "ZXDIIo9wZP4", "title": "THE MAGNIFICENT SOUND OF THE THEREMIN — Exotic Noir Lounge | The Lounge Club", "thumb": "https://i.ytimg.com/vi/ZXDIIo9wZP4/mqdefault.jpg", "dur": "1:08:10"}, {"id": "wCS2FoceXoQ", "title": "CUMBIA SURF FEVER — Tropical Surf Noir Grooves | The Lounge Club", "thumb": "https://i.ytimg.com/vi/wCS2FoceXoQ/mqdefault.jpg", "dur": "1:10:05"}, {"id": "a2MrSKr7vXQ", "title": "ORGAN MANIA Vol. 5 — Smoky Hammond Jazz Grooves", "thumb": "https://i.ytimg.com/vi/a2MrSKr7vXQ/mqdefault.jpg", "dur": "1:00:21"}, {"id": "zH7Al3oufiQ", "title": "CIGARETTES & ESPRESSO — Late Night Retro Jazz Grooves - The Lounge Club", "thumb": "https://i.ytimg.com/vi/zH7Al3oufiQ/mqdefault.jpg", "dur": "1:19:01"}, {"id": "cnekNebrCLA", "title": "🛸 COCKTAIL ON MARS Vol. 2 - Space Age Pop & Retro-Futuristic Lounge - The Lounge Club", "thumb": "https://i.ytimg.com/vi/cnekNebrCLA/mqdefault.jpg", "dur": "1:19:37"}, {"id": "EUtQFgMhrN8", "title": "🐍 PERSIAN NOIR Vol. 2 - Jazz from Persia & Retro Middle Eastern Grooves - The Lounge Club", "thumb": "https://i.ytimg.com/vi/EUtQFgMhrN8/mqdefault.jpg", "dur": "1:33:39"}, {"id": "vvY38WiDwc8", "title": "HYPNOTIC CHAMBER Vol 3 - Exotica, Ultra-Lounge & Hypnotic Grooves  - The Lounge Club", "thumb": "https://i.ytimg.com/vi/vvY38WiDwc8/mqdefault.jpg", "dur": "1:07:32"}, {"id": "OMLh_avNdlU", "title": "🌴 HAVANA AFTER DARK - Vintage Cuban Bolero & Retro Lounge - The Lounge Club", "thumb": "https://i.ytimg.com/vi/OMLh_avNdlU/mqdefault.jpg", "dur": "1:21:54"}, {"id": "qJHeCd_9rJk", "title": "SPAGHETTI WESTERN meets CUMBIA (vol.2): Desert Noir & Chicha", "thumb": "https://i.ytimg.com/vi/qJHeCd_9rJk/mqdefault.jpg", "dur": "1:14:17"}, {"id": "Eg7HP6tEr6I", "title": "🐆Bongos & Marimbas VOL. 2 - Vintage Lounge and Retro Jazz - The Lounge Club", "thumb": "https://i.ytimg.com/vi/Eg7HP6tEr6I/mqdefault.jpg", "dur": "1:02:14"}, {"id": "nHcYgAS0zzk", "title": "ORGAN MANIA 4 - Hammond Organ Grooves & Vintage Jazz - The Lounge Club", "thumb": "https://i.ytimg.com/vi/nHcYgAS0zzk/mqdefault.jpg", "dur": "1:03:29"}, {"id": "JaK9G8-eb8s", "title": "🐍 PERSIAN NOIR - Jazz from Persia & Retro Middle Eastern Grooves - The Lounge Club", "thumb": "https://i.ytimg.com/vi/JaK9G8-eb8s/mqdefault.jpg", "dur": "1:07:34"}, {"id": "FGmzLSZ1Tko", "title": "🌅 Sunset Chill - Vintage Grooves & Exotic Lounge - The Lounge Club", "thumb": "https://i.ytimg.com/vi/FGmzLSZ1Tko/mqdefault.jpg", "dur": "1:00:25"}, {"id": "OdR0ty7jxnc", "title": "🍹 Exotic Lounge - Vintage Background Music & Tropical Grooves - The Lounge Club", "thumb": "https://i.ytimg.com/vi/OdR0ty7jxnc/mqdefault.jpg", "dur": "1:03:52"}, {"id": "fwc7wFVjxg4", "title": "🎙️ LA LA LA FEVER - Groovy Voices & Ultra-Lounge Vocals - The Lounge Club", "thumb": "https://i.ytimg.com/vi/fwc7wFVjxg4/mqdefault.jpg", "dur": "1:00:31"}, {"id": "yKGjjq5WadQ", "title": "🐆Bongos & Marimbas - Vintage Lounge and Retro Jazz - The Lounge Club", "thumb": "https://i.ytimg.com/vi/yKGjjq5WadQ/mqdefault.jpg", "dur": "1:03:00"}, {"id": "0i9LBC_2RvU", "title": "Exotica, Ultra-Lounge & Hypnotic Grooves - Hypnotic Chamber Vol 2 - The Lounge Club", "thumb": "https://i.ytimg.com/vi/0i9LBC_2RvU/mqdefault.jpg", "dur": "1:45:49"}, {"id": "iiTwyeBzNYA", "title": "Hammond Organ Grooves & Vintage Jazz - Organ Mania 3 - The Lounge Club", "thumb": "https://i.ytimg.com/vi/iiTwyeBzNYA/mqdefault.jpg", "dur": "1:37:25"}, {"id": "8P7YS0myKBY", "title": "Jazzy Grooves from Brazil - Brazilian Jazz Boulevard - The Lounge Club Vol. 12", "thumb": "https://i.ytimg.com/vi/8P7YS0myKBY/mqdefault.jpg", "dur": "1:08:56"}, {"id": "YI6qWxw7lis", "title": "Spaghetti Western meets CUMBIA: Desert Noir & Chicha - The Lounge Club Vol. 11", "thumb": "https://i.ytimg.com/vi/YI6qWxw7lis/mqdefault.jpg", "dur": "1:18:12"}, {"id": "CgpVIcb5-Gs", "title": "🚀 The Lounge Club Vol. 10:  Space Jazz, Cosmic Bossa & Retro Futuristic Grooves - COCKTAILS ON MARS", "thumb": "https://i.ytimg.com/vi/CgpVIcb5-Gs/mqdefault.jpg", "dur": "1:00:32"}, {"id": "_vJiL6Ura2E", "title": "🥁 The Lounge Club Vol. 9: Exotica, Space-Age & Cumbia Lounge - Bongo Fever 2", "thumb": "https://i.ytimg.com/vi/_vJiL6Ura2E/mqdefault.jpg", "dur": "1:05:26"}, {"id": "GSNbKqFVJcI", "title": "👁️ The Lounge Club Vol. 8: Exotica, Ultra-Lounge & Deep Grooves - The Hypnotic Chamber", "thumb": "https://i.ytimg.com/vi/GSNbKqFVJcI/mqdefault.jpg", "dur": "1:04:46"}, {"id": "rE0LMdeU1j8", "title": "🎹 The Lounge Club: Organ Mania Vol. 2 (Ultra-Lounge, Mod-Jazz & Space-Age Pop)", "thumb": "https://i.ytimg.com/vi/rE0LMdeU1j8/mqdefault.jpg", "dur": "1:01:38"}, {"id": "OXoEyUzDSTQ", "title": "🎷 The Lounge Club Vol. 6: Saxophobia (Jazz, Soul, Bossa Nova & Exotic Lounge)", "thumb": "https://i.ytimg.com/vi/OXoEyUzDSTQ/mqdefault.jpg", "dur": "1:04:20"}, {"id": "Jlf-5n6IYhE", "title": "🎹 The Lounge Club Vol. 5: The Crime Scene (Spy Noir & Detective Jazz Mix)", "thumb": "https://i.ytimg.com/vi/Jlf-5n6IYhE/mqdefault.jpg", "dur": "1:06:22"}, {"id": "0FZH-Cmc6e0", "title": "🐍 The Lounge Club Vol. 4: Voodoo Jungle Jazz (Exotic Noir & Ritual Grooves)", "thumb": "https://i.ytimg.com/vi/0FZH-Cmc6e0/mqdefault.jpg", "dur": "1:03:17"}, {"id": "ej8F6YvJaKs", "title": "🎹 The Lounge Club Vol. 3: Organ Mania (Vintage Psychedelic Organ Mix)", "thumb": "https://i.ytimg.com/vi/ej8F6YvJaKs/mqdefault.jpg", "dur": "1:23:07"}, {"id": "smQxuRWNhH0", "title": "🏝️ The Lounge Club Vol. 2: Bossa Nova Village (Ambient Retro Lounge Mix)", "thumb": "https://i.ytimg.com/vi/smQxuRWNhH0/mqdefault.jpg", "dur": "1:05:35"}, {"id": "pANu9qiTK10", "title": "🍸 The Lounge Club Vol. 1: Bongo Fever (Ambient Retro Lounge Mix)", "thumb": "https://i.ytimg.com/vi/pANu9qiTK10/mqdefault.jpg", "dur": "1:01:11"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

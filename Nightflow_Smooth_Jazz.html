@@ -7,6 +7,7 @@
 <!-- categories: Smooth Jazz -->
 <!-- channel-id: UCIlBMdCxyMvyUBsjGa0lFGg -->
 <!-- channel-url: https://www.youtube.com/@NightflowSmoothJazz -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Nightflow_Smooth_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Nightflow Smooth Jazz";
+const KANAL = "Nightflow_Smooth_Jazz.html";
 const VIDEOS = [{"id": "0veGdeVQdqo", "title": "Relaxing Saxophone 🎷 – Cozy Bar Jazz for Unwinding After a Long Day", "thumb": "https://i.ytimg.com/vi/0veGdeVQdqo/mqdefault.jpg", "dur": "2:08:12"}, {"id": "FycQGriHmjU", "title": "Smooth Saxophone 🎷 Jazz – Relaxing Bar Lounge Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/FycQGriHmjU/mqdefault.jpg", "dur": "2:08:47"}, {"id": "-vMDLUys0QA", "title": "Relaxing Saxophone 🎷 – Smooth Jazz Bar Lounge Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/-vMDLUys0QA/mqdefault.jpg", "dur": "2:07:14"}, {"id": "t_WgaINhLAM", "title": "Smooth Saxophone Jazz 🎷 – Old Records & Slow Whiskey at a Quiet Bar | Relaxing 90s Night", "thumb": "https://i.ytimg.com/vi/t_WgaINhLAM/mqdefault.jpg", "dur": "3:09:50"}, {"id": "3aHcPQOvNCg", "title": "Smooth Saxophone 🎷 Relaxing Jazz that Brings Back the 90s, Late Night Radio Mood & Calm Nights", "thumb": "https://i.ytimg.com/vi/3aHcPQOvNCg/mqdefault.jpg", "dur": "3:14:21"}, {"id": "NaOhMEK0WtI", "title": "Relaxing Smooth Saxophone 🎷 Vintage Jazz Club Music for Unwinding, Quiet Nights & the Golden Years", "thumb": "https://i.ytimg.com/vi/NaOhMEK0WtI/mqdefault.jpg", "dur": "5:04:45"}, {"id": "min5e4PHaZE", "title": "Relaxing Smooth Saxophone | Late Night Bar Music for Unwinding, Reading & Quiet Evenings", "thumb": "https://i.ytimg.com/vi/min5e4PHaZE/mqdefault.jpg", "dur": "5:05:43"}, {"id": "cLHrMBbMvGA", "title": "Smooth Saxophone 🎷 Relaxing Jazz that Brings Back the 80s, Calm Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/cLHrMBbMvGA/mqdefault.jpg", "dur": "3:09:16"}, {"id": "ZOpPVT3xmJc", "title": "Relaxing Smooth Saxophone | 80s Smooth Jazz Style | Late Night Bar Music for Study, Sleep & Relax", "thumb": "https://i.ytimg.com/vi/ZOpPVT3xmJc/mqdefault.jpg", "dur": "3:08:37"}, {"id": "LOTFsKAEvW4", "title": "Relaxing Smooth Saxophone 🎷 Cozy Jazz Bar Music for Stress Relief, Quiet Nights & Unwinding", "thumb": "https://i.ytimg.com/vi/LOTFsKAEvW4/mqdefault.jpg", "dur": "3:04:45"}, {"id": "0IXvDMlyc7M", "title": "Romancing Smooth Saxophone 🎷 Romantic Jazz for Candlelight Dinner, Love & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/0IXvDMlyc7M/mqdefault.jpg", "dur": "1:31:39"}, {"id": "oBZJlzNK0tM", "title": "Relaxing Smooth Saxophone 🎷 Late Night Jazz Bar Music for Unwinding, Quiet Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/oBZJlzNK0tM/mqdefault.jpg", "dur": "3:09:40"}, {"id": "qURnTFchtGw", "title": "Smooth Saxophone Jazz 🎷 Cozy Night Bar Music for Stress Relief, Deep Relaxation & Calm Vibes", "thumb": "https://i.ytimg.com/vi/qURnTFchtGw/mqdefault.jpg", "dur": "3:05:40"}, {"id": "pdgPRJTb6mA", "title": "Smooth Saxophone Jazz 🎷 Warm Bar Lounge Music for Stress Relief, Quiet Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/pdgPRJTb6mA/mqdefault.jpg", "dur": "2:59:19"}, {"id": "1sVkNkJC4jg", "title": "Smooth Saxophone at Sunset 🎷 Rooftop Bar Jazz for Stress Relief, Quiet Evenings & Calm Mood", "thumb": "https://i.ytimg.com/vi/1sVkNkJC4jg/mqdefault.jpg", "dur": "2:11:01"}, {"id": "mrKlaq7mZlo", "title": "Smooth Saxophone 2026 🎷 Relaxing Rooftop Jazz for Calm Evenings, City Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/mrKlaq7mZlo/mqdefault.jpg", "dur": "3:02:53"}, {"id": "lUpseNcqAxE", "title": "Relaxing Smooth Jazz Saxophone 🎷 | NYC Rooftop Bar Jazz | Sunset to Night & Unwind", "thumb": "https://i.ytimg.com/vi/lUpseNcqAxE/mqdefault.jpg", "dur": "3:07:58"}, {"id": "NG8XXiujYD0", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Mellow Late Night Jazz Lounge | Calm Down & Let Go", "thumb": "https://i.ytimg.com/vi/NG8XXiujYD0/mqdefault.jpg", "dur": "3:08:32"}, {"id": "q_ibQp3u48Y", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Late Night Jazz Club Music | Slow Down & Feel at Ease", "thumb": "https://i.ytimg.com/vi/q_ibQp3u48Y/mqdefault.jpg", "dur": "3:08:36"}, {"id": "W6_MA687Iyc", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Sunset Jazz Lounge Music | Golden Hour to Unwind & Rest", "thumb": "https://i.ytimg.com/vi/W6_MA687Iyc/mqdefault.jpg", "dur": "2:12:29"}, {"id": "2kCp3SWId8M", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Mellow Jazz Bar Music | Quiet Evening to Unwind & Rest", "thumb": "https://i.ytimg.com/vi/2kCp3SWId8M/mqdefault.jpg", "dur": "3:10:43"}, {"id": "14fIClTBC2Y", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Evening Jazz Bar Music | Unwind & Let the Night Begin", "thumb": "https://i.ytimg.com/vi/14fIClTBC2Y/mqdefault.jpg", "dur": "2:13:07"}, {"id": "Zs6rrCTnxoU", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Soulful Jazz Lounge Music | Unwind & Drift", "thumb": "https://i.ytimg.com/vi/Zs6rrCTnxoU/mqdefault.jpg", "dur": "11:55:01"}, {"id": "U2i4hYQwtrs", "title": "Relaxing Smooth Jazz Saxophone🎷 | Speakeasy Jazz Bar | Late Night Music for Focus & Unwinding", "thumb": "https://i.ytimg.com/vi/U2i4hYQwtrs/mqdefault.jpg", "dur": "2:50:14"}, {"id": "AOFmAyTUxxk", "title": "🔴 Live | Smooth Jazz Saxophone 🎷 | Late Night Lounge Jazz Live | Slow Down & Feel Good", "thumb": "https://i.ytimg.com/vi/AOFmAyTUxxk/mqdefault.jpg", "dur": "11:49:46"}, {"id": "l8qZ0WfuEcI", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Romantic Evening Jazz | Soft Music for Two & Unwind", "thumb": "https://i.ytimg.com/vi/l8qZ0WfuEcI/mqdefault.jpg", "dur": "2:05:02"}, {"id": "_x-aMKQfPgA", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Upscale Lounge Jazz | Unwind & Feel Good", "thumb": "https://i.ytimg.com/vi/_x-aMKQfPgA/mqdefault.jpg", "dur": "11:55:01"}, {"id": "XFUYWVVZt8U", "title": "【5hours】Smooth Saxophone Jazz 🎷 | Rainy Jazz for a Cozy Night In | Relax & Let the Rain Fall", "thumb": "https://i.ytimg.com/vi/XFUYWVVZt8U/mqdefault.jpg", "dur": "5:09:49"}, {"id": "IBA33OC8tCs", "title": "🔴 Live | Smooth Jazz Saxophone 🎷 | Warm Jazz Bar Live | Mellow Music to Calm Down", "thumb": "https://i.ytimg.com/vi/IBA33OC8tCs/mqdefault.jpg", "dur": "11:55:01"}, {"id": "QJmgIdQvedA", "title": "【5Hours】Relaxing Smooth Jazz Saxophone 🎷 | Chill Jazz Lounge Music | Soft Evening to Rest & Drift", "thumb": "https://i.ytimg.com/vi/QJmgIdQvedA/mqdefault.jpg", "dur": "5:03:02"}, {"id": "qBuMqSIDdYE", "title": "🔴 Live | Smooth Jazz Saxophone 🎷 | Warm Jazz Lounge Music Live | Calm Down & Feel Good", "thumb": "https://i.ytimg.com/vi/qBuMqSIDdYE/mqdefault.jpg", "dur": "11:54:59"}, {"id": "o8AYAev3-d4", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Late Night Jazz Bar Music | Calm Down & Unwind", "thumb": "https://i.ytimg.com/vi/o8AYAev3-d4/mqdefault.jpg", "dur": "2:04:35"}, {"id": "ujw19ypK2Pc", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Jazz Bar Lounge Music | Unwind & Feel Good", "thumb": "https://i.ytimg.com/vi/ujw19ypK2Pc/mqdefault.jpg", "dur": "11:36:14"}, {"id": "0bdVOnSkLYU", "title": "【2hours】Relaxing Smooth Jazz Saxophone 🎷 Warm Lounge Music for a Calm Night | Sleep & Study", "thumb": "https://i.ytimg.com/vi/0bdVOnSkLYU/mqdefault.jpg", "dur": "2:07:19"}, {"id": "M8prLUWhsyU", "title": "🔴 LIVE Relaxing Smooth Jazz Saxophone 🎷 Warm Lounge Music for a Calm Night | Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/M8prLUWhsyU/mqdefault.jpg", "dur": "11:55:01"}, {"id": "K5re19NQACg", "title": "Relaxing Smooth Saxophone Jazz | Late Night Jazz Bar Music for Sleep, Study & Stress Relief", "thumb": "https://i.ytimg.com/vi/K5re19NQACg/mqdefault.jpg", "dur": "2:05:46"}, {"id": "JqLL7v_DiCw", "title": "【1Hours】Relaxing Smooth Jazz Saxophone 🎷 | Jazz Club Vibes | Mellow Music to Unwind & Feel Good", "thumb": "https://i.ytimg.com/vi/JqLL7v_DiCw/mqdefault.jpg", "dur": "1:18:50"}, {"id": "zZo0bT5SQFQ", "title": "【1Hours】Smooth Saxophone Jazz 🎷 | Upscale Lounge Music to Relax & Unwind | Calm Evening Vibes", "thumb": "https://i.ytimg.com/vi/zZo0bT5SQFQ/mqdefault.jpg", "dur": "1:14:53"}, {"id": "D232lSFulX4", "title": "【2Hours】Relaxing Smooth Jazz Saxophone 🎷 | Vintage Jazz Club Vibes | Slow Evening & Unwind", "thumb": "https://i.ytimg.com/vi/D232lSFulX4/mqdefault.jpg", "dur": "2:52:12"}, {"id": "JjxpLHVrRNE", "title": "【5Hours】 Relaxing Smooth Saxophone Jazz | Late Night Jazz Bar for Sleep & Study", "thumb": "https://i.ytimg.com/vi/JjxpLHVrRNE/mqdefault.jpg", "dur": "5:06:21"}, {"id": "SXCl4FcjrMY", "title": "🔴 LIVE | A Relaxing Night at the Jazz Bar — Smooth Jazz Saxophone for Sleep & Study", "thumb": "https://i.ytimg.com/vi/SXCl4FcjrMY/mqdefault.jpg", "dur": "11:42:45"}, {"id": "gzy4kTt_4sM", "title": "A Relaxing Night at the Jazz Bar | Classic Smooth Jazz Saxophone for Sleep & Study", "thumb": "https://i.ytimg.com/vi/gzy4kTt_4sM/mqdefault.jpg", "dur": "3:08:12"}, {"id": "_vLGPYjRrNU", "title": "Rainy Day at the Quiet Jazz Bar 🌧️ | Stay In & Let the Saxophone Play | Smooth Jazz for a Slow Day 🎷", "thumb": "https://i.ytimg.com/vi/_vLGPYjRrNU/mqdefault.jpg", "dur": "3:01:28"}, {"id": "hKZVhwS_2Lc", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Warm Lounge Music for Your Quiet Time | Unwind & Rest", "thumb": "https://i.ytimg.com/vi/hKZVhwS_2Lc/mqdefault.jpg", "dur": "3:08:21"}, {"id": "NL1eqXlK8qs", "title": "🔴 Live | Smooth Saxophone Jazz – Velvet Bar Sessions | Warm Music for Late Nights & Calm Evenings 🎷", "thumb": "https://i.ytimg.com/vi/NL1eqXlK8qs/mqdefault.jpg", "dur": "11:55:01"}, {"id": "sjxfpMoRaLc", "title": "🔴 Live | Just the Saxophone Tonight – Relaxing Smooth Jazz | Nightflow 🌙🎷", "thumb": "https://i.ytimg.com/vi/sjxfpMoRaLc/mqdefault.jpg", "dur": "11:54:59"}, {"id": "eFuGC5ClmeY", "title": "The Last Table at the Velvet Bar 🎷 | Smooth Saxophone Jazz | Late Night Unwind & Feel at Home", "thumb": "https://i.ytimg.com/vi/eFuGC5ClmeY/mqdefault.jpg", "dur": "3:01:24"}, {"id": "LbCcTqLmh7k", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Vintage Jazz Bar Music | Unwind & Rest", "thumb": "https://i.ytimg.com/vi/LbCcTqLmh7k/mqdefault.jpg", "dur": "11:55:01"}, {"id": "bmYEJnrwZ8A", "title": "The Amber Hour — Last Drinks at the Lounge 🎷 | Smooth Saxophone Jazz for Sleep & Calm", "thumb": "https://i.ytimg.com/vi/bmYEJnrwZ8A/mqdefault.jpg", "dur": "2:01:43"}, {"id": "xqWpbYQgibk", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Find Your Seat — The Music Is Already Playing 🌙", "thumb": "https://i.ytimg.com/vi/xqWpbYQgibk/mqdefault.jpg", "dur": "11:55:01"}, {"id": "i24jjxVH6TM", "title": "Smooth Saxophone Jazz 🎷 | Romantic Dinner & Date Night Music | Candlelight Vibes", "thumb": "https://i.ytimg.com/vi/i24jjxVH6TM/mqdefault.jpg", "dur": "3:03:36"}, {"id": "WQ8pfevnXkg", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Sit, Sip & Let the Music Carry You | Warm Lounge Vibes", "thumb": "https://i.ytimg.com/vi/WQ8pfevnXkg/mqdefault.jpg", "dur": "11:55:00"}, {"id": "9TydGCi7A9M", "title": "Relaxing Smooth Jazz Saxophone🎷 | Midnight Lounge Vibes | Music for Late Night Relaxing & Unwinding🌙", "thumb": "https://i.ytimg.com/vi/9TydGCi7A9M/mqdefault.jpg", "dur": "2:54:41"}, {"id": "1iQiNRR6CNs", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Dim Lights & Smooth Grooves | Midnight at the Jazz Bar 🌙", "thumb": "https://i.ytimg.com/vi/1iQiNRR6CNs/mqdefault.jpg", "dur": "11:55:01"}, {"id": "uCrlvfDf2zs", "title": "Rainy Night Smooth Jazz 🌧️ Saxophone | 3 Hours | Late Night Lounge Vibes", "thumb": "https://i.ytimg.com/vi/uCrlvfDf2zs/mqdefault.jpg", "dur": "3:06:43"}, {"id": "bBR9vE-p9S0", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | The City Is Asleep — Your Night Is Just Beginning 🌆", "thumb": "https://i.ytimg.com/vi/bBR9vE-p9S0/mqdefault.jpg", "dur": "11:55:01"}, {"id": "Xvd2QDvh4WQ", "title": "Whiskey & Saxophone After Work 🥃🎷 | Smooth Jazz at the Uptown Bar | Unwind & Let the Night Flow", "thumb": "https://i.ytimg.com/vi/Xvd2QDvh4WQ/mqdefault.jpg", "dur": "2:01:31"}, {"id": "WdNVlc-d6IE", "title": "🎷【LIVE】Relaxing Smooth Saxophone | Jazz on the Corner | Live Background Music for Work & Chill", "thumb": "https://i.ytimg.com/vi/WdNVlc-d6IE/mqdefault.jpg", "dur": "11:54:56"}, {"id": "tCYJZRltFX8", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Classic Brick Jazz Room | Warm Background Music for Study & Relax", "thumb": "https://i.ytimg.com/vi/tCYJZRltFX8/mqdefault.jpg", "dur": "2:06:27"}, {"id": "ndCvAUNAGkM", "title": "🎷【LIVE】Relaxing Smooth Saxophone Jazz｜Bar Lounge BGM for Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/ndCvAUNAGkM/mqdefault.jpg", "dur": "11:45:30"}, {"id": "GO6F-dWvoRo", "title": "Relaxing Romantic Night Saxophone Jazz | Rooftop Lounge | Sleep, Dinner & Chill [4K]", "thumb": "https://i.ytimg.com/vi/GO6F-dWvoRo/mqdefault.jpg", "dur": "2:02:41"}, {"id": "Z-fIsYZGNAI", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷| Velvet Evening Jazz | Smooth Music for Work, Rest & Unwind", "thumb": "https://i.ytimg.com/vi/Z-fIsYZGNAI/mqdefault.jpg", "dur": "11:54:56"}, {"id": "G8EiWFErXr0", "title": "Relaxing Smooth Jazz Saxophone🎷 | Luxury Jazz Lounge | Music for Dinner, Unwinding & Relaxation", "thumb": "https://i.ytimg.com/vi/G8EiWFErXr0/mqdefault.jpg", "dur": "2:49:11"}, {"id": "Wlmr1xtZ8IM", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷| Nightcap Jazz Bar | Smooth Jazz for Late Night & Sleep", "thumb": "https://i.ytimg.com/vi/Wlmr1xtZ8IM/mqdefault.jpg", "dur": "11:42:41"}, {"id": "8Wt3yE2aDtY", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Jazz Duo Lounge Session | Smooth Jazz for Work, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/8Wt3yE2aDtY/mqdefault.jpg", "dur": "2:08:18"}, {"id": "NrxKKEsTCwk", "title": "【LIVE】Relaxing Smooth Jazz 🎷| Blue Hour Saxophone Lounge | Night Music for Chill & Unwind", "thumb": "https://i.ytimg.com/vi/NrxKKEsTCwk/mqdefault.jpg", "dur": "11:55:01"}, {"id": "ODjT23ksunM", "title": "【4K】Smooth Saxophone Jazz | Vintage Jazz Club | Relax, Dinner & Late Night Chill", "thumb": "https://i.ytimg.com/vi/ODjT23ksunM/mqdefault.jpg", "dur": "2:05:12"}, {"id": "UgM_spvidFk", "title": "【LIVE】 Saxophone Jazz 🎷 | Hidden Speakeasy Bar | Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/UgM_spvidFk/mqdefault.jpg", "dur": "11:19:36"}, {"id": "5xEHV3wj0Qo", "title": "Relaxing Smooth Saxophone 🎷 | Hidden Brick Bar Jazz | Laid-Back Music for Work, Relax & Chill", "thumb": "https://i.ytimg.com/vi/5xEHV3wj0Qo/mqdefault.jpg", "dur": "2:49:18"}, {"id": "jMWVGQ55uQs", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷| On the Rocks | City Night Jazz for Chill, Work & Unwind", "thumb": "https://i.ytimg.com/vi/jMWVGQ55uQs/mqdefault.jpg", "dur": "11:08:25"}, {"id": "oaYN90H8nWU", "title": "The Upscale Bar at the End of a Long Day 🎷 | Smooth Saxophone Jazz | Calm Jazz for Work & Relaxing", "thumb": "https://i.ytimg.com/vi/oaYN90H8nWU/mqdefault.jpg", "dur": "3:02:29"}, {"id": "5EkoU3Mh7Jw", "title": "🔴 LIVE | Relaxing Smooth Jazz 🎷 | Late Night Whiskey Bar | Calm Jazz for Weekend Unwind", "thumb": "https://i.ytimg.com/vi/5EkoU3Mh7Jw/mqdefault.jpg", "dur": "11:54:58"}, {"id": "7XZgEZN6le0", "title": "Relaxing Smooth Jazz Saxophone🎷 | Rainy Night City Window | Calm Music for Study & Relaxing", "thumb": "https://i.ytimg.com/vi/7XZgEZN6le0/mqdefault.jpg", "dur": "3:05:34"}, {"id": "f04Bp6cnz5w", "title": "【LIVE】Relaxing Smooth Saxophone 🎷| Speakeasy Jazz Night | Warm Music for Late Night Chill & Focus", "thumb": "https://i.ytimg.com/vi/f04Bp6cnz5w/mqdefault.jpg", "dur": "11:48:57"}, {"id": "M4iBZ6J3A-w", "title": "【4K】Relaxing Smooth Jazz Saxophone 🎷 | Whiskey Bar Candlelight | Warm Jazz for Date Night & Unwind", "thumb": "https://i.ytimg.com/vi/M4iBZ6J3A-w/mqdefault.jpg", "dur": "2:07:05"}, {"id": "6fKGwrg2WiM", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷 | Rooftop City Lounge | Night Jazz for Sleep, Work & Chill", "thumb": "https://i.ytimg.com/vi/6fKGwrg2WiM/mqdefault.jpg", "dur": "11:55:01"}, {"id": "QPA5mfh2a1g", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷 | The Bar Is Open | Warm Jazz for a Long Night", "thumb": "https://i.ytimg.com/vi/QPA5mfh2a1g/mqdefault.jpg", "dur": "11:55:01"}, {"id": "jUSEXI3EJbE", "title": "Relaxing Smooth Jazz Saxophone 🎷 | The Brick Bar Sessions | Soul-Warming Music for Evening Vibes", "thumb": "https://i.ytimg.com/vi/jUSEXI3EJbE/mqdefault.jpg", "dur": "3:07:58"}, {"id": "fyKMwcvbNL4", "title": "Relaxing Smooth Jazz Saxophone🎷 | Classic Jazz Lounge | After-Work Wind-Down Music", "thumb": "https://i.ytimg.com/vi/fyKMwcvbNL4/mqdefault.jpg", "dur": "3:07:09"}, {"id": "gD99luJsBtI", "title": "【LIVE】Relaxing Smooth Saxophone 🎷| Slow Burn Jazz Session | Night Music for Focus, Work & Rest", "thumb": "https://i.ytimg.com/vi/gD99luJsBtI/mqdefault.jpg", "dur": "11:55:00"}, {"id": "mBuk96lduss", "title": "Relaxing Smooth Saxophone Jazz 🎷 | Bar Lounge Ambience | Music to Slow Down and Breathe", "thumb": "https://i.ytimg.com/vi/mBuk96lduss/mqdefault.jpg", "dur": "3:03:07"}, {"id": "PEEt1L0PoIA", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Under the Spotlight | Intimate Jazz From the Front Row", "thumb": "https://i.ytimg.com/vi/PEEt1L0PoIA/mqdefault.jpg", "dur": "11:55:01"}, {"id": "ANRIV18fK8c", "title": "Smooth Jazz Saxophone🎷 | Classic Jazz Club Atmosphere | Timeless Music for Work, Focus & Relaxing", "thumb": "https://i.ytimg.com/vi/ANRIV18fK8c/mqdefault.jpg", "dur": "3:04:54"}, {"id": "BvheL0qHqTY", "title": "【4K】Smooth Jazz Saxophone 🎷 | Elegant Lounge Night | Mellow Background Music for Relaxing, Sleep", "thumb": "https://i.ytimg.com/vi/BvheL0qHqTY/mqdefault.jpg", "dur": "2:02:59"}, {"id": "RSWE2gyTMhQ", "title": "Smooth Saxophone Jazz | Manhattan City Nights | Late Night Bar Lounge", "thumb": "https://i.ytimg.com/vi/RSWE2gyTMhQ/mqdefault.jpg", "dur": "3:01:13"}, {"id": "rM-tOWkuukg", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | No Setlist. No Intermission. Just the Saxophone 🎶", "thumb": "https://i.ytimg.com/vi/rM-tOWkuukg/mqdefault.jpg", "dur": "11:55:01"}, {"id": "PTYSbpzhzj0", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Cozy Jazz Bar at Night | Calm Music for Work & Dinner", "thumb": "https://i.ytimg.com/vi/PTYSbpzhzj0/mqdefault.jpg", "dur": "3:01:15"}, {"id": "XD1fKJYDJx8", "title": "【LIVE】Relaxing Smooth Jazz Saxophone 🎷| Jazz Bar Session | Calm Evening Music for Work & Unwind", "thumb": "https://i.ytimg.com/vi/XD1fKJYDJx8/mqdefault.jpg", "dur": "11:55:01"}, {"id": "wMWdVCC55fY", "title": "Smooth Jazz Saxophone 🎷 | New York City Nights | Uptown Background Music for Work, Relaxing & Focus", "thumb": "https://i.ytimg.com/vi/wMWdVCC55fY/mqdefault.jpg", "dur": "3:00:35"}, {"id": "sgg5eyjbqVA", "title": "🔴 Live | Relaxing Smooth Jazz Saxophone 🎷 | Close Your Eyes — The Glass Is Cold, the Music Is Warm", "thumb": "https://i.ytimg.com/vi/sgg5eyjbqVA/mqdefault.jpg", "dur": "9:45:34"}, {"id": "7N0cRRKh8xs", "title": "Relaxing Smooth Saxophone Jazz 🎷 | Vinyl Bar Night | Calm Cozy Music for Study, Work & Unwinding", "thumb": "https://i.ytimg.com/vi/7N0cRRKh8xs/mqdefault.jpg", "dur": "3:01:54"}, {"id": "QNEUvk9qgI8", "title": "Relaxing Smooth Saxophone Jazz 🎷 | New York City Night – Calm Music for a Late Evening Unwind", "thumb": "https://i.ytimg.com/vi/QNEUvk9qgI8/mqdefault.jpg", "dur": "2:06:16"}, {"id": "2nfric467P8", "title": "Relaxing Smooth Saxophone Jazz 🎷 | Rainy Night Bar – Study & Cozy Music for a Quiet Evening In", "thumb": "https://i.ytimg.com/vi/2nfric467P8/mqdefault.jpg", "dur": "3:03:08"}, {"id": "i94lqq9NNHg", "title": "Relaxing Smooth Saxophone Jazz 🎷 | Brick Bar Jazz Lounge – Calm & Cozy Music to Unwind After Work", "thumb": "https://i.ytimg.com/vi/i94lqq9NNHg/mqdefault.jpg", "dur": "3:03:43"}, {"id": "bXTE6yGu3Vc", "title": "【4K】Smooth Saxophone Jazz 🎷 Cozy Bar Night | Relaxing Jazz Bar Music for a Quiet Evening Alone", "thumb": "https://i.ytimg.com/vi/bXTE6yGu3Vc/mqdefault.jpg", "dur": "2:05:59"}, {"id": "RGDa1LQX3Lo", "title": "Smooth Jazz Saxophone 🎷🌸 | Calm Cherry Blossom Night Lounge |Study, Work & Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/RGDa1LQX3Lo/mqdefault.jpg", "dur": "3:01:05"}, {"id": "QfpILIvS7-o", "title": "Smooth Saxophone Jazz 🎷 | Candlelit Bar Lounge – Calm & Cozy Evening Music to Unwind After Work", "thumb": "https://i.ytimg.com/vi/QfpILIvS7-o/mqdefault.jpg", "dur": "3:07:13"}, {"id": "exyuK87FkL8", "title": "Smooth Saxophone 🎷🌸 Cherry Blossom Jazz | Cozy Lounge Music ~ Relax, Study & Unwind", "thumb": "https://i.ytimg.com/vi/exyuK87FkL8/mqdefault.jpg", "dur": "3:06:31"}, {"id": "vh1Nah3cGj4", "title": "【4K】Smooth Saxophone Jazz 🥃 | Whiskey Lounge Night – Calm Evening Music for a Slow & Quiet Hour", "thumb": "https://i.ytimg.com/vi/vh1Nah3cGj4/mqdefault.jpg", "dur": "2:00:05"}, {"id": "chNtcVPoBng", "title": "Smooth Saxophone Jazz 🎷 – Golden Bar Night | Upscale Lounge Music to Unwind & Escape", "thumb": "https://i.ytimg.com/vi/chNtcVPoBng/mqdefault.jpg", "dur": "3:07:04"}, {"id": "n6alcxJgukI", "title": "Smooth Saxophone 🎷 Jazz – Relaxing Café Time After Work | Calm Evening Coffee & Lounge Vibes", "thumb": "https://i.ytimg.com/vi/n6alcxJgukI/mqdefault.jpg", "dur": "3:05:15"}, {"id": "L3lo7_PVkq4", "title": "【4K】Smooth Saxophone Jazz 🎷 | Marble Bar Lounge – Calm Evening Music for a Slow & Unhurried Night", "thumb": "https://i.ytimg.com/vi/L3lo7_PVkq4/mqdefault.jpg", "dur": "2:03:03"}, {"id": "VtDHHqEGLA4", "title": "Smooth Saxophone Jazz 🎷 – Late Night City Lounge | Calm Vibes for Unwinding & Relaxation", "thumb": "https://i.ytimg.com/vi/VtDHHqEGLA4/mqdefault.jpg", "dur": "3:02:19"}, {"id": "6JIiWRJ6BxI", "title": "Smooth Saxophone Jazz 🎷 – Jazz Bar Nights | Late Night Lounge for Unwinding & Relaxation", "thumb": "https://i.ytimg.com/vi/6JIiWRJ6BxI/mqdefault.jpg", "dur": "3:01:30"}, {"id": "ZspQbqk3gtU", "title": "Smooth Saxophone 🎷 Jazz – Relaxing in a Luxury Lounge After Work", "thumb": "https://i.ytimg.com/vi/ZspQbqk3gtU/mqdefault.jpg", "dur": "3:03:12"}, {"id": "eRsOm25KBIY", "title": "【4K】Smooth Saxophone Jazz 🎷 | Private Jazz Club Lounge – Calm Evening Music to Unwind & Settle In", "thumb": "https://i.ytimg.com/vi/eRsOm25KBIY/mqdefault.jpg", "dur": "2:04:46"}, {"id": "a2SgZxMerF4", "title": "Smooth Saxophone Jazz 🎷 Vintage Lounge Vibes | Late Night Bar Music for Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/a2SgZxMerF4/mqdefault.jpg", "dur": "3:03:30"}, {"id": "7HAwl9fsuCs", "title": "Smooth Saxophone Jazz 🎷 | Rooftop Spring Night Lounge – Warm Jazz for a Calm Evening Unwind", "thumb": "https://i.ytimg.com/vi/7HAwl9fsuCs/mqdefault.jpg", "dur": "3:13:48"}, {"id": "uNDJAyE1Q9A", "title": "【4K】Late Night Saxophone Jazz 🎷 – Slow Whiskey Bar Lounge Music for Unwinding After a Long Day", "thumb": "https://i.ytimg.com/vi/uNDJAyE1Q9A/mqdefault.jpg", "dur": "2:08:11"}, {"id": "81_qJirp28o", "title": "Smooth Saxophone Jazz 🎷 | Late Night at a Hidden Speakeasy Bar – Slow & Soulful Lounge Music", "thumb": "https://i.ytimg.com/vi/81_qJirp28o/mqdefault.jpg", "dur": "3:04:59"}, {"id": "_hFjgXPoZNY", "title": "Relaxing After Work in a Elegant Bar Lounge – Smooth 🎷 Saxophone Jazz", "thumb": "https://i.ytimg.com/vi/_hFjgXPoZNY/mqdefault.jpg", "dur": "3:05:19"}, {"id": "4sK9tSIh8tk", "title": "Saxophone Jazz 🎷 | An Evening at the Grand Lounge – Smooth Music for a Slow & Still Night", "thumb": "https://i.ytimg.com/vi/4sK9tSIh8tk/mqdefault.jpg", "dur": "3:04:39"}, {"id": "uHxNNJuNJtQ", "title": "Smooth Jazz on the Veranda 🌙 Moonlit Night Saxophone Music for Sleep, Study & Relaxation", "thumb": "https://i.ytimg.com/vi/uHxNNJuNJtQ/mqdefault.jpg", "dur": "3:01:18"}, {"id": "HrwAVpKrnfE", "title": "Relaxing Smooth Saxophone Jazz 🎷 Elegant Lounge Vibes for a Peaceful Evening", "thumb": "https://i.ytimg.com/vi/HrwAVpKrnfE/mqdefault.jpg", "dur": "3:02:05"}, {"id": "qAoYnOqkTlg", "title": "Relaxing Smooth Saxophone 🎷 Jazz – Cozy Bar Lounge Vibes | Relaxing Evening with Smooth Jazz", "thumb": "https://i.ytimg.com/vi/qAoYnOqkTlg/mqdefault.jpg", "dur": "3:05:10"}, {"id": "Z5DRnpAD3xU", "title": "Smooth Jazz Saxophone 🎷 – Unwinding at a Bar After Work | Relaxing Evening Lounge Music", "thumb": "https://i.ytimg.com/vi/Z5DRnpAD3xU/mqdefault.jpg", "dur": "3:07:41"}, {"id": "4J2fNKL3mL0", "title": "Smooth Saxophone 🎷 Jazz – Relaxing Lounge Music with a Warm Bar Atmosphere", "thumb": "https://i.ytimg.com/vi/4J2fNKL3mL0/mqdefault.jpg", "dur": "3:07:08"}, {"id": "oH2tsCqwQQU", "title": "Smooth Saxophone 🎷 Jazz – Relaxing Golden Saxophone Lounge Music for a Calm Evening", "thumb": "https://i.ytimg.com/vi/oH2tsCqwQQU/mqdefault.jpg", "dur": "2:03:30"}, {"id": "2uoJ0BaUhHI", "title": "Smooth Saxophone 🎷 Romantic Jazz – Relaxing Smooth Jazz for a Cozy Night", "thumb": "https://i.ytimg.com/vi/2uoJ0BaUhHI/mqdefault.jpg", "dur": "2:07:54"}, {"id": "JC7gZbXqo6U", "title": "Smooth Saxophone 🎷Jazz | Late Night Lounge Music for Study, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/JC7gZbXqo6U/mqdefault.jpg", "dur": "2:07:07"}, {"id": "C7mBgOyrgpQ", "title": "Smooth Saxophone Jazz 🎷 | Calm Blue Night – Music to Focus, Relax & Drift Into the Evening", "thumb": "https://i.ytimg.com/vi/C7mBgOyrgpQ/mqdefault.jpg", "dur": "2:09:18"}, {"id": "IDaxNag9Yik", "title": "Relaxing Smooth Saxophone 🎷Jazz – Late Night Lounge Music for a Calm Atmosphere", "thumb": "https://i.ytimg.com/vi/IDaxNag9Yik/mqdefault.jpg", "dur": "2:10:51"}, {"id": "ZER8wGDa_mg", "title": "Relaxing Smooth Jazz Saxophone 🎷 Warm Lounge Music for a Calm Night", "thumb": "https://i.ytimg.com/vi/ZER8wGDa_mg/mqdefault.jpg", "dur": "2:00:56"}, {"id": "IN43MEShj-w", "title": "Relaxing Smooth Saxophone 🎷Jazz – Calm Lounge Music for a Peaceful Night", "thumb": "https://i.ytimg.com/vi/IN43MEShj-w/mqdefault.jpg", "dur": "2:08:05"}, {"id": "XElnLRo75AQ", "title": "Relaxing Smooth Saxophone 🎷 Soft Jazz Lounge Music for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/XElnLRo75AQ/mqdefault.jpg", "dur": "2:03:45"}, {"id": "IovoCfVEyUQ", "title": "Smooth Saxophone 🎷 Jazz | Late Night Relaxation in a Luxury Suite | Calm Music for Study & Focus", "thumb": "https://i.ytimg.com/vi/IovoCfVEyUQ/mqdefault.jpg", "dur": "2:07:12"}, {"id": "6ID2M4TZhF4", "title": "Relaxing Smooth Jazz Saxophone 🎷 | Late Night Lounge Music for Study, Work & Chill", "thumb": "https://i.ytimg.com/vi/6ID2M4TZhF4/mqdefault.jpg", "dur": "2:07:04"}, {"id": "2t_13WzlMw8", "title": "Relaxing Smooth Jazz Saxophone 🎷– Calm Lounge Music for a Peaceful Evening", "thumb": "https://i.ytimg.com/vi/2t_13WzlMw8/mqdefault.jpg", "dur": "2:04:44"}, {"id": "Mo98p6FsLWg", "title": "Smooth Soul Saxophone 🎷Jazz – Relaxing Bar Lounge Music for a Calm Evening", "thumb": "https://i.ytimg.com/vi/Mo98p6FsLWg/mqdefault.jpg", "dur": "2:05:03"}, {"id": "u_ZxwctNpuw", "title": "Smooth Saxophone 🎷Jazz – Relaxing Bar Lounge Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/u_ZxwctNpuw/mqdefault.jpg", "dur": "2:04:39"}, {"id": "48u6xOK9UIw", "title": "Smooth Saxophone 🎷Jazz – Late Night Lounge Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/48u6xOK9UIw/mqdefault.jpg", "dur": "2:04:24"}, {"id": "h8Y3hU2kHTo", "title": "Relaxing smooth saxophone 🎷session with warm jazz tones and a refined, minimal atmosphere.", "thumb": "https://i.ytimg.com/vi/h8Y3hU2kHTo/mqdefault.jpg", "dur": "2:03:12"}, {"id": "gu3-2TWnteo", "title": "Relaxing Smooth Saxophone 🎷Elegant Jazz Lounge Sounds for CalmEvenings & Easy Listening", "thumb": "https://i.ytimg.com/vi/gu3-2TWnteo/mqdefault.jpg", "dur": "2:05:48"}, {"id": "2eeTIjGGMM4", "title": "Relaxing Smooth Saxophone 🎷Late Night Jazz Lounge for Calm, Focus & Stress Relief", "thumb": "https://i.ytimg.com/vi/2eeTIjGGMM4/mqdefault.jpg", "dur": "2:07:13"}, {"id": "dEVXUqJ5yKc", "title": "Smooth Jazz – Midnight Vibes 🌙Late Night Saxophone Lounge for Relax, Chill & After Hours", "thumb": "https://i.ytimg.com/vi/dEVXUqJ5yKc/mqdefault.jpg", "dur": "2:02:24"}, {"id": "uC0Q4bW-BXc", "title": "Relaxing Smooth Saxophone 🎷 Calm Jazz for Stress Relief, Evening Chill & Easy Listening", "thumb": "https://i.ytimg.com/vi/uC0Q4bW-BXc/mqdefault.jpg", "dur": "2:04:22"}, {"id": "UzU66T6VX9M", "title": "Smooth Jazz Saxophone 🎷 Relaxing & Gentle Jazz for Stress Relief, Calm & Easy Listening", "thumb": "https://i.ytimg.com/vi/UzU66T6VX9M/mqdefault.jpg", "dur": "2:13:23"}, {"id": "O8M3d3PKJC0", "title": "Smooth Jazz Saxophone – Midnight Bar Vibes • Relaxing Sax Jazz After Work", "thumb": "https://i.ytimg.com/vi/O8M3d3PKJC0/mqdefault.jpg", "dur": "1:04:21"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

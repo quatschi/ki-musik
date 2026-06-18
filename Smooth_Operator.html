@@ -7,6 +7,7 @@
 <!-- categories: Smooth Jazz -->
 <!-- channel-id: UCFCiqUekvZq199FCuX3r__A -->
 <!-- channel-url: https://youtube.com/@smoothoperator-radio -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Smooth_Operator.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Smooth Operator";
+const KANAL = "Smooth_Operator.html";
 const VIDEOS = [{"id": "CmYZA5AAUgc", "title": "Smooth Jazz & R&B 90s – A Quiet Night, Slightly Tipsy | Vol. 121", "thumb": "https://i.ytimg.com/vi/CmYZA5AAUgc/mqdefault.jpg", "dur": "2:01:15"}, {"id": "gVQdYN521kI", "title": "Smooth Jazz, R&B & Funk 90s – Something About This Weekend Feels Special | Vol. 120", "thumb": "https://i.ytimg.com/vi/gVQdYN521kI/mqdefault.jpg", "dur": "2:04:14"}, {"id": "q_Gnl6sHv-c", "title": "Smooth Jazz & R&B 90s – I Just Want to Go Home and Rest | Vol. 119", "thumb": "https://i.ytimg.com/vi/q_Gnl6sHv-c/mqdefault.jpg", "dur": "2:03:23"}, {"id": "Tgg_ylqgIyA", "title": "Smooth Jazz & R&B 90s – The Night Gets Deeper, I’m Not Ready to Sleep Yet | Vol. 118", "thumb": "https://i.ytimg.com/vi/Tgg_ylqgIyA/mqdefault.jpg", "dur": "2:03:00"}, {"id": "MzNfDwpUP80", "title": "Smooth Jazz & R&B 90s – I’m Not Sure, But This Morning Feels Different | Vol. 117", "thumb": "https://i.ytimg.com/vi/MzNfDwpUP80/mqdefault.jpg", "dur": "2:03:14"}, {"id": "6Rcaawg3NCc", "title": "Smooth Jazz & R&B 90s – In the Middle of Spring, a Relaxing Weekend Morning | Vol. 116", "thumb": "https://i.ytimg.com/vi/6Rcaawg3NCc/mqdefault.jpg", "dur": "2:04:03"}, {"id": "e8ntPYB92Y0", "title": "Smooth Jazz & R&B 90s – I’m Not Ready for Spring to Fade | Vol. 115", "thumb": "https://i.ytimg.com/vi/e8ntPYB92Y0/mqdefault.jpg", "dur": "2:01:45"}, {"id": "ozRJbhAtJC8", "title": "Smooth Jazz & R&B 90s – Somehow, I Wish It Rained This Morning | Vol. 114", "thumb": "https://i.ytimg.com/vi/ozRJbhAtJC8/mqdefault.jpg", "dur": "2:03:54"}, {"id": "zqRLCW8zXRY", "title": "Smooth Jazz & R&B 90s – My Schedule Today? I'm Not Doing Anything | Vol. 113", "thumb": "https://i.ytimg.com/vi/zqRLCW8zXRY/mqdefault.jpg", "dur": "2:01:59"}, {"id": "AwoTnFQUhS4", "title": "Smooth Jazz & R&B 90s – Memories Rising Like the Morning Sunshine | Vol. 112", "thumb": "https://i.ytimg.com/vi/AwoTnFQUhS4/mqdefault.jpg", "dur": "2:00:05"}, {"id": "oNPKYDvJ6VY", "title": "Smooth Jazz & R&B 90s – When the Spring Breeze Rolls In Like Waves | Vol. 111", "thumb": "https://i.ytimg.com/vi/oNPKYDvJ6VY/mqdefault.jpg", "dur": "2:01:29"}, {"id": "vCErHdPjCPM", "title": "Smooth Jazz & R&B 90s – I'd Press the Play Button Before Starting the Morning Cleanup | Vol.110", "thumb": "https://i.ytimg.com/vi/vCErHdPjCPM/mqdefault.jpg", "dur": "2:02:30"}, {"id": "hteLpn3kQQ8", "title": "Smooth Jazz & R&B 90s – Early Spring, The Wind Is Still Cold, But the Sunshine Is Warm | Vol. 109", "thumb": "https://i.ytimg.com/vi/hteLpn3kQQ8/mqdefault.jpg", "dur": "2:00:15"}, {"id": "lZfSu5wwrPs", "title": "Smooth Jazz & R&B 90s – Spring, Open the Window on a Refreshing Weekend Morning | Vol. 108", "thumb": "https://i.ytimg.com/vi/lZfSu5wwrPs/mqdefault.jpg", "dur": "2:02:08"}, {"id": "wd9ovTDyE2k", "title": "Smooth Jazz & R&B 90s – Saturday, for those starting a quiet weekend morning | Vol. 107", "thumb": "https://i.ytimg.com/vi/wd9ovTDyE2k/mqdefault.jpg", "dur": "1:56:28"}, {"id": "IEOdP7ZD0jI", "title": "Smooth Jazz & R&B 90s – Friday, Just One More Day Until the Weekend | Vol. 106", "thumb": "https://i.ytimg.com/vi/IEOdP7ZD0jI/mqdefault.jpg", "dur": "1:51:23"}, {"id": "xU8rGNKtj2M", "title": "Smooth Jazz & R&B 90s – Sunday, For You Who Made It Through the Week | Vol. 105", "thumb": "https://i.ytimg.com/vi/xU8rGNKtj2M/mqdefault.jpg", "dur": "1:59:41"}, {"id": "peRsnFWg3sg", "title": "Smooth Jazz & R&B 90s – Tuesday, First Thing I Do When I Get Home After Work | Vol. 104", "thumb": "https://i.ytimg.com/vi/peRsnFWg3sg/mqdefault.jpg", "dur": "2:01:33"}, {"id": "RlxZXLS3iaI", "title": "Smooth Jazz & R&B 90s – Monday, Just for You to Start the Week | Vol. 103", "thumb": "https://i.ytimg.com/vi/RlxZXLS3iaI/mqdefault.jpg", "dur": "2:03:15"}, {"id": "dXwmG0I2dv8", "title": "Smooth Jazz & R&B 90s – Wednesday, First Thing I Do When I Get Home After Work | Vol. 102", "thumb": "https://i.ytimg.com/vi/dXwmG0I2dv8/mqdefault.jpg", "dur": "2:03:46"}, {"id": "gLBAF06uhFA", "title": "Smooth Jazz & R&B 90s – Thursday, First Thing I Do When I Get Home After Work | Vol. 101", "thumb": "https://i.ytimg.com/vi/gLBAF06uhFA/mqdefault.jpg", "dur": "2:01:17"}, {"id": "WiH3YfhcL8c", "title": "Smooth Jazz & R&B 90s – For You After a Hard Day | Vol. 100", "thumb": "https://i.ytimg.com/vi/WiH3YfhcL8c/mqdefault.jpg", "dur": "1:59:58"}, {"id": "k51me41zUvo", "title": "Smooth Jazz & R&B 90s – Soft melodies that signal the start of a refreshing morning | Vol. 99", "thumb": "https://i.ytimg.com/vi/k51me41zUvo/mqdefault.jpg", "dur": "2:03:07"}, {"id": "Ny8_0kpr6so", "title": "Smooth Jazz & Lounge 90s – This Weekend, Authentic '90s Lounge Music, Perfect | Vol. 98", "thumb": "https://i.ytimg.com/vi/Ny8_0kpr6so/mqdefault.jpg", "dur": "2:00:48"}, {"id": "OUhSCTTBhm4", "title": "Smooth Jazz & Lounge 90s – Warm Coastal Vibes for Deep Relaxation | Vol. 97", "thumb": "https://i.ytimg.com/vi/OUhSCTTBhm4/mqdefault.jpg", "dur": "2:06:13"}, {"id": "c2HkIskNtYs", "title": "Smooth Jazz & Lounge 90s – Timeless Instrumentals for Work, Study & Relax | Vol. 96", "thumb": "https://i.ytimg.com/vi/c2HkIskNtYs/mqdefault.jpg", "dur": "1:58:22"}, {"id": "_klELJQV0-Y", "title": "Smooth Jazz & Lounge 90s – Mid Winter, Emotional & Laid-Back Vintage Instrumentals | Vol. 95", "thumb": "https://i.ytimg.com/vi/_klELJQV0-Y/mqdefault.jpg", "dur": "1:56:38"}, {"id": "qbq1giHx22U", "title": "Smooth Jazz & Lounge 90s – Early Evening, a relaxed and laid-back vintage instrumental | Vol. 94", "thumb": "https://i.ytimg.com/vi/qbq1giHx22U/mqdefault.jpg", "dur": "2:06:05"}, {"id": "J_QM9AFk7yQ", "title": "Smooth Jazz 90s – Soft Instrumentals for Calm Nights & Chilling Vibes | Vol. 93", "thumb": "https://i.ytimg.com/vi/J_QM9AFk7yQ/mqdefault.jpg", "dur": "2:04:53"}, {"id": "38UoKfs9hIA", "title": "90s Smooth Jazz – Liven up your space with soulful sax grooves | Vol. 92", "thumb": "https://i.ytimg.com/vi/38UoKfs9hIA/mqdefault.jpg", "dur": "2:01:18"}, {"id": "YFuDd-bQj_E", "title": "Smooth Jazz & R&B 90s – Warm Winter Grooves for a Cozy Evening Escape | Vol. 91", "thumb": "https://i.ytimg.com/vi/YFuDd-bQj_E/mqdefault.jpg", "dur": "2:03:48"}, {"id": "m8ynsUYA8ow", "title": "Smooth Jazz & R&B 90s – Soulful Sax, Rhodes & Sexy Groove Part II Vol. 90", "thumb": "https://i.ytimg.com/vi/m8ynsUYA8ow/mqdefault.jpg", "dur": "1:59:10"}, {"id": "X_ccZGT9H9I", "title": "Smooth Jazz & R&B x Soul – Nostalgic Instrumentals for Soft Winter Nights | Vol. 89", "thumb": "https://i.ytimg.com/vi/X_ccZGT9H9I/mqdefault.jpg", "dur": "2:03:22"}, {"id": "_OEZjkqFcaI", "title": "Smooth Jazz & Soulful R&B – Timeless '90s Instrumentals for a Relaxing Escape | Vol. 88", "thumb": "https://i.ytimg.com/vi/_OEZjkqFcaI/mqdefault.jpg", "dur": "2:02:11"}, {"id": "g401wLH5MXU", "title": "Smooth Jazz & R&B 90s - Smooth mood for quiet winter nights, with soothing guitars & sax | Vol. 87", "thumb": "https://i.ytimg.com/vi/g401wLH5MXU/mqdefault.jpg", "dur": "2:03:12"}, {"id": "tKmxlml9sm4", "title": "Smooth Jazz & R&B 90s - Soft Beginnings and Relaxing Endings, Sensual Saxophone and Guitar | Vol. 86", "thumb": "https://i.ytimg.com/vi/tKmxlml9sm4/mqdefault.jpg", "dur": "2:00:42"}, {"id": "IIjye6bPdmo", "title": "Smooth Jazz & R&B Soul – Relaxing Grooves, Soulful Sax & Guitar, Sexy Instrumental | Vol. 85", "thumb": "https://i.ytimg.com/vi/IIjye6bPdmo/mqdefault.jpg", "dur": "1:59:17"}, {"id": "0srMwkbxEn8", "title": "Smooth Jazz & R&B 90s – Late Autumn Cozy Relaxation Grooves & Soulful Sax | Vol. 84", "thumb": "https://i.ytimg.com/vi/0srMwkbxEn8/mqdefault.jpg", "dur": "2:04:24"}, {"id": "vZ8M2OJd6tA", "title": "Smooth Jazz 90s – Relaxing Vintage Chill Instrumentals | Vol. 83", "thumb": "https://i.ytimg.com/vi/vZ8M2OJd6tA/mqdefault.jpg", "dur": "2:00:46"}, {"id": "KaZruWqFwOY", "title": "Smooth Jazz 90s – Soothing Sax, Rhodes & Smooth Grooves for the Late Night | Vol. 82", "thumb": "https://i.ytimg.com/vi/KaZruWqFwOY/mqdefault.jpg", "dur": "1:53:51"}, {"id": "oYYWh85HiEQ", "title": "Smooth Jazz & 90s Vibes – Chill & Soulful Instrumental Grooves with Saxophone | Vol. 81", "thumb": "https://i.ytimg.com/vi/oYYWh85HiEQ/mqdefault.jpg", "dur": "1:56:19"}, {"id": "epQWH_WDsMQ", "title": "Smooth Jazz 90s – Timeless Grooves for a Relaxing Escape. Vol. 80", "thumb": "https://i.ytimg.com/vi/epQWH_WDsMQ/mqdefault.jpg", "dur": "2:00:28"}, {"id": "Exy15ld7-7U", "title": "Smooth Jazz & R&B 90s – Relaxing Weekend Vibes, Soulful & Chill Grooves | Vol. 79", "thumb": "https://i.ytimg.com/vi/Exy15ld7-7U/mqdefault.jpg", "dur": "2:00:21"}, {"id": "cKrxLMgULto", "title": "Smooth Jazz & R&B 90s – Dreaming of a Cinematic Autumn Day. Vol. 78", "thumb": "https://i.ytimg.com/vi/cKrxLMgULto/mqdefault.jpg", "dur": "2:02:39"}, {"id": "nqu1q3Rm4Jk", "title": "Smooth Jazz & R&B Vibes – Smooth 90s Grooves for Work, Focus and Relaxation. Vol. 77", "thumb": "https://i.ytimg.com/vi/nqu1q3Rm4Jk/mqdefault.jpg", "dur": "2:03:34"}, {"id": "Q_Da1ofkk0g", "title": "90s Smooth Jazz & R&B – Vintage sounds and grooves for a cozy weekend getaway. Vol. 77", "thumb": "https://i.ytimg.com/vi/Q_Da1ofkk0g/mqdefault.jpg", "dur": "2:01:36"}, {"id": "PLcSMy_bmp0", "title": "Smooth Jazz & R&B 90s – Morning by the Lake, Soft Grooves to Start a Refreshing Day. Vol. 75", "thumb": "https://i.ytimg.com/vi/PLcSMy_bmp0/mqdefault.jpg", "dur": "2:01:30"}, {"id": "szzPdXfka4w", "title": "Smooth Jazz & R&B 90s – Autumn Morning – Vintage Instrumentals with an Emotional Touch. Vol. 74", "thumb": "https://i.ytimg.com/vi/szzPdXfka4w/mqdefault.jpg", "dur": "2:01:27"}, {"id": "aTLqDnQl4XI", "title": "Smooth Jazz & R&B Beats – 90s-Inspired Grooves with Ocean Breeze Relaxation. Vol. 73", "thumb": "https://i.ytimg.com/vi/aTLqDnQl4XI/mqdefault.jpg", "dur": "1:59:24"}, {"id": "L-wT0AJMCvw", "title": "Smooth Jazz & R&B – Soulful, Soft Grooves for a Dreamy Evening Lounge. Vol. 72", "thumb": "https://i.ytimg.com/vi/L-wT0AJMCvw/mqdefault.jpg", "dur": "2:00:27"}, {"id": "mYR2VY3goss", "title": "Smooth Jazz & R&B – Soulful 90s Sax Groove for Relaxation, Focus & Fitness. Vol. 71", "thumb": "https://i.ytimg.com/vi/mYR2VY3goss/mqdefault.jpg", "dur": "2:02:00"}, {"id": "fJJs8A4yZ-8", "title": "Smooth Jazz & R&B 90s Vibe – Soulful Sax & Guitar Groove for a Cozy Weekend. Vol. 70", "thumb": "https://i.ytimg.com/vi/fJJs8A4yZ-8/mqdefault.jpg", "dur": "2:00:29"}, {"id": "H7JrcINndGQ", "title": "Smooth Jazz & R&B Beat – 90s Inspired Smooth Grooves for Relaxation.(29 Tracks, No Repeat) Vol. 69", "thumb": "https://i.ytimg.com/vi/H7JrcINndGQ/mqdefault.jpg", "dur": "2:04:40"}, {"id": "FgtPmZcTvaY", "title": "Smooth Jazz & R&B Flow – Chill Grooves for Peaceful Days(28 Tracks, No Repeat). Vol. 68", "thumb": "https://i.ytimg.com/vi/FgtPmZcTvaY/mqdefault.jpg", "dur": "2:01:06"}, {"id": "mi8CzoWdYwk", "title": "Smooth Jazz & R&B – Smooth 90s Guitar & Sax Sounds for a Gentle Morning. Vol. 67", "thumb": "https://i.ytimg.com/vi/mi8CzoWdYwk/mqdefault.jpg", "dur": "2:01:33"}, {"id": "0oZjhV-bh9M", "title": "Smooth Jazz & R&B - Smooth Groove and Relaxing with a 90s Sound. Vol. 66", "thumb": "https://i.ytimg.com/vi/0oZjhV-bh9M/mqdefault.jpg", "dur": "2:00:19"}, {"id": "n3mjgOxshu8", "title": "Smooth Jazz & R&B - Cast your worries into the sea and unwind with the sounds of the ’90s. Vol. 65", "thumb": "https://i.ytimg.com/vi/n3mjgOxshu8/mqdefault.jpg", "dur": "2:03:35"}, {"id": "-nDbXffjsaA", "title": "Smooth Jazz & R&B – End Your Day with Smooth 90s Grooves. Vol. 64", "thumb": "https://i.ytimg.com/vi/-nDbXffjsaA/mqdefault.jpg", "dur": "2:02:04"}, {"id": "ZnmGbQQUNfo", "title": "Smooth Jazz & R&B – Relax with the sounds of the '90s this fall Vol. 63", "thumb": "https://i.ytimg.com/vi/ZnmGbQQUNfo/mqdefault.jpg", "dur": "2:02:40"}, {"id": "3mka-Br5R4M", "title": "Smooth Jazz & R&B Beat – Relaxing Sax & Guitar Grooves for Chill Moments. Vol.62", "thumb": "https://i.ytimg.com/vi/3mka-Br5R4M/mqdefault.jpg", "dur": "1:53:18"}, {"id": "Sp1yf8nDSQA", "title": "Smooth Jazz & R&B 90s Flow – Timeless Grooves for a Relaxing Escape. Vol. 61", "thumb": "https://i.ytimg.com/vi/Sp1yf8nDSQA/mqdefault.jpg", "dur": "2:01:08"}, {"id": "0XZEsraDaT8", "title": "Smooth Jazz & R&B 90s Beats – For Concentration, Relaxation & Chill Days. Vol. 60", "thumb": "https://i.ytimg.com/vi/0XZEsraDaT8/mqdefault.jpg", "dur": "1:56:02"}, {"id": "pnqoog2N2Mo", "title": "Smooth Jazz & R&B 90s – Chill Grooves for Peaceful Days. Vol. 59", "thumb": "https://i.ytimg.com/vi/pnqoog2N2Mo/mqdefault.jpg", "dur": "2:03:34"}, {"id": "p7ks91uUeAU", "title": "Smooth Jazz & Lounge 90s – Relaxing Vintage Instrumentals for Quiet Evenings.(No Repeat) Vol. 58", "thumb": "https://i.ytimg.com/vi/p7ks91uUeAU/mqdefault.jpg", "dur": "2:11:04"}, {"id": "IOslIt1rU4Q", "title": "Smooth Jazz & R&B 90s - Soulful Sax, Rhodes & Sexy Groove(25 Tracks, No Repeat)  Vol. 57", "thumb": "https://i.ytimg.com/vi/IOslIt1rU4Q/mqdefault.jpg", "dur": "2:00:33"}, {"id": "CEB90wXPTqg", "title": "Smooth Jazz & R&B 90s – Timeless, Soulful & Groovy Smooth Jazz (26 Tracks, No Repeat). Vol. 56", "thumb": "https://i.ytimg.com/vi/CEB90wXPTqg/mqdefault.jpg", "dur": "2:08:02"}, {"id": "KQrJOFnX0Aw", "title": "Smooth Jazz & R&B 90s – Fresh Start with Feel-Good Soulful Flow. Vol. 55", "thumb": "https://i.ytimg.com/vi/KQrJOFnX0Aw/mqdefault.jpg", "dur": "2:07:56"}, {"id": "N9tinhMc6_U", "title": "Smooth Jazz & R&B 90s – Gentle Autumn Morning, Warm Relaxing Grooves. Vol. 54", "thumb": "https://i.ytimg.com/vi/N9tinhMc6_U/mqdefault.jpg", "dur": "2:02:17"}, {"id": "KscTOSZw2zQ", "title": "Smooth Jazz & R&B 90s – Relaxing & Soulful Morning Vibes in the Fjords. Vol. 53", "thumb": "https://i.ytimg.com/vi/KscTOSZw2zQ/mqdefault.jpg", "dur": "2:09:25"}, {"id": "gFXVpNBR4tM", "title": "Smooth Jazz & R&B 90s – Relaxing Sunset Vibes and Timeless Chill Grooves. Vol. 52", "thumb": "https://i.ytimg.com/vi/gFXVpNBR4tM/mqdefault.jpg", "dur": "2:09:15"}, {"id": "d88Du963b8Q", "title": "Smooth Jazz 90s R&B Flow – Relaxing Groove for a Peaceful Day. Vol. 51", "thumb": "https://i.ytimg.com/vi/d88Du963b8Q/mqdefault.jpg", "dur": "1:48:55"}, {"id": "mKz70ShC0EE", "title": "Smooth Jazz 90s – Soulful Grooves, Relaxing, soft background music for concentration. V49", "thumb": "https://i.ytimg.com/vi/mKz70ShC0EE/mqdefault.jpg", "dur": "3:03:10"}, {"id": "c1N6gG93i3I", "title": "Smooth Jazz 90s Vibes – Relaxing Calm Vintage Instrumental Grooves for Quiet Evenings. Vol. 48", "thumb": "https://i.ytimg.com/vi/c1N6gG93i3I/mqdefault.jpg", "dur": "2:18:25"}, {"id": "XFu56IJG9mk", "title": "Smooth Jazz & Neo-Soul – Soulful Saxophone, Rhodes & Relaxing Music. Vol. 47", "thumb": "https://i.ytimg.com/vi/XFu56IJG9mk/mqdefault.jpg", "dur": "1:47:11"}, {"id": "5QRejp5mEx0", "title": "Smooth Jazz & Neo-Soul | Smooth Instrumental Grooves for All-Day Listening and Relaxation. Vol. 46", "thumb": "https://i.ytimg.com/vi/5QRejp5mEx0/mqdefault.jpg", "dur": "1:55:18"}, {"id": "MmUWHE9nBLU", "title": "Smooth Jazz & Neo-Soul Grooves | All-Day long Listening & Relaxation. Vol. 45", "thumb": "https://i.ytimg.com/vi/MmUWHE9nBLU/mqdefault.jpg", "dur": "3:03:59"}, {"id": "dg7xp3XVX9k", "title": "Smooth Jazz & Neo-Soul - Soulful Sax, Rhodes & Sexy Groove. Vol. 44", "thumb": "https://i.ytimg.com/vi/dg7xp3XVX9k/mqdefault.jpg", "dur": "3:03:03"}, {"id": "PliAML_wMTA", "title": "Smooth Jazz & Chill Lounge  – Golden Hour Glow & Buttery Smooth Grooves. Vol. 43", "thumb": "https://i.ytimg.com/vi/PliAML_wMTA/mqdefault.jpg", "dur": "2:59:10"}, {"id": "8rpMwH7ocLs", "title": "Smooth Jazz & Neo-Soul - Soulful Sax, Rhodes & Sexy Groove. Vol. 42", "thumb": "https://i.ytimg.com/vi/8rpMwH7ocLs/mqdefault.jpg", "dur": "3:03:21"}, {"id": "EMt19dS4ew0", "title": "[Smooth Operator] Quiet Afternoon Sentimental Alone Time - Smooth Lounge Vibe. Vol. 41", "thumb": "https://i.ytimg.com/vi/EMt19dS4ew0/mqdefault.jpg", "dur": "3:02:53"}, {"id": "HafRweOGMlo", "title": "[Smooth Operator] Regretting the Passing of Summer. Sax & Soulful Jazz Lounge mix. Vol. 40", "thumb": "https://i.ytimg.com/vi/HafRweOGMlo/mqdefault.jpg", "dur": "3:07:38"}, {"id": "B_v4SWQgFEo", "title": "[Smooth Operator] From Late Afternoon to Midnight – Smooth Grooves and Rhythmic Sounds. Vol. 39", "thumb": "https://i.ytimg.com/vi/B_v4SWQgFEo/mqdefault.jpg", "dur": "3:03:35"}, {"id": "Lb6Mtu4ajwY", "title": "[Smooth Operator] Smooth Jazz & Lounge Mix from the Last Summer Vacation in August 2025. Vol. 38", "thumb": "https://i.ytimg.com/vi/Lb6Mtu4ajwY/mqdefault.jpg", "dur": "3:11:53"}, {"id": "xL2j7mYc4x8", "title": "Smooth Jazz & Chill Lounge for a peaceful and sentimental morning start. Vol. 37", "thumb": "https://i.ytimg.com/vi/xL2j7mYc4x8/mqdefault.jpg", "dur": "3:02:29"}, {"id": "7_jIJEPz34o", "title": "Smooth Jazz & Neo-Soul - Soulful Sax, Rhodes & Sexy Groove. Vol. 36", "thumb": "https://i.ytimg.com/vi/7_jIJEPz34o/mqdefault.jpg", "dur": "3:01:33"}, {"id": "ViJ5c2ZMm8w", "title": "[Smooth Operator] Chillout with Sunset, Sentimental Smooth Jazz & Lounge Music. Vol. 35", "thumb": "https://i.ytimg.com/vi/ViJ5c2ZMm8w/mqdefault.jpg", "dur": "3:03:09"}, {"id": "GNHAz203yFE", "title": "Soulful Smooth Jazz & Lounge Music for a Relaxing Chillout Evening. Vol. 34 / No Repeats", "thumb": "https://i.ytimg.com/vi/GNHAz203yFE/mqdefault.jpg", "dur": "2:26:57"}, {"id": "LPMp9jj1qZU", "title": "[Smooth Operator] A smooth groove to enjoy a laid-back,chillout afternoon, Vol. 33", "thumb": "https://i.ytimg.com/vi/LPMp9jj1qZU/mqdefault.jpg", "dur": "3:06:06"}, {"id": "6XSmF-EcyeI", "title": "Into the Past – Smooth Jazz That Brings Back a Movie-Like Day. Vol. 32", "thumb": "https://i.ytimg.com/vi/6XSmF-EcyeI/mqdefault.jpg", "dur": "3:05:11"}, {"id": "tInoNEJ1m3A", "title": "Calm afternoon - smooth jazz & neosoultypebeat for a moment of mindfulness. Vol.31", "thumb": "https://i.ytimg.com/vi/tInoNEJ1m3A/mqdefault.jpg", "dur": "3:03:37"}, {"id": "DU1b1lMaz6A", "title": "Soulful Saxophone Jazz & Lounge to Fill Your Quiet Weekend Afternoon. Vol. 30", "thumb": "https://i.ytimg.com/vi/DU1b1lMaz6A/mqdefault.jpg", "dur": "3:03:21"}, {"id": "PWZx2Qk7OCA", "title": "[Smooth Operator] smooth jazz & neo-soul for creative flow. Vol. 29", "thumb": "https://i.ytimg.com/vi/PWZx2Qk7OCA/mqdefault.jpg", "dur": "3:05:04"}, {"id": "fH2ZUBrkV3s", "title": "[Smooth Operator] midsummer night's dream - lounge vibes for a nostalgic evening. Vol. 28", "thumb": "https://i.ytimg.com/vi/fH2ZUBrkV3s/mqdefault.jpg", "dur": "3:00:58"}, {"id": "vAl46KLz188", "title": "[Smooth Operator] Twilight Reverie - Cozy Sounds for an Evening Wind-Down. Vol. 27", "thumb": "https://i.ytimg.com/vi/vAl46KLz188/mqdefault.jpg", "dur": "3:03:57"}, {"id": "dSTZBctJZZw", "title": "[Smooth Operator] \"Fresh Start\" - Soft Lounge Vibes to Begin Your Week in Your Space. Vol. 26", "thumb": "https://i.ytimg.com/vi/dSTZBctJZZw/mqdefault.jpg", "dur": "3:01:50"}, {"id": "9ile3gm_NYE", "title": "[Smooth Operator] A smooth groove to fill your quiet weekend afternoon. Vol 25", "thumb": "https://i.ytimg.com/vi/9ile3gm_NYE/mqdefault.jpg", "dur": "3:01:57"}, {"id": "1ili-YlAfTo", "title": "[Smooth Operator] Saxophone & Groove to End the Day in Style. Vol. 24", "thumb": "https://i.ytimg.com/vi/1ili-YlAfTo/mqdefault.jpg", "dur": "3:10:07"}, {"id": "C9eqrmLSA4Y", "title": "[Smooth Operator] Your Space Overlooking the City of Golden Hour. Vol. 23", "thumb": "https://i.ytimg.com/vi/C9eqrmLSA4Y/mqdefault.jpg", "dur": "3:10:50"}, {"id": "ZSNbkH7FPpQ", "title": "[Smooth Operator] Cozy Lounge Chill – Relaxing Saxophone & Groove for Peaceful Nights. Vol. 22", "thumb": "https://i.ytimg.com/vi/ZSNbkH7FPpQ/mqdefault.jpg", "dur": "3:07:25"}, {"id": "g7AbP5jrp5Q", "title": "[Smooth Operator] Saxophone & Groove from the Riviera Coastline for Evening Reflections. Vol. 21", "thumb": "https://i.ytimg.com/vi/g7AbP5jrp5Q/mqdefault.jpg", "dur": "3:02:19"}, {"id": "UX06b-UEKvU", "title": "[Smooth Operator] Rhythmic Sounds to Turn Your Space into a Sunset Lounge. Vol. 20", "thumb": "https://i.ytimg.com/vi/UX06b-UEKvU/mqdefault.jpg", "dur": "3:09:12"}, {"id": "VXQoeAZZcIU", "title": "[Smooth Operator] Smooth and rhythmic sound for a quiet workspace. Vol. 19", "thumb": "https://i.ytimg.com/vi/VXQoeAZZcIU/mqdefault.jpg", "dur": "3:03:22"}, {"id": "_zd2zDREgOc", "title": "[Smooth Operator] Chillout Lounge Vibe for Night at Room or Rooftop, Vol. 18", "thumb": "https://i.ytimg.com/vi/_zd2zDREgOc/mqdefault.jpg", "dur": "3:02:56"}, {"id": "v3gODyshMs8", "title": "[Smooth Operator] Smooth Sax & Mellow Grooves for Easy Weekend Afternoons, Vol. 16", "thumb": "https://i.ytimg.com/vi/v3gODyshMs8/mqdefault.jpg", "dur": "3:10:24"}, {"id": "5mX94WisY5c", "title": "[Smooth Operator] The perfect playlist for a city night or solo road trip, Vol. 15", "thumb": "https://i.ytimg.com/vi/5mX94WisY5c/mqdefault.jpg", "dur": "1:15:19"}, {"id": "DU-kNq4IxhE", "title": "[Smooth Operator] Smooth saxophone lounge vibes for your sunset stroll in the city, Vol. 14", "thumb": "https://i.ytimg.com/vi/DU-kNq4IxhE/mqdefault.jpg", "dur": "3:06:25"}, {"id": "1nkzzsWTxdc", "title": "[Smooth Operator] Ending a good day with a groove that feels like the final scene of a film, Vol. 13", "thumb": "https://i.ytimg.com/vi/1nkzzsWTxdc/mqdefault.jpg", "dur": "3:01:14"}, {"id": "eo26H2JKYLY", "title": "[Smooth Operator] Groove for Your Special Space, As the City Night Deepens, Vol. 12", "thumb": "https://i.ytimg.com/vi/eo26H2JKYLY/mqdefault.jpg", "dur": "2:37:44"}, {"id": "d7UyqCG4pd0", "title": "[Smooth Operator] A smooth groove to enjoy a laid-back,chillout afternoon, Vol. 1", "thumb": "https://i.ytimg.com/vi/d7UyqCG4pd0/mqdefault.jpg", "dur": "3:03:12"}, {"id": "shxia7DPMFY", "title": "[Smooth Operator] A positive lounge vibe for a summer night, a dreamy day, Vol. 11", "thumb": "https://i.ytimg.com/vi/shxia7DPMFY/mqdefault.jpg", "dur": "3:03:46"}, {"id": "7jJceiPKa9s", "title": "[Smooth Operator] Soft lounge music for a pleasant afternoon, Vol. 10", "thumb": "https://i.ytimg.com/vi/7jJceiPKa9s/mqdefault.jpg", "dur": "50:26"}, {"id": "rEjn0lED3F0", "title": "[Smooth Operator]\"Your usual beer? Cool. I’ve got the music.\" Vol. 6", "thumb": "https://i.ytimg.com/vi/rEjn0lED3F0/mqdefault.jpg", "dur": "52:27"}, {"id": "S4iVJiLkT1I", "title": "[Smooth Operator] \"You drive, I’ve got the music\", Vol. 17", "thumb": "https://i.ytimg.com/vi/S4iVJiLkT1I/mqdefault.jpg", "dur": "46:16"}, {"id": "4HW_b5Tb0t4", "title": "[Smooth Operator] Lounge music to brighten your golden hour after a long day, Vol. 8", "thumb": "https://i.ytimg.com/vi/4HW_b5Tb0t4/mqdefault.jpg", "dur": "1:30:20"}, {"id": "Mz0llMRzfO0", "title": "[Smooth Operator] Soft lounge music for a pleasant afternoon, Vol. 4", "thumb": "https://i.ytimg.com/vi/Mz0llMRzfO0/mqdefault.jpg", "dur": "3:14:09"}, {"id": "I1AbZQm8zH4", "title": "[Smooth Operator] Sax and lounge music that shines the golden hour, Vol. 7", "thumb": "https://i.ytimg.com/vi/I1AbZQm8zH4/mqdefault.jpg", "dur": "3:26:35"}, {"id": "FbrFpRBTWvo", "title": "[Smooth Operator] Soft, groovy lounge music for a pleasant afternoon, Vol. 3", "thumb": "https://i.ytimg.com/vi/FbrFpRBTWvo/mqdefault.jpg", "dur": "3:02:15"}, {"id": "TtC4CTXRxv0", "title": "[Smooth Operator] Calm energy and positive, chillout lounge vibe. Vol. 2", "thumb": "https://i.ytimg.com/vi/TtC4CTXRxv0/mqdefault.jpg", "dur": "3:24:13"}, {"id": "VcnAcfb0vQA", "title": "[Smooth Operator] smooth music to suit your special space, Vol. 5", "thumb": "https://i.ytimg.com/vi/VcnAcfb0vQA/mqdefault.jpg", "dur": "2:57:36"}, {"id": "o5ixxbDQ3EA", "title": "[Smooth Space] Soft lounge music on a relaxing afternoon, Vol. 9", "thumb": "https://i.ytimg.com/vi/o5ixxbDQ3EA/mqdefault.jpg", "dur": "1:10:45"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

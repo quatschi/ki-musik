@@ -7,6 +7,7 @@
 <!-- categories: Latin Jazz, Bossa Nova -->
 <!-- channel-id: UCwPhw0cz3eI76TVF8xeDahQ -->
 <!-- channel-url: https://youtube.com/@wearebailanova -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=BAILA_NOVA.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "BAILA NOVA";
+const KANAL = "BAILA_NOVA.html";
 const VIDEOS = [{"id": "bfbcXDPRP2M", "title": "BAILA NOVA || Pra Machucar Meu Coração || Classic Brazilian Bossa Nova 🇧🇷", "thumb": "https://i.ytimg.com/vi/bfbcXDPRP2M/mqdefault.jpg", "dur": "4:09"}, {"id": "YsrTk8XWCBo", "title": "BAILA NOVA || PRA VIDA (Rogê Cover) 🇧🇷", "thumb": "https://i.ytimg.com/vi/YsrTk8XWCBo/mqdefault.jpg", "dur": "3:37"}, {"id": "j2ZmyBa6Cmk", "title": "BAILA NOVA || Besta é Tu (Novos Baianos cover) 🇧🇷❤️", "thumb": "https://i.ytimg.com/vi/j2ZmyBa6Cmk/mqdefault.jpg", "dur": "4:47"}, {"id": "onOo5MOKGmU", "title": "💛  Insensatez (How Insensitive) 💛  BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/onOo5MOKGmU/mqdefault.jpg", "dur": "3:52"}, {"id": "aJmsPwmss-k", "title": "💛 A FELICIDADE 💛  BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/aJmsPwmss-k/mqdefault.jpg", "dur": "5:27"}, {"id": "EA_pUg-WDx8", "title": "💛 GAROTA DE IPANEMA (The Girl From Ipanema) 💛  BAILA NOVA | Baila Nova Plays Jobim", "thumb": "https://i.ytimg.com/vi/EA_pUg-WDx8/mqdefault.jpg", "dur": "3:05"}, {"id": "XYtsVAe58h8", "title": "NEW ALBUM! Baila Nova Plays Jobim (Full Album Stream)", "thumb": "https://i.ytimg.com/vi/XYtsVAe58h8/mqdefault.jpg", "dur": "32:37"}, {"id": "8ZhveqyyhgA", "title": "💛 DESAFINADO 💛  BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/8ZhveqyyhgA/mqdefault.jpg", "dur": "5:01"}, {"id": "4vkOCAbjdKw", "title": "CORCOVADO - BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/4vkOCAbjdKw/mqdefault.jpg", "dur": "4:30"}, {"id": "VAlTCwgzL0E", "title": "AGUAS DE MARÇO - BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/VAlTCwgzL0E/mqdefault.jpg", "dur": "4:05"}, {"id": "qZFBj6x5cFY", "title": "BAILA NOVA | Live In Copenhagen | ❤️ FULL CONCERT ❤️ | Bossa Nova, Samba & more.", "thumb": "https://i.ytimg.com/vi/qZFBj6x5cFY/mqdefault.jpg", "dur": "51:24"}, {"id": "FQdx3tkolqs", "title": "CHEGA DE SAUDADE - BAILA NOVA | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/FQdx3tkolqs/mqdefault.jpg", "dur": "4:25"}, {"id": "zBvtgsIygKU", "title": "AGUA DE BEBER - BAILA NOVA  | Baila Nova Plays Jobim 🎙️ The New Recordings", "thumb": "https://i.ytimg.com/vi/zBvtgsIygKU/mqdefault.jpg", "dur": "4:12"}, {"id": "yTTGP121H7g", "title": "BAILA NOVA  🧡 Live From Strawhorse Studios + Behind The Scenes Footage 🧡  20 Minute Compilation", "thumb": "https://i.ytimg.com/vi/yTTGP121H7g/mqdefault.jpg", "dur": "22:42"}, {"id": "irtW_5NCvrQ", "title": "BAILA NOVA ❤️ Agora Ta | Elis Regina ❤️  (by Sérgio Natureza & Tunai)", "thumb": "https://i.ytimg.com/vi/irtW_5NCvrQ/mqdefault.jpg", "dur": "3:25"}, {"id": "118N9mSkglw", "title": "BAILA NOVA 🧡 Corrida De Jangada 🧡  Live from Strawhorse Studios (Elis Regina, by Edu Lobo & Capinan)", "thumb": "https://i.ytimg.com/vi/118N9mSkglw/mqdefault.jpg", "dur": "2:27"}, {"id": "jLL4t_0ZjyM", "title": "BAILA NOVA 🧡 Meu Nego 🧡 Live from Strawhorse Studios (Thievery Corporation cover)", "thumb": "https://i.ytimg.com/vi/jLL4t_0ZjyM/mqdefault.jpg", "dur": "4:38"}, {"id": "a2mwukNx6rI", "title": "BAILA NOVA 🧡 Va La Vida 🧡 Live from Strawhorse Studios (Baila Nova Original)", "thumb": "https://i.ytimg.com/vi/a2mwukNx6rI/mqdefault.jpg", "dur": "4:39"}, {"id": "3fUiH8C5aCs", "title": "BAILA NOVA 🧡 Bahia Com H 🧡 Live from Strawhorse Studios (Veloso, Gilberto Gil & João Gilberto)", "thumb": "https://i.ytimg.com/vi/3fUiH8C5aCs/mqdefault.jpg", "dur": "4:26"}, {"id": "0VzAfPjOSWw", "title": "BAILA NOVA  🧡  Girl From Ipanema (Garota de Ipanema)/Desafinado  🧡  (Antônio Carlos Jobim Cover)", "thumb": "https://i.ytimg.com/vi/0VzAfPjOSWw/mqdefault.jpg", "dur": "4:03"}, {"id": "qCQvl4_OZMw", "title": "Baila Nova ❄️ UNDER THE WINTER SKY ❄️ New original Christmas song 🎄", "thumb": "https://i.ytimg.com/vi/qCQvl4_OZMw/mqdefault.jpg", "dur": "3:04"}, {"id": "IK0orc5Pqn8", "title": "Baila Nova - C A F U N É (NEW ALBUM) Video Compilation ❤️", "thumb": "https://i.ytimg.com/vi/IK0orc5Pqn8/mqdefault.jpg", "dur": "34:24"}, {"id": "EXFv5ym3P0w", "title": "Baila Nova - QUANDO O OUTORO VEM (When Autumn Falls) (By Baila Nova) - Live In Copenhagen Series", "thumb": "https://i.ytimg.com/vi/EXFv5ym3P0w/mqdefault.jpg", "dur": "4:15"}, {"id": "-Uv0Xtx3yuQ", "title": "Baila Nova - THE COLLECTION VOL. 1 - THE VIDEOS BEHIND THE ALBUM (Bossa Nova & Samba)", "thumb": "https://i.ytimg.com/vi/-Uv0Xtx3yuQ/mqdefault.jpg", "dur": "46:02"}, {"id": "L-ZlnF-dES8", "title": "Baila Nova - SAMBA DE ORFEU (Luiz Bonfá and Antônio Maria) - Live In Copenhagen Series", "thumb": "https://i.ytimg.com/vi/L-ZlnF-dES8/mqdefault.jpg", "dur": "4:10"}, {"id": "aSAqFsuNhzs", "title": "Baila Nova - Samba Do Grande Amor - From The Living Room", "thumb": "https://i.ytimg.com/vi/aSAqFsuNhzs/mqdefault.jpg", "dur": "4:05"}, {"id": "4cjnjiBvaCE", "title": "Baila Nova - Mas Que Nada - Live In Copenhagen Series", "thumb": "https://i.ytimg.com/vi/4cjnjiBvaCE/mqdefault.jpg", "dur": "6:00"}, {"id": "lUgA7lS-PUc", "title": "Baila Nova - Samba De Uma Nota Só (One Note Samba) by Antônio Carlos Jobim & Newton Mendonça", "thumb": "https://i.ytimg.com/vi/lUgA7lS-PUc/mqdefault.jpg", "dur": "3:46"}, {"id": "EVsmaohIMbI", "title": "Baila Nova 🇩🇰 DK SUMMER TOUR 2023 🇩🇰  Behind the scenes tour footage 🚐💨", "thumb": "https://i.ytimg.com/vi/EVsmaohIMbI/mqdefault.jpg", "dur": "4:00"}, {"id": "74wDznCyu78", "title": "Baila Nova | SUMMER VIBES Compilation | ☀️⛱️ 40 min of Bossa Nova & Samba and more 🥰☀️", "thumb": "https://i.ytimg.com/vi/74wDznCyu78/mqdefault.jpg", "dur": "40:02"}, {"id": "widl6jzAEdE", "title": "Baila Nova - Corcovado (by Antônio Carlos Jobim) - Live In Copenhagen Series", "thumb": "https://i.ytimg.com/vi/widl6jzAEdE/mqdefault.jpg", "dur": "5:35"}, {"id": "esc2Q2ytYLI", "title": "Baila Nova - Canto De Ossanha (by Baden Powell and Vinicius de Moraes) - Live In Copenhagen", "thumb": "https://i.ytimg.com/vi/esc2Q2ytYLI/mqdefault.jpg", "dur": "5:59"}, {"id": "pHQvFrQixr4", "title": "Baila Nova - The Coração Vagabundo Album Compilation | 🩵 35 min of Bossa Nova & Samba 🩵", "thumb": "https://i.ytimg.com/vi/pHQvFrQixr4/mqdefault.jpg", "dur": "36:57"}, {"id": "fr_PT-f6WWE", "title": "Baila Nova - Carinhoso by Pixinguinha (feat. Nacho de Olivar)", "thumb": "https://i.ytimg.com/vi/fr_PT-f6WWE/mqdefault.jpg", "dur": "2:09"}, {"id": "X8SIppXU5EU", "title": "We are BAILA NOVA ~An Introduction~", "thumb": "https://i.ytimg.com/vi/X8SIppXU5EU/mqdefault.jpg", "dur": "3:01"}, {"id": "e3lfdsdERxE", "title": "Baila Nova - O Grande Amor (Antônio Carlos Jobim and Vinícius de Moraes)", "thumb": "https://i.ytimg.com/vi/e3lfdsdERxE/mqdefault.jpg", "dur": "4:06"}, {"id": "dDaS3Xniu2E", "title": "Baila Nova - Brigas Nunca Mais (Antônio Carlos Jobim and Vinícius de Moraes)", "thumb": "https://i.ytimg.com/vi/dDaS3Xniu2E/mqdefault.jpg", "dur": "3:19"}, {"id": "JaqVpLvTCsI", "title": "Baila Nova - Tuyo (by Rodrigo Amarante) - Live In Copenhagen", "thumb": "https://i.ytimg.com/vi/JaqVpLvTCsI/mqdefault.jpg", "dur": "3:31"}, {"id": "KvB-W2oFeXE", "title": "Baila Nova 💛 Desafinado Mix Tape 💛 30 minute compilation of Bossa Nova videos", "thumb": "https://i.ytimg.com/vi/KvB-W2oFeXE/mqdefault.jpg", "dur": "30:45"}, {"id": "JTIcnlF7D58", "title": "Baila Nova - A Bossa Nova Christmas 🎄 10 Minute Compilation 🧑‍🎄❤️", "thumb": "https://i.ytimg.com/vi/JTIcnlF7D58/mqdefault.jpg", "dur": "9:07"}, {"id": "ru0xkI4nPIc", "title": "Baila Nova - Fotografia (by Antônio Carlos Jobim) - Live In Copenhagen", "thumb": "https://i.ytimg.com/vi/ru0xkI4nPIc/mqdefault.jpg", "dur": "4:07"}, {"id": "tQd2m4w6OyU", "title": "Baila Nova plays Bossa Nova - 30 Minute Compilation  🇧🇷 ❤️ 🇧🇷  (Black Orpheus, Summer Samba & more)", "thumb": "https://i.ytimg.com/vi/tQd2m4w6OyU/mqdefault.jpg", "dur": "28:23"}, {"id": "MxyNDXYByc0", "title": "Baila Nova - Pais Tropical (Jorge Ben) - Live In Copenhagen (#3 in concert series)", "thumb": "https://i.ytimg.com/vi/MxyNDXYByc0/mqdefault.jpg", "dur": "5:00"}, {"id": "Gn2XsLG-KPg", "title": "Baila Nova plays Jobim - 40 Minute Compilation of Tom Jobim songs (& one by Djavan) ❤️", "thumb": "https://i.ytimg.com/vi/Gn2XsLG-KPg/mqdefault.jpg", "dur": "40:50"}, {"id": "Oi64lzq2OrI", "title": "Baila Nova - Dance Me to the End of Love - Live In Copenhagen (#2 series in concert series)", "thumb": "https://i.ytimg.com/vi/Oi64lzq2OrI/mqdefault.jpg", "dur": "6:05"}, {"id": "uhNfxF9B99g", "title": "Baila Nova - Upa Neguinho - Live In Copenhagen (Video #1 in concert series)", "thumb": "https://i.ytimg.com/vi/uhNfxF9B99g/mqdefault.jpg", "dur": "4:00"}, {"id": "GrTkTJiKVFE", "title": "É Bom Sonhar - Roberto Menescal, Luiz Simas, Wesley Amorim & Baila Nova (Song by Simas & Menescal)", "thumb": "https://i.ytimg.com/vi/GrTkTJiKVFE/mqdefault.jpg", "dur": "5:23"}, {"id": "CcZhun9aSaw", "title": "30 Minutes of Baila Nova 🇧🇷💃🏽 UPBEAT & DANCY🕺🏽🇧🇷 Samba & Bossa Nova", "thumb": "https://i.ytimg.com/vi/CcZhun9aSaw/mqdefault.jpg", "dur": "30:26"}, {"id": "TFqLKOLkCL8", "title": "Baila Nova ✨ Living Room Sessions ✨ (15 minute Compilation) Bossa Nova", "thumb": "https://i.ytimg.com/vi/TFqLKOLkCL8/mqdefault.jpg", "dur": "11:15"}, {"id": "VQgbRQlNhNw", "title": "Baila Nova - O Pato 🦆❤️ (Jaime Silva & Neuza Teixeira)", "thumb": "https://i.ytimg.com/vi/VQgbRQlNhNw/mqdefault.jpg", "dur": "2:28"}, {"id": "jBxlTw-j8Jw", "title": "Baila Nova - 30 minutes of BAILA NOVA videos ⭐️ BAILA NOVA POP Compilation ⭐️", "thumb": "https://i.ytimg.com/vi/jBxlTw-j8Jw/mqdefault.jpg", "dur": "26:38"}, {"id": "xieF1CyamhY", "title": "Baila Nova 💜 Mellow Bossa Nova Vibes 💜  30 minutes compilation (Black Orpheus, Summer Samba & more)", "thumb": "https://i.ytimg.com/vi/xieF1CyamhY/mqdefault.jpg", "dur": "28:45"}, {"id": "e3lzHsVqSDE", "title": "Baila Nova - Samba De Orly (Chico Buarque, Vinícius de Moraes & Toquinho)", "thumb": "https://i.ytimg.com/vi/e3lzHsVqSDE/mqdefault.jpg", "dur": "2:51"}, {"id": "80hR9lAjhaE", "title": "Baila Nova - Aquarela (Toquinho)", "thumb": "https://i.ytimg.com/vi/80hR9lAjhaE/mqdefault.jpg", "dur": "3:42"}, {"id": "eO-ToGt2eT8", "title": "Baila Nova - Vivo Sonhando (Antônio Carlos Jobim)", "thumb": "https://i.ytimg.com/vi/eO-ToGt2eT8/mqdefault.jpg", "dur": "4:21"}, {"id": "k0q7cDZ8QDY", "title": "Baila Nova - Coraçao Vagabundo - Full Album #7", "thumb": "https://i.ytimg.com/vi/k0q7cDZ8QDY/mqdefault.jpg", "dur": "36:39"}, {"id": "lwdS4gaF5-c", "title": "Baila Nova - Pais Tropical (Jorge Ben Jor)", "thumb": "https://i.ytimg.com/vi/lwdS4gaF5-c/mqdefault.jpg", "dur": "4:19"}, {"id": "LLwNFSquTVM", "title": "Baila Nova - As It Was (Harry Styles)", "thumb": "https://i.ytimg.com/vi/LLwNFSquTVM/mqdefault.jpg", "dur": "2:50"}, {"id": "fKXdY4_PreE", "title": "Baila Nova - O Telefone Tocou Novamente (Jorge Ben Jor)", "thumb": "https://i.ytimg.com/vi/fKXdY4_PreE/mqdefault.jpg", "dur": "4:14"}, {"id": "Y9bKEBVkox8", "title": "Baila Nova - Billie Bossa Nova (Billie Eilish cover)", "thumb": "https://i.ytimg.com/vi/Y9bKEBVkox8/mqdefault.jpg", "dur": "3:22"}, {"id": "umFwF6lN8_k", "title": "Baila Nova - Tim Tim Por Tim Tim (Geraldo Jaques and Haroldo Barboso)", "thumb": "https://i.ytimg.com/vi/umFwF6lN8_k/mqdefault.jpg", "dur": "4:28"}, {"id": "Xh-MfKM3ks8", "title": "Baila Nova - Paula E Bebeto - Quarantine Series #29", "thumb": "https://i.ytimg.com/vi/Xh-MfKM3ks8/mqdefault.jpg", "dur": "3:25"}, {"id": "oyF2C6o1aL4", "title": "Baila Nova - NOVA-POP - Full Album #6", "thumb": "https://i.ytimg.com/vi/oyF2C6o1aL4/mqdefault.jpg", "dur": "36:44"}, {"id": "QBelrMU_ejE", "title": "Baila Nova - Mad World (Tears For Fears)", "thumb": "https://i.ytimg.com/vi/QBelrMU_ejE/mqdefault.jpg", "dur": "4:11"}, {"id": "IMXDODog1TY", "title": "Baila Nova - Lovesong (The Cure)", "thumb": "https://i.ytimg.com/vi/IMXDODog1TY/mqdefault.jpg", "dur": "3:38"}, {"id": "duNIgfdWTxY", "title": "Baila Nova - Let It Happen (Tame Impala)", "thumb": "https://i.ytimg.com/vi/duNIgfdWTxY/mqdefault.jpg", "dur": "4:16"}, {"id": "hnjfIxo-QPQ", "title": "Live from Joshua Tree chat", "thumb": "https://i.ytimg.com/vi/hnjfIxo-QPQ/mqdefault.jpg", "dur": "41:59"}, {"id": "-1szGfqIZbc", "title": "Baila Nova - The Man Who Sold The World (David Bowie)", "thumb": "https://i.ytimg.com/vi/-1szGfqIZbc/mqdefault.jpg", "dur": "3:36"}, {"id": "Yg9vsibh7MU", "title": "Baila Nova - Dance Me to the End of Love (by Leonard Cohen)", "thumb": "https://i.ytimg.com/vi/Yg9vsibh7MU/mqdefault.jpg", "dur": "5:21"}, {"id": "GBuv_myEf7M", "title": "Baila Nova - Chove Chuva (by Jorge Ben Jor)", "thumb": "https://i.ytimg.com/vi/GBuv_myEf7M/mqdefault.jpg", "dur": "3:11"}, {"id": "m74EY50-g80", "title": "Baila Nova - Coração Vagabundo (by Caetano Veloso )", "thumb": "https://i.ytimg.com/vi/m74EY50-g80/mqdefault.jpg", "dur": "3:30"}, {"id": "rJwi9LQ4Bhg", "title": "Baila Nova - Bim Bom (João Gilberto)", "thumb": "https://i.ytimg.com/vi/rJwi9LQ4Bhg/mqdefault.jpg", "dur": "2:21"}, {"id": "hMjpHiGzAOQ", "title": "Baila Nova - Quarantine Series Vol. 2 - Full Album #5 (Audio only)", "thumb": "https://i.ytimg.com/vi/hMjpHiGzAOQ/mqdefault.jpg", "dur": "43:51"}, {"id": "83K-3e2SxzU", "title": "Baila Nova - Behind The Scenes - Recording \"Por Causa De Você, Menina\"", "thumb": "https://i.ytimg.com/vi/83K-3e2SxzU/mqdefault.jpg", "dur": "23:53"}, {"id": "-QnFoKbV8A0", "title": "Baila Nova - Senhorinha || From The Living Room", "thumb": "https://i.ytimg.com/vi/-QnFoKbV8A0/mqdefault.jpg", "dur": "2:45"}, {"id": "g8TNCxjSo0k", "title": "Ask Baila Nova - 2021 Interview (Questions from you our fans)", "thumb": "https://i.ytimg.com/vi/g8TNCxjSo0k/mqdefault.jpg", "dur": "27:34"}, {"id": "skOjoEGEvaI", "title": "Baila Nova - Você - ft. Roberto Menescal", "thumb": "https://i.ytimg.com/vi/skOjoEGEvaI/mqdefault.jpg", "dur": "3:49"}, {"id": "NoLxk5nHXlg", "title": "NOVA Altogether!", "thumb": "https://i.ytimg.com/vi/NoLxk5nHXlg/mqdefault.jpg", "dur": "14:36"}, {"id": "l9_qymUm_6w", "title": "Baila Nova - Samba Da Minha Terra || From The Living Room", "thumb": "https://i.ytimg.com/vi/l9_qymUm_6w/mqdefault.jpg", "dur": "2:46"}, {"id": "aZ-h9FcFLpo", "title": "Baila Nova - Augusta, Angélica e Consolação", "thumb": "https://i.ytimg.com/vi/aZ-h9FcFLpo/mqdefault.jpg", "dur": "3:48"}, {"id": "kmOVPxsEFHY", "title": "Baila Nova - Por Causa De Você, Menina", "thumb": "https://i.ytimg.com/vi/kmOVPxsEFHY/mqdefault.jpg", "dur": "4:29"}, {"id": "eDgG_yDxDno", "title": "Baila Nova - You're Everything (Chick Corea tribute) - Quarantine Series #20", "thumb": "https://i.ytimg.com/vi/eDgG_yDxDno/mqdefault.jpg", "dur": "4:03"}, {"id": "dWLOO9-2nlM", "title": "Baila Nova - Samba Da Benção - (Bossa Nova Classics) Quarantine Series #19", "thumb": "https://i.ytimg.com/vi/dWLOO9-2nlM/mqdefault.jpg", "dur": "3:57"}, {"id": "PbMeoQBsYms", "title": "Baila Nova - O Morro Nao Tem Vez (Favela) - (Bossa Nova Classics)", "thumb": "https://i.ytimg.com/vi/PbMeoQBsYms/mqdefault.jpg", "dur": "3:51"}, {"id": "ycAk3OM8h8g", "title": "Baila Nova - O Barquinho (by Roberto Menescal and Ronaldo Bôscoli)", "thumb": "https://i.ytimg.com/vi/ycAk3OM8h8g/mqdefault.jpg", "dur": "3:28"}, {"id": "RQnisstMxQk", "title": "Baila Nova - Samba de Orfeu - (Bossa Nova Classics)", "thumb": "https://i.ytimg.com/vi/RQnisstMxQk/mqdefault.jpg", "dur": "4:10"}, {"id": "pm3zaDcJ34E", "title": "Baila Nova - (Bossa Nova Classics) Quarantine Series Vol. 1 - Full Album #4 (Audio only)", "thumb": "https://i.ytimg.com/vi/pm3zaDcJ34E/mqdefault.jpg", "dur": "40:41"}, {"id": "bqKh3eu6fBs", "title": "Baila Nova - Deck The Halls", "thumb": "https://i.ytimg.com/vi/bqKh3eu6fBs/mqdefault.jpg", "dur": "2:58"}, {"id": "5vZ0GV3Dquk", "title": "Baila Nova - A Bossa Nova Christmas - Full Album #3 - (audio only)", "thumb": "https://i.ytimg.com/vi/5vZ0GV3Dquk/mqdefault.jpg", "dur": "30:43"}, {"id": "F8A-BezgZHY", "title": "Baila Nova - Samba de Verão (Summer Samba) - (Bossa Nova Classics)", "thumb": "https://i.ytimg.com/vi/F8A-BezgZHY/mqdefault.jpg", "dur": "3:38"}, {"id": "eSzRfQ1xMKo", "title": "L & T Recording Samba de Verão (Summer Samba) - Behind the scenes footage", "thumb": "https://i.ytimg.com/vi/eSzRfQ1xMKo/mqdefault.jpg", "dur": "6:28"}, {"id": "Wx1i7hpWN-s", "title": "Baila Nova - Tico Tico (Zequinha de Abreu)", "thumb": "https://i.ytimg.com/vi/Wx1i7hpWN-s/mqdefault.jpg", "dur": "2:26"}, {"id": "nEYCc8vZtNE", "title": "Baila Nova - Black Orpheus (Luiz Bonfa) - (Bossa Nova Classics) Quarantine Series #13", "thumb": "https://i.ytimg.com/vi/nEYCc8vZtNE/mqdefault.jpg", "dur": "4:48"}, {"id": "wGremQGxkSI", "title": "Baila Nova - You Don't Know What Love Is - Quarantine Series #12", "thumb": "https://i.ytimg.com/vi/wGremQGxkSI/mqdefault.jpg", "dur": "5:58"}, {"id": "RiFr6BFqtmg", "title": "Baila Nova - Samba Em Preludio - Baden Powell/Vinicius de Moraes - Quarantine Series #11", "thumb": "https://i.ytimg.com/vi/RiFr6BFqtmg/mqdefault.jpg", "dur": "5:04"}, {"id": "79nua_-JA6I", "title": "Baila Nova - Tarde Em Itapoã (Vinicius de Moraes / Toquinho) - Quarantine Series #10", "thumb": "https://i.ytimg.com/vi/79nua_-JA6I/mqdefault.jpg", "dur": "5:14"}, {"id": "hjycMqRtA8c", "title": "Baila Nova - Aquarela Do Brasil (Ary Barroso) - Quarantine Series #9", "thumb": "https://i.ytimg.com/vi/hjycMqRtA8c/mqdefault.jpg", "dur": "4:44"}, {"id": "ATllhcIG_Jc", "title": "Baila Nova - Garota De Ipanema (Girl From Ipanema) -  No BASS play-along with chart", "thumb": "https://i.ytimg.com/vi/ATllhcIG_Jc/mqdefault.jpg", "dur": "5:14"}, {"id": "fhO1JbMZWvc", "title": "Baila Nova - Garota De Ipanema (Girl From Ipanema) - No drums play-along with chart", "thumb": "https://i.ytimg.com/vi/fhO1JbMZWvc/mqdefault.jpg", "dur": "5:14"}, {"id": "BPebU4fgRYk", "title": "Baila Nova - Garota De Ipanema (Girl From Ipanema) -  No guitar play-along with chart", "thumb": "https://i.ytimg.com/vi/BPebU4fgRYk/mqdefault.jpg", "dur": "5:14"}, {"id": "mCEm-7D079c", "title": "Baila Nova - Garota De Ipanema (Girl From Ipanema) - No vocals sing-along with chart (Karaoke)", "thumb": "https://i.ytimg.com/vi/mCEm-7D079c/mqdefault.jpg", "dur": "5:14"}, {"id": "FexUkFemKC8", "title": "Baila Nova - Mas Que Nada - Trio live @ Pali Wine Co.", "thumb": "https://i.ytimg.com/vi/FexUkFemKC8/mqdefault.jpg", "dur": "4:44"}, {"id": "bjFfuoXrcy0", "title": "Baila Nova - Desafinado - No vocals sing-along with chart (Karaoke)", "thumb": "https://i.ytimg.com/vi/bjFfuoXrcy0/mqdefault.jpg", "dur": "8:04"}, {"id": "bR_AX8uwjhk", "title": "Baila Nova - Desafinado - No guitar play-along with chart", "thumb": "https://i.ytimg.com/vi/bR_AX8uwjhk/mqdefault.jpg", "dur": "8:04"}, {"id": "_c8AYZ52CDs", "title": "Baila Nova - Desafinado - No drums play-along with chart", "thumb": "https://i.ytimg.com/vi/_c8AYZ52CDs/mqdefault.jpg", "dur": "8:04"}, {"id": "oz8mG_l6l8E", "title": "Baila Nova - Desafinado - No bass play-along with chart", "thumb": "https://i.ytimg.com/vi/oz8mG_l6l8E/mqdefault.jpg", "dur": "8:03"}, {"id": "olizy4DCyDQ", "title": "Baila Nova - Tristeza || From The Living Room", "thumb": "https://i.ytimg.com/vi/olizy4DCyDQ/mqdefault.jpg", "dur": "4:34"}, {"id": "5NAgipPZfHg", "title": "Baila Nova - The NOVA Collection Vol. 2 - Full album #2 (Bossa Nova & Samba)", "thumb": "https://i.ytimg.com/vi/5NAgipPZfHg/mqdefault.jpg", "dur": "44:37"}, {"id": "oSrz5LOOo3Q", "title": "Baila Nova - Eu Sei Que Vou Te Amar - From the Living Room", "thumb": "https://i.ytimg.com/vi/oSrz5LOOo3Q/mqdefault.jpg", "dur": "4:24"}, {"id": "p6yMZGyIdmI", "title": "Baila Nova - Flor de Lis - Trio live @ Pali Wine Co.", "thumb": "https://i.ytimg.com/vi/p6yMZGyIdmI/mqdefault.jpg", "dur": "4:30"}, {"id": "gs9Wb7i_Fz0", "title": "Baila Nova - The NOVA Collection Vol. 1 - Full album #1 (Bossa Nova & Samba)", "thumb": "https://i.ytimg.com/vi/gs9Wb7i_Fz0/mqdefault.jpg", "dur": "45:18"}, {"id": "ZMLzjX1jkzs", "title": "Baila Nova - Upa Neguinho (Edu Lobo and Gianfrancesco Guarnieri) - Quarantine Series #6", "thumb": "https://i.ytimg.com/vi/ZMLzjX1jkzs/mqdefault.jpg", "dur": "2:51"}, {"id": "CSuPK2ZEJws", "title": "Baila Nova - Once I Loved - Quarantine Series #5", "thumb": "https://i.ytimg.com/vi/CSuPK2ZEJws/mqdefault.jpg", "dur": "5:50"}, {"id": "w6rao4QXRew", "title": "Baila Nova - Só Danço Samba (Jobim) - Trio live @ Pali Wine Co.", "thumb": "https://i.ytimg.com/vi/w6rao4QXRew/mqdefault.jpg", "dur": "3:34"}, {"id": "dCe173UGoHw", "title": "Baila Nova - Tuyo (From Narcos) (Rodrigo Amarante) - Quarantine Series #4", "thumb": "https://i.ytimg.com/vi/dCe173UGoHw/mqdefault.jpg", "dur": "3:24"}, {"id": "wl6NVR88kgQ", "title": "Baila Nova - Corcovado (Jobim) - Quarantine Series #3", "thumb": "https://i.ytimg.com/vi/wl6NVR88kgQ/mqdefault.jpg", "dur": "5:25"}, {"id": "SUTGAIJ17PY", "title": "Baila Nova - Desafinado - Trio live @ Pali Wine Co., Los Angeles, CA", "thumb": "https://i.ytimg.com/vi/SUTGAIJ17PY/mqdefault.jpg", "dur": "5:22"}, {"id": "C4gO_oTGiPQ", "title": "Baila Nova - Berimbau (Powell & Moraes) - Quarantine Series #2", "thumb": "https://i.ytimg.com/vi/C4gO_oTGiPQ/mqdefault.jpg", "dur": "3:05"}, {"id": "pHm53TVPrp8", "title": "Baila Nova - Fotografia (Jobim) - Bass & vocals duo - Quarantine Series #1", "thumb": "https://i.ytimg.com/vi/pHm53TVPrp8/mqdefault.jpg", "dur": "3:25"}, {"id": "9rYVa3Gtf6Q", "title": "Baila Nova - Agua de Beber - Trio live @ Pali Wine Co., Los Angeles, CA", "thumb": "https://i.ytimg.com/vi/9rYVa3Gtf6Q/mqdefault.jpg", "dur": "5:11"}, {"id": "VCDvQqBn2NM", "title": "Baila Nova - Wave - Trio live @ Pali Wine Co., Los Angeles, CA", "thumb": "https://i.ytimg.com/vi/VCDvQqBn2NM/mqdefault.jpg", "dur": "5:11"}, {"id": "qSGVKCc31mE", "title": "Baila Nova - Chega De Saudade (No More Blues) - Trio live @ Pali Wine Co., Los Angeles, CA", "thumb": "https://i.ytimg.com/vi/qSGVKCc31mE/mqdefault.jpg", "dur": "4:44"}, {"id": "Io6hRx21eaw", "title": "Baila Nova - Samba de Uma Nota Só (One Note Samba) - Trio live @ Pali Wine Co., Los Angeles, CA", "thumb": "https://i.ytimg.com/vi/Io6hRx21eaw/mqdefault.jpg", "dur": "4:34"}, {"id": "LEqw7PfHMVU", "title": "Baila Nova - Mas Que Nada - (Jorge Ben Jor)", "thumb": "https://i.ytimg.com/vi/LEqw7PfHMVU/mqdefault.jpg", "dur": "4:16"}, {"id": "AcdnJB9MbIY", "title": "Baila Nova - Jobim's Corcovado (Duo version)", "thumb": "https://i.ytimg.com/vi/AcdnJB9MbIY/mqdefault.jpg", "dur": "4:23"}, {"id": "5JuwO4e6Uv8", "title": "Baila Nova - Canto de Ossanha (Baden Powel & Vinicius De Moraes)", "thumb": "https://i.ytimg.com/vi/5JuwO4e6Uv8/mqdefault.jpg", "dur": "5:23"}, {"id": "a5saXM_m7ug", "title": "Baila Nova - Quando O Outono Vem (When Autumn Falls)", "thumb": "https://i.ytimg.com/vi/a5saXM_m7ug/mqdefault.jpg", "dur": "3:06"}, {"id": "TF6ULsGzGUE", "title": "Baila Nova - Karma Police (Radiohead)", "thumb": "https://i.ytimg.com/vi/TF6ULsGzGUE/mqdefault.jpg", "dur": "4:01"}, {"id": "5ppmTFXA30s", "title": "Baila Nova - Insensatez (How Insensitive) - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/5ppmTFXA30s/mqdefault.jpg", "dur": "3:55"}, {"id": "ZKAM1Jr_4ik", "title": "Baila Nova - Até Você Voltar", "thumb": "https://i.ytimg.com/vi/ZKAM1Jr_4ik/mqdefault.jpg", "dur": "4:46"}, {"id": "9QdYW0IjrEk", "title": "Baila Nova - A Felicidade (Antônio Carlos Jobim & Moraes)", "thumb": "https://i.ytimg.com/vi/9QdYW0IjrEk/mqdefault.jpg", "dur": "5:16"}, {"id": "1Rhq53sCfRU", "title": "DESAFINADO - Baila Nova (by Antônio Carlos Jobim & N. Mendonça)", "thumb": "https://i.ytimg.com/vi/1Rhq53sCfRU/mqdefault.jpg", "dur": "8:07"}, {"id": "zCAH2r-nf5k", "title": "Baila Nova - Frosty The Snowman - [Official Video]", "thumb": "https://i.ytimg.com/vi/zCAH2r-nf5k/mqdefault.jpg", "dur": "2:10"}, {"id": "0WhoiT5DnMc", "title": "Baila Nova - Christmas Time Is Here (Ft. Giulio Carmassi) [Official HD]", "thumb": "https://i.ytimg.com/vi/0WhoiT5DnMc/mqdefault.jpg", "dur": "3:17"}, {"id": "tBkiARZ_gzE", "title": "Baila Nova - Have Yourself A Merry Little Christmas [Official HD]", "thumb": "https://i.ytimg.com/vi/tBkiARZ_gzE/mqdefault.jpg", "dur": "3:27"}, {"id": "t4gSUrzxfis", "title": "Baila Nova - Viver Mais Uma Vez", "thumb": "https://i.ytimg.com/vi/t4gSUrzxfis/mqdefault.jpg", "dur": "4:39"}, {"id": "XPtUq_C4xlg", "title": "Baila Nova - Águas de Março - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/XPtUq_C4xlg/mqdefault.jpg", "dur": "3:54"}, {"id": "0mL8lVz0x7E", "title": "Baila Nova - Estate || From The Living Room", "thumb": "https://i.ytimg.com/vi/0mL8lVz0x7E/mqdefault.jpg", "dur": "5:53"}, {"id": "-LsIQZhz8c8", "title": "Baila Nova - Garota De Ipanema (Girl From Ipanema) Jobim/Moraes", "thumb": "https://i.ytimg.com/vi/-LsIQZhz8c8/mqdefault.jpg", "dur": "5:05"}, {"id": "A7vLIlkSYEI", "title": "Baila Nova - Flor De Lis - (Djavan)", "thumb": "https://i.ytimg.com/vi/A7vLIlkSYEI/mqdefault.jpg", "dur": "5:12"}, {"id": "SZFza__l-5s", "title": "Baila Nova - Chega de Saudade - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/SZFza__l-5s/mqdefault.jpg", "dur": "5:28"}, {"id": "TBHQ-CJLPi4", "title": "Baila Nova - Wave - Antonio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/TBHQ-CJLPi4/mqdefault.jpg", "dur": "4:47"}, {"id": "Bj0ZMmHCr2Y", "title": "Baila Nova - Berimbau - Powell & Moraes", "thumb": "https://i.ytimg.com/vi/Bj0ZMmHCr2Y/mqdefault.jpg", "dur": "2:53"}, {"id": "orAyb6GGO3A", "title": "Baila Nova - Agua de Beber (Water to Drink) - Antonio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/orAyb6GGO3A/mqdefault.jpg", "dur": "3:59"}, {"id": "NYpotVA-xWE", "title": "Baila Nova - Meditação (Meditation) - Antonio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/NYpotVA-xWE/mqdefault.jpg", "dur": "4:13"}, {"id": "hD7kaMkvo0U", "title": "Baila Nova - Dindi - Antonio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/hD7kaMkvo0U/mqdefault.jpg", "dur": "5:20"}, {"id": "D6BOY5iCiOQ", "title": "Baila Nova - Insensatez (How Insensitive) - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/D6BOY5iCiOQ/mqdefault.jpg", "dur": "3:42"}, {"id": "bI7DT0xUsvA", "title": "Baila Nova - Samba De Uma Nota Só (One Note Samba) - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/bI7DT0xUsvA/mqdefault.jpg", "dur": "2:17"}, {"id": "FolEno814Gk", "title": "Baila Nova - Desafinado - Jobim & Mendonça", "thumb": "https://i.ytimg.com/vi/FolEno814Gk/mqdefault.jpg", "dur": "4:11"}, {"id": "fFwRP2OH7Tk", "title": "Baila Nova - Triste - Antônio Carlos Jobim", "thumb": "https://i.ytimg.com/vi/fFwRP2OH7Tk/mqdefault.jpg", "dur": "2:38"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>

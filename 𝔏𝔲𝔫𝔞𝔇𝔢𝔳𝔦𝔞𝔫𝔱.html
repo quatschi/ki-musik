@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCKDS9ZW7XxCYJFxY5fyKZ3g -->
 <!-- channel-url: https://www.youtube.com/@lunadeviant -->
+<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,36 +31,18 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
-  .status-err { color: #eb5757; }
-  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
-  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
-  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
-  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
-  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
-  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
-  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
-  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
-
-<div class="token-overlay" id="token-overlay">
-  <div class="token-box">
-    <h2>🔑 GitHub Token eingeben</h2>
-    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
-    <input type="password" id="token-input" placeholder="github_pat_...">
-    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
-  </div>
-</div>
-
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=𝔏𝔲𝔫𝔞𝔇𝔢𝔳𝔦𝔞𝔫𝔱.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -76,59 +59,21 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
-const GITHUB_USER = 'quatschi';
-const GITHUB_REPO = 'ki-musik';
-const GITHUB_FILE = 'noten.json';
 const CHANNEL = "\ud835\udd0f\ud835\udd32\ud835\udd2b\ud835\udd1e\ud835\udd07\ud835\udd22\ud835\udd33\ud835\udd26\ud835\udd1e\ud835\udd2b\ud835\udd31";
+const KANAL = "\ud835\udd0f\ud835\udd32\ud835\udd2b\ud835\udd1e\ud835\udd07\ud835\udd22\ud835\udd33\ud835\udd26\ud835\udd1e\ud835\udd2b\ud835\udd31.html";
 const VIDEOS = [{"id": "T_DUCRmKNIw", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 이어폰 꽂는 순간 여기가 바로 극락 🕉️The moment you plug in, this is Nirvana｜Afrobeat hip hop", "thumb": "https://i.ytimg.com/vi/T_DUCRmKNIw/mqdefault.jpg", "dur": "3:00"}, {"id": "_Dy-jb2kmsc", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 이어폰 꽂는 순간 여기가 바로 극락 🕉️🪷The moment you plug in, this is Nirvana｜Afrobeat hip hop 1h", "thumb": "https://i.ytimg.com/vi/_Dy-jb2kmsc/mqdefault.jpg", "dur": "1:01:20"}, {"id": "ENJd7DwaG1s", "title": "💘Love Me Back - 그만 놀리고 내 손 잡아줘! 보사노바 팝송｜bossanova pop song", "thumb": "https://i.ytimg.com/vi/ENJd7DwaG1s/mqdefault.jpg", "dur": "3:00"}, {"id": "wy0t5cXpBQo", "title": "🏊🏾‍♀️Deep Dive - 밤새 너라는 바다에 갇혀서 ｜Trapped in the Sea of You All Night R&B Pop Song", "thumb": "https://i.ytimg.com/vi/wy0t5cXpBQo/mqdefault.jpg", "dur": "3:00"}, {"id": "fwA48UUtj9g", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 집 앞이야, 재즈듣게 나와 🎷｜At your door, come out for some jazz.｜jazz hip hop", "thumb": "https://i.ytimg.com/vi/fwA48UUtj9g/mqdefault.jpg", "dur": "1:30:49"}, {"id": "odRKNzEQPEQ", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 중티(Chinese Tea) 말고 중독 재즈 플리 2h👲🍵 | Beyond the Tea, Pure Addiction Jazz & Trip hop", "thumb": "https://i.ytimg.com/vi/odRKNzEQPEQ/mqdefault.jpg", "dur": "2:10:02"}, {"id": "meygqHfjCGc", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕]중티(Chinese Tea) 말고 중독(Addiction)플리| Beyond the Tea, Pure Addiction Jazz & Trip hop", "thumb": "https://i.ytimg.com/vi/meygqHfjCGc/mqdefault.jpg", "dur": "3:00"}, {"id": "cFLbFLKMhBw", "title": "𝐀𝐒𝐌𝐑 비내리는 밤 재즈, 피아노 위에 꾹꾹이 좀 했을 뿐이야｜Rainy night at the hall : 𝙲𝚊𝚝 𝙴𝚟𝚊𝚗𝚜' 𝚓𝚊𝚣𝚣 𝚙𝚒𝚊𝚗𝚘 𝚏𝚛𝚘𝚖 𝚝𝚑𝚎 𝚏𝚊𝚛 𝚎𝚗𝚍", "thumb": "https://i.ytimg.com/vi/cFLbFLKMhBw/mqdefault.jpg", "dur": "2:40"}, {"id": "afpJRVLRUVk", "title": "𝐀𝐒𝐌𝐑 비내리는 밤 재즈, 피아노 위에 꾹꾹이 좀 했을 뿐이야｜Rainy night at the hall : 𝙲𝚊𝚝 𝙴𝚟𝚊𝚗𝚜' 𝚓𝚊𝚣𝚣 𝚙𝚒𝚊𝚗𝚘 𝚏𝚛𝚘𝚖 𝚝𝚑𝚎 𝚏𝚊𝚛 𝚎𝚗𝚍", "thumb": "https://i.ytimg.com/vi/afpJRVLRUVk/mqdefault.jpg", "dur": "1:03:17"}, {"id": "E1R4knEqCGQ", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 밤이 되면 재즈바로 변신하는 캣카페로 초대할게요🐈‍⬛2h｜1950s Vintage Noir Jazz cat cafe&bar🍸 🐾Chill Night Vibes", "thumb": "https://i.ytimg.com/vi/E1R4knEqCGQ/mqdefault.jpg", "dur": "2:59"}, {"id": "CZ5pINDDroM", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 잠깐 나와 현실도피 해볼까? 사이키델릭 팝 그루브｜1960s Inspired Psychedelic & Ambient Rock Pop🎸", "thumb": "https://i.ytimg.com/vi/CZ5pINDDroM/mqdefault.jpg", "dur": "2:59"}, {"id": "5ln5t6tCTnY", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 밤이 되면 재즈바로 변신하는 캣카페로 초대할게요🐈‍⬛2h｜1950s Vintage Noir Jazz cat cafe&bar🍸 🐾Chill Night Vibes", "thumb": "https://i.ytimg.com/vi/5ln5t6tCTnY/mqdefault.jpg", "dur": "2:07:48"}, {"id": "brQa2D0qAQc", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 잠깐 나와 현실도피 해볼까? 사이키델릭 팝 그루브｜1960s Inspired Psychedelic & Ambient Rock Pop🎸run with me", "thumb": "https://i.ytimg.com/vi/brQa2D0qAQc/mqdefault.jpg", "dur": "1:14:22"}, {"id": "OBu1lBTttK8", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 캣베이커 고양이가 말아주는 쿨 재즈 🐈‍⬛🎺 (가사없음)｜Cat Baker Cool Jazz｜クール ジャズ", "thumb": "https://i.ytimg.com/vi/OBu1lBTttK8/mqdefault.jpg", "dur": "2:32"}, {"id": "k7zbnV3-mvA", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 캣베이커 고양이가 말아주는 쿨 재즈 🐈‍⬛🎺 (가사없음) 2h 30｜Born to be jazz｜Cat Baker Cool Jazz｜クール ジャズ", "thumb": "https://i.ytimg.com/vi/k7zbnV3-mvA/mqdefault.jpg", "dur": "2:34:08"}, {"id": "FsLp0xpRjm4", "title": "[Playlist] 이미 성공한 고양이가 알려주는 갓생 비법 | 공주들아 공부하자👑 2h Study Time, Princesses | Lofi Jazz | StudywithCat", "thumb": "https://i.ytimg.com/vi/FsLp0xpRjm4/mqdefault.jpg", "dur": "2:18"}, {"id": "Bl5TrVYlcOM", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 공주들아 공부하자👑 (이미 성공한 고양이가 알려주는 갓생 비법) 2h 👑Study Time, Princesses | Lofi Jazz | StudywithCat", "thumb": "https://i.ytimg.com/vi/Bl5TrVYlcOM/mqdefault.jpg", "dur": "2:25:33"}, {"id": "8DROWYFeWws", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 고양이는 이미 퇴사했습니다. 보사노바 재즈 1h 🐱🌴 | Bossa Nova jazz🌿 Lazy Days, Soft Bossa & Ocean Breeze", "thumb": "https://i.ytimg.com/vi/8DROWYFeWws/mqdefault.jpg", "dur": "1:19:28"}, {"id": "ZyFz2tR2JFg", "title": "[Playlist] 고양이는 이미 퇴사했습니다 1h 🐱🌴 | Bossa Nova 🌿 Lazy Days, Soft Bossa & Ocean Breeze", "thumb": "https://i.ytimg.com/vi/ZyFz2tR2JFg/mqdefault.jpg", "dur": "1:32"}, {"id": "v5k4NBNGMGw", "title": "[AI MV]고양이가 박스에 들어갔는데… 갑자기 클럽이 열림｜Cat enters a box… and finds a secret nightclub 🐱💿ニャニャニャ", "thumb": "https://i.ytimg.com/vi/v5k4NBNGMGw/mqdefault.jpg", "dur": "2:07"}, {"id": "OHejSNTLUHo", "title": "[Playlist] 전세? 월세? 아니 난 '하우스' 비트에서 살래 🏠🎧 하우스뮤직｜UK House & Garage Music", "thumb": "https://i.ytimg.com/vi/OHejSNTLUHo/mqdefault.jpg", "dur": "2:33"}, {"id": "KGoLsz5XZ5c", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 전세? 월세? 아니, 난 하우스비트에서 살래 🏠🎧  딥하우스 1h｜UK Deep House & Garage Music", "thumb": "https://i.ytimg.com/vi/KGoLsz5XZ5c/mqdefault.jpg", "dur": "1:04:54"}, {"id": "i7q3NC--Tns", "title": "[Playlist] 재즈가 뭐라고 생각하세요? \"칵테일로 적시는 것..🍸\"｜Chill jazz house night｜Nu-jazz｜1h", "thumb": "https://i.ytimg.com/vi/i7q3NC--Tns/mqdefault.jpg", "dur": "2:55"}, {"id": "FAzOnQy-tVc", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 재즈가 뭐라고 생각하세요? \"칵테일로 적시는 것..🍸\"｜Chill jazz house night｜Nu-jazz｜1h", "thumb": "https://i.ytimg.com/vi/FAzOnQy-tVc/mqdefault.jpg", "dur": "1:00:48"}, {"id": "B_m2zbLdO9w", "title": "[AI MV] 기억 배달부 (The Memory Runner) Over and Over｜Neon Rain Ride 🌧️ Cyberpunk Night Drive", "thumb": "https://i.ytimg.com/vi/B_m2zbLdO9w/mqdefault.jpg", "dur": "2:40"}, {"id": "-rFhE2SGzqk", "title": "[AI MV] 기억 배달부 (The Memory Runner) Over and Over｜Neon Rain Ride 🌧️ Cyberpunk Night Drive City Pop", "thumb": "https://i.ytimg.com/vi/-rFhE2SGzqk/mqdefault.jpg", "dur": "4:14"}, {"id": "U1X6wSYSoQE", "title": "[AI무비] Mouth to Mouth Through a Wire… 시간을 넘어 닿지 못한 사랑 デジタル ラブ SF 로맨스 MV", "thumb": "https://i.ytimg.com/vi/U1X6wSYSoQE/mqdefault.jpg", "dur": "2:29"}, {"id": "feUu5B9GDws", "title": "[AI MV] Mouth to Mouth Through a Wire… 시간을 넘어 닿지 못한 사랑 デジタル ラブ SF 로맨스 MV", "thumb": "https://i.ytimg.com/vi/feUu5B9GDws/mqdefault.jpg", "dur": "3:11"}, {"id": "Y5FfZwZLRvg", "title": "1970년대 사람들이 상상한 미래의 뷰티 기계 💄✨ | The Future Beauty Machine Imagined in the 1970s Sci-Fi", "thumb": "https://i.ytimg.com/vi/Y5FfZwZLRvg/mqdefault.jpg", "dur": "1:13"}, {"id": "oPdchtoRRWA", "title": "2080년, 미래 인간들과의 산책 🌳수면용  | Walking with Future Humans in an AI Garden (2080) 🌌 Ambient Sleep music", "thumb": "https://i.ytimg.com/vi/oPdchtoRRWA/mqdefault.jpg", "dur": "0:36"}, {"id": "xCs2beNcHF8", "title": "2080년, 미래 인간들과의 산책 🌳수면용  | Walking with Future Humans in an AI Garden (2080) 🌌 Ambient Sleep music", "thumb": "https://i.ytimg.com/vi/xCs2beNcHF8/mqdefault.jpg", "dur": "50:35"}, {"id": "mW8CcmLP3Ms", "title": "AI 잠들기 전, 3100년으로 이동합니다 😴 12분만에 잠드는 음악, 내 꿈속같은 집 | Futuristic House ambient music", "thumb": "https://i.ytimg.com/vi/mW8CcmLP3Ms/mqdefault.jpg", "dur": "2:58"}, {"id": "AwJu-xUDnm8", "title": "잠들기 전, 3100년으로 이동합니다 😴 12분만에 잠드는 수면 음악, 내 꿈속같은 집 | Futuristic House ambient sleep music | sci fi", "thumb": "https://i.ytimg.com/vi/AwJu-xUDnm8/mqdefault.jpg", "dur": "12:47"}, {"id": "z6IdVZgjgqg", "title": "로판 여주에 빙의된 가면무도회 왈츠 Playlist 1h｜Dark Fantasy Waltz 가면 뒤의 괴물 The Night He Was Human 🌙", "thumb": "https://i.ytimg.com/vi/z6IdVZgjgqg/mqdefault.jpg", "dur": "2:39"}, {"id": "Nxf-Ik3LUQs", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 로판 여주에 빙의된 가면무도회 왈츠 Playlist 1h｜Dark Fantasy Waltz 가면 뒤의 괴물 The Night He Was Human 🌙", "thumb": "https://i.ytimg.com/vi/Nxf-Ik3LUQs/mqdefault.jpg", "dur": "1:02:38"}, {"id": "M707I-Kz3Ts", "title": "[AI ASMR] 🧙‍♀️🌿 숲의 마법사가 해주는 신비로운 올빼미 에스테틱 (장작소리) Mystical Owl Esthetic by a Forest Mage", "thumb": "https://i.ytimg.com/vi/M707I-Kz3Ts/mqdefault.jpg", "dur": "3:00"}, {"id": "dzKPKwS34k0", "title": "[AI ASMR] 🧙‍♀️🌿 숲의 마법사가 해주는 신비로운 올빼미 에스테틱 (장작소리) Mystical Owl Esthetic by a Forest Mage", "thumb": "https://i.ytimg.com/vi/dzKPKwS34k0/mqdefault.jpg", "dur": "10:46"}, {"id": "ZAu5f8ckFFA", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 재즈, 그런데 아라빅을 곁들인...1h Groovy Arabic Jazz Night🌙", "thumb": "https://i.ytimg.com/vi/ZAu5f8ckFFA/mqdefault.jpg", "dur": "1:14:24"}, {"id": "_7dl_ZhPObI", "title": "고대이집트의 밤 🌙 Ancient Egypt Night Ambient AI Music", "thumb": "https://i.ytimg.com/vi/_7dl_ZhPObI/mqdefault.jpg", "dur": "1:01"}, {"id": "CeRoMdKmMQc", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 파라오의 신전에서 잠들다 👁️1h Ancient Egypt Night Ambient  Music🌙 | Deep Temple", "thumb": "https://i.ytimg.com/vi/CeRoMdKmMQc/mqdefault.jpg", "dur": "1:02:04"}, {"id": "QdQdqOVamNo", "title": "[AI ASMR] 불의 마법 수련 🔥 당신은 선택받았습니다.Fire Magic Training ASMR 🔥 You Are Chosen", "thumb": "https://i.ytimg.com/vi/QdQdqOVamNo/mqdefault.jpg", "dur": "3:00"}, {"id": "YjJ07j4YdRk", "title": "[AI ASMR] 불의 마법 수련 🔥 당신은 선택받았습니다 (Role Playing) 잔잔한 모닥불소리🔥 You Are Chosen by the First Flame", "thumb": "https://i.ytimg.com/vi/YjJ07j4YdRk/mqdefault.jpg", "dur": "8:08"}, {"id": "btskjja8XLY", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] 새소리, 마법 같은 켈틱 음악 Magical Celtic Music｜Secret Waterfall & Birdsong in the Woods 1Hour", "thumb": "https://i.ytimg.com/vi/btskjja8XLY/mqdefault.jpg", "dur": "1:14:07"}, {"id": "XPP_JA8hkdc", "title": "[AI ASMR] 숲에서 길을 잃었다…｜You Got Lost in the Forest… A Fairy Teaches You Its Language 🌿", "thumb": "https://i.ytimg.com/vi/XPP_JA8hkdc/mqdefault.jpg", "dur": "3:00"}, {"id": "FrAJgXnx870", "title": "[AI ASMR] 숲에서 길을 잃었다…｜You Got Lost in the Forest… A Fairy Teaches You Its Language 🌿", "thumb": "https://i.ytimg.com/vi/FrAJgXnx870/mqdefault.jpg", "dur": "4:44"}, {"id": "FvR9RLCTsdk", "title": "[𝑷𝒍𝒂𝒚𝒍𝒊𝒔𝒕] ✨ 하프 켈틱 판타지 음악 37분 / The Star That Waited ✨ Harp Celtic Fantasy Music 37Minutes", "thumb": "https://i.ytimg.com/vi/FvR9RLCTsdk/mqdefault.jpg", "dur": "37:08"}, {"id": "wX2OJLkGw4A", "title": "[AI ASMR] Forest Mage's Mystical Mushroom Stew 🍲✨ | Celtic Fantasy Cooking", "thumb": "https://i.ytimg.com/vi/wX2OJLkGw4A/mqdefault.jpg", "dur": "2:59"}, {"id": "nvivNDMrz7M", "title": "[AI ASMR] Forest Mage's Mystical Mushroom Stew 🍲✨ | Celtic Fantasy Cooking", "thumb": "https://i.ytimg.com/vi/nvivNDMrz7M/mqdefault.jpg", "dur": "3:39"}, {"id": "pIuI9aidCZU", "title": "Starlight Slime ✨ | Moonlight, Aurora & Milky Way AI ASMR", "thumb": "https://i.ytimg.com/vi/pIuI9aidCZU/mqdefault.jpg", "dur": "1:12"}, {"id": "hjXYGXO204A", "title": "Cat Chef Making Colorful Fruit Jelly 🍓 | Relaxing AI ASMR", "thumb": "https://i.ytimg.com/vi/hjXYGXO204A/mqdefault.jpg", "dur": "2:12"}, {"id": "VUFt2ACZd7g", "title": "✨[AI ASMR] 마법사의 비밀 편지💌: 실링 왁스 봉인 및 해제 ✨ Sorceress's Secret Letter: Sealing Wax & Unsealing\"", "thumb": "https://i.ytimg.com/vi/VUFt2ACZd7g/mqdefault.jpg", "dur": "1:36"}, {"id": "WuvTe2HEb2c", "title": "✨[AI ASMR] 마법사의 비밀 편지💌: 실링 왁스 봉인 및 해제 ✨ Sorceress's Secret Letter: Sealing Wax & Unsealing", "thumb": "https://i.ytimg.com/vi/WuvTe2HEb2c/mqdefault.jpg", "dur": "1:36"}, {"id": "K1zxTjDuyeI", "title": "[AI ASMR] 마법사가 만드는 치유의 물약🧪🌿평화로운 연금술방 ASMR🌿", "thumb": "https://i.ytimg.com/vi/K1zxTjDuyeI/mqdefault.jpg", "dur": "1:31"}, {"id": "rvjJ3IihteI", "title": "✨[AI ASMR] 마법사가 만드는 치유의 물약🧪 평화로운 연금술방 ASMRCeltic Healing Potion Video Ready🌿", "thumb": "https://i.ytimg.com/vi/rvjJ3IihteI/mqdefault.jpg", "dur": "1:31"}, {"id": "LM3Lbs7ospM", "title": "✨[AI ASMR] 마법사의 미니행성 베이킹 ASMR | Baking Mini Planets with Magic✨", "thumb": "https://i.ytimg.com/vi/LM3Lbs7ospM/mqdefault.jpg", "dur": "0:49"}, {"id": "HBxuIRkK2O4", "title": "[AI ASMR] 마법사의 우주행성베이킹 ASMR | Baking Mini Planets with Magic", "thumb": "https://i.ytimg.com/vi/HBxuIRkK2O4/mqdefault.jpg", "dur": "0:49"}, {"id": "TLLF9g6FYwQ", "title": "✨ [AI ASMR] 마법사가 별을 담아드립니다 Star-Catching in a Jar✨", "thumb": "https://i.ytimg.com/vi/TLLF9g6FYwQ/mqdefault.jpg", "dur": "0:46"}, {"id": "XQlLqoUocHs", "title": "[AI ASMR] ✨마법사가 소원이 담긴 별을 유리병에 넣는 소리✨(The sound of a wizard collecting stars for you)", "thumb": "https://i.ytimg.com/vi/XQlLqoUocHs/mqdefault.jpg", "dur": "0:46"}];
-const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
-
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem(TOKEN_KEY, t);
-  document.getElementById('token-overlay').style.display = 'none';
-  init();
-}
-
-function getToken() { return localStorage.getItem(TOKEN_KEY); }
-
-function setStatus(msg, cls) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg ' + (cls || '');
-}
-
-window.addEventListener('load', () => {
-  if (getToken()) {
-    document.getElementById('token-overlay').style.display = 'none';
-    init();
-  }
-});
-
-async function init() {
-  await loadRatings();
-  renderGrid();
-}
+let ratings = {}, changed = false, fileHandle = null;
 
 async function loadRatings() {
   try {
-    const resp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (resp.ok) {
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      ratings = content.ratings || {};
-      meta = content.meta || {};
-    }
+    const r = await fetch('noten.json');
+    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
   } catch(e) {}
+  renderGrid();
 }
 
 function renderGrid() {
@@ -138,7 +83,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,13 +106,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
-  const v = VIDEOS.find(v => v.id === id);
-  if (val >= 4 && v) {
-    meta[id] = { title: v.title, channel: CHANNEL };
-  } else {
-    delete meta[id];
-  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -176,42 +116,38 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
+function buildJson() {
+  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
+}
+
 async function saveRatings() {
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  try {
-    let sha = null;
-    const getResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
-    );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
-    const body = { message: 'Bewertung aktualisiert', content: encoded };
-    if (sha) body.sha = sha;
-    const putResp = await fetch(
-      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
-      {
-        method: 'PUT',
-        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+  const json = buildJson();
+  if ('showSaveFilePicker' in window) {
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'noten.json',
+          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
+        });
       }
-    );
-    if (putResp.ok) {
+      const w = await fileHandle.createWritable();
+      await w.write(json); await w.close();
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      setStatus('✓ In GitHub gespeichert', 'status-ok');
-    } else {
-      const err = await putResp.json();
-      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
-    }
-  } catch(e) {
-    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
+      document.getElementById('status-msg').className = 'status-msg status-ok';
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
   }
-  btn.disabled = false;
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'noten.json'; a.click();
+  changed = false;
+  document.getElementById('changed-hint').style.display = 'none';
+  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
 }
+
+loadRatings();
 </script>
 </body>
 </html>
