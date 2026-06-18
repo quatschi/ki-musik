@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=VibeMuse.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "VibeMuse";
 const KANAL = "VibeMuse.html";
 const VIDEOS = [{"id": "2PH7r5iTQdY", "title": "Window Rain 🎧 #VibeMuse #SoulFunk #MusicShorts #FunkGroove #ChillFunk #Shorts", "thumb": "https://i.ytimg.com/vi/2PH7r5iTQdY/mqdefault.jpg", "dur": "3:00"}, {"id": "MHM1fdo7g_A", "title": "VibeMuse - LIVE | Groove Level : M | No5. Vintage 70s Soul Funk", "thumb": "https://i.ytimg.com/vi/MHM1fdo7g_A/mqdefault.jpg", "dur": "8:59:56"}, {"id": "pPKk9I-9wjk", "title": "VibeMuse - On Air : No5. Vintage 70s Soul Funk", "thumb": "https://i.ytimg.com/vi/pPKk9I-9wjk/mqdefault_live.jpg", "dur": ""}, {"id": "tYXm4Cbw4oc", "title": "Too Much 🎧 #VibeMuse #SoulFunk #MusicShorts #FunkGroove #ChillFunk #Shorts", "thumb": "https://i.ytimg.com/vi/tYXm4Cbw4oc/mqdefault.jpg", "dur": "2:55"}, {"id": "Rv6Ln7nC3UM", "title": "🔥 Vintage 70s Soul Funk | Groove Level : H | No28. Deep Bass & Funky Vocals", "thumb": "https://i.ytimg.com/vi/Rv6Ln7nC3UM/mqdefault.jpg", "dur": "3:31:43"}, {"id": "8iISC2ecuh4", "title": "VibeMuse - LIVE | Groove Level : L | No1. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/8iISC2ecuh4/mqdefault.jpg", "dur": "8:49:40"}, {"id": "RwSzYLnv0F0", "title": "Everywhere 🎧 #VibeMuse #SoulFunk #MusicShorts #FunkGroove #ChillFunk #Shorts", "thumb": "https://i.ytimg.com/vi/RwSzYLnv0F0/mqdefault.jpg", "dur": "2:57"}, {"id": "tQGEOXjimII", "title": "VibeMuse - LIVE : Best-Part I. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/tQGEOXjimII/mqdefault.jpg", "dur": "8:38:25"}, {"id": "5TKfVARZOHA", "title": "🔥 Vintage Soul Funk | Groove Level : L | No27. Slow Grooves & Soulful Vocals", "thumb": "https://i.ytimg.com/vi/5TKfVARZOHA/mqdefault.jpg", "dur": "2:47:41"}, {"id": "AhqD-hpOMNo", "title": "Dawn Decision 🎧 #VibeMuse #SoulFunk #MusicShorts #FunkGroove #ChillFunk #Shorts", "thumb": "https://i.ytimg.com/vi/AhqD-hpOMNo/mqdefault.jpg", "dur": "2:59"}, {"id": "0xs3I5fy57I", "title": "VibeMuse - LIVE : No15. Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/0xs3I5fy57I/mqdefault.jpg", "dur": "8:26:45"}, {"id": "4DInN5pM7kM", "title": "Requested Track : Alone Comfort 🎧 #VibeMuse #SoulFunk #MusicShorts #FunkGroove #ChillFunk #Shorts", "thumb": "https://i.ytimg.com/vi/4DInN5pM7kM/mqdefault.jpg", "dur": "3:00"}, {"id": "HNo7ztoyKOk", "title": "VibeMuse - LIVE : No17. Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/HNo7ztoyKOk/mqdefault.jpg", "dur": "9:06:30"}, {"id": "zPBJzR6rs-8", "title": "⚡️ Neo Soul Funk | Groove Level : M | No11. Deep Melodies & Beats, Chill Vibe Collection", "thumb": "https://i.ytimg.com/vi/zPBJzR6rs-8/mqdefault.jpg", "dur": "3:18:13"}, {"id": "0ssi7SCQJt0", "title": "VibeMuse - LIVE : No12. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/0ssi7SCQJt0/mqdefault.jpg", "dur": "8:37:20"}, {"id": "8g7nCFlA-v8", "title": "VibeMuse - LIVE : No14. Vintage 70s Soul Funk", "thumb": "https://i.ytimg.com/vi/8g7nCFlA-v8/mqdefault.jpg", "dur": "8:59:16"}, {"id": "R81DsSFVizs", "title": "Vintage Soul Funk 🔥 – No26. Deep Bass & Soulful Vocals | for Late Nights That Move Without Rushing", "thumb": "https://i.ytimg.com/vi/R81DsSFVizs/mqdefault.jpg", "dur": "2:53:56"}, {"id": "i2YfZnB6S8A", "title": "VibeMuse - LIVE : No11. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/i2YfZnB6S8A/mqdefault.jpg", "dur": "8:54:15"}, {"id": "fUWA7CCzc38", "title": "VibeMuse - LIVE : No8. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/fUWA7CCzc38/mqdefault.jpg", "dur": "8:23:43"}, {"id": "HhsCRkT9Tnc", "title": "VibeMuse - LIVE : No12. Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/HhsCRkT9Tnc/mqdefault.jpg", "dur": "8:22:36"}, {"id": "YcjOuhU1WXk", "title": "Late-Night Grooves ☄️ – No18. Minimal Soul Funk | for Quiet Nights That Need a Groove", "thumb": "https://i.ytimg.com/vi/YcjOuhU1WXk/mqdefault.jpg", "dur": "2:35:13"}, {"id": "tcU8W7Dbvug", "title": "VibeMuse - LIVE : No5. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/tcU8W7Dbvug/mqdefault.jpg", "dur": "8:48:20"}, {"id": "sKx8HFo_A3E", "title": "VibeMuse Live On - No10. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/sKx8HFo_A3E/mqdefault_live.jpg", "dur": ""}, {"id": "hVf-jIahLJc", "title": "VibeMuse - LIVE : No7. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/hVf-jIahLJc/mqdefault.jpg", "dur": "9:04:30"}, {"id": "IoV7bVm0Ao8", "title": "The Vibe Shift : 💥 Modern-Infused Vintage Soul Funk | for Single Drink Evenings", "thumb": "https://i.ytimg.com/vi/IoV7bVm0Ao8/mqdefault.jpg", "dur": "1:57:37"}, {"id": "y4ObQnN6Smc", "title": "VibeMuse - LIVE : No5. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/y4ObQnN6Smc/mqdefault.jpg", "dur": "9:24:15"}, {"id": "EFxFYB9X84I", "title": "VibeMuse - LIVE : No15. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/EFxFYB9X84I/mqdefault.jpg", "dur": "8:20:41"}, {"id": "0VBpvRJgdy4", "title": "VibeMuse - LIVE : No6. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/0VBpvRJgdy4/mqdefault.jpg", "dur": "9:13:00"}, {"id": "XJLFcXUONE8", "title": "Soft & Deep Pocket ☄️ – No17. Steady Minimal Grooves, Late Night Soul Funk | for Quiet Nights That", "thumb": "https://i.ytimg.com/vi/XJLFcXUONE8/mqdefault.jpg", "dur": "1:33:58"}, {"id": "h15uJ6cY_Jw", "title": "VibeMuse - LIVE : No9. Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/h15uJ6cY_Jw/mqdefault.jpg", "dur": "8:19:17"}, {"id": "wqsdmr6yVIQ", "title": "Soul On Fire 🔥 – No24. Vintage 70s Soul Funk : Raw & Real Analog | for Those Who Kept the Funk", "thumb": "https://i.ytimg.com/vi/wqsdmr6yVIQ/mqdefault.jpg", "dur": "1:53:41"}, {"id": "l4fPtIVlEuU", "title": "Bottom of the Bottle – 🔥 No23. Vintage Soul Funk with a touch of Rock | for the Late Night Outlaws", "thumb": "https://i.ytimg.com/vi/l4fPtIVlEuU/mqdefault.jpg", "dur": "1:01:13"}, {"id": "CGAPiisqEsQ", "title": "VibeMuse - LIVE : No3. Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/CGAPiisqEsQ/mqdefault.jpg", "dur": "9:25:03"}, {"id": "c10J3YwU1GI", "title": "VibeMuse - LIVE : No1/8/10. Vintage 70s Soul Funk", "thumb": "https://i.ytimg.com/vi/c10J3YwU1GI/mqdefault.jpg", "dur": "11:12:12"}, {"id": "EkJ3Soishw4", "title": "⚡️ Neo Soul Funk : Best of 12-02 - Part II", "thumb": "https://i.ytimg.com/vi/EkJ3Soishw4/mqdefault.jpg", "dur": "2:08:20"}, {"id": "lg72rvQboRY", "title": "VibeMuse - LIVE : No10. Neo Soul Funk", "thumb": "https://i.ytimg.com/vi/lg72rvQboRY/mqdefault.jpg", "dur": "8:35:54"}, {"id": "rGmx35pBFsM", "title": "Dream on a Dime ⚡️ – Sleek & Easy Sound : No10. Neo Soul Funk | for the Resilient", "thumb": "https://i.ytimg.com/vi/rGmx35pBFsM/mqdefault.jpg", "dur": "2:08:59"}, {"id": "UWUBfOAbVOc", "title": "You Were There - ☄️ No16. Deep & Extremely Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/UWUBfOAbVOc/mqdefault.jpg", "dur": "1:43:40"}, {"id": "7sVNHlM0Qq4", "title": "Deep Yet Easy Groove 🔥 – No.22. Vintage 70s Soul Funk | For Rainy Day Grooves", "thumb": "https://i.ytimg.com/vi/7sVNHlM0Qq4/mqdefault.jpg", "dur": "1:10:44"}, {"id": "wLCj9L2vvEI", "title": "Best of 12-02 : ⚡️ Neo Soul Funk - Part I", "thumb": "https://i.ytimg.com/vi/wLCj9L2vvEI/mqdefault.jpg", "dur": "2:12:57"}, {"id": "Sqxgd77cHGw", "title": "☄️ Minimal Soul Funk : Best of 12-02 - Part II", "thumb": "https://i.ytimg.com/vi/Sqxgd77cHGw/mqdefault.jpg", "dur": "2:27:13"}, {"id": "h4eBs5K9x84", "title": "🔥 Vintage 70s Soul Funk : Best of 12-02 - Part II", "thumb": "https://i.ytimg.com/vi/h4eBs5K9x84/mqdefault.jpg", "dur": "2:16:02"}, {"id": "YBejeqVL0iQ", "title": "Best of 12-02 🔥 : Vintage 70s Soul Funk - Part I", "thumb": "https://i.ytimg.com/vi/YBejeqVL0iQ/mqdefault.jpg", "dur": "4:03:04"}, {"id": "PnRidZx5g18", "title": "Best of 12-02 ☄️ : Minimal Soul Funk - Part I", "thumb": "https://i.ytimg.com/vi/PnRidZx5g18/mqdefault.jpg", "dur": "2:44:04"}, {"id": "0gnebNLaVsQ", "title": "Feel Good Funk Sessions 🔥 - No21. Vintage Soul Funk Mix | Deep Pocket Grooves in Motion", "thumb": "https://i.ytimg.com/vi/0gnebNLaVsQ/mqdefault.jpg", "dur": "1:47:58"}, {"id": "sZl13wvjwAw", "title": "Deep Laid-back Daily Motion 🔥 – No20. Vintage 70s Soul Funk | for the Rhythm of Life", "thumb": "https://i.ytimg.com/vi/sZl13wvjwAw/mqdefault.jpg", "dur": "1:46:22"}, {"id": "S1cUrycQKwc", "title": "Minimal Soul Funk ☄️ - Where Stillness Starts to Groove | for Personal Growth", "thumb": "https://i.ytimg.com/vi/S1cUrycQKwc/mqdefault.jpg", "dur": "1:38:11"}, {"id": "s6DcXyuY27w", "title": "Vintage 70s Soul Funk 🔥 - No19. Dynamic Rush & Melodic Funk Session | for Quiet Victory", "thumb": "https://i.ytimg.com/vi/s6DcXyuY27w/mqdefault.jpg", "dur": "2:46:27"}, {"id": "l0VqaC0QAPI", "title": "Vintage 70s Soul Funk 🔥 - Heal Your Soul With The Raw Grit | for Time Reflection", "thumb": "https://i.ytimg.com/vi/l0VqaC0QAPI/mqdefault.jpg", "dur": "3:08:00"}, {"id": "ycMl5puVwD8", "title": "The Vibe Shift : Gritty or Urban - Crossover Funk Flow", "thumb": "https://i.ytimg.com/vi/ycMl5puVwD8/mqdefault.jpg", "dur": "2:56:53"}, {"id": "qepYK9SJjjU", "title": "A Brief Escape ⚡️ Soft, Warm Vibes & Modern Soul Grooves | for Small Freedom Seekers", "thumb": "https://i.ytimg.com/vi/qepYK9SJjjU/mqdefault.jpg", "dur": "3:26:32"}, {"id": "YPI0W35W080", "title": "Vintage 70s Soul Funk 🔥 - Analog Instrument & Rhythmic Funk Grooves | for the Urban Flow-Seekers", "thumb": "https://i.ytimg.com/vi/YPI0W35W080/mqdefault.jpg", "dur": "2:26:03"}, {"id": "_9QbKxeaGb8", "title": "Minimal Soul Funk ☄️ - Dry Bass & Hypnotic Rhythm | Cold Reality", "thumb": "https://i.ytimg.com/vi/_9QbKxeaGb8/mqdefault.jpg", "dur": "2:38:15"}, {"id": "5FSrYjy46DI", "title": "Sensory Awakening - Gentle, Laid-Back & Relaxed Grooves | ☄️ Minimal Soul Playlist", "thumb": "https://i.ytimg.com/vi/5FSrYjy46DI/mqdefault.jpg", "dur": "2:44:07"}, {"id": "m8CCk-5-rjg", "title": "Just Play! - Rich Instrumentation & Vibrant Grooves | 🔥 Vintage 70s Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/m8CCk-5-rjg/mqdefault.jpg", "dur": "1:42:35"}, {"id": "3KElfGff6no", "title": "Find Your Good Vibe - Smooth, Warm & Healing Grooves | ⚡️ Neo Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/3KElfGff6no/mqdefault.jpg", "dur": "2:46:08"}, {"id": "sDG6xJEeo8k", "title": "Vintage 70s Soul Funk 🔥 - Let's imagine something fun | for adults", "thumb": "https://i.ytimg.com/vi/sDG6xJEeo8k/mqdefault.jpg", "dur": "2:50:11"}, {"id": "a_PC43tuPrY", "title": "Vintage 70s Soul-Funk 🔥 - Steady Rhythms & After‑Work Grooves | for real self time", "thumb": "https://i.ytimg.com/vi/a_PC43tuPrY/mqdefault.jpg", "dur": "3:53:30"}, {"id": "JftHCdwTVuc", "title": "Minimal Soul Funk ☄️ - Dry & Midnight Grooves | for new beginning", "thumb": "https://i.ytimg.com/vi/JftHCdwTVuc/mqdefault.jpg", "dur": "3:33:09"}, {"id": "NIskZMKd4Ls", "title": "Vintage 70s Soul Funk 🔥 - Laid‑Back Pocket Grooves | for courage inside", "thumb": "https://i.ytimg.com/vi/NIskZMKd4Ls/mqdefault.jpg", "dur": "3:28:13"}, {"id": "GDnfnN-CSO0", "title": "Neo Soul Funk ⚡️ - Urban Band Feel & Rhythmic Grooves | for Personal Strength", "thumb": "https://i.ytimg.com/vi/GDnfnN-CSO0/mqdefault.jpg", "dur": "3:20:12"}, {"id": "xUk1ZFjL3vI", "title": "Minimal Funk Soul ☄️ - Emotional Peak & Clumsy Chaos Playlist  | For Silent Goal Chasers", "thumb": "https://i.ytimg.com/vi/xUk1ZFjL3vI/mqdefault.jpg", "dur": "2:40:32"}, {"id": "xXod-CmbnPc", "title": "Vintage 70s Soul Funk 🔥 - Deep Pocket & Tight Bass Grooves | for Gentle Self-Repair", "thumb": "https://i.ytimg.com/vi/xXod-CmbnPc/mqdefault.jpg", "dur": "3:09:02"}, {"id": "AQhEdsyjzQI", "title": "Neo Soul Funk ⚡️ - Analog Pulse & Free-Flowing Odd Grooves | for Caring Your Tired Soul", "thumb": "https://i.ytimg.com/vi/AQhEdsyjzQI/mqdefault.jpg", "dur": "3:00:03"}, {"id": "hvA4padcDPQ", "title": "Minimal Soul Funk ☄️ - Walking Bass Soul Grooves | for Funky Revolution", "thumb": "https://i.ytimg.com/vi/hvA4padcDPQ/mqdefault.jpg", "dur": "3:14:25"}, {"id": "zQ65OwJx2y8", "title": "Vintage 70s Soul Funk 🔥 - Analog Bass & Laid-back Pocket Playlist | for Everyday Little Rituals", "thumb": "https://i.ytimg.com/vi/zQ65OwJx2y8/mqdefault.jpg", "dur": "3:42:23"}, {"id": "1K7upkpXmfw", "title": "Vintage 70s Soul Funk 🔥 -  Build-up & Low to High Tension Playlist | for Urban Resilience", "thumb": "https://i.ytimg.com/vi/1K7upkpXmfw/mqdefault.jpg", "dur": "3:30:46"}, {"id": "tDc790mDmH0", "title": "Minimal Soul Funk Playlist ☄️ - Dry & Tight Bass Groove | for Daily Life & Vlog", "thumb": "https://i.ytimg.com/vi/tDc790mDmH0/mqdefault.jpg", "dur": "2:18:26"}, {"id": "SLe4i2t24vc", "title": "The Vibe Shift : Shadow Funk Mix 💥 - Super Heavy Bass Groove | for Bearing Life's Weight", "thumb": "https://i.ytimg.com/vi/SLe4i2t24vc/mqdefault.jpg", "dur": "2:40:22"}, {"id": "ZGtVZrNbx3U", "title": "Minimal Soul Funk Playlist ☄️ - Ultra Dry Bass Groove | for Winter Night Walks", "thumb": "https://i.ytimg.com/vi/ZGtVZrNbx3U/mqdefault.jpg", "dur": "2:17:26"}, {"id": "KXpR2TCoQDQ", "title": "Vintage 70s Soul Funk Playlist 🔥 - Urban Night & Steady Noir Groove | for Late Night City Drives", "thumb": "https://i.ytimg.com/vi/KXpR2TCoQDQ/mqdefault.jpg", "dur": "2:08:51"}, {"id": "FtRFcBfcYj8", "title": "Neo Soul Funk Playlist ⚡️ - Heavy Bass, Laid-back Groove | for Cocktail Vibes", "thumb": "https://i.ytimg.com/vi/FtRFcBfcYj8/mqdefault.jpg", "dur": "2:10:11"}, {"id": "72BC03jeMTU", "title": "Vintage 70s Soul Funk Playlist 🔥 - Analog & Steady Groove | for Escaping the City", "thumb": "https://i.ytimg.com/vi/72BC03jeMTU/mqdefault.jpg", "dur": "2:22:49"}, {"id": "MIALj05UtAI", "title": "Minimal Soul Funk Playlist ☄️ - Bass‑Driven 70s Soul Groove | for Winter Night Drives", "thumb": "https://i.ytimg.com/vi/MIALj05UtAI/mqdefault.jpg", "dur": "2:17:45"}, {"id": "BEt420anDQY", "title": "Vintage 70s Soul Funk Playlist 🔥 - You’ve Been Searching For | Retro Groove & Funky Nights", "thumb": "https://i.ytimg.com/vi/BEt420anDQY/mqdefault.jpg", "dur": "1:15:37"}, {"id": "wknoxB1i5X0", "title": "The Vibe Shift : Soul Funk Mix 💥 - Classic & Neo Groove | for Winter Love", "thumb": "https://i.ytimg.com/vi/wknoxB1i5X0/mqdefault.jpg", "dur": "1:25:14"}, {"id": "BB37N3QkPq0", "title": "Vintage 70s Soul Funk Playlist 🔥 - Winter Vibes, Snowy Funk Grooves | for winter drives", "thumb": "https://i.ytimg.com/vi/BB37N3QkPq0/mqdefault.jpg", "dur": "1:08:28"}, {"id": "XOO0Fpyrgxc", "title": "Minimal Soul Funk Playlist ☄️ - Modern Soul & Funk Grooves  | for nostalgic love moments", "thumb": "https://i.ytimg.com/vi/XOO0Fpyrgxc/mqdefault.jpg", "dur": "1:17:50"}, {"id": "XCaIx76maXM", "title": "Vintage 70s Soul Funk Playlist 🔥 - Dominant Bass & Raw Soul Grooves | for hope-seeking hearts", "thumb": "https://i.ytimg.com/vi/XCaIx76maXM/mqdefault.jpg", "dur": "1:21:41"}, {"id": "e3ZThf7UA7s", "title": "Neo Soul Funk Playlist ⚡️ -  Warm & Emotional Grooves | for bittersweet moments", "thumb": "https://i.ytimg.com/vi/e3ZThf7UA7s/mqdefault.jpg", "dur": "1:19:46"}, {"id": "---4F5r4z9A", "title": "Minimal Soul Funk Playlist ☄️ - 70s Vintage & Urban Night Grooves | for soulful evenings", "thumb": "https://i.ytimg.com/vi/---4F5r4z9A/mqdefault.jpg", "dur": "1:00:17"}, {"id": "WtBcMMWMUZI", "title": "Vintage 70s Soul Funk Playlist 🔥 - Real Funk Groove & Powerful vocals | for hope in hard moments", "thumb": "https://i.ytimg.com/vi/WtBcMMWMUZI/mqdefault.jpg", "dur": "1:09:19"}, {"id": "jnu2kT4s-rQ", "title": "Neo Soul Funk Playlist ⚡️ - Deep bass & Laid-back Grooves | for finding your rhythm", "thumb": "https://i.ytimg.com/vi/jnu2kT4s-rQ/mqdefault.jpg", "dur": "1:17:05"}, {"id": "g9VP-CcE2JE", "title": "Vintage 70s Soul Funk Playlist 🔥 - Deep bass & Classic grooves | for Chill Vibes & Relaxation", "thumb": "https://i.ytimg.com/vi/g9VP-CcE2JE/mqdefault.jpg", "dur": "1:10:42"}, {"id": "pP1fqedhooI", "title": "Vintage 70s Soul Funk Playlist 🔥 - Deep Bass & funky Grooves | for Restless Souls", "thumb": "https://i.ytimg.com/vi/pP1fqedhooI/mqdefault.jpg", "dur": "1:20:02"}, {"id": "uU3fx2Qd2hI", "title": "Neo Soul Funk Playlist ⚡️ – Deep Bass & Laid-back vocals, Chill & Smooth Grooves | for first love", "thumb": "https://i.ytimg.com/vi/uU3fx2Qd2hI/mqdefault.jpg", "dur": "55:37"}, {"id": "zqLCeETtjq8", "title": "Minimal Soul Funk Playlist ☄️ – Deep Bass & Modern Grooves | for triggered memories", "thumb": "https://i.ytimg.com/vi/zqLCeETtjq8/mqdefault.jpg", "dur": "53:49"}, {"id": "UR6NqC3Q-wY", "title": "Minimal Soul Funk Playlist ☄️ - Deep Bass & Modern Grooves | for Little Moments", "thumb": "https://i.ytimg.com/vi/UR6NqC3Q-wY/mqdefault.jpg", "dur": "52:07"}, {"id": "rIKOI4-9DHA", "title": "Deep Soul Funk Playlist 💥 – Deep Bass & 70s Grooves | for discovering hidden truths in love", "thumb": "https://i.ytimg.com/vi/rIKOI4-9DHA/mqdefault.jpg", "dur": "52:02"}, {"id": "Jp3IfVsC_1Q", "title": "Deep Soul Funk Playlist 💥 – Deep Bass & Groove | for emotional depth seekers", "thumb": "https://i.ytimg.com/vi/Jp3IfVsC_1Q/mqdefault.jpg", "dur": "55:14"}, {"id": "BUX1AFAVIXI", "title": "Vintage 70s Soul Funk Playlist 🔥 - Groovy Bass, Raspy Vocals & Classic Vibes", "thumb": "https://i.ytimg.com/vi/BUX1AFAVIXI/mqdefault.jpg", "dur": "58:26"}, {"id": "ZYX0jA1XFqI", "title": "Vintage 70s Soul Funk Playlist 🔥 – Deep Bass & Raspy Vocals", "thumb": "https://i.ytimg.com/vi/ZYX0jA1XFqI/mqdefault.jpg", "dur": "1:14:22"}, {"id": "w4C0kqr0sEY", "title": "Vintage 70s Soul Funk Playlist 🔥 – Deep Bass & Late Night Grooves", "thumb": "https://i.ytimg.com/vi/w4C0kqr0sEY/mqdefault.jpg", "dur": "1:05:05"}, {"id": "w1LIpxtmf98", "title": "Romantic Soul Funk Playlist 🎵 – Vintage Funk Grooves, Smooth Soul", "thumb": "https://i.ytimg.com/vi/w1LIpxtmf98/mqdefault.jpg", "dur": "1:03:21"}, {"id": "q3BK0JgSB2U", "title": "Romantic Soul Funk Playlist 🎵 - 70s Vintage soul funk, Modern Vibes | for romantic moments", "thumb": "https://i.ytimg.com/vi/q3BK0JgSB2U/mqdefault.jpg", "dur": "1:03:09"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Blues_Rock_Syndicate.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Blues Rock Syndicate";
 const KANAL = "Blues_Rock_Syndicate.html";
 const VIDEOS = [{"id": "RPXzIK2p2Ek", "title": "🎸 BLUES meet REGGAE | Soulful Guitar Vibes, Smoky Nights & Timeless Classics", "thumb": "https://i.ytimg.com/vi/RPXzIK2p2Ek/mqdefault.jpg", "dur": "35:30"}, {"id": "8YhxzBJjrcI", "title": "BLUES Meet REGGAE 2026 🎸 Soulful Blues Rock & Reggae Guitar Vibes | Chill Roots Fusion Collection", "thumb": "https://i.ytimg.com/vi/8YhxzBJjrcI/mqdefault.jpg", "dur": "37:52"}, {"id": "nteSgtUXO7g", "title": "The Beatles Blues Rock Collection 2026 🎸 | Let It Be, Come Together, Imagine, Oh! Darling, more", "thumb": "https://i.ytimg.com/vi/nteSgtUXO7g/mqdefault.jpg", "dur": "22:49"}, {"id": "W4lZlIrhT5g", "title": "🔥 Reggae Meets Blues | Soulful Guitar Journey Through Ashes, Dust & Midnight Rivers 🌙🎸", "thumb": "https://i.ytimg.com/vi/W4lZlIrhT5g/mqdefault.jpg", "dur": "36:37"}, {"id": "fL2Pf_zUWYA", "title": "REGGAE BLUES 🎸 Soulful Rasta Guitar Vibes | Emotional Blues & Reggae Fusion", "thumb": "https://i.ytimg.com/vi/fL2Pf_zUWYA/mqdefault.jpg", "dur": "40:17"}, {"id": "rsez4MWIGzE", "title": "Reggae Meet Blues 🎸 Soulful Guitar & Timeless Roots | Blues Rock, Reggae Vibes & Deep Feelings", "thumb": "https://i.ytimg.com/vi/rsez4MWIGzE/mqdefault.jpg", "dur": "35:31"}, {"id": "lnxFitmdKb0", "title": "REGGAE meet BLUES 🎸 | Relaxing Blues Reggae Guitar Instrumental for Stress Relief", "thumb": "https://i.ytimg.com/vi/lnxFitmdKb0/mqdefault.jpg", "dur": "36:42"}, {"id": "T0-bWIw46A8", "title": "The Beatles Blues Rock Version | Timeless Classics Reimagined with Soulful Guitar Vintage Rock Vibes", "thumb": "https://i.ytimg.com/vi/T0-bWIw46A8/mqdefault.jpg", "dur": "39:22"}, {"id": "IBUKgkUPkjo", "title": "When Blues Meet Country 🔥 Timeless Campfire Guitar Stories | Soulful Blues & Country Nights", "thumb": "https://i.ytimg.com/vi/IBUKgkUPkjo/mqdefault.jpg", "dur": "32:53"}, {"id": "G5gn5wNQuHE", "title": "LONELY COUNTRY BLUES 🌙🐺 Midnight Campfire Guitar Vibes | Relaxing Blues & Country Mix", "thumb": "https://i.ytimg.com/vi/G5gn5wNQuHE/mqdefault.jpg", "dur": "33:09"}, {"id": "oHORxuzWfiM", "title": "Dust In The Wind 🌫️ Relaxing Blues Rock Ballads & Timeless Classics Guitar Covers", "thumb": "https://i.ytimg.com/vi/oHORxuzWfiM/mqdefault.jpg", "dur": "24:47"}, {"id": "C92yag2MIrM", "title": "Blues Rock Classics 🔥 Soulful Guitar Instrumentals for Late Night Relaxing", "thumb": "https://i.ytimg.com/vi/C92yag2MIrM/mqdefault.jpg", "dur": "31:38"}, {"id": "FHpCWpmjCvQ", "title": "Relaxing Blues Meets Reggae 🎸🔥 | Soulful Guitar Vibes & Jamaican Blues Rock Fusion", "thumb": "https://i.ytimg.com/vi/FHpCWpmjCvQ/mqdefault.jpg", "dur": "34:40"}, {"id": "FxXAnLeU8BQ", "title": "OASIS - DON’T LOOK BACK IN ANGER 🎸 Best Classic Blues Rock Covers Collection 2026", "thumb": "https://i.ytimg.com/vi/FxXAnLeU8BQ/mqdefault.jpg", "dur": "19:48"}, {"id": "ouGrOcuN6cc", "title": "🔥 Relaxing Blues Meets Reggae 🎸 Soulful Guitar Vibes | Blues Rock Reggae Fusion Mix", "thumb": "https://i.ytimg.com/vi/ouGrOcuN6cc/mqdefault.jpg", "dur": "33:30"}, {"id": "9s5DHEzhuGo", "title": "A Thousand Years & Classic Rock Ballads | Soulful Blues Rock Collection 2026", "thumb": "https://i.ytimg.com/vi/9s5DHEzhuGo/mqdefault.jpg", "dur": "24:40"}, {"id": "w-crTLYrJ9Q", "title": "Soldier of Fortune Will Hit Different in Blues Rock 🔥 | Classic Rock Blues Collection", "thumb": "https://i.ytimg.com/vi/w-crTLYrJ9Q/mqdefault.jpg", "dur": "25:01"}, {"id": "STf4IqQWX-o", "title": "The Beatles - Come Together 🎸 Relaxing Blues Rock Covers of The Beatles & More Classic Hits", "thumb": "https://i.ytimg.com/vi/STf4IqQWX-o/mqdefault.jpg", "dur": "28:18"}, {"id": "SduutMq6_rE", "title": "LAZY MONDAY ☕ Slow Blues Rock Vibes To Start The Week Easy", "thumb": "https://i.ytimg.com/vi/SduutMq6_rE/mqdefault.jpg", "dur": "19:27"}, {"id": "41apMPTo994", "title": "Relaxing BLUES Meets REGGAE 🌴🎸 | Vintage Blues Rock Session", "thumb": "https://i.ytimg.com/vi/41apMPTo994/mqdefault.jpg", "dur": "32:49"}, {"id": "USuvva2KUFg", "title": "When REGGAE Meets BLUES 🔥🎸 | Vintage Blues Rock Reggae Session", "thumb": "https://i.ytimg.com/vi/USuvva2KUFg/mqdefault.jpg", "dur": "36:08"}, {"id": "84-dpWiTT5o", "title": "LET IT BE - The Beatles, Michael Jackson, Frankie Valli & Louis Armstrong (Soulful Blues Version)", "thumb": "https://i.ytimg.com/vi/84-dpWiTT5o/mqdefault.jpg", "dur": "30:44"}, {"id": "Eu7YeWGlgGc", "title": "Garth Brooks, Bee Gees, Frank Sinatra, The Beatles (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/Eu7YeWGlgGc/mqdefault.jpg", "dur": "31:36"}, {"id": "BjiRphxRiuw", "title": "What a Wonderful World – Louis Armstrong, Michael Bolton, Morris Albert (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/BjiRphxRiuw/mqdefault.jpg", "dur": "35:50"}, {"id": "VKFi7try7-w", "title": "Oh! Darling, I Started a Joke, To Love Somebody, Feelings, My Way (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/VKFi7try7-w/mqdefault.jpg", "dur": "32:14"}, {"id": "nakGYPeX9w0", "title": "Bee Gees – I Started a Joke (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/nakGYPeX9w0/mqdefault.jpg", "dur": "3:00"}, {"id": "ljNTSk1wobQ", "title": "BLUES MEET REGGAE 🎸🔥 | Vintage Dreadlock Blues Reggae Fusion Vibes", "thumb": "https://i.ytimg.com/vi/ljNTSk1wobQ/mqdefault.jpg", "dur": "31:17"}, {"id": "DErb9lIA64k", "title": "The Beatles Greatest Hits (Soulful Blues Rock Version) | Old School Guitar Blues Mix", "thumb": "https://i.ytimg.com/vi/DErb9lIA64k/mqdefault.jpg", "dur": "27:43"}, {"id": "n_WzHW0EjE8", "title": "You’ve NEVER Heard “Feelings” Like This – Dark Blues Rock Cover", "thumb": "https://i.ytimg.com/vi/n_WzHW0EjE8/mqdefault.jpg", "dur": "27:38"}, {"id": "-Q12ZTQ-gfo", "title": "My Way – Frank Sinatra, White Lion, The Cranberries, Morris Albert (Dark Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/-Q12ZTQ-gfo/mqdefault.jpg", "dur": "27:39"}, {"id": "WEkGSq_fbyM", "title": "Zombie – The Cranberries | White Lion | Morris Albert | Frank Sinatra (Dark Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/WEkGSq_fbyM/mqdefault.jpg", "dur": "27:43"}, {"id": "lHSkKq-1cTY", "title": "Blues Rock Classics 🔥 Oh Carol, I Will Survive, Killing Me Softly, Zombie (Full Album)", "thumb": "https://i.ytimg.com/vi/lHSkKq-1cTY/mqdefault.jpg", "dur": "27:23"}, {"id": "Us0X2edEpLg", "title": "The Beatles, Michael Jackson,  Eric Clapton, Morris Albert (Soulful Gritty Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/Us0X2edEpLg/mqdefault.jpg", "dur": "22:22"}, {"id": "ni8gVG1nWf0", "title": "Garth Brooks, Bee Gees, Frank Sinatra, Morris Albert, Johnny Nash (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/ni8gVG1nWf0/mqdefault.jpg", "dur": "32:58"}, {"id": "Z5385J778uw", "title": "RAW BLUES – Gritty 70s Blues Rock Jam (Inspired by ZZ Top)", "thumb": "https://i.ytimg.com/vi/Z5385J778uw/mqdefault.jpg", "dur": "25:18"}, {"id": "LumGPT-Uh2M", "title": "Lionel Richie - Hello (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/LumGPT-Uh2M/mqdefault.jpg", "dur": "5:05"}, {"id": "KC5XiupZv8Q", "title": "Fools Garden, John Denver, The Platters, Queen – Energetic Blues Rock Covers", "thumb": "https://i.ytimg.com/vi/KC5XiupZv8Q/mqdefault.jpg", "dur": "21:47"}, {"id": "Ne5Oc3mtbnQ", "title": "Bee Gees, Frank Sinatra, Garth Brooks, Michael Jackson (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/Ne5Oc3mtbnQ/mqdefault.jpg", "dur": "27:42"}, {"id": "esMn5p0q734", "title": "Frankie Valli - Can’t Take My Eyes Off You (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/esMn5p0q734/mqdefault.jpg", "dur": "6:53"}, {"id": "5JGTK50TlU0", "title": "The Platters - The Great Pretender, Lobo, Johnny Nash, The Beatles, Morris Albert (Blues Rock Cover)", "thumb": "https://i.ytimg.com/vi/5JGTK50TlU0/mqdefault.jpg", "dur": "36:11"}, {"id": "JasdGutKdbM", "title": "Frank Sinatra – My Way, Louis Armstrong, John Denver, Morris Albert (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/JasdGutKdbM/mqdefault.jpg", "dur": "35:52"}, {"id": "H1qxyxqB9h0", "title": "Queen & David Bowie, John Denver, Frank Sinatra, Eric Clapton (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/H1qxyxqB9h0/mqdefault.jpg", "dur": "26:57"}, {"id": "7t3ptelbfpM", "title": "Michael Learns To Rock, John Denver, Frank Sinatra, Eric Clapton (Emotional Blues Rock Reimagined)", "thumb": "https://i.ytimg.com/vi/7t3ptelbfpM/mqdefault.jpg", "dur": "27:21"}, {"id": "f3XFczfdxCw", "title": "Michael Bolton, John Denver, Eric Clapton, Yolanda Adams (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/f3XFczfdxCw/mqdefault.jpg", "dur": "26:59"}, {"id": "qiHhZ8vSkCo", "title": "Johnny Nash, The Beatles, Richard Marx, Lobo and Bill Withers (Soulful Blues rock reimagined)", "thumb": "https://i.ytimg.com/vi/qiHhZ8vSkCo/mqdefault.jpg", "dur": "26:26"}, {"id": "VljqQT44fM4", "title": "The Beatles - Here Comes The Sun, Garth Brooks, Louis Armstrong, Morris Albert (Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/VljqQT44fM4/mqdefault.jpg", "dur": "29:29"}, {"id": "U_miPzUIoeg", "title": "Bee Gees, Michael Jackson, Frankie Valli, Paul Anka & Bill Withers (Deep Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/U_miPzUIoeg/mqdefault.jpg", "dur": "28:12"}, {"id": "Jk7vluJmtVU", "title": "Bee Gees, Garth Brooks, Morris Albert, Louis Armstrong (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/Jk7vluJmtVU/mqdefault.jpg", "dur": "26:18"}, {"id": "63vWm0TLh-w", "title": "Morris Albert – Feelings (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/63vWm0TLh-w/mqdefault.jpg", "dur": "7:10"}, {"id": "9hJokt0Gg2Q", "title": "Louis Armstrong - What A Wonderful World (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/9hJokt0Gg2Q/mqdefault.jpg", "dur": "7:21"}, {"id": "AwF73AOBsDA", "title": "The Beatles – Oh! Darling, Stand By Me, Let It Be (Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/AwF73AOBsDA/mqdefault.jpg", "dur": "27:44"}, {"id": "Kk0kCszr2FA", "title": "The Beatles – Come Together (Vintage Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/Kk0kCszr2FA/mqdefault.jpg", "dur": "4:24"}, {"id": "qyIxbMZojxU", "title": "John Lennon – Imagine (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/qyIxbMZojxU/mqdefault.jpg", "dur": "4:59"}, {"id": "glVsKeCzF6Q", "title": "The Platters – The Great Pretender (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/glVsKeCzF6Q/mqdefault.jpg", "dur": "4:32"}, {"id": "00ZgM_eMbhk", "title": "The Beatles – Don’t Let Me Down (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/00ZgM_eMbhk/mqdefault.jpg", "dur": "5:01"}, {"id": "y4IpJeC-w1k", "title": "The Beatles – Ob-La-Di, Ob-La-Da (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/y4IpJeC-w1k/mqdefault.jpg", "dur": "4:47"}, {"id": "vizgnjhvLRw", "title": "Ronan Keating – If Tomorrow Never Comes (Emotional Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/vizgnjhvLRw/mqdefault.jpg", "dur": "5:44"}, {"id": "8X0rVtxRE6A", "title": "Gloria Gaynor – I Will Survive (Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/8X0rVtxRE6A/mqdefault.jpg", "dur": "4:44"}, {"id": "h6k8eSlBL8w", "title": "The Beatles - Stand By Me (Rock Blues Version)", "thumb": "https://i.ytimg.com/vi/h6k8eSlBL8w/mqdefault.jpg", "dur": "4:28"}, {"id": "zHl0Nj9JjiI", "title": "The Beatles – Let It Be (Soulful Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/zHl0Nj9JjiI/mqdefault.jpg", "dur": "5:04"}, {"id": "bz6c_PjdnLs", "title": "The Beatles - Yesterday (Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/bz6c_PjdnLs/mqdefault.jpg", "dur": "4:03"}, {"id": "h4iotxSekOg", "title": "The Beatles – Oh! Darling (Blues Rock Version)", "thumb": "https://i.ytimg.com/vi/h4iotxSekOg/mqdefault.jpg", "dur": "4:03"}, {"id": "aXYfQouPYxE", "title": "The Beatles – Yesterday (Smooth Reggae Acoustic)", "thumb": "https://i.ytimg.com/vi/aXYfQouPYxE/mqdefault.jpg", "dur": "3:57"}, {"id": "0vcTfD8kPa4", "title": "Pretty Woman – Vintage Ska Version | 1960s Jamaican Style", "thumb": "https://i.ytimg.com/vi/0vcTfD8kPa4/mqdefault.jpg", "dur": "4:08"}, {"id": "O4xtamNMvnM", "title": "Stevie Wonder – I Just Called to Say I Love You | Reggae Acoustic Cover", "thumb": "https://i.ytimg.com/vi/O4xtamNMvnM/mqdefault.jpg", "dur": "4:20"}, {"id": "aYrds7CrM94", "title": "Imagine – John Lennon (Reggae Acoustic Version)", "thumb": "https://i.ytimg.com/vi/aYrds7CrM94/mqdefault.jpg", "dur": "3:51"}, {"id": "Iv9BajEEwQA", "title": "John Lennon – Stand By Me (Reggae Ska Version)", "thumb": "https://i.ytimg.com/vi/Iv9BajEEwQA/mqdefault.jpg", "dur": "3:33"}, {"id": "xVkDUA5tohM", "title": "Only You (Reggae Ska Reimagined Version)", "thumb": "https://i.ytimg.com/vi/xVkDUA5tohM/mqdefault.jpg", "dur": "3:34"}, {"id": "ZLcpHZCctnM", "title": "Kiss Me – Sixpence None The Richer | 70s Vintage Ska Cover (Reggae Ska Version)", "thumb": "https://i.ytimg.com/vi/ZLcpHZCctnM/mqdefault.jpg", "dur": "3:34"}, {"id": "tUcIjt7Yepw", "title": "The Carpenters – Close To You (Acoustic Reggae Version)", "thumb": "https://i.ytimg.com/vi/tUcIjt7Yepw/mqdefault.jpg", "dur": "4:00"}, {"id": "naoe_zODr4c", "title": "Backstreet Boys – As Long As You Love Me (Acoustic Reggae Version)", "thumb": "https://i.ytimg.com/vi/naoe_zODr4c/mqdefault.jpg", "dur": "3:42"}, {"id": "mqS3NUdE2sA", "title": "Ronan Keating – If Tomorrow Never Comes (Smooth Acoustic Reggae Version)", "thumb": "https://i.ytimg.com/vi/mqS3NUdE2sA/mqdefault.jpg", "dur": "4:19"}, {"id": "w1ERS7UjhFM", "title": "John Lennon – Stand By Me (Smooth Acoustic Reggae Cover)", "thumb": "https://i.ytimg.com/vi/w1ERS7UjhFM/mqdefault.jpg", "dur": "3:18"}, {"id": "Yub-6GjR-eI", "title": "When I See You Smile (Acoustic Chill Reggae Version) – Relaxing Reggae Cover", "thumb": "https://i.ytimg.com/vi/Yub-6GjR-eI/mqdefault.jpg", "dur": "4:46"}, {"id": "otb1rMmnFXQ", "title": "Oasis – Don’t Look Back In Anger (Smooth Acoustic Reggae Cover) | Chill Island Version", "thumb": "https://i.ytimg.com/vi/otb1rMmnFXQ/mqdefault.jpg", "dur": "3:37"}, {"id": "xpWIGBTkPQo", "title": "Imagine – John Lennon (Acoustic Reggae Version) | Relaxing Island Cover", "thumb": "https://i.ytimg.com/vi/xpWIGBTkPQo/mqdefault.jpg", "dur": "3:51"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=The_Spy_Lounge.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "The Spy Lounge";
 const KANAL = "The_Spy_Lounge.html";
 const VIDEOS = [{"id": "ZGhelIjMHe4", "title": "BROOKLYN DEBRIEF | 1960s Cold War Spy Jazz | Deep Work, Late Night Reading & Focus Music", "thumb": "https://i.ytimg.com/vi/ZGhelIjMHe4/mqdefault.jpg", "dur": "1:37:38"}, {"id": "9m6-sTc854E", "title": "THE RIO PURSUIT | 1960s Spy Jazz · Bossa Nova Noir · Rio at Dusk · Deep Focus · Elegant Tension", "thumb": "https://i.ytimg.com/vi/9m6-sTc854E/mqdefault.jpg", "dur": "1:38:37"}, {"id": "sAhRrHhDo4w", "title": "CLASSIFIED CHILL | Smooth Spy Jazz for Warm Days, Slow Hours, Creative Focus, 1960s Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/sAhRrHhDo4w/mqdefault.jpg", "dur": "1:38:38"}, {"id": "CXQMHPUV2lc", "title": "THE LAST COURIER - BERLIN | 1960s Spy Jazz for Late Night Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/CXQMHPUV2lc/mqdefault.jpg", "dur": "1:30:17"}, {"id": "Gav1rZoYEiA", "title": "GROOM LAKE, NOTHING OFFICIALLY | Cold War Spy Jazz for Sleepless Nights & Classified Files", "thumb": "https://i.ytimg.com/vi/Gav1rZoYEiA/mqdefault.jpg", "dur": "1:37:16"}, {"id": "3tz_j60tj_0", "title": "BERLIN PINE ZERO | 1960s Cold War Spy Jazz | East Germany Noir & Cinematic Espionage Lounge", "thumb": "https://i.ytimg.com/vi/3tz_j60tj_0/mqdefault.jpg", "dur": "1:26:04"}, {"id": "bRr6OS7yfSI", "title": "THE LUNIK KIDNAPPING | True Declassified Cold War Story | CIA Spy Jazz & Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/bRr6OS7yfSI/mqdefault.jpg", "dur": "1:32:23"}, {"id": "sYAsXAruHJE", "title": "GHOST PROTOCOL | 1960s Action Spy Jazz & Cold War Lounge | Classified Operations & Deep Focus", "thumb": "https://i.ytimg.com/vi/sYAsXAruHJE/mqdefault.jpg", "dur": "1:35:22"}, {"id": "fUhvnHuLElg", "title": "TOKYO SHŌGUN PROTOCOL | 1960s Spy Jazz Noir | Cold War Yakuza Surveillance | Midnight Focus Jazz", "thumb": "https://i.ytimg.com/vi/fUhvnHuLElg/mqdefault.jpg", "dur": "1:46:02"}, {"id": "wKaLApUd3wQ", "title": "DPRK CANCELED. NEW MISSION: RELAX | 1960s Spy Jazz for Safe Houses & Quiet Nights", "thumb": "https://i.ytimg.com/vi/wKaLApUd3wQ/mqdefault.jpg", "dur": "1:35:32"}, {"id": "G-sK5WyrjTw", "title": "WELCOME TO CUBA,1960s Spy Lounge, Cinematic Cuban Jazz for Cold War Afternoons, Untraceable Missions", "thumb": "https://i.ytimg.com/vi/G-sK5WyrjTw/mqdefault.jpg", "dur": "1:43:19"}, {"id": "F0uQgFSroG8", "title": "OPERATION WASHTUB | True Declassified Cold War Story | Alaska Spy Jazz & Cinematic Lounge", "thumb": "https://i.ytimg.com/vi/F0uQgFSroG8/mqdefault.jpg", "dur": "1:40:04"}, {"id": "ifGwB_LqbFw", "title": "SUNDAY OFF THE GRID | 1960s Spy Lounge | Cinematic Jazz for Slow Mornings & Untraceable Afternoons", "thumb": "https://i.ytimg.com/vi/ifGwB_LqbFw/mqdefault.jpg", "dur": "1:36:21"}, {"id": "JOiYwCi23_E", "title": "SECRET SUMMER IN POSITANO | 1960s Amalfi Coast Spy Lounge | Cinematic Jazz for Focus & Night Drives", "thumb": "https://i.ytimg.com/vi/JOiYwCi23_E/mqdefault.jpg", "dur": "1:42:36"}, {"id": "pRLGNXwl8MI", "title": "The Spy Lounge: CHECKPOINT CHARLIE'S GHOST | 1960s Cold War Berlin, Spy Jazz & Iron Curtain Tension", "thumb": "https://i.ytimg.com/vi/pRLGNXwl8MI/mqdefault.jpg", "dur": "1:26:38"}, {"id": "-hT9yxHn5aM", "title": "The Spy Lounge: BOARDING PASS TO NOWHERE | 1960s European Spy Jazz, Cold War Tension & Suspense", "thumb": "https://i.ytimg.com/vi/-hT9yxHn5aM/mqdefault.jpg", "dur": "1:32:51"}, {"id": "9Tn46QMz_BY", "title": "The Spy Lounge: PALM SPRINGS: SECRETS RUN HOT | 1960s Desert Spy Lounge Jazz, Elegant Intrigue", "thumb": "https://i.ytimg.com/vi/9Tn46QMz_BY/mqdefault.jpg", "dur": "1:42:54"}, {"id": "yghxC1P-l98", "title": "The Spy Lounge: LONDON: TRUST NO ONE, DARLING | Rainy London Spy Jazz, 1960 Cold War, Elegant Danger", "thumb": "https://i.ytimg.com/vi/yghxC1P-l98/mqdefault.jpg", "dur": "1:31:53"}, {"id": "oWDWff6VDoE", "title": "The Spy Lounge: ROME NEVER FORGIVES | Sunlit Italian Spy Lounge, 1960s Cinematic Days", "thumb": "https://i.ytimg.com/vi/oWDWff6VDoE/mqdefault.jpg", "dur": "1:37:41"}, {"id": "j_IUFJOggQU", "title": "The Spy Lounge: THE CAPRI AFFAIR | Mediterranean Spy Jazz, Cold War Riviera, 1960s Espionage Nights", "thumb": "https://i.ytimg.com/vi/j_IUFJOggQU/mqdefault.jpg", "dur": "1:37:20"}, {"id": "DLoSJEB9L7Q", "title": "The Spy Lounge: ALWAYS BERLIN | Cold War Spy Jazz, Berlin Noir, 1960 Espionage, Iron Curtain Secrets", "thumb": "https://i.ytimg.com/vi/DLoSJEB9L7Q/mqdefault.jpg", "dur": "1:41:45"}, {"id": "tXZjwELquJI", "title": "The Spy Lounge: The Monaco Exchange | 1960s Spy Lounge, Riviera Secrets & Cold War Glamour", "thumb": "https://i.ytimg.com/vi/tXZjwELquJI/mqdefault.jpg", "dur": "1:43:24"}, {"id": "bsc-cJLeoaw", "title": "The Spy Lounge: Operation Europe | 1960s Spy Lounge, Cold War Shadows & Eastern Clues", "thumb": "https://i.ytimg.com/vi/bsc-cJLeoaw/mqdefault.jpg", "dur": "1:34:58"}, {"id": "VwwA0Ev3gY0", "title": "The Spy Lounge: The Buenos Aires Dossier | 1960s Spy Lounge, Argentine Elegance & Nocturnal Suspense", "thumb": "https://i.ytimg.com/vi/VwwA0Ev3gY0/mqdefault.jpg", "dur": "1:27:10"}, {"id": "ogYDz4tNa8Q", "title": "The Spy Lounge: The Last Mission in Havana | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/ogYDz4tNa8Q/mqdefault.jpg", "dur": "1:28:41"}, {"id": "SyyfLg9i23o", "title": "The Spy Lounge CUBA: WHERE SPIES DRINK RUM  | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/SyyfLg9i23o/mqdefault.jpg", "dur": "1:25:18"}, {"id": "Y-Lr487H1iU", "title": "The Spy Lounge: THE HAVANA DEPARTURE | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/Y-Lr487H1iU/mqdefault.jpg", "dur": "1:27:21"}, {"id": "-GTJsWdKny0", "title": "The Spy Lounge FALSE PASSPORT | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/-GTJsWdKny0/mqdefault.jpg", "dur": "1:21:56"}, {"id": "_ioOhjVUIDo", "title": "The Spy Lounge AZURE COAST PROTOCOL | 1960s Spy Jazz for Daytime Focus & Productivity", "thumb": "https://i.ytimg.com/vi/_ioOhjVUIDo/mqdefault.jpg", "dur": "1:22:01"}, {"id": "VPtIf4DbGOs", "title": "The Spy Lounge MISSION, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/VPtIf4DbGOs/mqdefault.jpg", "dur": "1:26:01"}, {"id": "qruKJe4gePE", "title": "The Spy Lounge MOMENTUM, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/qruKJe4gePE/mqdefault.jpg", "dur": "1:26:15"}, {"id": "66yfQvG85cs", "title": "The Spy Lounge INTERCEPT, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/66yfQvG85cs/mqdefault.jpg", "dur": "1:22:31"}, {"id": "jZPxm2z3mZc", "title": "The Spy Lounge BERLIN, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/jZPxm2z3mZc/mqdefault.jpg", "dur": "1:29:11"}, {"id": "KUdvIzYfQ8w", "title": "The Spy Lounge DRIVE, After Midnight | 1960s Spy Jazz for Night Driving, Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/KUdvIzYfQ8w/mqdefault.jpg", "dur": "1:18:30"}, {"id": "KgZZhVB_krY", "title": "The Spy Lounge UNDERCOVER, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/KgZZhVB_krY/mqdefault.jpg", "dur": "1:22:45"}, {"id": "NnjvKohs3bA", "title": "The Spy Lounge CONFIDENTIAL, After Midnight | 1960s Spy Jazz for Relaxation & Night Focus", "thumb": "https://i.ytimg.com/vi/NnjvKohs3bA/mqdefault.jpg", "dur": "1:17:12"}, {"id": "edsd9bRs4tw", "title": "The Spy Lounge DEBUT | 1960s Lounge Jazz for Relaxing and Cinematic Evenings", "thumb": "https://i.ytimg.com/vi/edsd9bRs4tw/mqdefault.jpg", "dur": "1:14:58"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

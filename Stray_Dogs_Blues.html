@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Stray_Dogs_Blues.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Stray Dogs Blues";
 const KANAL = "Stray_Dogs_Blues.html";
 const VIDEOS = [{"id": "pjSVgHkF85Y", "title": "🎸 Soft Blues Playlist for Relaxation | Vintage Drive-In Blues Night", "thumb": "https://i.ytimg.com/vi/pjSVgHkF85Y/mqdefault.jpg", "dur": "1:14:36"}, {"id": "nPQyG2JHPyw", "title": "🔥 Don’t Miss Out on This Perfect Night of Slow Blues & Warm Lights", "thumb": "https://i.ytimg.com/vi/nPQyG2JHPyw/mqdefault.jpg", "dur": "1:17:42"}, {"id": "rxyOlPXZpyM", "title": "A Mother’s Day Blues Playlist That Feels Like a Warm Hug 💙🌹 | Relaxing Blues", "thumb": "https://i.ytimg.com/vi/rxyOlPXZpyM/mqdefault.jpg", "dur": "1:26:27"}, {"id": "IKH1sYUhDUs", "title": "The Most Relaxing Blues - Best Soft Blues for Focus & Relaxation | SDB", "thumb": "https://i.ytimg.com/vi/IKH1sYUhDUs/mqdefault.jpg", "dur": "1:17:16"}, {"id": "MV9lkzHBZ_Y", "title": "You Won’t Skip This… Perfect Blues for Work, Study & Relaxation - Stray Dogs Blues", "thumb": "https://i.ytimg.com/vi/MV9lkzHBZ_Y/mqdefault.jpg", "dur": "1:19:17"}, {"id": "fMWR2LXG9rg", "title": "⚠️ Warning: This Blues Playlist Is Hard to Turn Off - Soft Blues Playlist", "thumb": "https://i.ytimg.com/vi/fMWR2LXG9rg/mqdefault.jpg", "dur": "1:10:29"}, {"id": "Jvddkoc_eVs", "title": "This Easter Playlist Will Brighten Your Day 🌸 Feel Good Blues Music", "thumb": "https://i.ytimg.com/vi/Jvddkoc_eVs/mqdefault.jpg", "dur": "1:50:44"}, {"id": "kdTRJ7GLsqQ", "title": "The Most Relaxing Blues | Instrumental Blues - Soft Blues Playlist - SDB", "thumb": "https://i.ytimg.com/vi/kdTRJ7GLsqQ/mqdefault.jpg", "dur": "1:36:04"}, {"id": "dSX5Y8bAl2A", "title": "Stray Dogs Blues Soft Blues Instrumental Blues   Blues Club Live", "thumb": "https://i.ytimg.com/vi/dSX5Y8bAl2A/mqdefault.jpg", "dur": "1:18:34"}, {"id": "uVde-G7zKIs", "title": "🟢 NON-STOP: Celtic Blues Night 🍀 St. Patrick’s Day Music - Irish Pub Blues", "thumb": "https://i.ytimg.com/vi/uVde-G7zKIs/mqdefault.jpg", "dur": "11:54:56"}, {"id": "f2LteO7_Kvg", "title": "Irish Pub Blues 🍀 St. Patrick’s Day Music | Irish Blues Rock - Stray Dogs Blues", "thumb": "https://i.ytimg.com/vi/f2LteO7_Kvg/mqdefault.jpg", "dur": "1:21:28"}, {"id": "i6p4d9LKXmg", "title": "Relaxing Blues - Blues Music - Instrumental Blues - Soft Blues Playlist", "thumb": "https://i.ytimg.com/vi/i6p4d9LKXmg/mqdefault.jpg", "dur": "43:18"}, {"id": "ooUM0JKWdro", "title": "Relaxing Blues Night – Smooth Instrumental Blues in a Classy Jazz Club", "thumb": "https://i.ytimg.com/vi/ooUM0JKWdro/mqdefault.jpg", "dur": "51:24"}, {"id": "KCY9RF9Z-D8", "title": "The Most Relaxing Blues You’ll Hear Tonight | Soft Instrumental Blues", "thumb": "https://i.ytimg.com/vi/KCY9RF9Z-D8/mqdefault.jpg", "dur": "46:03"}, {"id": "Emlhcz1VDU0", "title": "Relaxing Soft Blues Music - Romantic Blues - Blues Music - Dog Blues", "thumb": "https://i.ytimg.com/vi/Emlhcz1VDU0/mqdefault.jpg", "dur": "1:15:11"}, {"id": "0lAVgzs5fLI", "title": "Romantic Blues - Relaxing Soft Blues Music - Dog Blues - Blues Club Jam", "thumb": "https://i.ytimg.com/vi/0lAVgzs5fLI/mqdefault.jpg", "dur": "1:23:07"}, {"id": "rjtw0GSO-kY", "title": "Relaxing Blues Music | Instrumental Blues Playlist | Soft Jazz Blues Night", "thumb": "https://i.ytimg.com/vi/rjtw0GSO-kY/mqdefault.jpg", "dur": "1:15:18"}, {"id": "lJwlexsW3Vg", "title": "Relaxing Soft Blues Music - Romantic Blues - Relaxing Blues - Dog Blues", "thumb": "https://i.ytimg.com/vi/lJwlexsW3Vg/mqdefault.jpg", "dur": "1:09:56"}, {"id": "HRyfL62vuTw", "title": "Stray Dogs Blues - Soft Blues Playlist - Romantic Blues - Relaxing Blues", "thumb": "https://i.ytimg.com/vi/HRyfL62vuTw/mqdefault.jpg", "dur": "1:25:44"}, {"id": "-VJlKcNdBbk", "title": "Relaxing Blues Music | Soft Instrumental Blues Playlist | Jazz Club Vibes", "thumb": "https://i.ytimg.com/vi/-VJlKcNdBbk/mqdefault.jpg", "dur": "1:13:37"}, {"id": "sgtJkFh3OUI", "title": "Stray Dogs Blues - Soft Blues Jam - Romantic Blues - Soft Blues Playlist", "thumb": "https://i.ytimg.com/vi/sgtJkFh3OUI/mqdefault.jpg", "dur": "2:03:14"}, {"id": "catKHmssHuU", "title": "The Best of Blues | Relaxing Blues - Instrumental Blues", "thumb": "https://i.ytimg.com/vi/catKHmssHuU/mqdefault.jpg", "dur": "11:54:59"}, {"id": "h1_9xQlyr_0", "title": "Relaxing Blues - Blues Music - Instrumental Blues - Soft Blues Playlist", "thumb": "https://i.ytimg.com/vi/h1_9xQlyr_0/mqdefault.jpg", "dur": "1:33:21"}, {"id": "YVuIK2EGtNM", "title": "Relaxing Whiskey Blues - Blues Music - Instrumental Blues - Soft Blues Playlist", "thumb": "https://i.ytimg.com/vi/YVuIK2EGtNM/mqdefault.jpg", "dur": "1:32:39"}, {"id": "2lXWYVQ2cEw", "title": "Instrumental Blues Music for Relaxation - Soft Holiday Blues in NYC", "thumb": "https://i.ytimg.com/vi/2lXWYVQ2cEw/mqdefault.jpg", "dur": "1:26:50"}, {"id": "pqR9oC8q2jo", "title": "Christmas Music - Christmas Blues - New York Jazz - Holiday Playlist", "thumb": "https://i.ytimg.com/vi/pqR9oC8q2jo/mqdefault.jpg", "dur": "1:30:35"}, {"id": "hYpPmx2i1Fk", "title": "Christmas Blues at Rockefeller Center - Blues Christmas - Christmas Instrumental Music", "thumb": "https://i.ytimg.com/vi/hYpPmx2i1Fk/mqdefault.jpg", "dur": "11:54:59"}, {"id": "7b3ijON9nFo", "title": "Christmas Blues at Radio City New York - Christmas Music - Holiday Playlist", "thumb": "https://i.ytimg.com/vi/7b3ijON9nFo/mqdefault.jpg", "dur": "1:29:19"}, {"id": "FvzmU9TcfM0", "title": "New York City Blues - Christmas Music - Holiday Playlist - Christmas Blues", "thumb": "https://i.ytimg.com/vi/FvzmU9TcfM0/mqdefault.jpg", "dur": "1:17:53"}, {"id": "B1an8FItcDQ", "title": "Christmas Blues at Hudson Yards - Christmas Music - Holiday Playlist", "thumb": "https://i.ytimg.com/vi/B1an8FItcDQ/mqdefault.jpg", "dur": "1:48:49"}, {"id": "-ZDR3r3Bbts", "title": "Christmas Blues at Rockefeller Center - Blues Christmas - Christmas Instrumental Music", "thumb": "https://i.ytimg.com/vi/-ZDR3r3Bbts/mqdefault.jpg", "dur": "1:37:20"}, {"id": "mMoGfCJLkkI", "title": "Stray Dogs Blues - Soft Blues for Relaxation - Nostalgic Blues", "thumb": "https://i.ytimg.com/vi/mMoGfCJLkkI/mqdefault.jpg", "dur": "1:15:06"}, {"id": "bdBk8i4Kryk", "title": "Stray Dogs Blues - Soft Blues Playlist - Black Friday Special", "thumb": "https://i.ytimg.com/vi/bdBk8i4Kryk/mqdefault.jpg", "dur": "1:20:52"}, {"id": "u9ym7Jtchxw", "title": "Soft Blues Playlist - Relaxing Blues - Blues Music Best Songs", "thumb": "https://i.ytimg.com/vi/u9ym7Jtchxw/mqdefault.jpg", "dur": "1:21:59"}, {"id": "rUlELWdGxOs", "title": "Stray Dogs Blues - Blues Music Relaxing Whiskey Blues - Soft Blues", "thumb": "https://i.ytimg.com/vi/rUlELWdGxOs/mqdefault.jpg", "dur": "1:21:47"}, {"id": "ZzVMMCs_Gfs", "title": "Stray Dogs Blues - Instrumental Blues - Soft Blues Playlist - SDB", "thumb": "https://i.ytimg.com/vi/ZzVMMCs_Gfs/mqdefault.jpg", "dur": "1:30:14"}, {"id": "v5PNLKVbkNY", "title": "Stray Dogs Blues - Blues Music - Instrumental Blues - SDB", "thumb": "https://i.ytimg.com/vi/v5PNLKVbkNY/mqdefault.jpg", "dur": "1:27:55"}, {"id": "egiJrXgEWdQ", "title": "Stray Dogs Blues - Relaxing Blues - Instrumental Blues - SDB", "thumb": "https://i.ytimg.com/vi/egiJrXgEWdQ/mqdefault.jpg", "dur": "1:20:28"}, {"id": "b8wLe1C9mcQ", "title": "The Best of Blues - Relaxing Blues - Instrumental Blues - SDB", "thumb": "https://i.ytimg.com/vi/b8wLe1C9mcQ/mqdefault.jpg", "dur": "1:28:56"}, {"id": "LAsEKR83VRY", "title": "Stray Dogs Blues - The Best of Blues - Relaxing Blues - Soft Blues", "thumb": "https://i.ytimg.com/vi/LAsEKR83VRY/mqdefault.jpg", "dur": "1:39:47"}, {"id": "LRKiYrC8HPM", "title": "Stray Dogs Blues - The Best of Blues - Soft Blues - Whiskey Blues", "thumb": "https://i.ytimg.com/vi/LRKiYrC8HPM/mqdefault.jpg", "dur": "1:33:09"}, {"id": "Vfubo4X-lfI", "title": "Stray Dogs Blues – Autumn Blues for Relaxation and Good Mood", "thumb": "https://i.ytimg.com/vi/Vfubo4X-lfI/mqdefault.jpg", "dur": "1:32:51"}, {"id": "EW6CJuk0ayw", "title": "The Best of Blues | Relaxing Blues - Instrumental Blues - Stray Dogs Blues", "thumb": "https://i.ytimg.com/vi/EW6CJuk0ayw/mqdefault.jpg", "dur": "1:22:23"}, {"id": "t7zoy-jWNww", "title": "Relaxing Blues - Instrumental Blues Music for Serenity - Stray Dogs Blues", "thumb": "https://i.ytimg.com/vi/t7zoy-jWNww/mqdefault.jpg", "dur": "1:36:41"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

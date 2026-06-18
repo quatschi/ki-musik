@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Cozy_Jazz_Fireplace.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Cozy Jazz Fireplace";
 const KANAL = "Cozy_Jazz_Fireplace.html";
 const VIDEOS = [{"id": "3al0bxI6OuQ", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/3al0bxI6OuQ/mqdefault.jpg", "dur": "1:18:40"}, {"id": "DtlVUH_uZFI", "title": "Smooth Jazz & Soulful R&B Instrumental - Warm Emotional for a Peaceful & Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/DtlVUH_uZFI/mqdefault.jpg", "dur": "1:14:10"}, {"id": "lAPd9fjDiW0", "title": "Smooth Jazz Soul & R&B instrumental - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/lAPd9fjDiW0/mqdefault.jpg", "dur": "1:32:19"}, {"id": "l6WtNPWV-II", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/l6WtNPWV-II/mqdefault.jpg", "dur": "1:23:02"}, {"id": "9173LoOLAXk", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments and Chill", "thumb": "https://i.ytimg.com/vi/9173LoOLAXk/mqdefault.jpg", "dur": "1:06:46"}, {"id": "sKuauCxbyN4", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/sKuauCxbyN4/mqdefault.jpg", "dur": "1:21:46"}, {"id": "bY35SIJOKKM", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments and Chill", "thumb": "https://i.ytimg.com/vi/bY35SIJOKKM/mqdefault.jpg", "dur": "1:13:39"}, {"id": "wM7Fo4Hl5ho", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/wM7Fo4Hl5ho/mqdefault.jpg", "dur": "1:30:24"}, {"id": "eqT58FlqnSU", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/eqT58FlqnSU/mqdefault.jpg", "dur": "1:22:46"}, {"id": "ygaXWGJgK9g", "title": "Smooth Jazz & Soul R&B instumental - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/ygaXWGJgK9g/mqdefault.jpg", "dur": "1:32:05"}, {"id": "VT5zzAQKNtI", "title": "Smooth Jazz & Soul R&B - Warm Sax & Smooth Melodies for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/VT5zzAQKNtI/mqdefault.jpg", "dur": "1:16:16"}, {"id": "e_w-1Ws-dYg", "title": "Smooth Jazz & Soul R&B instrumental - Warm Weekend Melodies for Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/e_w-1Ws-dYg/mqdefault.jpg", "dur": "1:36:38"}, {"id": "MQZEFDA9qD0", "title": "Smooth Jazz & Soul R&B - Warm Melodies for Peaceful & Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/MQZEFDA9qD0/mqdefault.jpg", "dur": "2:09:41"}, {"id": "-mUbbj90tFM", "title": "Smooth Jazz Soul R&B instrumental - Soft and Warm Melodies for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/-mUbbj90tFM/mqdefault.jpg", "dur": "1:40:44"}, {"id": "KF-ae9PYLWM", "title": "Smooth Jazz & Soul R&B instrumental - Warm Lounge Sax & Guitar Grooves for Chill Moments", "thumb": "https://i.ytimg.com/vi/KF-ae9PYLWM/mqdefault.jpg", "dur": "1:35:31"}, {"id": "h6oemVQZru8", "title": "Smooth Jazz & Soul R&B - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/h6oemVQZru8/mqdefault.jpg", "dur": "1:56:57"}, {"id": "SExzKfdE9P0", "title": "Smooth Jazz & Soul R&B instrumental- Warm Emotional Melodies for Relaxing & Peaceful Weekend Moments", "thumb": "https://i.ytimg.com/vi/SExzKfdE9P0/mqdefault.jpg", "dur": "1:25:55"}, {"id": "KxjbO2dka9g", "title": "Smooth Jazz & Soul R&B - Smooth Vibes for Relaxing & Thinking.", "thumb": "https://i.ytimg.com/vi/KxjbO2dka9g/mqdefault.jpg", "dur": "1:20:49"}, {"id": "vRy4v80JJe0", "title": "Smooth Jazz & Soul R&B Instrumental - Warm Emotional Melodies for Relaxing & Peaceful Moments.", "thumb": "https://i.ytimg.com/vi/vRy4v80JJe0/mqdefault.jpg", "dur": "1:51:21"}, {"id": "lBBfzW9YqP8", "title": "Smooth Jazz & Soul R&B - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/lBBfzW9YqP8/mqdefault.jpg", "dur": "1:17:08"}, {"id": "r75adc4aPiI", "title": "Smooth Jazz & Soul R&B - Soft Instrumentals for Study, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/r75adc4aPiI/mqdefault.jpg", "dur": "1:26:41"}, {"id": "FT5UBJ3PA6w", "title": "Smooth Jazz & Soul R&B - Perfect Background Music for Studying & Relaxation.", "thumb": "https://i.ytimg.com/vi/FT5UBJ3PA6w/mqdefault.jpg", "dur": "1:27:20"}, {"id": "fm8ioqRnTaU", "title": "Smooth Jazz Soul & R&B instrumental - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/fm8ioqRnTaU/mqdefault.jpg", "dur": "1:51:21"}, {"id": "k7nCMBI9zOE", "title": "Smooth Jazz & Soul R&B - Elegant Vibes For Calm Evenings.", "thumb": "https://i.ytimg.com/vi/k7nCMBI9zOE/mqdefault.jpg", "dur": "1:29:42"}, {"id": "d6YlgS_vnI8", "title": "Smooth Jazz & Soul R&B instrumental – Warm Sounds for Gentle Relaxing Moments", "thumb": "https://i.ytimg.com/vi/d6YlgS_vnI8/mqdefault.jpg", "dur": "1:29:42"}, {"id": "9JjIoetZD5o", "title": "Smooth Jazz Soul & R&B - Smooth Vibes for Relaxing & Thinking.", "thumb": "https://i.ytimg.com/vi/9JjIoetZD5o/mqdefault.jpg", "dur": "1:35:16"}, {"id": "PNpjki2HMvY", "title": "Smooth Jazz & Soulful R&B Grooves Cozy Cafe Ambience - Relax & Focus", "thumb": "https://i.ytimg.com/vi/PNpjki2HMvY/mqdefault.jpg", "dur": "1:51:21"}, {"id": "my0y42VRA9Q", "title": "Smooth Jazz Soul & R&B - Warm Instrumentals for Late Night Relaxation.", "thumb": "https://i.ytimg.com/vi/my0y42VRA9Q/mqdefault.jpg", "dur": "1:50:32"}, {"id": "48D-ZwnINiY", "title": "Smooth Jazz Soul & R&B instrumental - Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/48D-ZwnINiY/mqdefault.jpg", "dur": "1:36:32"}, {"id": "bZh7JN8X3Wo", "title": "Smooth Jazz & Soul R&B instrumental – Warm Sounds for Gentle Relaxing Moments", "thumb": "https://i.ytimg.com/vi/bZh7JN8X3Wo/mqdefault.jpg", "dur": "1:51:21"}, {"id": "tBEF8_Tr8lI", "title": "Smooth Jazz & Soul R&B – Cozy Sounds for Relaxation and Quiet Moments.", "thumb": "https://i.ytimg.com/vi/tBEF8_Tr8lI/mqdefault.jpg", "dur": "1:35:16"}, {"id": "18mp64SbscU", "title": "Smooth Jazz & Soul R&B – Warm Melodies for Peaceful Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/18mp64SbscU/mqdefault.jpg", "dur": "2:06:05"}, {"id": "9CW90kOiM-I", "title": "Smooth Jazz & Soulful R&B Instrumental | Warm Emotional Melodies for a Peaceful & Relaxing Weekend", "thumb": "https://i.ytimg.com/vi/9CW90kOiM-I/mqdefault.jpg", "dur": "1:55:32"}, {"id": "LwEEuUCo6Qs", "title": "Smooth Jazz & Soul R&B – Perfect background music for studying & relaxation.", "thumb": "https://i.ytimg.com/vi/LwEEuUCo6Qs/mqdefault.jpg", "dur": "1:55:04"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

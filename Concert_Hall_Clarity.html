@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Concert_Hall_Clarity.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Concert Hall Clarity";
 const KANAL = "Concert_Hall_Clarity.html";
 const VIDEOS = [{"id": "ngJPzbbZ80k", "title": "Neoclassical - Classical Music for Studying, Focus & Concentration 🧠 Deep Work and Reading", "thumb": "https://i.ytimg.com/vi/ngJPzbbZ80k/mqdefault.jpg", "dur": "1:43:14"}, {"id": "2C0Aj59uY6U", "title": "Gentle Classical Music for Slow Living & Peaceful Moments ☕ – Chopin, Debussy, Mozart,...", "thumb": "https://i.ytimg.com/vi/2C0Aj59uY6U/mqdefault.jpg", "dur": "2:32:35"}, {"id": "T1r6uOUGZbo", "title": "Rococo| Classical Music for Focus 🧠 Mozart, Bach, Chopin | Perfect for Studying & Deep Work", "thumb": "https://i.ytimg.com/vi/T1r6uOUGZbo/mqdefault.jpg", "dur": "2:17:08"}, {"id": "xdtg2bqn8wM", "title": "The Dark Secret Behind Mozart’s Final Masterpiece (Dark Academia)", "thumb": "https://i.ytimg.com/vi/xdtg2bqn8wM/mqdefault.jpg", "dur": "1:35:08"}, {"id": "jck3d4SMNZ0", "title": "Classical Music for Studying, Focus 🧠 Deep Work and Reading | Schubert , Vivaldi, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/jck3d4SMNZ0/mqdefault.jpg", "dur": "2:00:16"}, {"id": "nNO3kXbo7iU", "title": "A Playlist to Watch the World Go By 🌫️ Peaceful Classical Music – Rachmaninoff, Debussy, Satie,...", "thumb": "https://i.ytimg.com/vi/nNO3kXbo7iU/mqdefault.jpg", "dur": "1:55:36"}, {"id": "fDlm6Urvbf4", "title": "Classical for Studying, Concentration & Relaxation | Mozart, Vivaldi, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/fDlm6Urvbf4/mqdefault.jpg", "dur": "1:54:21"}, {"id": "tHy_PlaxImg", "title": "Best of Mozart – Timeless Classical Music for Intelligence, Relaxation and Deep Focus", "thumb": "https://i.ytimg.com/vi/tHy_PlaxImg/mqdefault.jpg", "dur": "1:56:47"}, {"id": "a7odqwb4sGg", "title": "Contemplative Classical Music to Find Inner Peace | Verdi, Puccini, Mozart, Donizetti,...", "thumb": "https://i.ytimg.com/vi/a7odqwb4sGg/mqdefault.jpg", "dur": "1:59:39"}, {"id": "yx0LstI1jQk", "title": "Great Classical Composers | Fanny Mendelssohn, Clara Schumann, Amy Beach, Mozart, Chopin,...", "thumb": "https://i.ytimg.com/vi/yx0LstI1jQk/mqdefault.jpg", "dur": "2:05:52"}, {"id": "jFW3QlIOOko", "title": "Classical Music for Studying & Brain Power 🧠 | Mozart, Vivaldi, Tchaikovsky, Schubert,...", "thumb": "https://i.ytimg.com/vi/jFW3QlIOOko/mqdefault.jpg", "dur": "2:00:19"}, {"id": "Ce0chTvgHhw", "title": "Most Beautiful Classical Music  - Mozart, Chopin, Debussy, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/Ce0chTvgHhw/mqdefault.jpg", "dur": "1:54:16"}, {"id": "-i3S1yuTZlE", "title": "The Sound of Early Music – Beethoven Classical Masterpieces for Deep Focus & Elite Thinking", "thumb": "https://i.ytimg.com/vi/-i3S1yuTZlE/mqdefault.jpg", "dur": "1:51:25"}, {"id": "uXK8DZ_BeKE", "title": "Dark Classical Music | Chopin, Debussy, Beethoven...", "thumb": "https://i.ytimg.com/vi/uXK8DZ_BeKE/mqdefault.jpg", "dur": "1:59:57"}, {"id": "-0IZm51YDHE", "title": "Classical Music You Should Listen to Once in Your Life 🎵 Mozart, Schubert, Beethoven, Bach,...", "thumb": "https://i.ytimg.com/vi/-0IZm51YDHE/mqdefault.jpg", "dur": "1:39:53"}, {"id": "TkPXAJ6BIEw", "title": "The Most Beautiful Adagios: Calm & Emotional Classical Music | Rachmaninoff, Mozart, Tchaikovsky,...", "thumb": "https://i.ytimg.com/vi/TkPXAJ6BIEw/mqdefault.jpg", "dur": "1:55:46"}, {"id": "xjqebjth03w", "title": "Classical Music for Deep Focus & Reading 🌿 Relaxing Planet Vibes – Bach, Debussy & Schubert,...", "thumb": "https://i.ytimg.com/vi/xjqebjth03w/mqdefault.jpg", "dur": "1:55:36"}, {"id": "4_nzJizXOu8", "title": "Beethoven, Chopin, Liszt: Piano Music for Deep Work, Focus Mode, & Concentration", "thumb": "https://i.ytimg.com/vi/4_nzJizXOu8/mqdefault.jpg", "dur": "1:41:01"}, {"id": "DfuYiLALFdQ", "title": "HAPPY 🌸 Peaceful Classical Music for Studying, Relaxing & Deep Focus |Mozart, Chopin, Debussy,...", "thumb": "https://i.ytimg.com/vi/DfuYiLALFdQ/mqdefault.jpg", "dur": "1:41:01"}, {"id": "apcPbFC8lEQ", "title": "In the Silence of Thought 🌫️ Deep Focus Classical Music (Mozart, Chopin, Satie,...)", "thumb": "https://i.ytimg.com/vi/apcPbFC8lEQ/mqdefault.jpg", "dur": "1:45:38"}, {"id": "Maw7DD6yzfY", "title": "Emotional Adagio – Classical Music for Studying, Focus & Deep Work | Chopin, Beethoven, Liszt,...", "thumb": "https://i.ytimg.com/vi/Maw7DD6yzfY/mqdefault.jpg", "dur": "1:51:21"}, {"id": "bf6p9V7U56Q", "title": "Queen Vibes – Elegant Classical Music for Focus & Study | Chopin, Beethoven, Liszt,...", "thumb": "https://i.ytimg.com/vi/bf6p9V7U56Q/mqdefault.jpg", "dur": "1:45:40"}, {"id": "FAiUaLsS6ns", "title": "Entering My Villain Era🖤 Classical Music for Deep Focus & Silent Power-Chopin, Beethoven, Mozart,...", "thumb": "https://i.ytimg.com/vi/FAiUaLsS6ns/mqdefault.jpg", "dur": "1:43:34"}, {"id": "bLJhdyk1_Ww", "title": "Cottagecore | Classical Music for Reading& Relaxing🌿Cottagecore Vibes _ Bach, Debussy & Schubert,...", "thumb": "https://i.ytimg.com/vi/bLJhdyk1_Ww/mqdefault.jpg", "dur": "1:54:33"}, {"id": "9b4libWjuDI", "title": "Spring Study Session 📚 | Calm Classical Music for Focus,& Clarity | Bach, Mozart, Debussy...", "thumb": "https://i.ytimg.com/vi/9b4libWjuDI/mqdefault.jpg", "dur": "2:14:11"}, {"id": "vfOjt1ZK6OQ", "title": "Wisdom | Classical Music for Studying 🧠 Beethoven, Chopin, Debussy,.. Soft Piano for Calm & Serenity", "thumb": "https://i.ytimg.com/vi/vfOjt1ZK6OQ/mqdefault.jpg", "dur": "1:57:47"}, {"id": "leRdu-7tZ0c", "title": "Classical Music In a Dreamy World ✨ | Beethoven, Chopin, Debussy,... Soft Piano for Calm & Serenity", "thumb": "https://i.ytimg.com/vi/leRdu-7tZ0c/mqdefault.jpg", "dur": "2:18:30"}, {"id": "xDVjZmAbm7Y", "title": "Fantasy Classical Music for Studying, Focus 🧠 Deep Work and Reading| Beethoven, Mozart, Bach,...", "thumb": "https://i.ytimg.com/vi/xDVjZmAbm7Y/mqdefault.jpg", "dur": "2:21:49"}, {"id": "iY3_oHW9hrI", "title": "📖 Beautiful Piano Classical Music for Reading & Studying | Beethoven, Mozart, Bach,...", "thumb": "https://i.ytimg.com/vi/iY3_oHW9hrI/mqdefault.jpg", "dur": "2:19:04"}, {"id": "lh0Mv-38VHU", "title": "Classical Music for Reading, Focus & Concentration 🧠 - Mozart, Chopin, Debussy, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/lh0Mv-38VHU/mqdefault.jpg", "dur": "2:45:45"}, {"id": "tN9IoUfPKAo", "title": "Best Classical Music for Study, Focus & Productivity 🎧 – Mozart, Beethoven, Chopin,...", "thumb": "https://i.ytimg.com/vi/tN9IoUfPKAo/mqdefault.jpg", "dur": "2:17:53"}, {"id": "HjMyZWJcrD4", "title": "Classical Music | Peaceful Classical Music | Bach, Mozart, Händel...", "thumb": "https://i.ytimg.com/vi/HjMyZWJcrD4/mqdefault.jpg", "dur": "2:23:22"}, {"id": "yt7WVNvzMu8", "title": "Classical Music |🧠 Sunsets: Bach, Corelli, Beethoven, Mahler, Brahms, Mendelssohn, Chopin...", "thumb": "https://i.ytimg.com/vi/yt7WVNvzMu8/mqdefault.jpg", "dur": "2:58:15"}, {"id": "QdGqSrIELZ0", "title": "Eternal Calm | Classical Music for Lonely People - Bach, Beethoven, Brahms,...", "thumb": "https://i.ytimg.com/vi/QdGqSrIELZ0/mqdefault.jpg", "dur": "1:59:43"}, {"id": "eBnxCdHWbi8", "title": "Dark Requiem Playlist 🖤 Beethoven · Mozart · Bach · Chopin ...", "thumb": "https://i.ytimg.com/vi/eBnxCdHWbi8/mqdefault.jpg", "dur": "2:00:27"}, {"id": "Kb-7MQ_Oyl0", "title": "Silent Classical Music – Peaceful Instrumental for Relaxation, Study, Deep Focus", "thumb": "https://i.ytimg.com/vi/Kb-7MQ_Oyl0/mqdefault.jpg", "dur": "2:17:02"}, {"id": "RebugDcvauE", "title": "Classical Music for Late Night - Debussy, Mozart, Beethoven...", "thumb": "https://i.ytimg.com/vi/RebugDcvauE/mqdefault.jpg", "dur": "2:01:44"}, {"id": "jbvgdPyTnes", "title": "Soothing Classical Music for Studying, Focus & Concentration 🧠 Deep Work and Reading", "thumb": "https://i.ytimg.com/vi/jbvgdPyTnes/mqdefault.jpg", "dur": "2:11:39"}, {"id": "5c5pAz5Gb98", "title": "2 HOURS Classical Music for Studying, Focus & Concentration 🧠 Deep Work and Reading", "thumb": "https://i.ytimg.com/vi/5c5pAz5Gb98/mqdefault.jpg", "dur": "2:07:00"}, {"id": "cMN_7KDztuA", "title": "Quiet Life Classical Music🌙 | Peaceful Piano for Calm Nights and Deep Rest| Chopin, Beethoven & Bach", "thumb": "https://i.ytimg.com/vi/cMN_7KDztuA/mqdefault.jpg", "dur": "2:02:50"}, {"id": "DSFykjYp9DE", "title": "Beethoven, Chopin, Liszt: Piano Music for Deep Work, Focus Mode, & Concentration", "thumb": "https://i.ytimg.com/vi/DSFykjYp9DE/mqdefault.jpg", "dur": "2:16:18"}, {"id": "34WOKkp-8sE", "title": "Dark Academia Classical Music | Beethoven, Tchaikovsky, Chopin,...", "thumb": "https://i.ytimg.com/vi/34WOKkp-8sE/mqdefault.jpg", "dur": "2:05:58"}, {"id": "pCLCu1peOiU", "title": "Memory Classical Music for Studying, Focus & Concentration 🧠Mozart, Bach, Tchaikovsky,...", "thumb": "https://i.ytimg.com/vi/pCLCu1peOiU/mqdefault.jpg", "dur": "2:36:00"}, {"id": "U2zHN6F8QbE", "title": "Dark Requiem Playlist 🖤 Beethoven · Mozart · Bach · Chopin ...", "thumb": "https://i.ytimg.com/vi/U2zHN6F8QbE/mqdefault.jpg", "dur": "2:25:46"}, {"id": "ceyVWj9cYR8", "title": "Dramatic Classical Music  🧠Chopin, Beethoven, Mozart, Bach, Vivaldi...", "thumb": "https://i.ytimg.com/vi/ceyVWj9cYR8/mqdefault.jpg", "dur": "2:01:39"}, {"id": "44rEDpdOPaY", "title": "Classical Music for Studying, Focus 🧠 Deep Work and Reading Chopin, Beethoven, Mozart, Bach, Vivaldi", "thumb": "https://i.ytimg.com/vi/44rEDpdOPaY/mqdefault.jpg", "dur": "2:10:29"}, {"id": "CREuIowqkoE", "title": "Classical Music for Relaxation | Mozart, Dvořák, Bach, Beethoven, Chopin,...", "thumb": "https://i.ytimg.com/vi/CREuIowqkoE/mqdefault.jpg", "dur": "2:08:23"}, {"id": "dXKV_ByHaRQ", "title": "Soft Morning Classical Collection – Peaceful Works by Beethoven, Debussy , Satie,...", "thumb": "https://i.ytimg.com/vi/dXKV_ByHaRQ/mqdefault.jpg", "dur": "2:14:56"}, {"id": "9EZTGTHKS2A", "title": "Classical Music for Brain Power | Mozart, Beethoven, Vivaldi...", "thumb": "https://i.ytimg.com/vi/9EZTGTHKS2A/mqdefault.jpg", "dur": "1:44:41"}, {"id": "Y89swv8GnTM", "title": "Romantic Classical Music | Beethoven, Chopin, Tchaikovsky, Liszt...", "thumb": "https://i.ytimg.com/vi/Y89swv8GnTM/mqdefault.jpg", "dur": "1:56:26"}, {"id": "RWbTmC7VWHI", "title": "Nocturne Classical Music for Study & Deep Focus 📚 Reading Session", "thumb": "https://i.ytimg.com/vi/RWbTmC7VWHI/mqdefault.jpg", "dur": "2:00:50"}, {"id": "8m3oRCMV3PE", "title": "Timeless Classical Masterpieces – A Noble Collection of Elegant Works by Mozart, Bach & Chopin...", "thumb": "https://i.ytimg.com/vi/8m3oRCMV3PE/mqdefault.jpg", "dur": "2:22:56"}, {"id": "UQjBy_DTFPo", "title": "Classical Music- Focus & Concentration 🧠 Deep Work and Reading - Mozart, Beethoven, Vivaldi, Bach...", "thumb": "https://i.ytimg.com/vi/UQjBy_DTFPo/mqdefault.jpg", "dur": "2:27:08"}, {"id": "nqq2EcmX7o4", "title": "🎻 Dark Violin, Piano & Cello Music for Deep Focus |  Mozart, Beethoven, Chopin", "thumb": "https://i.ytimg.com/vi/nqq2EcmX7o4/mqdefault.jpg", "dur": "1:56:00"}, {"id": "zom21U0VQwE", "title": "Relaxing Baroque Music | Bach, Vivaldi, Händel...", "thumb": "https://i.ytimg.com/vi/zom21U0VQwE/mqdefault.jpg", "dur": "2:13:55"}, {"id": "2iYULy0wUHA", "title": "Classical Sonata | Music for Studying, Focus & Concentration|Mozart, Chopin, Debussy, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/2iYULy0wUHA/mqdefault.jpg", "dur": "2:15:43"}, {"id": "GhTUpCXQjQI", "title": "Classical Music for Studying, Focus 🧠 Deep Work and Reading| | Mozart, Beethoven, Vivaldi...", "thumb": "https://i.ytimg.com/vi/GhTUpCXQjQI/mqdefault.jpg", "dur": "2:08:39"}, {"id": "BWdef_FoHRs", "title": "Beethoven, Chopin, Liszt...| Ballet Classical Music Classical Music for Studying, Focus|", "thumb": "https://i.ytimg.com/vi/BWdef_FoHRs/mqdefault.jpg", "dur": "2:09:11"}, {"id": "eaXOo5lmKPs", "title": "Soothing Classical Music - Beethoven, Mozart, Bach, Tchaikovsky,...", "thumb": "https://i.ytimg.com/vi/eaXOo5lmKPs/mqdefault.jpg", "dur": "1:59:43"}, {"id": "hTwRGTpm2M0", "title": "Classical Music for Studying & Brain Power  | Mozart, Vivaldi, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/hTwRGTpm2M0/mqdefault.jpg", "dur": "2:02:59"}, {"id": "4zuVqqUgD8Q", "title": "Classical Gothic Music - Quietus | Mozart, Bach, Tchaikovsky...", "thumb": "https://i.ytimg.com/vi/4zuVqqUgD8Q/mqdefault.jpg", "dur": "2:03:31"}, {"id": "Ipnyf79r0C8", "title": "Classical Music for Studying, Focus & Concentration 🧠 Deep Work and Reading", "thumb": "https://i.ytimg.com/vi/Ipnyf79r0C8/mqdefault.jpg", "dur": "2:06:42"}, {"id": "cyiHP1rvOj8", "title": "𝐌𝐞𝐥𝐚𝐧𝐜𝐡𝐨𝐥𝐢𝐜 𝐏𝐢𝐚𝐧𝐨 𝐟𝐨𝐫 𝐃𝐚𝐫𝐤 𝐀𝐜𝐚𝐝𝐞𝐦𝐢𝐚 𝐅𝐨𝐫𝐠𝐨𝐭𝐭𝐞𝐧 | 𝐃𝐚𝐫𝐤 𝐀𝐜𝐚𝐝𝐞𝐦𝐢𝐚 𝐏𝐥𝐚𝐲𝐥𝐢𝐬𝐭 | Schubert, Liszt, Debussy,..", "thumb": "https://i.ytimg.com/vi/cyiHP1rvOj8/mqdefault.jpg", "dur": "1:54:09"}, {"id": "EDwhKGNr_GI", "title": "Beethoven, Mozart, Wagner – The Sound of Intelligence | Dark Classical Music for Deep Focus", "thumb": "https://i.ytimg.com/vi/EDwhKGNr_GI/mqdefault.jpg", "dur": "1:37:36"}, {"id": "-xbgSXnKmY0", "title": "Dark Minds Love Classical Music – Beethoven for Intelligence, Power & Focus", "thumb": "https://i.ytimg.com/vi/-xbgSXnKmY0/mqdefault.jpg", "dur": "1:41:24"}, {"id": "N2fyexZ3x2M", "title": "The Sound of Intelligence – Beethoven Classical Masterpieces for Deep Focus & Elite Thinking", "thumb": "https://i.ytimg.com/vi/N2fyexZ3x2M/mqdefault.jpg", "dur": "1:47:57"}, {"id": "-frwazTbwVA", "title": "Calm Classical | Bach, Beethoven, Chopin, Debussy, Liszt, Mendelssohn, Mozart, Satie, Schumann", "thumb": "https://i.ytimg.com/vi/-frwazTbwVA/mqdefault.jpg", "dur": "1:45:19"}, {"id": "aRhrkaWmzyI", "title": "Peaceful Classical Music | Bach, Mozart, Vivaldi…", "thumb": "https://i.ytimg.com/vi/aRhrkaWmzyI/mqdefault.jpg", "dur": "1:45:01"}, {"id": "oAs3yRG7A2U", "title": "Requiem (Lacrimosa): Sacred Classical Music for Deep Work & Focus | Mozart, Schubert, Liszt", "thumb": "https://i.ytimg.com/vi/oAs3yRG7A2U/mqdefault.jpg", "dur": "1:34:07"}, {"id": "KpBzRWbErD0", "title": "Quiet Classical Music for Work | Bach, Beethoven, Chopin, Debussy, Liszt, Mozart, Satie", "thumb": "https://i.ytimg.com/vi/KpBzRWbErD0/mqdefault.jpg", "dur": "1:53:47"}, {"id": "C7ZitCXTpnM", "title": "Classical Music To Forget Stress & Deep Work | Schubert, Liszt, Debussy, Satie, Schumann,...", "thumb": "https://i.ytimg.com/vi/C7ZitCXTpnM/mqdefault.jpg", "dur": "1:24:34"}, {"id": "S7WEgL2EsAI", "title": "Beethoven's Constellation: Epic Classical Music for Intense Focus & Isolation", "thumb": "https://i.ytimg.com/vi/S7WEgL2EsAI/mqdefault.jpg", "dur": "2:01:29"}, {"id": "wevmaeaeNBk", "title": "Beethoven, Chopin, Liszt: Piano Music for Deep Work, Focus Mode, & Concentration", "thumb": "https://i.ytimg.com/vi/wevmaeaeNBk/mqdefault.jpg", "dur": "1:50:22"}, {"id": "f4b1RECwhJ8", "title": "The best classical music you should listen to at least once in your life 🎻 Mozart, Beethoven,...", "thumb": "https://i.ytimg.com/vi/f4b1RECwhJ8/mqdefault.jpg", "dur": "1:53:44"}, {"id": "mG_065X8M04", "title": "Deep Focus - Classical Music for Thinking | Mozart, Beethoven, Chopin,...", "thumb": "https://i.ytimg.com/vi/mG_065X8M04/mqdefault.jpg", "dur": "2:21:41"}, {"id": "Jo_ualdV9Cs", "title": "CLASSICAL MUSIC FOR ANXIETY RELIEF: FORGOTTEN ECHOES", "thumb": "https://i.ytimg.com/vi/Jo_ualdV9Cs/mqdefault.jpg", "dur": "1:37:30"}, {"id": "BvQ9-WG58Pc", "title": "Satie's Gymnopedies: SERENITY Classics for Relaxation, Study, and Peaceful Sleep", "thumb": "https://i.ytimg.com/vi/BvQ9-WG58Pc/mqdefault.jpg", "dur": "1:33:45"}, {"id": "1PGP-qzIJ20", "title": "Essential Beethoven – The Sound of Pure Genius | Mozart, Beethoven, Chopin,...", "thumb": "https://i.ytimg.com/vi/1PGP-qzIJ20/mqdefault.jpg", "dur": "1:32:22"}, {"id": "bpcJS9gWPDE", "title": "Chopin's DUALITY: Romantic Classical Piano Music for Solitude, Focus, and Inner Balance", "thumb": "https://i.ytimg.com/vi/bpcJS9gWPDE/mqdefault.jpg", "dur": "1:43:53"}, {"id": "ohwSEw5qywY", "title": "Mozart's REQUIEM: Dark Academia Classics for Intense Study, Concentration, and Meditation", "thumb": "https://i.ytimg.com/vi/ohwSEw5qywY/mqdefault.jpg", "dur": "1:46:46"}, {"id": "XyLngkF3OmE", "title": "Beethoven, Chopin, Liszt: Piano Music for Deep Work, Focus Mode, & Concentration", "thumb": "https://i.ytimg.com/vi/XyLngkF3OmE/mqdefault.jpg", "dur": "1:07:54"}, {"id": "RyipnvMdVR8", "title": "The Dark Side of Classics: Dramatic Music for Intense Focus, Reading & Inner Peace .", "thumb": "https://i.ytimg.com/vi/RyipnvMdVR8/mqdefault.jpg", "dur": "1:07:54"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

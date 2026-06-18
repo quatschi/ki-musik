@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=LET_IT_SWING.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "LET IT SWING";
 const KANAL = "LET_IT_SWING.html";
 const VIDEOS = [{"id": "ERIgjM9ZpO8", "title": "SOULFUL & SOPHISTICATED: 2 Hours of Upbeat Vintage Jazz for Your Perfect Friday Night (Vol. 15)", "thumb": "https://i.ytimg.com/vi/ERIgjM9ZpO8/mqdefault.jpg", "dur": "2:01:01"}, {"id": "c3WM93W8iVw", "title": "YOU ARE ALREADY WINNING: 2 Hours of High-Octane Vintage Swing to Lift Your Soul (Vol. 14)", "thumb": "https://i.ytimg.com/vi/c3WM93W8iVw/mqdefault.jpg", "dur": "2:15:59"}, {"id": "gr4TJ4N5feY", "title": "MY LUCKY ROUTINE: 2 Hours of High-Energy 1950s Upbeat Swing to Break Every Jinx (Vol. 13)", "thumb": "https://i.ytimg.com/vi/gr4TJ4N5feY/mqdefault.jpg", "dur": "2:05:04"}, {"id": "bIlD1-fmQCY", "title": "SWING IS MY BEST FRIEND: 2 Hours of High-Energy 1950s Upbeat Jazz for Your Soul (Vol. 12)", "thumb": "https://i.ytimg.com/vi/bIlD1-fmQCY/mqdefault.jpg", "dur": "2:26:45"}, {"id": "32y1YjFsaeQ", "title": "SUNDAY SCARIES INTO MONDAY FUEL: 2 Hours of High-Energy 1950s Swing for Sleep & Wake (Vol. 11)", "thumb": "https://i.ytimg.com/vi/32y1YjFsaeQ/mqdefault.jpg", "dur": "2:14:13"}, {"id": "KRQw7OQ29AM", "title": "WEEKEND HIGH: 2 Hours of Non-Stop 1950s Upbeat Swing Energy (Vol. 10)", "thumb": "https://i.ytimg.com/vi/KRQw7OQ29AM/mqdefault.jpg", "dur": "2:00:06"}, {"id": "d3g1PCWWlKY", "title": "MID-WEEK FUEL: 2 Hours of High-Energy 1950s Swing for Work & Focus (Vol. 9)", "thumb": "https://i.ytimg.com/vi/d3g1PCWWlKY/mqdefault.jpg", "dur": "2:00:35"}, {"id": "KzMP0imIWV8", "title": "SWING FOR THE SOUL: 2 Hours of High-Energy 1950s Upbeat Swing (Vol. 8)", "thumb": "https://i.ytimg.com/vi/KzMP0imIWV8/mqdefault.jpg", "dur": "2:10:43"}, {"id": "iPbwWMkPAVg", "title": "WEEKEND SWING: 2 Hours of High-Octane 1950s Upbeat Energy (Vol. 7)", "thumb": "https://i.ytimg.com/vi/iPbwWMkPAVg/mqdefault.jpg", "dur": "2:10:26"}, {"id": "Y1jMYEewVO0", "title": "WEDNESDAY SWING: 2 Hours of Non-Stop Mid-Week Energy Boost (Vol. 6)", "thumb": "https://i.ytimg.com/vi/Y1jMYEewVO0/mqdefault.jpg", "dur": "2:04:25"}, {"id": "mYzuTU4KGt0", "title": "[NEW] SWING NEVER STOPS: Morning Fuel to Night Vibes (Vol. 5 / 2 Hours Non-Stop)", "thumb": "https://i.ytimg.com/vi/mYzuTU4KGt0/mqdefault.jpg", "dur": "2:16:18"}, {"id": "24d3zHKdpJg", "title": "2 HOURS of Non-Stop 1950s Upbeat Swing: The Perfect Mid-Week Energy Boost", "thumb": "https://i.ytimg.com/vi/24d3zHKdpJg/mqdefault.jpg", "dur": "2:12:33"}, {"id": "gcQ27LJP9Rs", "title": "2 HOURS of High-Energy 1950s Upbeat Swing Jazz: The Ultimate Work & Focus Boost", "thumb": "https://i.ytimg.com/vi/gcQ27LJP9Rs/mqdefault.jpg", "dur": "1:47:47"}, {"id": "2Q4ncj-59kk", "title": "POV: You’re at a 1950s Grand Ballroom Party (Upbeat Swing Jazz Mix)", "thumb": "https://i.ytimg.com/vi/2Q4ncj-59kk/mqdefault.jpg", "dur": "48:59"}, {"id": "W8jku7KZyE4", "title": "\"1950s High-Energy Swing: Upbeat Jazz & Pop-Art Vibes\"", "thumb": "https://i.ytimg.com/vi/W8jku7KZyE4/mqdefault.jpg", "dur": "49:17"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

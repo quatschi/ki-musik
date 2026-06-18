@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=M_Funky_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "M_Funky Music";
 const KANAL = "M_Funky_Music.html";
 const VIDEOS = [{"id": "fGyii8B-CEw", "title": "🌇 Funky Sunset Groove | Smooth Jazz Funk | Focus Music for Deep Work, Study & Relaxing", "thumb": "https://i.ytimg.com/vi/fGyii8B-CEw/mqdefault.jpg", "dur": "2:00:51"}, {"id": "VD5jYlcVC78", "title": "🌅 GOLDEN HOUR GROOVE | Smooth Soul Jazz | Focus Music for Deep Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/VD5jYlcVC78/mqdefault.jpg", "dur": "2:10:00"}, {"id": "nIQ5RVJRS9g", "title": "🌉 FUNKY MIDNIGHT GROOVE  | Smooth Jazz Focus Music for Study & Deep Work | Relax & Night Flow", "thumb": "https://i.ytimg.com/vi/nIQ5RVJRS9g/mqdefault.jpg", "dur": "2:01:09"}, {"id": "5fd6hfrKxls", "title": "🌇 Funky Sunset Groove | Smooth Jazz Funk | Focus Music for Deep Work, Study & Relaxing Focus", "thumb": "https://i.ytimg.com/vi/5fd6hfrKxls/mqdefault.jpg", "dur": "2:10:01"}, {"id": "Fx5TmRBWbkA", "title": "🌅 GOLDEN HOUR GROOVE | Smooth Soul Jazz | Focus music for Deep Work, Study", "thumb": "https://i.ytimg.com/vi/Fx5TmRBWbkA/mqdefault.jpg", "dur": "2:09:08"}, {"id": "ytjlJhb6EGM", "title": "🌉 FUNKY MIDNIGHT GROOVE | Smooth Jazz Focus Music for Study & Deep Work | Night Flow", "thumb": "https://i.ytimg.com/vi/ytjlJhb6EGM/mqdefault.jpg", "dur": "2:19:45"}, {"id": "3ny07MvWXYg", "title": "🌇 Funky Sunset Groove | Smooth Jazz Funk | Focus Music for Late Work & Study | Chill Beats", "thumb": "https://i.ytimg.com/vi/3ny07MvWXYg/mqdefault.jpg", "dur": "2:14:09"}, {"id": "VpxyrkXKp1E", "title": "🌅 GOLDEN HOUR GROOVE | Smooth Jazz Focus Music for Study, Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/VpxyrkXKp1E/mqdefault.jpg", "dur": "2:12:17"}, {"id": "cTshJopKsY8", "title": "🌉 FUNKY MIDNIGHT GROOVE | Smooth Jazz Focus Music for Late Night Study, Deep Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/cTshJopKsY8/mqdefault.jpg", "dur": "2:14:28"}, {"id": "fll8NHbOl2g", "title": "🌇 FUNKY SUNSET GROOVE | Smooth Jazz Focus Music for Study, Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/fll8NHbOl2g/mqdefault.jpg", "dur": "2:14:09"}, {"id": "_l3Kn30v5Pc", "title": "🌅 GOLDEN HOUR GROOVE | Smooth Jazz Focus Music for Deep Work, Study & Creative Flow", "thumb": "https://i.ytimg.com/vi/_l3Kn30v5Pc/mqdefault.jpg", "dur": "2:12:28"}, {"id": "VVdid_JCO2I", "title": "🌉 FUNKY MIDNIGHT GROOVE | Smooth Jazz Funk | Focus Music for Study & Work | Night Flow", "thumb": "https://i.ytimg.com/vi/VVdid_JCO2I/mqdefault.jpg", "dur": "2:09:01"}, {"id": "Yw7X98ATN5A", "title": "🌇 Funky Sunset Groove | Smooth Jazz Funk | Focus Music for Study, Work & Focus | Chill Beats", "thumb": "https://i.ytimg.com/vi/Yw7X98ATN5A/mqdefault.jpg", "dur": "2:13:26"}, {"id": "4k3DZvw7vjk", "title": "🌅 GOLDEN HOUR GROOVE | Smooth Jazz Funk  | Focus Music for Study & Work | Relax", "thumb": "https://i.ytimg.com/vi/4k3DZvw7vjk/mqdefault.jpg", "dur": "2:18:20"}, {"id": "hNXYoNT_d8s", "title": "🌉FUNKY MIDNIGHT GROOVE | Analog Jazz Funk | Focus Music for Study & Work | Late-Night Flow", "thumb": "https://i.ytimg.com/vi/hNXYoNT_d8s/mqdefault.jpg", "dur": "2:15:21"}, {"id": "hBIcIMeca4c", "title": "🌇FUNKY SUNSET GROOVE | Smooth Jazz Funk | Focus Music for Study & Work | Chill", "thumb": "https://i.ytimg.com/vi/hBIcIMeca4c/mqdefault.jpg", "dur": "2:10:36"}, {"id": "Hcmr2H05EpA", "title": "🌅 GOLDEN HOUR GROOVE Smooth Jazz Funk for Relaxation, Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/Hcmr2H05EpA/mqdefault.jpg", "dur": "2:20:18"}, {"id": "Lb_H7lDHMgg", "title": "🎷Funky Midnight groove| Analog Jazz Funk | Deep Focus for Study & Work | Late Night Flow", "thumb": "https://i.ytimg.com/vi/Lb_H7lDHMgg/mqdefault.jpg", "dur": "2:21:45"}, {"id": "TlVNN2uNyXI", "title": "🌇 SUNSET GROOVE DISTRICT | Smooth Jazz Funk | Focus Music for Work & Study | Relax & Unwind", "thumb": "https://i.ytimg.com/vi/TlVNN2uNyXI/mqdefault.jpg", "dur": "2:19:22"}, {"id": "UR_LF2sHnao", "title": "🌉MIDNIGHT NEON GROOVE | Deep Jazz-Funk for Study & Work", "thumb": "https://i.ytimg.com/vi/UR_LF2sHnao/mqdefault.jpg", "dur": "2:05:56"}, {"id": "QK53Bj3OyIo", "title": "🎷 Golden Hour Groove | Smooth Soul Jazz Funk for Relaxing & Study", "thumb": "https://i.ytimg.com/vi/QK53Bj3OyIo/mqdefault.jpg", "dur": "2:06:30"}, {"id": "ln7g8xtX2I0", "title": "🌇 SUNSET SOUL GROOVE | Smooth Jazz Funk Focus Music for Deep Focus, Study & Work", "thumb": "https://i.ytimg.com/vi/ln7g8xtX2I0/mqdefault.jpg", "dur": "2:05:17"}, {"id": "ZTdYvoZ2M7w", "title": "🎷 Midnight Analog Soul | Smooth Jazz Funk Vibes for Deep Work", "thumb": "https://i.ytimg.com/vi/ZTdYvoZ2M7w/mqdefault.jpg", "dur": "2:12:40"}, {"id": "w7aRsk8UvHg", "title": "🎷 GOLDEN HOUR GROOVE | Smooth Soul Jazz Study Music for Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/w7aRsk8UvHg/mqdefault.jpg", "dur": "2:16:35"}, {"id": "IP5elz9pmYg", "title": "🎷SUNSET GROOVE DISTRICT Analog Jazz Funk for Chill, Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/IP5elz9pmYg/mqdefault.jpg", "dur": "1:58:55"}, {"id": "fD9gmG_lnYw", "title": "🎷MIDNIGHT GROOVE STATION | Jazz-Funk Lounge | Deep Focus for Study & Work", "thumb": "https://i.ytimg.com/vi/fD9gmG_lnYw/mqdefault.jpg", "dur": "2:03:35"}, {"id": "TRbMozhhtxk", "title": "🎷 GOLDEN HOUR GROOVE | Relaxing Soul Jazz for Focus, Study & Creative Flow", "thumb": "https://i.ytimg.com/vi/TRbMozhhtxk/mqdefault.jpg", "dur": "2:03:07"}, {"id": "yw_YwyBmZkQ", "title": "🌇SUNSET SOUL STUDIO Relaxing Analog Funk & Jazz for Study and Work", "thumb": "https://i.ytimg.com/vi/yw_YwyBmZkQ/mqdefault.jpg", "dur": "2:14:31"}, {"id": "BsJd3hAe60A", "title": "🎷MIDNIGHT SOUL ANALOG Jazz Funk Study Music for Deep Focus & Creative Work", "thumb": "https://i.ytimg.com/vi/BsJd3hAe60A/mqdefault.jpg", "dur": "2:18:32"}, {"id": "6alcql2BoIk", "title": "🎷GOLDEN HOUR GROOVE Relaxing Soul Jazz for Focus, Work & Creative Flow", "thumb": "https://i.ytimg.com/vi/6alcql2BoIk/mqdefault.jpg", "dur": "2:22:49"}, {"id": "nVtEmGTGaS0", "title": "🎷SUNSET SOUL STUDIO Smooth Analog Funk & Jazz for Focus, Study & Creative Flow", "thumb": "https://i.ytimg.com/vi/nVtEmGTGaS0/mqdefault.jpg", "dur": "2:20:40"}, {"id": "PZudvXYvXuE", "title": "🎷MIDNIGHT SOUL ANALOG Deep Jazz Funk Vibes for Study & Focus", "thumb": "https://i.ytimg.com/vi/PZudvXYvXuE/mqdefault.jpg", "dur": "2:14:48"}, {"id": "jP0T0Sus4BU", "title": "🎷GOLDEN HOUR GROOVE Smooth Soul Jazz for Study, Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/jP0T0Sus4BU/mqdefault.jpg", "dur": "2:05:23"}, {"id": "9IP1hznZ3xU", "title": "🎷Funky Midnight Lounge Smooth Analog Soul Jazz Playlist for Focus & Late Night Flow", "thumb": "https://i.ytimg.com/vi/9IP1hznZ3xU/mqdefault.jpg", "dur": "2:21:59"}, {"id": "t1gklUfW5NI", "title": "🎷Funky Midnight Lounge  Analog Jazz Funk for Focus, Study & Night Flow", "thumb": "https://i.ytimg.com/vi/t1gklUfW5NI/mqdefault.jpg", "dur": "2:01:32"}, {"id": "h6xy94PyZ60", "title": "🎷ANALOG SOUL SESSION 2026 Deep Groove Jazz Funk for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/h6xy94PyZ60/mqdefault.jpg", "dur": "1:27:36"}, {"id": "8Ov4fCNUY2c", "title": "🎷SUNSET SOUL STUDIO | Smooth Analog Funk & Jazz | Focus Music for Study & Creativity", "thumb": "https://i.ytimg.com/vi/8Ov4fCNUY2c/mqdefault.jpg", "dur": "1:34:32"}, {"id": "rUVz-3Nmp7c", "title": "🌙MIDNIGHT SOUL ANALOG Deep Jazz Funk Grooves for Study & Deep Work", "thumb": "https://i.ytimg.com/vi/rUVz-3Nmp7c/mqdefault.jpg", "dur": "2:20:26"}, {"id": "mKjFMTHJO1I", "title": "🎷GOLDEN HOUR GROOVE  Smooth Soul Jazz for Deep Focus & Creative Flow", "thumb": "https://i.ytimg.com/vi/mKjFMTHJO1I/mqdefault.jpg", "dur": "1:48:38"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

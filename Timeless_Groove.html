@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Timeless_Groove.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Timeless Groove";
 const KANAL = "Timeless_Groove.html";
 const VIDEOS = [{"id": "zqAPO5XgjYA", "title": "[Playlist] Feel the Vibes! Friends, Food & Fun | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/zqAPO5XgjYA/mqdefault.jpg", "dur": "1:13:19"}, {"id": "LWWIJ8K76E4", "title": "[Playlist] Feel-Good Coffee Vibes! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/LWWIJ8K76E4/mqdefault.jpg", "dur": "1:26:59"}, {"id": "3XvXyIjhNRY", "title": "[Playlist] Boost the Vibes! Cruising Into Good Times | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/3XvXyIjhNRY/mqdefault.jpg", "dur": "1:22:09"}, {"id": "f3zvTAgiuTI", "title": "[Playlist] Feel-Good Vibes! Happy Coffee Break | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/f3zvTAgiuTI/mqdefault.jpg", "dur": "1:26:34"}, {"id": "YsHQyTI93kU", "title": "[Playlist] Feel-Good Party! Bright and Playful Time | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/YsHQyTI93kU/mqdefault.jpg", "dur": "1:24:28"}, {"id": "TI5a-T6frc0", "title": "[Playlist] Feel the Vibe! Funky Wine Night Groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/TI5a-T6frc0/mqdefault.jpg", "dur": "1:25:36"}, {"id": "asdckP3zGZw", "title": "[Playlist] Feel the Vibe! Ride into Happiness | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/asdckP3zGZw/mqdefault.jpg", "dur": "1:30:22"}, {"id": "lWQqITvcgl8", "title": "[Playlist] Feel-Good Vibes! A Stylish Coffee Break | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/lWQqITvcgl8/mqdefault.jpg", "dur": "1:20:09"}, {"id": "AUD3JwkFmJ4", "title": "[Playlist] Feel-Good! Headphones and Happy Vibes | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/AUD3JwkFmJ4/mqdefault.jpg", "dur": "1:15:20"}, {"id": "CcjcjFJpZco", "title": "[Playlist] Feeling Great! Groove in Every Step | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/CcjcjFJpZco/mqdefault.jpg", "dur": "1:15:27"}, {"id": "eE-BiInvjC8", "title": "[Playlist] Feeling the Celebration! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/eE-BiInvjC8/mqdefault.jpg", "dur": "1:14:32"}, {"id": "pLLlp8gbjJw", "title": "[Playlist] Feel-Good Chase the Breeze! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/pLLlp8gbjJw/mqdefault.jpg", "dur": "1:14:20"}, {"id": "DKNxcqjruC8", "title": "[Playlist] Feel-Good Vibes! A Happy Moment to Myself |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/DKNxcqjruC8/mqdefault.jpg", "dur": "1:15:10"}, {"id": "c--tCCKfFDo", "title": "[Playlist] Feel-Good! Cool Rider Energy |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/c--tCCKfFDo/mqdefault.jpg", "dur": "1:13:03"}, {"id": "TowQt_oS4zQ", "title": "[Playlist] Feel-Good! Start Your Day Right |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/TowQt_oS4zQ/mqdefault.jpg", "dur": "1:10:45"}, {"id": "x0CTh5wGDyo", "title": "[Playlist] Feel-Good! Stylish Sound Journey |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/x0CTh5wGDyo/mqdefault.jpg", "dur": "1:19:37"}, {"id": "R0fHtZAlan4", "title": "[Playlist] Feel Good! Cool Driver Energy |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/R0fHtZAlan4/mqdefault.jpg", "dur": "1:11:47"}, {"id": "hIGjqV56oUY", "title": "[Playlist] Feel Good! Smooth Music and Red Wine Vibes |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/hIGjqV56oUY/mqdefault.jpg", "dur": "1:10:59"}, {"id": "D3nNQg6iJAg", "title": "[Playlist] Feel-Good Vibes! Cheers to Funky Nights |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/D3nNQg6iJAg/mqdefault.jpg", "dur": "1:14:50"}, {"id": "GBC4tI6IWhc", "title": "[Playlist] Lift your spirits! A stylish moment |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/GBC4tI6IWhc/mqdefault.jpg", "dur": "1:13:34"}, {"id": "kHOQP3GG7t4", "title": "[Playlist] Feel-Good Vibes! Coffee and Cool Beats |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/kHOQP3GG7t4/mqdefault.jpg", "dur": "1:20:18"}, {"id": "tozrNKrtAVk", "title": "[Playlist] It really lifts your spirits! A wonderful time |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/tozrNKrtAVk/mqdefault.jpg", "dur": "1:26:07"}, {"id": "DmUrUwbJVWg", "title": "[Playlist] Feel great! Let's ride the wave of happiness! |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/DmUrUwbJVWg/mqdefault.jpg", "dur": "1:22:01"}, {"id": "kE1h_PJC8H4", "title": "[Playlist] Feel-Good Boost! A Breezy City Ride |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/kE1h_PJC8H4/mqdefault.jpg", "dur": "1:12:42"}, {"id": "Qh-Gvp8KGBI", "title": "[Playlist] Boost Your Mood! Smooth Street Funk Beats |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/Qh-Gvp8KGBI/mqdefault.jpg", "dur": "1:07:13"}, {"id": "QmE_EsEbFfA", "title": "[Playlist] Boost Your Mood! Street Rhythm Moments |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/QmE_EsEbFfA/mqdefault.jpg", "dur": "1:06:15"}, {"id": "jiw915yxL2U", "title": "[Playlist] Good Vibes! Cool Walk Energy |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/jiw915yxL2U/mqdefault.jpg", "dur": "1:07:45"}, {"id": "d8j9r9Oj5Js", "title": "[Playlist] Good Vibes! Morning Walk to a Stylish Café |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/d8j9r9Oj5Js/mqdefault.jpg", "dur": "1:10:09"}, {"id": "kW7BfKiUkDg", "title": "[Playlist] Feel the Vibe! Laid-Back Funky Beats |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/kW7BfKiUkDg/mqdefault.jpg", "dur": "1:06:24"}, {"id": "m-NH4mBNcGY", "title": "[Playlist] Feel the Hype! Swagger in Style |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/m-NH4mBNcGY/mqdefault.jpg", "dur": "1:14:39"}, {"id": "RWtlfKpv0gs", "title": "[Playlist] Feel Good! Chill Coffee Beats for a Perfect Day ☕🎶 |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/RWtlfKpv0gs/mqdefault.jpg", "dur": "1:08:12"}, {"id": "pq_s7ntoa9o", "title": "[Playlist] Relax & Groove – Feel-Good Turntable Sounds |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/pq_s7ntoa9o/mqdefault.jpg", "dur": "1:10:44"}, {"id": "0Z4iXHIKdP4", "title": "[Playlist] Feel-Good Urban Rhythm |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/0Z4iXHIKdP4/mqdefault.jpg", "dur": "1:06:02"}, {"id": "sUOVwMVqImE", "title": "[Playlist] Feel-Good Urban Vibes – Easygoing Beats for Your Day |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/sUOVwMVqImE/mqdefault.jpg", "dur": "1:07:39"}, {"id": "1m_6pGb1GDw", "title": "[Playlist] Feel-Good Grooves to listen to when you're a little tipsy |Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/1m_6pGb1GDw/mqdefault.jpg", "dur": "1:03:32"}, {"id": "lvs7JL4ZBgw", "title": "[Playlist] A mood-boosting session of bitter, smoky grooves | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/lvs7JL4ZBgw/mqdefault.jpg", "dur": "1:12:38"}, {"id": "7cc8HFGjF9g", "title": "[Playlist] A Feel-Good Drive! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/7cc8HFGjF9g/mqdefault.jpg", "dur": "1:05:39"}, {"id": "IbDvV4_Cfiw", "title": "[Playlist] Feel-Good Drive Beats | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/IbDvV4_Cfiw/mqdefault.jpg", "dur": "1:06:33"}, {"id": "mM--MBFwmRc", "title": "[Playlist] Feel-Good! Funk Wave—ride the good vibes | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/mM--MBFwmRc/mqdefault.jpg", "dur": "1:07:35"}, {"id": "R9pEFQYEpCQ", "title": "[Playlist] Feel-Good! A groove that shines with every beat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/R9pEFQYEpCQ/mqdefault.jpg", "dur": "1:04:20"}, {"id": "v97rz0y55IA", "title": "[Playlist] Feel-Good! The ultimate mood-boosting experience | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/v97rz0y55IA/mqdefault.jpg", "dur": "1:04:28"}, {"id": "xuRqoSZdMvk", "title": "[Playlist] Feel-Good! Instant Energy Sound | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/xuRqoSZdMvk/mqdefault.jpg", "dur": "1:09:49"}, {"id": "WatYZSj3ZfA", "title": "[Playlist] Feel-Good! A journey filled with beats | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/WatYZSj3ZfA/mqdefault.jpg", "dur": "1:12:53"}, {"id": "8RG1oQYymzo", "title": "[Playlist] Feel-Good! Funk that instantly boosts your mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/8RG1oQYymzo/mqdefault.jpg", "dur": "1:06:06"}, {"id": "pGMvr_lq9vk", "title": "[Playlist] Feel-Good! A groove mix full of pure fun | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/pGMvr_lq9vk/mqdefault.jpg", "dur": "1:08:40"}, {"id": "S3lLi41QdJI", "title": "[Playlist] Feel-Good! Instantly boosts your mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/S3lLi41QdJI/mqdefault.jpg", "dur": "1:07:38"}, {"id": "mNaLaZ9rpfw", "title": "[Playlist] Feel-Good! Driving Music | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/mNaLaZ9rpfw/mqdefault.jpg", "dur": "1:08:57"}, {"id": "U2ckwUO85Iw", "title": "[Playlist] Feel-Good! A groove full of radiant energy | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/U2ckwUO85Iw/mqdefault.jpg", "dur": "1:05:39"}, {"id": "Wax8MtOPzbA", "title": "[Playlist] Feel-Good! A beat that gets your energy flowing | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/Wax8MtOPzbA/mqdefault.jpg", "dur": "1:06:34"}, {"id": "AySj_SCmgio", "title": "[Playlist] Feel-Good! It instantly boosts your mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/AySj_SCmgio/mqdefault.jpg", "dur": "1:05:57"}, {"id": "FRNYWxO2moQ", "title": "[Playlist] Feel-Good! Get in the mood with the beat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/FRNYWxO2moQ/mqdefault.jpg", "dur": "1:07:34"}, {"id": "V-F0P8VLmqw", "title": "[Playlist] Feel-Good! Get in the mood with the beat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/V-F0P8VLmqw/mqdefault.jpg", "dur": "1:12:57"}, {"id": "gyvjVK95Uj4", "title": "[Playlist] Feel-Good! Let the rhythm get you pumped! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/gyvjVK95Uj4/mqdefault.jpg", "dur": "1:05:05"}, {"id": "To84lAuUVRE", "title": "[Playlist] Feel-Good! Groove energy that brightens your mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/To84lAuUVRE/mqdefault.jpg", "dur": "1:21:09"}, {"id": "iOqB-zk8T04", "title": "[Playlist] Feel-Good! An energy mix that pulses like a heartbeat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/iOqB-zk8T04/mqdefault.jpg", "dur": "1:25:16"}, {"id": "ys2EP1E5pfI", "title": "[Playlist] Feel-Good! A bouncy, upbeat groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/ys2EP1E5pfI/mqdefault.jpg", "dur": "1:20:35"}, {"id": "igNZ3OgC1kM", "title": "[Playlist] Feel-Good! Smooth Funky Ride | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/igNZ3OgC1kM/mqdefault.jpg", "dur": "1:06:26"}, {"id": "xb226qA-72M", "title": "[Playlist] Get pumped! A groove that gets you moving with a smile | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/xb226qA-72M/mqdefault.jpg", "dur": "1:08:27"}, {"id": "giw-kLgGzkA", "title": "[Playlist] Get pumped! Dance to boost your mood even more | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/giw-kLgGzkA/mqdefault.jpg", "dur": "1:09:29"}, {"id": "ylgq6wOz2-A", "title": "[Playlist] Get pumped! A lively funk session | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/ylgq6wOz2-A/mqdefault.jpg", "dur": "1:13:49"}, {"id": "arQwav0oiGA", "title": "[Playlist] Get pumped! A groove mix full of pure fun | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/arQwav0oiGA/mqdefault.jpg", "dur": "1:15:21"}, {"id": "HXq_SRlkuIw", "title": "[Playlist] Get pumped! A fun parade of sounds | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/HXq_SRlkuIw/mqdefault.jpg", "dur": "1:03:20"}, {"id": "EGV4yFjYZCE", "title": "[Playlist] Get pumped! Ride the wave of the pulsating beat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/EGV4yFjYZCE/mqdefault.jpg", "dur": "1:17:45"}, {"id": "AX97TYIb2Io", "title": "[Playlist] Get pumped! An uplifting, soaring energy track | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/AX97TYIb2Io/mqdefault.jpg", "dur": "3:05:28"}, {"id": "J43TJL2F3hA", "title": "[Playlist] Get pumped! Experience a beat that bursts with joy | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/J43TJL2F3hA/mqdefault.jpg", "dur": "3:44:38"}, {"id": "vSf-Ns-O9f4", "title": "[Playlist] Get pumped! Start your day off right with a positive beat| Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/vSf-Ns-O9f4/mqdefault.jpg", "dur": "1:13:34"}, {"id": "cpuDQHjhi6I", "title": "[Playlist] Get pumped! The perfect groove to start your day | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/cpuDQHjhi6I/mqdefault.jpg", "dur": "1:13:30"}, {"id": "azv4jzgT2N4", "title": "[Playlist] Get pumped! Full-throttle funky groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/azv4jzgT2N4/mqdefault.jpg", "dur": "1:16:21"}, {"id": "IFuE5td0f2E", "title": "[Playlist] Feel-Good! An Instant Mood-Boosting Groove Mix | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/IFuE5td0f2E/mqdefault.jpg", "dur": "1:18:27"}, {"id": "6s9kh0B53-U", "title": "[Playlist] Funky Energy Rush – Feel Alive Playlist | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/6s9kh0B53-U/mqdefault.jpg", "dur": "1:23:28"}, {"id": "4ETF-1-HtpU", "title": "[Playlist] Feel-Good! Funky Skate Groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/4ETF-1-HtpU/mqdefault.jpg", "dur": "1:33:21"}, {"id": "bY42UKacW5Y", "title": "[Playlist] Feel-Good! Funky Groove Energy | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/bY42UKacW5Y/mqdefault.jpg", "dur": "1:30:33"}, {"id": "gFBQh0C8dXs", "title": "[Playlist] Feel-Good! Chill Funky Groove Music | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/gFBQh0C8dXs/mqdefault.jpg", "dur": "1:32:03"}, {"id": "NMMh7mHv-Dg", "title": "[Playlist] Feel-Good! Groovy Funk for Good Mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/NMMh7mHv-Dg/mqdefault.jpg", "dur": "41:57"}, {"id": "Av-18xuuj0o", "title": "[Playlist] Feel-Good! Funky Music to Boost Your Mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/Av-18xuuj0o/mqdefault.jpg", "dur": "1:12:20"}, {"id": "MUvp5ypSX9M", "title": "[Playlist] Feel-Good! Funky Beats for a Groovy Day | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/MUvp5ypSX9M/mqdefault.jpg", "dur": "1:15:44"}, {"id": "OZFSpmSaWeg", "title": "[Playlist] It'll lift your spirits! A smooth, funky groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/OZFSpmSaWeg/mqdefault.jpg", "dur": "1:26:10"}, {"id": "nAFfBcX1hQ0", "title": "[Playlist] It'll lift your spirits! Stylish Funk | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/nAFfBcX1hQ0/mqdefault.jpg", "dur": "1:19:39"}, {"id": "cWbW8yNytaU", "title": "[Playlist] Cool Cat Funk – Music That Makes Your Mood Rise! | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/cWbW8yNytaU/mqdefault.jpg", "dur": "1:26:11"}, {"id": "Xdr0Fqj3LSo", "title": "[Playlist] Get pumped! Groove Party | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/Xdr0Fqj3LSo/mqdefault.jpg", "dur": "1:29:59"}, {"id": "voDIz4EHmWo", "title": "[Playlist] Groove that lifts your spirits! Colorful beat | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/voDIz4EHmWo/mqdefault.jpg", "dur": "1:14:42"}, {"id": "sJjs47ehwP8", "title": "[Playlist] Feel the groove! Groove for happiness | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/sJjs47ehwP8/mqdefault.jpg", "dur": "1:38:59"}, {"id": "_TvFZIKQTd8", "title": "[Playlist] Get pumped! Groove anthem | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/_TvFZIKQTd8/mqdefault.jpg", "dur": "1:12:43"}, {"id": "d7jH2P52PW8", "title": "[Playlist] Feel the groove! Groove pop brings smiles and dancing | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/d7jH2P52PW8/mqdefault.jpg", "dur": "1:17:45"}, {"id": "AdwjRMedMvI", "title": "[Playlist] Get pumped! A high-energy mix with full-throttle groove | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/AdwjRMedMvI/mqdefault.jpg", "dur": "1:31:17"}, {"id": "E5FCx0uAO0A", "title": "[Playlist] Feel the drive! Drive vibes | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/E5FCx0uAO0A/mqdefault.jpg", "dur": "1:34:46"}, {"id": "4X1-fA0gUZo", "title": "[Playlist] Get pumped! Drive Sound | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/4X1-fA0gUZo/mqdefault.jpg", "dur": "1:25:52"}, {"id": "GMOqG-hv2W8", "title": "[Playlist] FGet pumped! The ultimate groove mix | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/GMOqG-hv2W8/mqdefault.jpg", "dur": "1:09:43"}, {"id": "84uCGc17bXg", "title": "[Playlist] Feel the Funky Groove – Music That Lifts Your Mood | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/84uCGc17bXg/mqdefault.jpg", "dur": "1:18:25"}, {"id": "xMtbUJPSrV8", "title": "[Playlist] Get pumped! Drive Energy | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/xMtbUJPSrV8/mqdefault.jpg", "dur": "1:26:00"}, {"id": "df60GcgmKpU", "title": "[Playlist] Get pumped up! Groove Punk Energy | Work & Study | GROOVE JAZZ POP", "thumb": "https://i.ytimg.com/vi/df60GcgmKpU/mqdefault.jpg", "dur": "1:30:31"}, {"id": "_PBuP9DJ8GY", "title": "[Playlist] Feel the vibe! Attitude Punk | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/_PBuP9DJ8GY/mqdefault.jpg", "dur": "1:23:25"}, {"id": "t0GtYVsimcQ", "title": "[Playlist] Get pumped up! Drive Radio | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/t0GtYVsimcQ/mqdefault.jpg", "dur": "1:28:54"}, {"id": "ieuNpQ5Jb-w", "title": "[Playlist] Get pumped! Punk Street Anthem | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/ieuNpQ5Jb-w/mqdefault.jpg", "dur": "3:16:37"}, {"id": "FmKk_I7Eh0o", "title": "[Playlist] Get pumped! High-energy punk | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/FmKk_I7Eh0o/mqdefault.jpg", "dur": "1:13:16"}, {"id": "H37SnnMdRxI", "title": "[Playlist] Get pumped! Ignite those punk vibes! | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/H37SnnMdRxI/mqdefault.jpg", "dur": "1:26:28"}, {"id": "I1MxF5SADzY", "title": "[Playlist] Ultimate Feel-Good Funky Groove Playlist | Cool Retro Vibes | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/I1MxF5SADzY/mqdefault.jpg", "dur": "1:32:39"}, {"id": "s0rZmU3BY58", "title": "[Playlist] Get pumped! Summer ocean view drive groove BGM | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/s0rZmU3BY58/mqdefault.jpg", "dur": "3:11:22"}, {"id": "Q_WWDueeBvk", "title": "[Playlist] Get pumped! Soul Groove | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/Q_WWDueeBvk/mqdefault.jpg", "dur": "3:37:43"}, {"id": "4tSBMKUnyhE", "title": "[Playlist] Get pumped! Midnight DJ Groove  | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/4tSBMKUnyhE/mqdefault.jpg", "dur": "3:29:00"}, {"id": "WItd_hhkJg4", "title": "[Playlist] Feeling pumped! Full-on punk mode  | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/WItd_hhkJg4/mqdefault.jpg", "dur": "3:43:21"}, {"id": "HJdSlA2geU8", "title": "[Playlist] Get pumped! Groove hop you'll want to listen to by the sea | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/HJdSlA2geU8/mqdefault.jpg", "dur": "11:56:23"}, {"id": "j4RnO0iQKrc", "title": "[Playlist] A mood-boosting cooking party! | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/j4RnO0iQKrc/mqdefault.jpg", "dur": "11:42:18"}, {"id": "9oXfx2aBjmo", "title": "[Playlist] Groove mixes to get you in the perfect mood for driving | Work & Study | GROOVE POP", "thumb": "https://i.ytimg.com/vi/9oXfx2aBjmo/mqdefault.jpg", "dur": "1:17:45"}, {"id": "84R4hvlROWs", "title": "[Playlist] Feel-good drive Positive vibes | Work & Study Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/84R4hvlROWs/mqdefault.jpg", "dur": "1:06:08"}, {"id": "4Tmgf2n8mP8", "title": "[Playlist] Feel-Good Drive Grooves | Work & Study Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/4Tmgf2n8mP8/mqdefault.jpg", "dur": "1:21:55"}, {"id": "VoIwgLiv_Og", "title": "[Playlist] Uplifting Morning Coffee BGM | Work & Study Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/VoIwgLiv_Og/mqdefault.jpg", "dur": "1:19:34"}, {"id": "a3eh8PkMXtk", "title": "[Playlist] Feel-Good Drive Time | Work & Study Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/a3eh8PkMXtk/mqdefault.jpg", "dur": "1:17:46"}, {"id": "jvCe_dvH5F4", "title": "[Playlist] Uplifting Focus BGM | Work & Study Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/jvCe_dvH5F4/mqdefault.jpg", "dur": "1:22:44"}, {"id": "jh0sxRWssHE", "title": "[Playlist] Feel-Good Drive Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/jh0sxRWssHE/mqdefault.jpg", "dur": "1:14:31"}, {"id": "hcAgbCjGmgY", "title": "[Playlist] Street Punk Energy to Boost Your Mood | GROOVE POP", "thumb": "https://i.ytimg.com/vi/hcAgbCjGmgY/mqdefault.jpg", "dur": "1:33:51"}, {"id": "95rxSLXTAb4", "title": "[Playlist] Street Punk for a Better Mood | GROOVE POP", "thumb": "https://i.ytimg.com/vi/95rxSLXTAb4/mqdefault.jpg", "dur": "3:09:21"}, {"id": "gq35KEwyU3U", "title": "[Playlist] 기분이 올라가는 펑크 파워 | GROOVE POP", "thumb": "https://i.ytimg.com/vi/gq35KEwyU3U/mqdefault.jpg", "dur": "1:19:10"}, {"id": "uApfHFO8kss", "title": "[Playlist] 기분이 올라가는 하루를 바꾸는 펑크 | GROOVE POP", "thumb": "https://i.ytimg.com/vi/uApfHFO8kss/mqdefault.jpg", "dur": "1:21:39"}, {"id": "GMTbpixvYGc", "title": "[Playlist] Feel-Up Punk Groove Session | GROOVE POP", "thumb": "https://i.ytimg.com/vi/GMTbpixvYGc/mqdefault.jpg", "dur": "1:02:44"}, {"id": "fw_88-lwNK0", "title": "[Playlist] Urban Punk That Lifts Your Spirit | GROOVE POP", "thumb": "https://i.ytimg.com/vi/fw_88-lwNK0/mqdefault.jpg", "dur": "1:17:46"}, {"id": "KtcXMyqFhlU", "title": "[Playlist] 기분이 올라가는 펑크의 고조감 | GROOVE POP", "thumb": "https://i.ytimg.com/vi/KtcXMyqFhlU/mqdefault.jpg", "dur": "1:26:56"}, {"id": "DAEk1cJiJlw", "title": "[Playlist] 기분이 올라가는 펑크를 울려라 | GROOVE POP", "thumb": "https://i.ytimg.com/vi/DAEk1cJiJlw/mqdefault.jpg", "dur": "1:28:37"}, {"id": "07Pkh0Ekr4I", "title": "[Playlist] 기분이 올라가는 펑크 바이브 | GROOVE POP", "thumb": "https://i.ytimg.com/vi/07Pkh0Ekr4I/mqdefault.jpg", "dur": "1:13:27"}, {"id": "gdn1-hlAvV4", "title": "[Playlist] Positive Punk Loud and Proud | GROOVE POP", "thumb": "https://i.ytimg.com/vi/gdn1-hlAvV4/mqdefault.jpg", "dur": "1:05:49"}, {"id": "xyQjHboRdrY", "title": "[Playlist] Punk Spirit That Makes You Smile | GROOVE POP", "thumb": "https://i.ytimg.com/vi/xyQjHboRdrY/mqdefault.jpg", "dur": "1:10:52"}, {"id": "nEJTfngcJK0", "title": "[Playlist] Punk Groove That Gets You Hyped | GROOVE POP", "thumb": "https://i.ytimg.com/vi/nEJTfngcJK0/mqdefault.jpg", "dur": "1:17:48"}, {"id": "mazlB0r-bLQ", "title": "[Playlist] Punk Groove That Gets You Hyped | GROOVE POP", "thumb": "https://i.ytimg.com/vi/mazlB0r-bLQ/mqdefault.jpg", "dur": "1:16:08"}, {"id": "_JQoWwHbtps", "title": "[Playlist] Punked Up and Feeling Great | GROOVE POP", "thumb": "https://i.ytimg.com/vi/_JQoWwHbtps/mqdefault.jpg", "dur": "1:26:29"}, {"id": "8yVDrQkf5r0", "title": "[Playlist] Upbeat disco punk that lifts your spirits | GROOVE POP", "thumb": "https://i.ytimg.com/vi/8yVDrQkf5r0/mqdefault.jpg", "dur": "1:18:01"}, {"id": "lsmksaiKBFU", "title": "[Playlist] Bright Mood Beats | GROOVE POP", "thumb": "https://i.ytimg.com/vi/lsmksaiKBFU/mqdefault.jpg", "dur": "1:08:47"}, {"id": "7G3VgNp2Cvc", "title": "[Playlist] Music that lifts your mood in the morning | GROOVE POP", "thumb": "https://i.ytimg.com/vi/7G3VgNp2Cvc/mqdefault.jpg", "dur": "1:11:15"}, {"id": "GW7yIZyfIOY", "title": "[Playlist] Uplifting Music for Your Ride | GROOVE POP", "thumb": "https://i.ytimg.com/vi/GW7yIZyfIOY/mqdefault.jpg", "dur": "1:19:01"}, {"id": "hQVwjxpdyZU", "title": "[Playlist] Music That Instantly Lifts You Up | GROOVE POP", "thumb": "https://i.ytimg.com/vi/hQVwjxpdyZU/mqdefault.jpg", "dur": "1:28:50"}, {"id": "8dgP383gwjU", "title": "[Playlist] Bright Mood Beats | GROOVE POP", "thumb": "https://i.ytimg.com/vi/8dgP383gwjU/mqdefault.jpg", "dur": "1:06:13"}, {"id": "y6BuAS_srIM", "title": "[Playlist] Feel-Good Vibes Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/y6BuAS_srIM/mqdefault.jpg", "dur": "1:07:59"}, {"id": "eUTCJOuh6Cg", "title": "[Playlist] Mood Booster Playlist | GROOVE POP", "thumb": "https://i.ytimg.com/vi/eUTCJOuh6Cg/mqdefault.jpg", "dur": "1:12:56"}, {"id": "DZcWLaO5wEA", "title": "[Playlist] An uplifting soundtrack | GROOVE POP", "thumb": "https://i.ytimg.com/vi/DZcWLaO5wEA/mqdefault.jpg", "dur": "1:02:39"}, {"id": "-sYdBKwjdjM", "title": "[Playlist] Rhythm of the Glory Days |  GROOVE POP", "thumb": "https://i.ytimg.com/vi/-sYdBKwjdjM/mqdefault.jpg", "dur": "1:14:36"}, {"id": "MGd_HUxzCLY", "title": "[Playlist] Melody of the Bygone Days |  GROOVE POP", "thumb": "https://i.ytimg.com/vi/MGd_HUxzCLY/mqdefault.jpg", "dur": "1:20:20"}, {"id": "Dk_pTOOeezo", "title": "[Playlist] Back in the Beat of the Golden Days |  GROOVE POP", "thumb": "https://i.ytimg.com/vi/Dk_pTOOeezo/mqdefault.jpg", "dur": "1:20:14"}, {"id": "B3pw8Y857os", "title": "[Playlist] Get Up and Groove! 💥 Back to the Funky Vibes | GROOVE POP", "thumb": "https://i.ytimg.com/vi/B3pw8Y857os/mqdefault.jpg", "dur": "1:53:57"}, {"id": "vtaQeU_nhcg", "title": "[Playlist] Groove Back to the Cool Days |  GROOVE POP", "thumb": "https://i.ytimg.com/vi/vtaQeU_nhcg/mqdefault.jpg", "dur": "1:15:48"}, {"id": "Yq_P3-8veyg", "title": "Quiet Rhythm", "thumb": "https://i.ytimg.com/vi/Yq_P3-8veyg/mqdefault.jpg", "dur": "1:17:50"}, {"id": "8NA7Q_ehEog", "title": "Gentle Rhythm", "thumb": "https://i.ytimg.com/vi/8NA7Q_ehEog/mqdefault.jpg", "dur": "1:22:11"}, {"id": "N672IsTsFNk", "title": "Soft and Steady", "thumb": "https://i.ytimg.com/vi/N672IsTsFNk/mqdefault.jpg", "dur": "3:30:42"}, {"id": "X_S2CJwl-3s", "title": "Smooth Vibe", "thumb": "https://i.ytimg.com/vi/X_S2CJwl-3s/mqdefault.jpg", "dur": "1:31:50"}, {"id": "SuvA84VU8xY", "title": "Slow Groove", "thumb": "https://i.ytimg.com/vi/SuvA84VU8xY/mqdefault.jpg", "dur": "1:34:46"}, {"id": "rnchn_TRSGM", "title": "Echoes of Grace", "thumb": "https://i.ytimg.com/vi/rnchn_TRSGM/mqdefault.jpg", "dur": "4:13:41"}, {"id": "DnlPZ3-wHX8", "title": "A cup of espresso", "thumb": "https://i.ytimg.com/vi/DnlPZ3-wHX8/mqdefault.jpg", "dur": "3:47:22"}, {"id": "kllDtyvUkiE", "title": "Begin Your Day with Espresso Bliss", "thumb": "https://i.ytimg.com/vi/kllDtyvUkiE/mqdefault.jpg", "dur": "4:12:00"}, {"id": "QEJyWuiHohE", "title": "【Playlist】An Winter Playlist to Listen to While Sipping Coffee｜Snowy Winter City Playlist", "thumb": "https://i.ytimg.com/vi/QEJyWuiHohE/mqdefault.jpg", "dur": "2:19:08"}, {"id": "C4lGLLkU-SM", "title": "【Playlist】An Autumn Playlist to Listen to While Sipping Coffee｜Rainy Autumn City Playlist", "thumb": "https://i.ytimg.com/vi/C4lGLLkU-SM/mqdefault.jpg", "dur": "1:46:58"}, {"id": "l4cI-SSqsyc", "title": "【Playlist】100% Autumn Vibes Just by Playing🍂｜The Perfect Pop Playlist for Cafes, Stores, and Work", "thumb": "https://i.ytimg.com/vi/l4cI-SSqsyc/mqdefault.jpg", "dur": "3:11:44"}, {"id": "_TNB06IND-o", "title": "Autumn Afternoon Drive Music 🍂 | Drive & Chill Mix", "thumb": "https://i.ytimg.com/vi/_TNB06IND-o/mqdefault.jpg", "dur": "1:50:19"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Elise_Piano__엘리제피아노.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Elise Piano | \uc5d8\ub9ac\uc81c\ud53c\uc544\ub178";
 const KANAL = "Elise_Piano__\uc5d8\ub9ac\uc81c\ud53c\uc544\ub178.html";
 const VIDEOS = [{"id": "EsBFENQGC8A", "title": "Mendelssohn Style | Sunset Terrace Acoustic & Warm Guitar 🌿 [No Ads] | Healing & Sleep BGM |", "thumb": "https://i.ytimg.com/vi/EsBFENQGC8A/mqdefault.jpg", "dur": "2:36:03"}, {"id": "_Os11Udu3Ro", "title": "Nocturne Waltz [No Ads] | Refreshing Chopin-style Waltz 🌿 | Morning Music & Good Mood", "thumb": "https://i.ytimg.com/vi/_Os11Udu3Ro/mqdefault.jpg", "dur": "2:23:46"}, {"id": "g8efpeTpUAQ", "title": "Canon Style [No Ads] | Joyful Violin & Piano Quintet to Energize Your Day 🌿 | Morning & Cafe BGM", "thumb": "https://i.ytimg.com/vi/g8efpeTpUAQ/mqdefault.jpg", "dur": "1:33:48"}, {"id": "vMhuMb9Jt3E", "title": "Beethoven Style | 지친 마음을 다독이는 따뜻하고 우아한 베토벤풍 피아노 5중주 🌿 | 잔잔한 클래식, 휴식, 일상 BGM | Elise Piano", "thumb": "https://i.ytimg.com/vi/vMhuMb9Jt3E/mqdefault.jpg", "dur": "2:39:04"}, {"id": "hbmQRFw1InE", "title": "Bach Style | 마음이 편안해지는 바흐풍 잔잔한 클래식 🌿 [중간광고없음] | 힐링음악, 일상 BGM, 궁전음악 | Elise Piano", "thumb": "https://i.ytimg.com/vi/hbmQRFw1InE/mqdefault.jpg", "dur": "2:10:57"}, {"id": "02Pf7ip_v8c", "title": "Mozart Style | 숲이 비치는 모던 라운지, 산뜻하고 편안한 피아노 5중주 🌿 | 일상 BGM, 집중, 독서 | Elise Piano", "thumb": "https://i.ytimg.com/vi/02Pf7ip_v8c/mqdefault.jpg", "dur": "2:12:06"}, {"id": "69xckNMQX8k", "title": "Chopin Style | 기분 좋게 몰아치는 감동의 물결, 숲속 그랜드 홀의 우아한 쇼팽풍 협주곡 🌲 | 일상 BGM, 집중, 독서 | Elise Piano", "thumb": "https://i.ytimg.com/vi/69xckNMQX8k/mqdefault.jpg", "dur": "2:35:48"}, {"id": "n3AT2cRUMDk", "title": "Mozart Style | 기분 좋은 하루, 산뜻하게 기분 전환되는 모차르트풍 피아노 5중주 ☀️ | 일상 BGM, 밝은 클래식 | Elise Piano", "thumb": "https://i.ytimg.com/vi/n3AT2cRUMDk/mqdefault.jpg", "dur": "2:02:08"}, {"id": "6wFJnj7RAG0", "title": "Paris Terrace Lounge | 기분 좋아지는 쇼팽풍 앙상블, 화사한 파리의 테라스 왈츠 🥂 | 카페음악, 매장 BGM, 산뜻한 아침 | Elise Piano", "thumb": "https://i.ytimg.com/vi/6wFJnj7RAG0/mqdefault.jpg", "dur": "2:02:12"}, {"id": "6HykDgJpOsY", "title": "Chopin style Cello Ensemble | 깊고 웅장한 쇼팽 감성 클래식, 안개 낀 광장의 첼로 트리오 🕊️ | 집중력음악, 사색, 독서 | Elise Piano", "thumb": "https://i.ytimg.com/vi/6HykDgJpOsY/mqdefault.jpg", "dur": "2:46:36"}, {"id": "XkydBmH270k", "title": "Blooming Parisian Spring | 기분 좋아지는 쇼팽 감성, 화사한 파리의 봄 클래식 앙상블 🌸 | Elise Piano", "thumb": "https://i.ytimg.com/vi/XkydBmH270k/mqdefault.jpg", "dur": "2:55:20"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Blue_Note_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Blue Note Jazz";
 const KANAL = "Blue_Note_Jazz.html";
 const VIDEOS = [{"id": "sZTt7tzrs7A", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Jazz for Anytime, Anywhere", "thumb": "https://i.ytimg.com/vi/sZTt7tzrs7A/mqdefault.jpg", "dur": "2:26:54"}, {"id": "kuYCM1i1YBE", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Blue Note Jazz for a Peaceful Mood", "thumb": "https://i.ytimg.com/vi/kuYCM1i1YBE/mqdefault.jpg", "dur": "2:21:18"}, {"id": "9D6Cl1SLtR4", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Jazz Lounge Music to Calm Your Mind", "thumb": "https://i.ytimg.com/vi/9D6Cl1SLtR4/mqdefault.jpg", "dur": "2:20:47"}, {"id": "ozvlc8wtCHM", "title": "[🎷Blue Note Jazz] ▶Playlist - Mellow Jazz That Feels Good All Day", "thumb": "https://i.ytimg.com/vi/ozvlc8wtCHM/mqdefault.jpg", "dur": "2:15:42"}, {"id": "A2RzM1Gbl4Q", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Cafe Jazz for Everyday Relaxation and Cozy Moments", "thumb": "https://i.ytimg.com/vi/A2RzM1Gbl4Q/mqdefault.jpg", "dur": "1:59:04"}, {"id": "z4FpTB7mjkI", "title": "[🎷Blue Note Jazz] ▶Playlist - Timeless Smooth Jazz for a Cozy and Relaxed Mood", "thumb": "https://i.ytimg.com/vi/z4FpTB7mjkI/mqdefault.jpg", "dur": "2:05:24"}, {"id": "YDzZLFgUK2E", "title": "[🎷Blue Note Jazz] ▶Playlist - Mellow Jazz Lounge for Any Place, Any Time, Any Mood", "thumb": "https://i.ytimg.com/vi/YDzZLFgUK2E/mqdefault.jpg", "dur": "2:05:21"}, {"id": "ItdZO3bLDKg", "title": "[🎷Blue Note Jazz] ▶Playlist - Cozy Midnight Jazz for Soft Peaceful Vibes", "thumb": "https://i.ytimg.com/vi/ItdZO3bLDKg/mqdefault.jpg", "dur": "2:07:09"}, {"id": "dNkcdQKZ270", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Smooth Jazz for Soft Peaceful Vibes", "thumb": "https://i.ytimg.com/vi/dNkcdQKZ270/mqdefault.jpg", "dur": "2:24:01"}, {"id": "bU7C6gtEirY", "title": "[🎷Blue Note Jazz] ▶Playlist - Sweet Blue Jazz for a Relaxed and Gentle Mood", "thumb": "https://i.ytimg.com/vi/bU7C6gtEirY/mqdefault.jpg", "dur": "2:20:11"}, {"id": "cYDYHKUqaRo", "title": "[🎷Blue Note Jazz] ▶Playlist - Sweet Blue Note Jazz for Peaceful Everyday Moments", "thumb": "https://i.ytimg.com/vi/cYDYHKUqaRo/mqdefault.jpg", "dur": "2:17:46"}, {"id": "AnL0XPnOZjY", "title": "[🎷Blue Note Jazz] ▶Playlist - Sweet Jazz Lounge Sounds for Relaxing Anywhere", "thumb": "https://i.ytimg.com/vi/AnL0XPnOZjY/mqdefault.jpg", "dur": "2:15:47"}, {"id": "QNqp-2JoLWo", "title": "[🎷Blue Note Jazz] ▶Playlist - Mellow Jazz Lounge for Relaxing Anywhere", "thumb": "https://i.ytimg.com/vi/QNqp-2JoLWo/mqdefault.jpg", "dur": "2:16:15"}, {"id": "phwfE1QyoiE", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Sax & Piano Jazz for Peaceful Days", "thumb": "https://i.ytimg.com/vi/phwfE1QyoiE/mqdefault.jpg", "dur": "2:19:51"}, {"id": "DheAeOQYsDo", "title": "[🎷Blue Note Jazz] ▶Playlist – Unhurried Lounge Feeling for Evening Relaxation", "thumb": "https://i.ytimg.com/vi/DheAeOQYsDo/mqdefault.jpg", "dur": "2:26:15"}, {"id": "trfSjRC9Tm8", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Club Ambience for Healing Ambience", "thumb": "https://i.ytimg.com/vi/trfSjRC9Tm8/mqdefault.jpg", "dur": "2:23:33"}, {"id": "mK4jvcZP5ZU", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Night Mood for Stress Relief", "thumb": "https://i.ytimg.com/vi/mK4jvcZP5ZU/mqdefault.jpg", "dur": "2:23:57"}, {"id": "BpXOU-B2afs", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Evening Mood for Stress Relief", "thumb": "https://i.ytimg.com/vi/BpXOU-B2afs/mqdefault.jpg", "dur": "2:20:48"}, {"id": "cUpqfRUVSS4", "title": "[🎷Blue Note Jazz] ▶Playlist - Late Night Lounge for Relaxing Jazz Listening", "thumb": "https://i.ytimg.com/vi/cUpqfRUVSS4/mqdefault.jpg", "dur": "2:25:09"}, {"id": "BK7Bw-ysMm8", "title": "[🎷Blue Note Jazz] ▶Playlist - Quiet Club Mood for Relaxing Jazz Listening", "thumb": "https://i.ytimg.com/vi/BK7Bw-ysMm8/mqdefault.jpg", "dur": "2:21:46"}, {"id": "R8CFXkoZ5zQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Night Mood for Stress Relief", "thumb": "https://i.ytimg.com/vi/R8CFXkoZ5zQ/mqdefault.jpg", "dur": "2:21:39"}, {"id": "4DJ28aGs46c", "title": "[🎷Blue Note Jazz] ▶Playlist  – Soft Evening Mood for Background Jazz Ambience", "thumb": "https://i.ytimg.com/vi/4DJ28aGs46c/mqdefault.jpg", "dur": "2:24:16"}, {"id": "NtT39hfw_qo", "title": "[🎷Blue Note Jazz] ▶Playlist  – Soulful Evening Sound for Background Music", "thumb": "https://i.ytimg.com/vi/NtT39hfw_qo/mqdefault.jpg", "dur": "2:25:08"}, {"id": "rIC7VL9vz1I", "title": "[🎷Blue Note Jazz] ▶Playlist – Elegant Lounge Tone for Unwind Mood", "thumb": "https://i.ytimg.com/vi/rIC7VL9vz1I/mqdefault.jpg", "dur": "2:18:00"}, {"id": "mHM4uveUdIA", "title": "[🎷Blue Note Jazz] ▶Playlist – Quiet City Lights for Peaceful Evening Listening", "thumb": "https://i.ytimg.com/vi/mHM4uveUdIA/mqdefault.jpg", "dur": "2:28:37"}, {"id": "oGwrISOIHls", "title": "[🎷Blue Note Jazz] ▶Playlist – Spring Street Cafe for Unwind Mood", "thumb": "https://i.ytimg.com/vi/oGwrISOIHls/mqdefault.jpg", "dur": "2:24:50"}, {"id": "ItjygChmPdQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Intimate Live Band for Background Jazz Ambience", "thumb": "https://i.ytimg.com/vi/ItjygChmPdQ/mqdefault.jpg", "dur": "2:32:03"}, {"id": "h-pfUu7M3RA", "title": "[🎷Blue Note Jazz] ▶Playlist – Late Night Lounge for Relaxing Jazz Listening", "thumb": "https://i.ytimg.com/vi/h-pfUu7M3RA/mqdefault.jpg", "dur": "2:25:55"}, {"id": "r7I5N268dbI", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Night Tone for Background Jazz Ambience", "thumb": "https://i.ytimg.com/vi/r7I5N268dbI/mqdefault.jpg", "dur": "2:15:00"}, {"id": "2LS6DR1j_Yg", "title": "[🎷Blue Note Jazz] ▶Playlist - Late Night Lounge for Relaxing Jazz Listening", "thumb": "https://i.ytimg.com/vi/2LS6DR1j_Yg/mqdefault.jpg", "dur": "2:22:27"}, {"id": "2jWc5a0NX2A", "title": "[🎷Blue Note Jazz] ▶Playlist – Classic Day Lounge for Relaxing Moments", "thumb": "https://i.ytimg.com/vi/2jWc5a0NX2A/mqdefault.jpg", "dur": "2:36:03"}, {"id": "47uGwJWUa8g", "title": "[🎷Blue Note Jazz] ▶Playlist – Calm Lounge Atmosphere for Late Night Listening", "thumb": "https://i.ytimg.com/vi/47uGwJWUa8g/mqdefault.jpg", "dur": "2:37:32"}, {"id": "cTlqtZS_Yxc", "title": "[🎷Blue Note Jazz] ▶Playlist - Classic Blue Note Jazz – Cozy Lounge for Peaceful Listening", "thumb": "https://i.ytimg.com/vi/cTlqtZS_Yxc/mqdefault.jpg", "dur": "2:08:50"}, {"id": "76_pe1PCXB4", "title": "[🎷Blue Note Jazz] ▶Playlist - Calm Blue Note Jazz – Late Night Ambience for Focus & Chill", "thumb": "https://i.ytimg.com/vi/76_pe1PCXB4/mqdefault.jpg", "dur": "2:02:05"}, {"id": "RcBSAuu_USc", "title": "[🎷Blue Note Jazz] ▶Playlist - Relaxing Blue Note Jazz – Smoky Lounge for Quiet Focus Moments", "thumb": "https://i.ytimg.com/vi/RcBSAuu_USc/mqdefault.jpg", "dur": "2:03:40"}, {"id": "eg4oK3YWn1A", "title": "[🎷Blue Note Jazz] ▶Playlist - Classic Blue Note Jazz – Elegant Lounge for Calm Nights", "thumb": "https://i.ytimg.com/vi/eg4oK3YWn1A/mqdefault.jpg", "dur": "2:15:42"}, {"id": "fFWWaZc7-mM", "title": "[🎷Blue Note Jazz] ▶Playlist – Soft Evening for Stress Relief", "thumb": "https://i.ytimg.com/vi/fFWWaZc7-mM/mqdefault.jpg", "dur": "2:22:42"}, {"id": "iQeeTF7Yayg", "title": "[🎷Blue Note Jazz] ▶Playlist - Classic Smooth Blue Note Jazz – Relaxing Lounge for Stress Relief", "thumb": "https://i.ytimg.com/vi/iQeeTF7Yayg/mqdefault.jpg", "dur": "2:29:18"}, {"id": "GJETBLTHLGw", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Evening Blue Note Jazz – Peaceful Lounge for Unwind", "thumb": "https://i.ytimg.com/vi/GJETBLTHLGw/mqdefault.jpg", "dur": "2:02:49"}, {"id": "PJvUqPTKIis", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Mood for Stress Relief Listening", "thumb": "https://i.ytimg.com/vi/PJvUqPTKIis/mqdefault.jpg", "dur": "2:16:04"}, {"id": "lEaGPUu4GRc", "title": "[🎷Blue Note Jazz] ▶Playlist – Peaceful Lounge for Calm Focus Flow", "thumb": "https://i.ytimg.com/vi/lEaGPUu4GRc/mqdefault.jpg", "dur": "2:13:36"}, {"id": "hIez-hx6tZg", "title": "[🎷Blue Note Jazz] ▶Playlist - Classic Lounge for Calm Focus", "thumb": "https://i.ytimg.com/vi/hIez-hx6tZg/mqdefault.jpg", "dur": "2:27:27"}, {"id": "q_1D4_fiUs8", "title": "[🎷Blue Note Jazz] ▶Playlist - Vintage Blue Note Jazz – Classic Lounge for Relaxing Moments", "thumb": "https://i.ytimg.com/vi/q_1D4_fiUs8/mqdefault.jpg", "dur": "2:43:41"}, {"id": "NNXX1JFLMZU", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Lounge Atmosphere for Stress Relief", "thumb": "https://i.ytimg.com/vi/NNXX1JFLMZU/mqdefault.jpg", "dur": "2:34:39"}, {"id": "spKhJNBRpM4", "title": "[🎷Blue Note Jazz] ▶Playlist - Calm Vintage Mood for Quiet Moments", "thumb": "https://i.ytimg.com/vi/spKhJNBRpM4/mqdefault.jpg", "dur": "2:39:40"}, {"id": "uNK6jp58Vyk", "title": "[🎷Blue Note Jazz] ▶Playlist | Soft Lounge Vibes for Peaceful Listening", "thumb": "https://i.ytimg.com/vi/uNK6jp58Vyk/mqdefault.jpg", "dur": "2:14:31"}, {"id": "IRHCTDTQnq8", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Evening Blue Note Jazz – Candlelight Mood for Gentle Relaxation", "thumb": "https://i.ytimg.com/vi/IRHCTDTQnq8/mqdefault.jpg", "dur": "2:38:15"}, {"id": "h-iLyQkzy0c", "title": "[🎷Blue Note Jazz] ▶Playlist - Vintage Blue Note Jazz – Quiet Club Mood for Peaceful Listening", "thumb": "https://i.ytimg.com/vi/h-iLyQkzy0c/mqdefault.jpg", "dur": "2:28:15"}, {"id": "va1MGS5QzDc", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Blue Note Jazz – Quiet Midnight Club for Peaceful Listening", "thumb": "https://i.ytimg.com/vi/va1MGS5QzDc/mqdefault.jpg", "dur": "2:11:58"}, {"id": "jIw5axukMt0", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Vintage Jazz for Peaceful Background Listening", "thumb": "https://i.ytimg.com/vi/jIw5axukMt0/mqdefault.jpg", "dur": "2:08:47"}, {"id": "UflFdZwxH9s", "title": "[🎷Blue Note Jazz] ▶Playlist - Smoky Vintage Blue Note Jazz – Classic Lounge for Quiet Nights", "thumb": "https://i.ytimg.com/vi/UflFdZwxH9s/mqdefault.jpg", "dur": "2:07:28"}, {"id": "Lu9SU-Di_o0", "title": "[🎷Blue Note Jazz] ▶Playlist | Peaceful Blue Note Jazz – Warm Classic Lounge Background Music", "thumb": "https://i.ytimg.com/vi/Lu9SU-Di_o0/mqdefault.jpg", "dur": "2:06:40"}, {"id": "9d56HWHHioE", "title": "[🎷Blue Note Jazz] ▶Playlist | Soft Evening Blue Note Jazz – Vintage Jazz Lounge for Calm Listening", "thumb": "https://i.ytimg.com/vi/9d56HWHHioE/mqdefault.jpg", "dur": "2:03:22"}, {"id": "1xFKLHGB6tw", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Blue Note Jazz – Quiet Club Atmosphere for Calm Evening Listening", "thumb": "https://i.ytimg.com/vi/1xFKLHGB6tw/mqdefault.jpg", "dur": "2:14:28"}, {"id": "hOa-ElJZ6M4", "title": "[🎷Blue Note Jazz] ▶Playlist - Smoky Vintage Club for Elegant Late Night Listening", "thumb": "https://i.ytimg.com/vi/hOa-ElJZ6M4/mqdefault.jpg", "dur": "2:38:38"}, {"id": "jnNVnFht8VA", "title": "[🎷Blue Note Jazz] ▶Playlist - Midnight Blue Note Jazz – Classic Jazz Lounge for Relaxation and Focus", "thumb": "https://i.ytimg.com/vi/jnNVnFht8VA/mqdefault.jpg", "dur": "2:05:32"}, {"id": "-NvXB0kKqUc", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Classic Blue Note Jazz – Relaxing Lounge Mood for Quiet Moments", "thumb": "https://i.ytimg.com/vi/-NvXB0kKqUc/mqdefault.jpg", "dur": "2:05:30"}, {"id": "DKu5FsGnI60", "title": "[🎷Blue Note Jazz] ▶Playlist - Calm Blue Note Jazz – Warm Vintage Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/DKu5FsGnI60/mqdefault.jpg", "dur": "2:01:08"}, {"id": "sYeRfbrGKC8", "title": "[🎷Blue Note Jazz] ▶Playlist | Soft Vintage Jazz Sound for Relaxing Moments", "thumb": "https://i.ytimg.com/vi/sYeRfbrGKC8/mqdefault.jpg", "dur": "2:13:25"}, {"id": "X_RVdJT0IBs", "title": "[🎷Blue Note Jazz] ▶Playlist | City Lights After Dark — Smooth Jazz Relaxation", "thumb": "https://i.ytimg.com/vi/X_RVdJT0IBs/mqdefault.jpg", "dur": "2:33:33"}, {"id": "RIKr8Vk92A4", "title": "[🎷Blue Note Jazz] ▶Playlist — Gentle Jazz Piano & Sax | Study and Reading Ambience", "thumb": "https://i.ytimg.com/vi/RIKr8Vk92A4/mqdefault.jpg", "dur": "2:11:07"}, {"id": "GfLC7abTuvI", "title": "[🎷Blue Note Jazz] ▶Playlist — Warm Jazz Lounge Music to Unwind & Rest", "thumb": "https://i.ytimg.com/vi/GfLC7abTuvI/mqdefault.jpg", "dur": "2:35:43"}, {"id": "XmLgYBsyXfU", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Vintage Jazz Session — Gentle Sounds for Rest & Focus", "thumb": "https://i.ytimg.com/vi/XmLgYBsyXfU/mqdefault.jpg", "dur": "2:33:41"}, {"id": "KSBnwU7PJ-g", "title": "[🎷Blue Note Jazz] ▶Playlist — Gentle Sax & Piano Jazz for Long Listening", "thumb": "https://i.ytimg.com/vi/KSBnwU7PJ-g/mqdefault.jpg", "dur": "2:01:24"}, {"id": "WKSDAb3rQLY", "title": "[🎷Blue Note Jazz] ▶Playlist - Cozy Jazz Cafe Atmosphere with Smooth Instrumental Lounge Jazz", "thumb": "https://i.ytimg.com/vi/WKSDAb3rQLY/mqdefault.jpg", "dur": "2:14:01"}, {"id": "YAUd-hY9Ldk", "title": "🎷Blue Note Jazz] ▶Playlist - Relaxing Music Blue Note Jazz Smooth Instrumental Background Music", "thumb": "https://i.ytimg.com/vi/YAUd-hY9Ldk/mqdefault.jpg", "dur": "2:20:13"}, {"id": "Cf9_beWe1oU", "title": "[🎷Blue Note Jazz] ▶Playlist - Uplifting Vintage Jazz Café Music for Focus (2 Hours)", "thumb": "https://i.ytimg.com/vi/Cf9_beWe1oU/mqdefault.jpg", "dur": "2:34:34"}, {"id": "qyGDljwNSNA", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Late Night Jazz Lounge Ambience | Chill Background Music", "thumb": "https://i.ytimg.com/vi/qyGDljwNSNA/mqdefault.jpg", "dur": "2:05:05"}, {"id": "p4xQckozcCo", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm Piano & Sax Jazz to Unwind After a Long Day", "thumb": "https://i.ytimg.com/vi/p4xQckozcCo/mqdefault.jpg", "dur": "2:02:09"}, {"id": "E57PauAusm0", "title": "[🎷Blue Note Jazz] ▶Playlist – Vintage Jazz Lounge Atmosphere | Stress Relief & Meditation", "thumb": "https://i.ytimg.com/vi/E57PauAusm0/mqdefault.jpg", "dur": "2:22:48"}, {"id": "IzD8Hux51pc", "title": "[🎷Blue Note Jazz] ▶Playlist - Deep Relaxation Jazz Collection | Healing Background Music Mix", "thumb": "https://i.ytimg.com/vi/IzD8Hux51pc/mqdefault.jpg", "dur": "2:22:23"}, {"id": "wySgbI_MbDM", "title": "[🎷Blue Note Jazz] ▶Playlist - Healing Jazz for Anxiety Relief & Emotional Comfort", "thumb": "https://i.ytimg.com/vi/wySgbI_MbDM/mqdefault.jpg", "dur": "2:17:07"}, {"id": "k6ttdMVMfAI", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Jazz Instrumentals for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/k6ttdMVMfAI/mqdefault.jpg", "dur": "2:21:00"}, {"id": "5XyjS0micFc", "title": "[🎷Blue Note Jazz] ▶Playlist - Peaceful Blue Note Jazz for Rest & Healing", "thumb": "https://i.ytimg.com/vi/5XyjS0micFc/mqdefault.jpg", "dur": "2:02:36"}, {"id": "ftRZp2mYxl8", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Blue Note Jazz for Relaxing, Studying, and Unwinding", "thumb": "https://i.ytimg.com/vi/ftRZp2mYxl8/mqdefault.jpg", "dur": "2:10:59"}, {"id": "tIV1uxU_FJk", "title": "[🎷Blue Note Jazz] ▶Playlist - Soulful Jazz to Relax Your Mind and Body", "thumb": "https://i.ytimg.com/vi/tIV1uxU_FJk/mqdefault.jpg", "dur": "2:01:21"}, {"id": "-Hw4GqIu5Hw", "title": "[🎷Blue Note Jazz] ▶Playlist - Healing Jazz Lounge Music for Mind & Soul", "thumb": "https://i.ytimg.com/vi/-Hw4GqIu5Hw/mqdefault.jpg", "dur": "2:05:20"}, {"id": "W9uba4Vnft4", "title": "[🎷Blue Note Jazz] ▶Playlist - Calm & Smooth Jazz Music to Unwind", "thumb": "https://i.ytimg.com/vi/W9uba4Vnft4/mqdefault.jpg", "dur": "2:00:17"}, {"id": "OtDl_ZMZO9Q", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft & Emotional Jazz to Relax Your Body and Soul", "thumb": "https://i.ytimg.com/vi/OtDl_ZMZO9Q/mqdefault.jpg", "dur": "2:09:06"}, {"id": "WpEyjwrSq04", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Blue Note Jazz for Sleepy Nights & Healing", "thumb": "https://i.ytimg.com/vi/WpEyjwrSq04/mqdefault.jpg", "dur": "2:15:50"}, {"id": "LWB0clcr0Qg", "title": "[🎷Blue Note Jazz] ▶Playlist - Relaxing New York Jazz for Late Night Healing & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/LWB0clcr0Qg/mqdefault.jpg", "dur": "2:20:38"}, {"id": "3Xle-3P5lzA", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Jazz Music for Deep Relaxation & Calm", "thumb": "https://i.ytimg.com/vi/3Xle-3P5lzA/mqdefault.jpg", "dur": "2:05:15"}, {"id": "Wj35X9wfv3g", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Jazz Vibes for Deep Relaxation & Mindful Healing", "thumb": "https://i.ytimg.com/vi/Wj35X9wfv3g/mqdefault.jpg", "dur": "2:08:39"}, {"id": "LBsvJZPA65s", "title": "[🎷Blue Note Jazz] ▶Playlist - Warm & Relaxing Jazz Music to Unwind Your Mind", "thumb": "https://i.ytimg.com/vi/LBsvJZPA65s/mqdefault.jpg", "dur": "2:29:10"}, {"id": "NhUclQO2aM4", "title": "[🎷Blue Note Jazz] ▶Playlist - Healing Jazz Ballads for Peaceful Evenings", "thumb": "https://i.ytimg.com/vi/NhUclQO2aM4/mqdefault.jpg", "dur": "2:11:16"}, {"id": "87c-H60YUro", "title": "[🎷Blue Note Jazz] ▶Playlist - Chill Blue Note Sessions for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/87c-H60YUro/mqdefault.jpg", "dur": "2:10:44"}, {"id": "iYNcItMsNaM", "title": "[🎷Blue Note Jazz] ▶Playlist - Peaceful Jazz Lounge for Mind Healing & Deep Calm", "thumb": "https://i.ytimg.com/vi/iYNcItMsNaM/mqdefault.jpg", "dur": "2:12:09"}, {"id": "1GnP4bHtaxY", "title": "[🎷Blue Note Jazz] ▶Playlist – Healing Jazz Instrumentals for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/1GnP4bHtaxY/mqdefault.jpg", "dur": "2:04:20"}, {"id": "rTsHA4eZ-iQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Light & Smooth Jazz to Soothe the Heart", "thumb": "https://i.ytimg.com/vi/rTsHA4eZ-iQ/mqdefault.jpg", "dur": "2:12:40"}, {"id": "zbntAGblZPM", "title": "[🎷Blue Note Jazz] ▶Playlist - Peaceful Jazz Lounge for Calm Vibes & Emotional Healing", "thumb": "https://i.ytimg.com/vi/zbntAGblZPM/mqdefault.jpg", "dur": "2:23:41"}, {"id": "qgJ53o-BbYU", "title": "[🎷Blue Note Jazz] ▶Playlist – Soft Jazz Nights with Warm Vintage Feel", "thumb": "https://i.ytimg.com/vi/qgJ53o-BbYU/mqdefault.jpg", "dur": "2:00:00"}, {"id": "Dj7BXBYNWJ8", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Jazz Lounge for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/Dj7BXBYNWJ8/mqdefault.jpg", "dur": "2:04:00"}, {"id": "Y9J_q_qAX0g", "title": "[🎷Blue Note Jazz] ▶Playlist - Elegant Jazz Lounge to Ease the Day’s Tension", "thumb": "https://i.ytimg.com/vi/Y9J_q_qAX0g/mqdefault.jpg", "dur": "2:22:52"}, {"id": "X-xQdMbiXBY", "title": "[🎷Blue Note Jazz] ▶Playlist – Gentle Lounge Tunes for Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/X-xQdMbiXBY/mqdefault.jpg", "dur": "2:06:57"}, {"id": "cgS5wVeh8K0", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Jazz Vibes for Calm Minds and Cozy Nights", "thumb": "https://i.ytimg.com/vi/cgS5wVeh8K0/mqdefault.jpg", "dur": "2:00:23"}, {"id": "HVTOTU4KL5s", "title": "[🎷Blue Note Jazz] ▶Playlist – Relax & Unwind with Classic Blue Note Vibes", "thumb": "https://i.ytimg.com/vi/HVTOTU4KL5s/mqdefault.jpg", "dur": "2:01:21"}, {"id": "Rxe7FSX6jcY", "title": "[🎷Blue Note Jazz] ▶Playlist – Smooth and Elegant Jazz for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/Rxe7FSX6jcY/mqdefault.jpg", "dur": "2:13:21"}, {"id": "vYQ6YRouIVQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Soft Jazz Lounge to Unwind Your Soul", "thumb": "https://i.ytimg.com/vi/vYQ6YRouIVQ/mqdefault.jpg", "dur": "2:19:03"}, {"id": "ACGZhZiy8ug", "title": "[🎷Blue Note Jazz] ▶Playlist - Smooth Chill Jazz to Unwind Your Mind", "thumb": "https://i.ytimg.com/vi/ACGZhZiy8ug/mqdefault.jpg", "dur": "2:04:08"}, {"id": "fS6odknO6N4", "title": "[🎷Blue Note Jazz] ▶Playlist - Healing Jazz to Uplift Mood and Reduce Stress", "thumb": "https://i.ytimg.com/vi/fS6odknO6N4/mqdefault.jpg", "dur": "2:22:40"}, {"id": "6vAtZbfp4OM", "title": "[🎷Blue Note Jazz] ▶Playlist - Midnight Lounge Sessions for Relaxation", "thumb": "https://i.ytimg.com/vi/6vAtZbfp4OM/mqdefault.jpg", "dur": "2:20:38"}, {"id": "phR3szITt8E", "title": "[🎷Blue Note Jazz] ▶Playlist - Mellow Blue Note Grooves for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/phR3szITt8E/mqdefault.jpg", "dur": "2:10:38"}, {"id": "oGejN2Gd1BQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Elegant Jazz Moments for Serenity", "thumb": "https://i.ytimg.com/vi/oGejN2Gd1BQ/mqdefault.jpg", "dur": "2:20:35"}, {"id": "W-ooWZXRsGU", "title": "[🎷Blue Note Jazz] ▶Playlist - Gentle Night Jazz to Unwind Your Mind", "thumb": "https://i.ytimg.com/vi/W-ooWZXRsGU/mqdefault.jpg", "dur": "2:08:42"}, {"id": "loJ7tQsLk3Q", "title": "[🎷Blue Note Jazz] ▶Playlist - Elegant Smooth Jazz for a Relaxing Night", "thumb": "https://i.ytimg.com/vi/loJ7tQsLk3Q/mqdefault.jpg", "dur": "2:12:43"}, {"id": "0AfOPuKeioc", "title": "[🎷Blue Note Jazz] ▶Playlist - Relaxing Night Lounge Jazz for Calm & Peaceful Moments", "thumb": "https://i.ytimg.com/vi/0AfOPuKeioc/mqdefault.jpg", "dur": "2:15:30"}, {"id": "vRhKmsUorfU", "title": "[🎷Blue Note Jazz] ▶Playlist - Healing Jazz Lounge Music for Stress-Free Nights", "thumb": "https://i.ytimg.com/vi/vRhKmsUorfU/mqdefault.jpg", "dur": "2:34:46"}, {"id": "2eKFU5kcpqU", "title": "[🎷Blue Note Jazz] ▶Playlist - Late Night Jazz to Unwind & Restore Energy", "thumb": "https://i.ytimg.com/vi/2eKFU5kcpqU/mqdefault.jpg", "dur": "2:29:22"}, {"id": "EDpofG6FFOQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Relaxing Jazz Music for Healing & Calm Vibes", "thumb": "https://i.ytimg.com/vi/EDpofG6FFOQ/mqdefault.jpg", "dur": "2:25:33"}, {"id": "U0XwkVN2OVo", "title": "[🎷Blue Note Jazz] ▶Playlist - Classic Blue Note Jazz for Inner Peace", "thumb": "https://i.ytimg.com/vi/U0XwkVN2OVo/mqdefault.jpg", "dur": "2:08:41"}, {"id": "3kX2QVUXSCU", "title": "[🎷Blue Note Jazz] ▶Playlist - Soothing Jazz Instrumentals for Mindful Healing", "thumb": "https://i.ytimg.com/vi/3kX2QVUXSCU/mqdefault.jpg", "dur": "2:03:38"}, {"id": "L9gr2CLCqoQ", "title": "[🎷Blue Note Jazz] ▶Playlist - Cozy Night Jazz Café Music for Relaxation", "thumb": "https://i.ytimg.com/vi/L9gr2CLCqoQ/mqdefault.jpg", "dur": "2:17:42"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Lost_Blues_Sessions.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Lost Blues Sessions";
 const KANAL = "Lost_Blues_Sessions.html";
 const VIDEOS = [{"id": "SFwyxYG4m_k", "title": "B.B. King • Eric Clapton • Gary Moore • Santana – The Thrill Is Gone 🌄 | Midnight Blues Tribute", "thumb": "https://i.ytimg.com/vi/SFwyxYG4m_k/mqdefault.jpg", "dur": "55:45"}, {"id": "DHVU9T096yc", "title": "B.B. King & Janis Joplin 🔥 Soul Blues Explosion | Live Newport Folk Festival 1968 (Tribute)", "thumb": "https://i.ytimg.com/vi/DHVU9T096yc/mqdefault.jpg", "dur": "53:27"}, {"id": "YNk8e0Sbzc0", "title": "Eric Clapton & Janis Joplin 🔥 Midnight Monterey 1967 | Raw Soul Blues Fire  | Tribute", "thumb": "https://i.ytimg.com/vi/YNk8e0Sbzc0/mqdefault.jpg", "dur": "1:04:17"}, {"id": "q-N-1k-0iW0", "title": "BB King, Eric Clapton, Jimi Hendrix,santana – Kings of the Midnight Psychedelic blues V.2 | Tribute", "thumb": "https://i.ytimg.com/vi/q-N-1k-0iW0/mqdefault.jpg", "dur": "51:55"}, {"id": "b27T9S-72SE", "title": "B.B. King & Muddy Waters – Midnight at Chess Records 🎸 | Kings of Chicago Blues | Tribute", "thumb": "https://i.ytimg.com/vi/b27T9S-72SE/mqdefault.jpg", "dur": "1:01:45"}, {"id": "JWycq6L138Y", "title": "BB King • Stevie Ray Vaughan • Jimi Hendrix • santana – Kings of the Midnight blues | Tribute", "thumb": "https://i.ytimg.com/vi/JWycq6L138Y/mqdefault.jpg", "dur": "57:37"}, {"id": "iRVQtQZmvbY", "title": "BB King • Eric Clapton • Jimi Hendrix • santana – Kings of the Midnight Psychedelic blues | Tribute", "thumb": "https://i.ytimg.com/vi/iRVQtQZmvbY/mqdefault.jpg", "dur": "54:10"}, {"id": "hYOLGhEHqI4", "title": "Stevie Ray Vaughan & Double Trouble – Pride and Joy 🎸Live at Montreux 1982 | Inspired Tribute", "thumb": "https://i.ytimg.com/vi/hYOLGhEHqI4/mqdefault.jpg", "dur": "57:22"}, {"id": "WkUp4s1jMso", "title": "BB King & Gary Moore 🔥 The Blues of Sacred Fire | Lost Blues Sessions (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/WkUp4s1jMso/mqdefault.jpg", "dur": "59:54"}, {"id": "utDD7VVIeQw", "title": "BB King, Clapton, Muddy Waters & Santana 🔥 Delta Latin Soul Fire | Impossible Tribute", "thumb": "https://i.ytimg.com/vi/utDD7VVIeQw/mqdefault.jpg", "dur": "1:06:56"}, {"id": "OwWo7-nUkv0", "title": "B.B. King • Clapton • Muddy Waters • Santana – Midnight Blues Rock Explosion | Full Tribute Session", "thumb": "https://i.ytimg.com/vi/OwWo7-nUkv0/mqdefault.jpg", "dur": "59:03"}, {"id": "WOMZnmjhspg", "title": "Muddy Waters & The Rolling Stones – Checkerboard Lounge 🎸 | Raw Blues Soul Fire | Live Session 1981", "thumb": "https://i.ytimg.com/vi/WOMZnmjhspg/mqdefault.jpg", "dur": "1:00:50"}, {"id": "aT0_NssMjTc", "title": "Janis Joplin & BB King 🔥 Live Newport Folk Festival 1968 | Soul Blues Explosion Tribute", "thumb": "https://i.ytimg.com/vi/aT0_NssMjTc/mqdefault.jpg", "dur": "54:50"}, {"id": "_AsQyvu1hK4", "title": "BB King & Muddy Waters  – Two Kings of Chicago 🔥 Live Blues Festival 1969 | Tribute", "thumb": "https://i.ytimg.com/vi/_AsQyvu1hK4/mqdefault.jpg", "dur": "48:40"}, {"id": "b69f4A9bOHY", "title": "Robert Johnson • BB King • Muddy Waters • Howlin' Wolf 🔥 Live Newport 1964 - Delta Blues Explosion", "thumb": "https://i.ytimg.com/vi/b69f4A9bOHY/mqdefault.jpg", "dur": "53:38"}, {"id": "Ypxet7lOsBA", "title": "Jimi Hendrix & Stevie Ray Vaughan 🔥 Texas Blues Meets Psychedelic Fire Legendary (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/Ypxet7lOsBA/mqdefault.jpg", "dur": "1:09:53"}, {"id": "gASzS0Bd1AA", "title": "B.B. King • Clapton • Muddy Waters • Santana – Kings of the Midnight Blues | Tribute", "thumb": "https://i.ytimg.com/vi/gASzS0Bd1AA/mqdefault.jpg", "dur": "1:08:39"}, {"id": "25BibZUuEyo", "title": "B.B. King • Clapton • Muddy Waters • Santana – Midnight Blues Rock Explosion | Full Tribute Session", "thumb": "https://i.ytimg.com/vi/25BibZUuEyo/mqdefault.jpg", "dur": "1:01:48"}, {"id": "VoaMldtgu4Y", "title": "BB King • Robert Johnson • Muddy Waters • Howlin' Wolf – Raw Delta Heartbreak | Lost Sessions 1952 🎸", "thumb": "https://i.ytimg.com/vi/VoaMldtgu4Y/mqdefault.jpg", "dur": "57:23"}, {"id": "RNGEhQKHMGU", "title": "B.B. King & Etta James – At Last The Blues Found Us 🎸The Greatest Soul Blues Session Vol. 2", "thumb": "https://i.ytimg.com/vi/RNGEhQKHMGU/mqdefault.jpg", "dur": "57:23"}, {"id": "Prli3uYkwaw", "title": "B.B. King • Clapton • Muddy Waters • Santana – Kings of the Midnight Blues Vol. 2 | Tribute", "thumb": "https://i.ytimg.com/vi/Prli3uYkwaw/mqdefault.jpg", "dur": "1:06:57"}, {"id": "YiP5hqb9Igc", "title": "B.B. King — Lucille After Midnight | Midnight Blues Sessions", "thumb": "https://i.ytimg.com/vi/YiP5hqb9Igc/mqdefault.jpg", "dur": "52:40"}, {"id": "HuqKYCxx5Hs", "title": "Muddy Waters & BB King – Soulful Heartbreak Tribute | Lost Clarksdale Sessions 1955", "thumb": "https://i.ytimg.com/vi/HuqKYCxx5Hs/mqdefault.jpg", "dur": "1:01:45"}, {"id": "zShLGUUYSQE", "title": "Marvin Gaye & Tammi Terrell – You're All I Need 🎵Legendary Love Soul Sessions 1960s Style", "thumb": "https://i.ytimg.com/vi/zShLGUUYSQE/mqdefault.jpg", "dur": "56:33"}, {"id": "43VUq3CvH-M", "title": "B.B. King & Ray Charles – Midnight Soul at Chess Records 🎸Legendary Blues Session 1960s Style", "thumb": "https://i.ytimg.com/vi/43VUq3CvH-M/mqdefault.jpg", "dur": "1:09:31"}, {"id": "2mUu1Mu68n0", "title": "Stevie Ray Vaughan – They Said These Tapes Were Lost Forever - Legendary Blues Sessions Texas Style", "thumb": "https://i.ytimg.com/vi/2mUu1Mu68n0/mqdefault.jpg", "dur": "1:03:50"}, {"id": "Crivhvz0xc4", "title": "B.B. King & Etta James – At Last 🎸The Greatest Soul Blues Session Never Recorded", "thumb": "https://i.ytimg.com/vi/Crivhvz0xc4/mqdefault.jpg", "dur": "1:03:19"}, {"id": "R4Cpc0wKJrg", "title": "Muddy Waters & Howlin' Wolf – Kings of Chess Records 🎸 Raw Chicago Blues Sessions 1950s Style", "thumb": "https://i.ytimg.com/vi/R4Cpc0wKJrg/mqdefault.jpg", "dur": "59:32"}, {"id": "rW8Hs2GqViI", "title": "B.B. King • Clapton • Muddy Waters • Santana – Kings of the Midnight Blues | Full Tribute Session 🎸", "thumb": "https://i.ytimg.com/vi/rW8Hs2GqViI/mqdefault.jpg", "dur": "1:01:48"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

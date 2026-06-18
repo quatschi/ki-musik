@@ -128,7 +128,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      const content = JSON.parse(atob(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -193,7 +193,7 @@ async function saveRatings() {
       `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
       { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
     );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(decodeURIComponent(escape(atob(existing.content)))); meta = Object.assign(exContent.meta || {}, meta); }
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
     const body = { message: 'Bewertung aktualisiert', content: encoded };
     if (sha) body.sha = sha;
     const putResp = await fetch(
@@ -217,6 +217,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

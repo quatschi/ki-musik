@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Blue_Soul_Loungee.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Blue Soul Loungee";
 const KANAL = "Blue_Soul_Loungee.html";
 const VIDEOS = [{"id": "chzHfyKiLHg", "title": "Whiskey Blues - Smooth Jazz Blues Mix for Smoky Nights in a Vintage Bar Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/chzHfyKiLHg/mqdefault.jpg", "dur": "2:06:15"}, {"id": "H6_WxndLAN8", "title": "Whiskey Blues & Smoky Jazz ~ Smooth Jazz Blues For A Relaxing Night In A Bar Blues Lounge", "thumb": "https://i.ytimg.com/vi/H6_WxndLAN8/mqdefault.jpg", "dur": "2:07:04"}, {"id": "efIWg-smJkY", "title": "Whiskey Blues & Smoky Jazz ~ Immersive Lounge Bar Music for Relaxation", "thumb": "https://i.ytimg.com/vi/efIWg-smJkY/mqdefault.jpg", "dur": "2:09:33"}, {"id": "JyOcP5MuAgI", "title": "Deep Whiskey Jazz Blues | Smoky Guitar Melodies for Relaxing Bar Ambience and Night Chill", "thumb": "https://i.ytimg.com/vi/JyOcP5MuAgI/mqdefault.jpg", "dur": "2:08:13"}, {"id": "HoTWH_psLlE", "title": "Whiskey Blues | Smooth Jazz Blues - Smoky Jazz Lounge & Bar Blues Music for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/HoTWH_psLlE/mqdefault.jpg", "dur": "2:09:06"}, {"id": "duys1S8lpmk", "title": "Smooth Whiskey Blues Jazz | Bar Lounge Music for Stress Relief & Night Chill 2026", "thumb": "https://i.ytimg.com/vi/duys1S8lpmk/mqdefault.jpg", "dur": "2:05:16"}, {"id": "MQHG_V5YBfc", "title": "Smoky Whiskey Blues Guitar & Midnight Jazz | Lonely Rain Sounds for Relaxation 2026", "thumb": "https://i.ytimg.com/vi/MQHG_V5YBfc/mqdefault.jpg", "dur": "2:03:43"}, {"id": "2nBfOrCL7CI", "title": "Smoky Blues Lounge Music | Blue Whiskey Jazz, Deep Soul & Slow Guitar Night Vibes", "thumb": "https://i.ytimg.com/vi/2nBfOrCL7CI/mqdefault.jpg", "dur": "2:06:38"}, {"id": "8H7RhcMtEWI", "title": "Soulful Blues Jazz for Whiskey Night | Relaxing Bar Music & Midnight Chill Atmosphere", "thumb": "https://i.ytimg.com/vi/8H7RhcMtEWI/mqdefault.jpg", "dur": "2:05:39"}, {"id": "Zqcv0MOlfkQ", "title": "My Photo Editing Process in Photoshop | Complete Step-by-Step Editing Workflow for Beginners", "thumb": "https://i.ytimg.com/vi/Zqcv0MOlfkQ/mqdefault.jpg", "dur": "7:31"}, {"id": "fhgHa7C1Oao", "title": "Soulful Vibes and Whiskey Night - Late Night Jazz Blues - Relaxing Chill Blues Atmosphere", "thumb": "https://i.ytimg.com/vi/fhgHa7C1Oao/mqdefault.jpg", "dur": "2:10:36"}, {"id": "cG4PSZmfz28", "title": "Whiskey Night ~ Jazz Blues & Soulful Vibes - Relaxing Night Mood Music For Chill Blues", "thumb": "https://i.ytimg.com/vi/cG4PSZmfz28/mqdefault.jpg", "dur": "2:10:17"}, {"id": "j38c_liVbOM", "title": "Whiskey Night | Smooth Jazz Blues & Soulful Vibes | Relaxing Night Mood Music for Chilling", "thumb": "https://i.ytimg.com/vi/j38c_liVbOM/mqdefault.jpg", "dur": "2:06:46"}, {"id": "FFT8POLRzxc", "title": "Whiskey Night | Jazz Blues & Soulful Vibes - Night Mood Music ~ Relaxing Chill Blues Mix", "thumb": "https://i.ytimg.com/vi/FFT8POLRzxc/mqdefault.jpg", "dur": "2:01:37"}, {"id": "a3Qn7McYTFs", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for a Relaxing Evening in the Dark Bar", "thumb": "https://i.ytimg.com/vi/a3Qn7McYTFs/mqdefault.jpg", "dur": "2:02:28"}, {"id": "D4M4Jkgvd5Q", "title": "Whiskey Night Jazz Blues ~ Soulful Vibes Night Mood Music Chill", "thumb": "https://i.ytimg.com/vi/D4M4Jkgvd5Q/mqdefault.jpg", "dur": "2:03:33"}, {"id": "isIzm720KDI", "title": "Late Night Jazz Blues - Soulful Vibes ~ Whiskey Night Melodies and Chill Midnight Moods", "thumb": "https://i.ytimg.com/vi/isIzm720KDI/mqdefault.jpg", "dur": "2:09:25"}, {"id": "YnFGs2tNJwc", "title": "Whiskey Night & Jazz Blues - Soulful Vibes for Late Night Mood Music and Chill Blues Mixes", "thumb": "https://i.ytimg.com/vi/YnFGs2tNJwc/mqdefault.jpg", "dur": "2:00:57"}, {"id": "vPHzBiqc9DQ", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes | Night Mood Music - Relaxing Chill Blues", "thumb": "https://i.ytimg.com/vi/vPHzBiqc9DQ/mqdefault.jpg", "dur": "2:04:23"}, {"id": "4Qqyiz5F3ys", "title": "Whiskey Night & Jazz Blues - Soulful Vibes for Midnight Relaxation and Smooth Chill Blues", "thumb": "https://i.ytimg.com/vi/4Qqyiz5F3ys/mqdefault.jpg", "dur": "2:09:03"}, {"id": "oUk6b0G7YHU", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for Relaxation ~ Slow Chill Night Mood", "thumb": "https://i.ytimg.com/vi/oUk6b0G7YHU/mqdefault.jpg", "dur": "2:10:28"}, {"id": "xbE1BpgB5GI", "title": "Whiskey Night | Smooth Jazz Blues & Soulful Vibes - Relaxing Night Mood Music For Chill", "thumb": "https://i.ytimg.com/vi/xbE1BpgB5GI/mqdefault.jpg", "dur": "2:09:12"}, {"id": "DVxYRtxEk84", "title": "Whiskey Night ~ Smooth Jazz Blues & Soulful Vibes - Relaxing Night Mood Music For Chill", "thumb": "https://i.ytimg.com/vi/DVxYRtxEk84/mqdefault.jpg", "dur": "2:04:43"}, {"id": "0eTdD2pK17I", "title": "Blue Soul Lounge | Smooth Blues Music for Relaxing Nights & Soul Guitar Chill", "thumb": "https://i.ytimg.com/vi/0eTdD2pK17I/mqdefault.jpg", "dur": "2:09:28"}, {"id": "2P3l78lLYVY", "title": "Blue Soul Lounge Vinyl Nights ~ Smooth Blues Music for Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/2P3l78lLYVY/mqdefault.jpg", "dur": "2:01:27"}, {"id": "Hv2nKu9QB5k", "title": "Whiskey Night & Chill Blues ~ Smooth Jazz for Soulful Vibes & Relaxation Music", "thumb": "https://i.ytimg.com/vi/Hv2nKu9QB5k/mqdefault.jpg", "dur": "2:01:26"}, {"id": "zwrjHhHnWKs", "title": "Whiskey Night Jazz Blues - Soulful Vibes for a Relaxing Evening Mood & Chill Music", "thumb": "https://i.ytimg.com/vi/zwrjHhHnWKs/mqdefault.jpg", "dur": "2:12:24"}, {"id": "Z8ruesKa2qI", "title": "Whiskey Night Jazz Blues | Soulful Vibes & Chill Music for a Relaxed Evening", "thumb": "https://i.ytimg.com/vi/Z8ruesKa2qI/mqdefault.jpg", "dur": "2:06:41"}, {"id": "hUgARPBnoNE", "title": "Smooth Jazz & Whiskey Night ~ Deep Soulful Vibes for Relaxing Evening Mood Music", "thumb": "https://i.ytimg.com/vi/hUgARPBnoNE/mqdefault.jpg", "dur": "2:04:02"}, {"id": "J4tnh4nlaLE", "title": "Whiskey Night & Jazz Blues | Smooth Soulful Vibes | Mellow Night Mood Music Mix for Unwind 🎶", "thumb": "https://i.ytimg.com/vi/J4tnh4nlaLE/mqdefault.jpg", "dur": "2:01:13"}, {"id": "mydWujfDVlQ", "title": "Whiskey Night JAZZ BLUES – Soulful Vibes & Chill Blues for a Perfect Evening Unwind", "thumb": "https://i.ytimg.com/vi/mydWujfDVlQ/mqdefault.jpg", "dur": "2:03:04"}, {"id": "-qWGCzpeeOE", "title": "Smooth Whiskey Blues | Soul Guitar Music for Peaceful Evenings, Smooth Blues Guitar", "thumb": "https://i.ytimg.com/vi/-qWGCzpeeOE/mqdefault.jpg", "dur": "2:03:22"}, {"id": "RxHlRw0XZx8", "title": "Ultimate Whiskey Blues | Smooth Soul Guitar Music for Evening Relaxation, Evening Whiskey Blues", "thumb": "https://i.ytimg.com/vi/RxHlRw0XZx8/mqdefault.jpg", "dur": "2:02:58"}, {"id": "BferjZkJ0q4", "title": "Chill Soulful Blues Guitar | Blue Lounge Grooves for Stress Relief, Focus & Midnight Peace", "thumb": "https://i.ytimg.com/vi/BferjZkJ0q4/mqdefault.jpg", "dur": "2:01:42"}, {"id": "pVqVu3oMUH8", "title": "Vintage Whiskey Room Blues | Smooth Night Jazz, Slow Chill Guitar & Soulful Relax Session", "thumb": "https://i.ytimg.com/vi/pVqVu3oMUH8/mqdefault.jpg", "dur": "1:51:07"}, {"id": "Acdf5NtOa9E", "title": "Whiskey Night Vibes – Smooth Jazz Blues & Soulful Chill Music for a Perfect Evening", "thumb": "https://i.ytimg.com/vi/Acdf5NtOa9E/mqdefault.jpg", "dur": "2:00:57"}, {"id": "_x8qD8Ds3f0", "title": "Whiskey Lounge Night Mood | Soulful Jazz Blues Music for Deep Relaxation & Chill Late-Night Vibes", "thumb": "https://i.ytimg.com/vi/_x8qD8Ds3f0/mqdefault.jpg", "dur": "2:05:39"}, {"id": "Y0a7MzGhgf0", "title": "Cozy Whiskey Night Blues ~ Soulful Jazz Guitar, Relaxing Chillout Vibes, Moody Late-Night Ambience", "thumb": "https://i.ytimg.com/vi/Y0a7MzGhgf0/mqdefault.jpg", "dur": "2:06:26"}, {"id": "UIgZnwsphaM", "title": "Whiskey Night & Jazz Blues | Soulful Vibes for a Relaxing Night Mood Music Mix", "thumb": "https://i.ytimg.com/vi/UIgZnwsphaM/mqdefault.jpg", "dur": "2:04:55"}, {"id": "BFLArXtENoE", "title": "Smooth Whiskey Night Jazz Blues | Soulful Vibes for Relaxation & Unwind", "thumb": "https://i.ytimg.com/vi/BFLArXtENoE/mqdefault.jpg", "dur": "2:05:54"}, {"id": "MGr3VrLTQ2U", "title": "Soulful Whiskey Bar Jazz | Slow Blues Guitar for Midnight Mood, Calm Focus & Easy Relaxing Moments", "thumb": "https://i.ytimg.com/vi/MGr3VrLTQ2U/mqdefault.jpg", "dur": "2:09:17"}, {"id": "KDbc2FLSrJY", "title": "Soulful Whiskey Night | Jazz Blues & Chill Vibes for a Relaxing Evening Mood", "thumb": "https://i.ytimg.com/vi/KDbc2FLSrJY/mqdefault.jpg", "dur": "2:07:16"}, {"id": "E2cnws3i4bU", "title": "Romantic Blue Whiskey Nights ~ Smooth Blues Guitar & Soulful Melodies for Deep Evening Relaxation", "thumb": "https://i.ytimg.com/vi/E2cnws3i4bU/mqdefault.jpg", "dur": "2:09:03"}, {"id": "NBx8OzfkTvI", "title": "Chill Whiskey Blues & Soul 🎸 Smooth Lounge Music for Stress Relief & Relaxation, Soulful Blue", "thumb": "https://i.ytimg.com/vi/NBx8OzfkTvI/mqdefault.jpg", "dur": "2:01:03"}, {"id": "aHB3LvqUDU4", "title": "Whiskey Lounge Blue Guitar | Soulful Blues Night Music for Relaxation & Slow Chill Sessions", "thumb": "https://i.ytimg.com/vi/aHB3LvqUDU4/mqdefault.jpg", "dur": "2:04:43"}, {"id": "hhVMdJOlLsk", "title": "Smooth Blues & Soul Lounge Guitar | Relaxing Blue Soul Vibes for Calm Evening Moment", "thumb": "https://i.ytimg.com/vi/hhVMdJOlLsk/mqdefault.jpg", "dur": "2:03:07"}, {"id": "wuL4BXaxu7Y", "title": "Cozy Evening Blues – Relaxing Soul Guitar & Smooth Jazz Vibes, Soulful Blues Guitar Vibes", "thumb": "https://i.ytimg.com/vi/wuL4BXaxu7Y/mqdefault.jpg", "dur": "1:58:58"}, {"id": "53fmVuXh87s", "title": "Luxury Blue Whiskey • Smooth Blues Guitar Ambience | Chill Jazz Blues for Night Relaxation", "thumb": "https://i.ytimg.com/vi/53fmVuXh87s/mqdefault.jpg", "dur": "2:03:45"}, {"id": "lMcPTQHJU2w", "title": "Blue Soul Lounge ~ Stormy Blues Guitar & Whiskey Chill Music Vibe for Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/lMcPTQHJU2w/mqdefault.jpg", "dur": "2:03:59"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

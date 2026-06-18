@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=JazzRecords.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "JazzRecords";
 const KANAL = "JazzRecords.html";
 const VIDEOS = [{"id": "arxLe0YqndI", "title": "Smooth Jazz BGM｜Rainy Jazz｜窓辺の雨音とコーヒー香るベースグルーヴジャズ｜作業用・勉強用", "thumb": "https://i.ytimg.com/vi/arxLe0YqndI/mqdefault.jpg", "dur": "2:18:50"}, {"id": "34vhtldrRFo", "title": "After Hours Jazz｜ジャズクラブのラストセットを聴くピアノとベースの深夜グルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/34vhtldrRFo/mqdefault.jpg", "dur": "1:09:29"}, {"id": "Dt1YcT3h8Wg", "title": "Night Drive Jazz｜ヘッドライトを上げて夜を貫くピアノとベースのボルテージグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Dt1YcT3h8Wg/mqdefault.jpg", "dur": "1:01:52"}, {"id": "xMgyRrc88vA", "title": "Tokyo Night Jazz｜雨上がりの摩天楼を見上げるピアノとベースの夜景グルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/xMgyRrc88vA/mqdefault.jpg", "dur": "1:05:51"}, {"id": "9bViMgo6xMs", "title": "Rainy Jazz｜雨音を聴きながら本に浸るピアノとベースの夜雨グルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/9bViMgo6xMs/mqdefault.jpg", "dur": "1:05:10"}, {"id": "I9J8eGDjwcQ", "title": "After Hours Jazz｜仕事帰りに酔いたくなるピアノとベースの心地良いグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/I9J8eGDjwcQ/mqdefault.jpg", "dur": "1:05:15"}, {"id": "rthfo8MDwjQ", "title": "Tokyo Night Jazz｜夜霧に滲む路地裏のピアノとベースの夜霧グルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/rthfo8MDwjQ/mqdefault.jpg", "dur": "1:05:33"}, {"id": "kyPvaJ2Ab_o", "title": "Night Drive Jazz｜アクセルを踏み込むピアノとベースのボルテージグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/kyPvaJ2Ab_o/mqdefault.jpg", "dur": "1:01:38"}, {"id": "Iylv49W4YKM", "title": "Tokyo Night Jazz｜夜の鼓動が高鳴るピアノとベースの高揚グルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Iylv49W4YKM/mqdefault.jpg", "dur": "1:02:35"}, {"id": "Oy9Kqa-O1Ss", "title": "Rainy Jazz｜雨音に包まれるピアノとベースのしっとりグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Oy9Kqa-O1Ss/mqdefault.jpg", "dur": "1:03:25"}, {"id": "BC63LiID4c0", "title": "After Hours Jazz｜マホガニーのバーに沈む重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/BC63LiID4c0/mqdefault.jpg", "dur": "1:03:35"}, {"id": "V6dnOPpblKw", "title": "Night Drive Jazz｜アクセル全開で夜を駆け抜ける重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/V6dnOPpblKw/mqdefault.jpg", "dur": "56:48"}, {"id": "67BoP3lXoh8", "title": "Tokyo Night Jazz｜ネオン街に呼応する重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/67BoP3lXoh8/mqdefault.jpg", "dur": "2:05:48"}, {"id": "7D08QWyZXck", "title": "Rainy Jazz｜雨夜に染みる重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/7D08QWyZXck/mqdefault.jpg", "dur": "2:07:15"}, {"id": "tni6MsM3baQ", "title": "After Hours Jazz｜麗しのベーシストが奏でるスウィング重低音ベースグルーヴ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/tni6MsM3baQ/mqdefault.jpg", "dur": "2:07:56"}, {"id": "O0tFjF9RiEE", "title": "Night Drive Jazz｜ネオン高架を駆ける重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/O0tFjF9RiEE/mqdefault.jpg", "dur": "2:02:08"}, {"id": "g6kHbbVXOjs", "title": "Tokyo Night Jazz｜ネオンに濡れる重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/g6kHbbVXOjs/mqdefault.jpg", "dur": "2:08:48"}, {"id": "PIQwsOhrsVk", "title": "Rainy Jazz｜雨粒に揺れる重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/PIQwsOhrsVk/mqdefault.jpg", "dur": "2:02:26"}, {"id": "VcCUukdgnzk", "title": "After Hours Jazz｜閉店後のジャズバーに溶ける重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/VcCUukdgnzk/mqdefault.jpg", "dur": "2:08:33"}, {"id": "n1GTdLfZEqU", "title": "Night Drive Jazz｜ベイサイドを駆け抜ける重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/n1GTdLfZEqU/mqdefault.jpg", "dur": "2:05:03"}, {"id": "rSdt_sJRlbM", "title": "Tokyo Night Jazz｜深夜の摩天楼に灯る重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM｜Smooth Jazz", "thumb": "https://i.ytimg.com/vi/rSdt_sJRlbM/mqdefault.jpg", "dur": "2:09:24"}, {"id": "6LbVpY3qSOY", "title": "Rainy Jazz｜雨夜に滲む重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM", "thumb": "https://i.ytimg.com/vi/6LbVpY3qSOY/mqdefault.jpg", "dur": "2:02:24"}, {"id": "w_fcAr13EWY", "title": "After Hours Jazz｜深夜のジャズクラブを満たす重低音ベースグルーヴ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/w_fcAr13EWY/mqdefault.jpg", "dur": "2:03:07"}, {"id": "rqWe40tXyiY", "title": "Night Drive Jazz｜真夜中の街を疾走する重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/rqWe40tXyiY/mqdefault.jpg", "dur": "2:03:43"}, {"id": "sMc8I1foPS8", "title": "Tokyo Night Jazz｜夜の静けさに溶ける重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/sMc8I1foPS8/mqdefault.jpg", "dur": "1:47:14"}, {"id": "lVPcZAlUVxM", "title": "Rainy Jazz｜雨音と共に響く重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/lVPcZAlUVxM/mqdefault.jpg", "dur": "2:13:05"}, {"id": "7zD6OtRz3G8", "title": "After Hours Jazz｜心地よくスウィングする重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/7zD6OtRz3G8/mqdefault.jpg", "dur": "2:00:08"}, {"id": "cLvQrQV5__0", "title": "Night Drive Jazz｜都会の闇を切り裂く重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/cLvQrQV5__0/mqdefault.jpg", "dur": "2:06:33"}, {"id": "8jhkqjbVM_E", "title": "Tokyo Night Jazz｜夜風に溶ける重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/8jhkqjbVM_E/mqdefault.jpg", "dur": "2:08:00"}, {"id": "Flxis607GA4", "title": "After Hours Jazz｜大人を魅了するスウィング重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Flxis607GA4/mqdefault.jpg", "dur": "1:59:49"}, {"id": "ZtfKUjR4Zuo", "title": "Night Drive Jazz｜ネオンの夜を駆け抜ける重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/ZtfKUjR4Zuo/mqdefault.jpg", "dur": "2:10:02"}, {"id": "JRbp1Mi-JHU", "title": "Tokyo Night Jazz｜哀愁漂う重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/JRbp1Mi-JHU/mqdefault.jpg", "dur": "2:01:41"}, {"id": "KtCdNuBNKWY", "title": "After Hours Jazz｜スウィング感が止まらない重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/KtCdNuBNKWY/mqdefault.jpg", "dur": "5:13:55"}, {"id": "e2nt3-k5Ch8", "title": "Night Drive Jazz｜重低音ベースとギターが疾走するグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/e2nt3-k5Ch8/mqdefault.jpg", "dur": "5:22:04"}, {"id": "ASscBUUi3ag", "title": "Tokyo Night Jazz｜重低音ベースが体に染み込むグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/ASscBUUi3ag/mqdefault.jpg", "dur": "1:49:47"}, {"id": "HCL_jM6gFEk", "title": "After Hours Jazz｜深夜のバーで響くスウィング重低音ベースグルーヴ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/HCL_jM6gFEk/mqdefault.jpg", "dur": "3:46:15"}, {"id": "v1TE1LbdKjo", "title": "Night Drive Jazz｜重低音ベースが鼓膜を震わすグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/v1TE1LbdKjo/mqdefault.jpg", "dur": "2:09:07"}, {"id": "VNxhvZsQABc", "title": "Tokyo Night Jazz｜都会の夜を賑わす重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/VNxhvZsQABc/mqdefault.jpg", "dur": "2:26:44"}, {"id": "sqUb77h_7GM", "title": "After Hours Jazz｜本格スウィングジャズが心に刺さる重低音ベースグルーヴ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/sqUb77h_7GM/mqdefault.jpg", "dur": "2:01:45"}, {"id": "iRRURZwmHEo", "title": "【視聴者リクエスト】Night Drive Jazz｜重低音ベースとギターが掛け合うグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/iRRURZwmHEo/mqdefault.jpg", "dur": "2:03:05"}, {"id": "v_nfSj4um0M", "title": "Tokyo Night Jazz｜重低音ベースが夜を揺るがすグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/v_nfSj4um0M/mqdefault.jpg", "dur": "1:50:05"}, {"id": "hHlhtKow3_M", "title": "After Hours Jazz｜スウィングするベースグルーヴが心地よいジャズセッション｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/hHlhtKow3_M/mqdefault.jpg", "dur": "2:01:53"}, {"id": "qo14TgEN8Cw", "title": "Night Drive Jazz｜聴くたびにハマる重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/qo14TgEN8Cw/mqdefault.jpg", "dur": "2:03:59"}, {"id": "w6iwfN57FQk", "title": "Tokyo Night Jazz｜気づいたら没入していた重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/w6iwfN57FQk/mqdefault.jpg", "dur": "1:53:10"}, {"id": "_sp3Yh43oJ0", "title": "After Hours Jazz｜深夜のジャズクラブで響く重低音ベースグルーヴ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/_sp3Yh43oJ0/mqdefault.jpg", "dur": "2:05:20"}, {"id": "5ve-IcrcW2U", "title": "Night Drive Jazz｜聴くたびにクセになる重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/5ve-IcrcW2U/mqdefault.jpg", "dur": "2:06:48"}, {"id": "SZBOlhgFFj0", "title": "Tokyo Night Jazz｜重低音ベースが聴くたびに好きになるグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/SZBOlhgFFj0/mqdefault.jpg", "dur": "1:57:27"}, {"id": "MuPadofRVkI", "title": "Night Drive Jazz｜1人で音量上げて聴きたい重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/MuPadofRVkI/mqdefault.jpg", "dur": "2:11:47"}, {"id": "qhd3kQ2TZyA", "title": "Tokyo Night Jazz｜作業中なのに聴き入ってしまう重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/qhd3kQ2TZyA/mqdefault.jpg", "dur": "2:00:31"}, {"id": "kGBT5x0_gjQ", "title": "Night Drive Jazz｜気づいたらループしていた重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/kGBT5x0_gjQ/mqdefault.jpg", "dur": "2:02:14"}, {"id": "skjhDLzADA4", "title": "Tokyo Night Jazz｜耳に残る重低音ベースグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/skjhDLzADA4/mqdefault.jpg", "dur": "1:01:08"}, {"id": "YmGHWLl1azU", "title": "Night Drive Jazz｜音量上げるほど気持ちよくなる重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/YmGHWLl1azU/mqdefault.jpg", "dur": "57:29"}, {"id": "0l5zhKhHNYs", "title": "Tokyo Night Jazz｜重低音ベースが脳に響くグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/0l5zhKhHNYs/mqdefault.jpg", "dur": "1:01:40"}, {"id": "0we3AwxHJII", "title": "Night Drive Jazz｜止まらない重低音ベースグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/0we3AwxHJII/mqdefault.jpg", "dur": "1:03:15"}, {"id": "Y8uGXadZgto", "title": "Tokyo Night Jazz｜うねる重低音ベースがたまらないグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Y8uGXadZgto/mqdefault.jpg", "dur": "59:14"}, {"id": "AmhevKIvuNA", "title": "Night Drive Jazz｜重低音ベースが夜をえぐるグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/AmhevKIvuNA/mqdefault.jpg", "dur": "1:02:27"}, {"id": "eBisD7kduR0", "title": "Tokyo Night Jazz｜重低音ベースが夜を震わすグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/eBisD7kduR0/mqdefault.jpg", "dur": "57:51"}, {"id": "FI5X2nJJEM8", "title": "Night Drive Jazz｜重低音ベースが夜を切り裂くグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/FI5X2nJJEM8/mqdefault.jpg", "dur": "1:01:33"}, {"id": "91toS8BvwTI", "title": "Tokyo Night Jazz｜重低音ベースが夜を揺さぶるグルーヴジャズ｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/91toS8BvwTI/mqdefault.jpg", "dur": "1:01:20"}, {"id": "PANPScEOr9o", "title": "Night Drive Jazz｜重低音ベースが地を這うグルーヴジャズ｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/PANPScEOr9o/mqdefault.jpg", "dur": "1:02:48"}, {"id": "jQykvPoQy34", "title": "Tokyo Night Jazz｜重低音ベースが夜の空気を揺らすグルーヴジャズBGM｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/jQykvPoQy34/mqdefault.jpg", "dur": "1:02:02"}, {"id": "xb5Y-7yxA24", "title": "Night Drive Jazz｜重低音ベースが脳に刻むグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/xb5Y-7yxA24/mqdefault.jpg", "dur": "1:01:32"}, {"id": "p4LC90_LjOQ", "title": "Tokyo Night Jazz｜夜に響く重低音ベースのグルーヴジャズBGM｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/p4LC90_LjOQ/mqdefault.jpg", "dur": "1:00:10"}, {"id": "pgh7QbeTfc0", "title": "Night Drive Jazz｜重低音ベースが唸るグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/pgh7QbeTfc0/mqdefault.jpg", "dur": "1:01:15"}, {"id": "Wzrqo1VHzRA", "title": "Tokyo Night Jazz｜ベースラインが脳に刻まれるグルーヴジャズBGM｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Wzrqo1VHzRA/mqdefault.jpg", "dur": "1:01:02"}, {"id": "r1Q13PQydRg", "title": "Night Drive Jazz｜ベースとピアノが絡み合う極上グルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/r1Q13PQydRg/mqdefault.jpg", "dur": "59:14"}, {"id": "SzSaWRtZ2Yk", "title": "Tokyo Night Jazz｜心地よく流れ続けるベースグルーヴジャズBGM｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/SzSaWRtZ2Yk/mqdefault.jpg", "dur": "1:00:16"}, {"id": "dqyiRV2Uhxc", "title": "Night Drive Jazz｜重低音ベースが刻み続けるグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/dqyiRV2Uhxc/mqdefault.jpg", "dur": "59:04"}, {"id": "6fczpIYmBHw", "title": "Tokyo Night Jazz｜都会の夜景に溶け込むベースグルーヴジャズBGM｜作業用・勉強用・リラックス用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/6fczpIYmBHw/mqdefault.jpg", "dur": "1:01:27"}, {"id": "nu2HDoqBztM", "title": "Night Drive Jazz｜夜のハイウェイを流れる重低音ベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/nu2HDoqBztM/mqdefault.jpg", "dur": "1:00:49"}, {"id": "8fl4Ud8dK7s", "title": "Night Drive Jazz｜重低音ベースが止まらないグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/8fl4Ud8dK7s/mqdefault.jpg", "dur": "1:00:21"}, {"id": "AvEPDf1gsxk", "title": "Night Drive Jazz｜重低音ベースが走り続けるグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/AvEPDf1gsxk/mqdefault.jpg", "dur": "1:01:40"}, {"id": "IJwsAmQl1OE", "title": "Night Drive Jazz｜高速で突き抜ける重低音ベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/IJwsAmQl1OE/mqdefault.jpg", "dur": "1:02:14"}, {"id": "kI1SQfnoAKQ", "title": "Night Drive Jazz｜重低音ベースが突き抜けるハイウェイグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/kI1SQfnoAKQ/mqdefault.jpg", "dur": "56:59"}, {"id": "pEU8OrF-S1c", "title": "Night Drive Jazz｜重低音ベースが突き抜けるストイックなグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/pEU8OrF-S1c/mqdefault.jpg", "dur": "1:58:47"}, {"id": "wr1DAjx4qpY", "title": "Night Drive Jazz｜ネオンを抜けて加速するベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/wr1DAjx4qpY/mqdefault.jpg", "dur": "1:45:22"}, {"id": "uq3utO_zIUg", "title": "Night Drive Jazz｜ネオンを切り裂くベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/uq3utO_zIUg/mqdefault.jpg", "dur": "1:01:35"}, {"id": "YF9DlN04zz0", "title": "Night Drive Jazz｜夜のハイウェイを駆け抜けるベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/YF9DlN04zz0/mqdefault.jpg", "dur": "1:00:19"}, {"id": "JKQylm9MvNs", "title": "Night Drive Jazz｜ネオンの街を駆け抜けるベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/JKQylm9MvNs/mqdefault.jpg", "dur": "1:02:45"}, {"id": "Sv7q2OivyJs", "title": "Night Drive Jazz｜都市の夜を駆け抜けるベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/Sv7q2OivyJs/mqdefault.jpg", "dur": "59:02"}, {"id": "gYpeVI63NAk", "title": "Night Drive Jazz｜夜の高速を駆け抜けるベースグルーヴジャズBGM｜作業用・勉強用・ワークアウト用BGM | Smooth Jazz", "thumb": "https://i.ytimg.com/vi/gYpeVI63NAk/mqdefault.jpg", "dur": "1:01:54"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Cocktail_Notes.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Cocktail Notes";
 const KANAL = "Cocktail_Notes.html";
 const VIDEOS = [{"id": "12palsxVtbY", "title": "THEREMIN SPACE Vol. 1 ✦ Psychedelic Lounge & Retro-Futuristic Dreams | Cocktail Notes", "thumb": "https://i.ytimg.com/vi/12palsxVtbY/mqdefault.jpg", "dur": "1:18:56"}, {"id": "PsrK3LH47tg", "title": "BRAZIL EXOTICA ✦ Psychedelic Bossa Vol.1 & Tropical Surf Grooves | Cocktail Notes", "thumb": "https://i.ytimg.com/vi/PsrK3LH47tg/mqdefault.jpg", "dur": "1:02:41"}, {"id": "g74R4rGTLlo", "title": "Cumbia Surf Vol.1 ✦ Psychedelic Grooves & Late Night Tropics | Cocktail Notes", "thumb": "https://i.ytimg.com/vi/g74R4rGTLlo/mqdefault.jpg", "dur": "1:01:14"}, {"id": "PPr-jRaJRZg", "title": "Vintage Organ Grooves Vol.2 & Radiant Classical | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/PPr-jRaJRZg/mqdefault.jpg", "dur": "1:22:17"}, {"id": "078iyoVdYDc", "title": "ＦＯＲＴＵＮＥ ＴＥＬＬＥＲ ✦ Hypnotic Exotica Vol. 1 & Retro Ultra-Lounge | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/078iyoVdYDc/mqdefault.jpg", "dur": "1:22:25"}, {"id": "n7hNdaJDKXA", "title": "ＢＥＲＢＥＲ ＷＨＩＳＫＥＹ ✦ Psychedelic Desert Chill Vol. 1 & Trip Hop | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/n7hNdaJDKXA/mqdefault.jpg", "dur": "1:32:35"}, {"id": "lMQ8-Vhu2wo", "title": "ＤＥＳＥＲＴ ＳＯＵＬ ✦ Middle Eastern Saxophone Vol. 1 & Hypnotic World Fusion | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/lMQ8-Vhu2wo/mqdefault.jpg", "dur": "1:25:50"}, {"id": "QiXLp1MIJd0", "title": "ＢＯＮＧＯＳ ＆ ＭＡＲＩＭＢＡＳ • Vintage Lounge & Retro Jazz Vol.1 | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/QiXLp1MIJd0/mqdefault.jpg", "dur": "1:15:23"}, {"id": "U5zFQxsD7cw", "title": "ＰＥＲＳＩＡＮ ＮＯＩＲ ✦ Jazz from Persia & Retro Middle Eastern Grooves Vol.1 | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/U5zFQxsD7cw/mqdefault.jpg", "dur": "1:15:46"}, {"id": "ilsGyrG-V-M", "title": "ＥＸＯＴＩＣ ＬＯＵＮＧＥ ✦ Vintage background music & Tropical grooves Vol.1 | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/ilsGyrG-V-M/mqdefault.jpg", "dur": "1:59:11"}, {"id": "pGWtmyIHAxw", "title": "ＨＡＭＭＯＮＤ ＮＯＩＲ ✦ Dark Jazz & Vintage Organ Grooves Vol.1 | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/pGWtmyIHAxw/mqdefault.jpg", "dur": "1:13:04"}, {"id": "MkCrGItB3Eo", "title": "ＭＩＡＭＩ ＶＩＣＥ ✦ Vaporwave, Lo-Fi & Dreamy 80s Aesthetics | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/MkCrGItB3Eo/mqdefault.jpg", "dur": "1:20:12"}, {"id": "8CYud3GHYzA", "title": "ＢＬＵＥ ＨＡＷＡＩＩＡＮ • Surf rock ✦ Beach Psychedelia | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/8CYud3GHYzA/mqdefault.jpg", "dur": "1:12:37"}, {"id": "0P54l_R0YEc", "title": "Smoky & Deep ✦ Psychedelic Jazz-Funk Cosmic Grooves | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/0P54l_R0YEc/mqdefault.jpg", "dur": "1:06:21"}, {"id": "dC3TqiEMzP4", "title": "ＰＩＳＣＯ ＳＯＵＲ ✦ Neo-Cumbia, Andean Folk & Chicha Psych | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/dC3TqiEMzP4/mqdefault.jpg", "dur": "2:18:31"}, {"id": "Mf-QHJaiYxo", "title": "ＷＨＩＳＫＥＹ ＳＯＵＲ ✦ Americana, Swing Jazz & Blues Rock Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/Mf-QHJaiYxo/mqdefault.jpg", "dur": "3:13:01"}, {"id": "iTfEsovRQro", "title": "ＧＩＭＬＥＴ ✦ British Mod Jazz, Indie Pop & Chillwave | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/iTfEsovRQro/mqdefault.jpg", "dur": "2:57:29"}, {"id": "Tt_pfgyPB0E", "title": "ＤＡＲＫ 'Ｎ' ＳＴＯＲＭＹ ✦ Island Reggae, Dub & Tropical Psychedelia |  Cocktail bar music", "thumb": "https://i.ytimg.com/vi/Tt_pfgyPB0E/mqdefault.jpg", "dur": "3:03:33"}, {"id": "c5B9QTXISSQ", "title": "ＣＯＳＭＯＰＯＬＩＴＡＮ ✦ Pop-House, French Touch & 90s Synthwave | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/c5B9QTXISSQ/mqdefault.jpg", "dur": "2:45:58"}, {"id": "cjonsvzZLoI", "title": "ＤＡＩＱＵＩＲＩ ✦ Tropical Lounge, Smooth Jazz & Exotica Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/cjonsvzZLoI/mqdefault.jpg", "dur": "2:53:50"}, {"id": "RLawvTSlsWM", "title": "ＭＯＪＩＴＯ ✦ Cuban Salsa, Latin Chill & Afro-Cuban Jazz Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/RLawvTSlsWM/mqdefault.jpg", "dur": "3:16:28"}, {"id": "Z8v8tSX1IY4", "title": "ＮＥＧＲＯＮＩ ✦ Italian Funk, Acid Jazz & Mellow Bossa Nova Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/Z8v8tSX1IY4/mqdefault.jpg", "dur": "2:55:26"}, {"id": "YaTT-PpieFs", "title": "ＯＬＤ ＦＡＳＨＩＯＮＥＤ ✦ Slow Jazz, Vintage Soul & Americana Blues Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/YaTT-PpieFs/mqdefault.jpg", "dur": "2:36:04"}, {"id": "tXwVPDy3NW8", "title": "ＢＬＯＯＤＹ ＭＡＲＹ ✦ Slow Funk, Jazzy R&B & Gospel Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/tXwVPDy3NW8/mqdefault.jpg", "dur": "2:35:22"}, {"id": "sLjAgdB0s5M", "title": "ＥＳＰＲＥＳＳＯ ＭＡＲＴＩＮＩ ✦ Deep House, Minimal Techno & Acid Jazz Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/sLjAgdB0s5M/mqdefault.jpg", "dur": "2:51:55"}, {"id": "Ef5zszAOL50", "title": "ＡＶＩＡＴＩＯＮ ✦ Chillwave, Ethereal Synth & Dream Pop Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/Ef5zszAOL50/mqdefault.jpg", "dur": "2:45:14"}, {"id": "ZFR1Qwg1zFo", "title": "ＳＩＤＥＣＡＲ ✦ Classic Parisian Jazz, Cabaret & Roaring Twenties Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/ZFR1Qwg1zFo/mqdefault.jpg", "dur": "2:39:20"}, {"id": "0Ar2O9hlT3o", "title": "ＭＩＮＴ ＪＵＬＥＰ ✦ Southern Folk, Bluesgrass & Americana Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/0Ar2O9hlT3o/mqdefault.jpg", "dur": "3:07:56"}, {"id": "DyvAc60uxak", "title": "ＡＰＥＲＯＬ ＳＰＲＩＴＺ ✦ Italian Jazz, Bossa Nova & Lo-Fi Chill Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/DyvAc60uxak/mqdefault.jpg", "dur": "2:48:43"}, {"id": "mNKCEFQBs10", "title": "ＦＲＥＮＣＨ ７５ ✦ 1920s Parisian Jazz, Swing & Champagne Pop Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/mNKCEFQBs10/mqdefault.jpg", "dur": "2:36:29"}, {"id": "Pi5V_qmv1DI", "title": "ＰＩÑ Ａ ＣＯＬＡＤＡ ✦ Calypso, Reggae-Fusion & Tropical Pop Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/Pi5V_qmv1DI/mqdefault.jpg", "dur": "2:28:10"}, {"id": "cISPAaLZAv4", "title": "ＭＡＲＴＩＮＩ ✦ Cool Jazz, Cinematic Noir & Solo Trumpet Mix | Cocktail bar music", "thumb": "https://i.ytimg.com/vi/cISPAaLZAv4/mqdefault.jpg", "dur": "2:51:19"}, {"id": "DXUjYWXXHic", "title": "ＭＡＲＧＡＲＩＴＡ ✦ Latin Jazz, Cuban Son & Upbeat Reggaeton Mix | Coctail bar music", "thumb": "https://i.ytimg.com/vi/DXUjYWXXHic/mqdefault.jpg", "dur": "2:16:22"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

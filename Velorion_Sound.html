@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=Velorion_Sound.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Velorion Sound";
 const KANAL = "Velorion_Sound.html";
 const VIDEOS = [{"id": "gyqpql3UTy8", "title": "Known By You _ Chris Stapleton and Lainey  Wilson", "thumb": "https://i.ytimg.com/vi/gyqpql3UTy8/mqdefault.jpg", "dur": "6:57"}, {"id": "Vuakv-LPhr4", "title": "Stay When the Lights Go Out— Chris Stapleton ft. Lauren Daigle", "thumb": "https://i.ytimg.com/vi/Vuakv-LPhr4/mqdefault.jpg", "dur": "5:40"}, {"id": "ock2g__amlM", "title": "When Heaven Goes Silent by Chris Stapleton and beth hart(Fan made powerful country Gospel song)", "thumb": "https://i.ytimg.com/vi/ock2g__amlM/mqdefault.jpg", "dur": "7:23"}, {"id": "ZupCXOox-Lg", "title": "God I’m Not Okay — Chris Stapleton & Rihanna{Fan made Music}", "thumb": "https://i.ytimg.com/vi/ZupCXOox-Lg/mqdefault.jpg", "dur": "6:26"}, {"id": "H2_iL-I8gYY", "title": "Lord, I Tried But I Fell Again Too Hard — Chris Stapleton ft. Lauren Daigle { country Gospel song )", "thumb": "https://i.ytimg.com/vi/H2_iL-I8gYY/mqdefault.jpg", "dur": "6:03"}, {"id": "fRWii63lJnw", "title": "God Didn’t Let Me Break by  Chris Stapleton and Rihanna", "thumb": "https://i.ytimg.com/vi/fRWii63lJnw/mqdefault.jpg", "dur": "7:21"}, {"id": "h2xqt90jzug", "title": "Love Me When It’s Not Easy — Chris Stapleton ft. Lauren Daigle(Fan made music video)", "thumb": "https://i.ytimg.com/vi/h2xqt90jzug/mqdefault.jpg", "dur": "8:00"}, {"id": "9_O2TQf2-2w", "title": "El Shaddai, God Most High— Chris Stapleton ft. Lauren Daigle {Powerful worship A.i Video}", "thumb": "https://i.ytimg.com/vi/9_O2TQf2-2w/mqdefault.jpg", "dur": "5:35"}, {"id": "9KKRhOBF98w", "title": "I Met God at Rock Bottom by Chris Stapleton ft Amy Winehouse(Fan made music Video)", "thumb": "https://i.ytimg.com/vi/9KKRhOBF98w/mqdefault.jpg", "dur": "5:59"}, {"id": "pEYiM1rZS9w", "title": "Only God Makes Things Grow by Chris Stapleton and Lauren Daigle  (2026 AI music Video)", "thumb": "https://i.ytimg.com/vi/pEYiM1rZS9w/mqdefault.jpg", "dur": "8:00"}, {"id": "-66HfouHupk", "title": "When i call your Name— Chris Stapleton ft. Rihanna", "thumb": "https://i.ytimg.com/vi/-66HfouHupk/mqdefault.jpg", "dur": "6:12"}, {"id": "uHeNGdo5ygM", "title": "Only God Knows How Hard I Tried — Chris Stapleton", "thumb": "https://i.ytimg.com/vi/uHeNGdo5ygM/mqdefault.jpg", "dur": "8:00"}, {"id": "9Z_8sKm0ywo", "title": "Mercy After Midnight — Chris Stapleton & Lauren Daigle", "thumb": "https://i.ytimg.com/vi/9Z_8sKm0ywo/mqdefault.jpg", "dur": "8:00"}, {"id": "dBpNjJq7ylU", "title": "Heaven Heard Me Cry — Chris Stapleton ft. Rihanna", "thumb": "https://i.ytimg.com/vi/dBpNjJq7ylU/mqdefault.jpg", "dur": "5:28"}, {"id": "xzUeMog_Lo8", "title": "Sinners Like Me — Chris Stapleton ft. Jelly Roll", "thumb": "https://i.ytimg.com/vi/xzUeMog_Lo8/mqdefault.jpg", "dur": "5:59"}, {"id": "H7R_lfiHtEc", "title": "Lord I’m Tired But Don’t Give Up On Me – Chris Stapleton ft. Lauren Daigle", "thumb": "https://i.ytimg.com/vi/H7R_lfiHtEc/mqdefault.jpg", "dur": "5:15"}, {"id": "p0TGMP2-CzI", "title": "Chris Stapleton ft  Rihanna Midnight Whiskey Love{2026 official music Ai Video}", "thumb": "https://i.ytimg.com/vi/p0TGMP2-CzI/mqdefault.jpg", "dur": "5:37"}, {"id": "Q7JQd3zQrpM", "title": "Fire Away  (When the Ashes Sing)— Chris Stapleton & Adele", "thumb": "https://i.ytimg.com/vi/Q7JQd3zQrpM/mqdefault.jpg", "dur": "5:13"}, {"id": "taftYN_sPJQ", "title": "Darling, I’ll Stand By You by Chris Stapleton & Rihanna", "thumb": "https://i.ytimg.com/vi/taftYN_sPJQ/mqdefault.jpg", "dur": "4:08"}, {"id": "wa0Pj-QG55g", "title": "Grace in the Ashes — Chris Stapleton & Lauren Daigle", "thumb": "https://i.ytimg.com/vi/wa0Pj-QG55g/mqdefault.jpg", "dur": "5:30"}, {"id": "DwzGb3vaDYM", "title": "God Please Comfort Me Tonight By Chris Stapleton and Adele", "thumb": "https://i.ytimg.com/vi/DwzGb3vaDYM/mqdefault.jpg", "dur": "5:35"}, {"id": "mATVa2_iCmA", "title": "Divine by Rihanna 2026", "thumb": "https://i.ytimg.com/vi/mATVa2_iCmA/mqdefault.jpg", "dur": "4:59"}, {"id": "uyDebMJSGN0", "title": "Divine Mercy _ Chris Stapleton ft Rihanna", "thumb": "https://i.ytimg.com/vi/uyDebMJSGN0/mqdefault.jpg", "dur": "4:24"}, {"id": "Rvbnd0E2rMI", "title": "Katy perry ft  Justin bieber - The Girl I Once Loved(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/Rvbnd0E2rMI/mqdefault.jpg", "dur": "5:08"}, {"id": "YIn_vLbCcrs", "title": "Justin Bieber ft. ROSÉ —Shattered in Stereo (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/YIn_vLbCcrs/mqdefault.jpg", "dur": "4:11"}, {"id": "_JPi2sRd484", "title": "Adele ft P!nk  - Wonderful People(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/_JPi2sRd484/mqdefault.jpg", "dur": "4:50"}, {"id": "s6npqGjY_Uo", "title": "Amazing Grace by Chris Stapleton Rihanna", "thumb": "https://i.ytimg.com/vi/s6npqGjY_Uo/mqdefault.jpg", "dur": "4:54"}, {"id": "ri8FhGEN9c0", "title": "Chris Stapleton ft Akon - Midnight Redemption (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/ri8FhGEN9c0/mqdefault.jpg", "dur": "5:48"}, {"id": "SXr9FdGs_2Q", "title": "Chris Stapleton ft Sia - Broken Hallelujahs(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/SXr9FdGs_2Q/mqdefault.jpg", "dur": "5:35"}, {"id": "u_QD5gl_icM", "title": "Chris Stapleton Ft Chris Brown — Strange(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/u_QD5gl_icM/mqdefault.jpg", "dur": "4:32"}, {"id": "ktqRfxj3U50", "title": "Rihanna and eminem ft jelly roll- Glass Hearts & Burning Rooms(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/ktqRfxj3U50/mqdefault.jpg", "dur": "4:15"}, {"id": "W_3ULMTqCOs", "title": "Chris Stapleton ft Billie Eilish _  Bottle on the Floor (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/W_3ULMTqCOs/mqdefault.jpg", "dur": "5:25"}, {"id": "CgQ-SmfZq38", "title": "Adele - Tearful Drop (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/CgQ-SmfZq38/mqdefault.jpg", "dur": "5:09"}, {"id": "tT2ktpvoguY", "title": "Post Malone ft Adele - Neon Dust and Rust(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/tT2ktpvoguY/mqdefault.jpg", "dur": "5:12"}, {"id": "PnhaOr0BCeA", "title": "Taylor Swift Ft Sia  _ Falling Tears(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/PnhaOr0BCeA/mqdefault.jpg", "dur": "5:28"}, {"id": "934qryD4dIc", "title": "Rihanna ft  Sia  - Shadows Know My Name (2026 Official Music Video)", "thumb": "https://i.ytimg.com/vi/934qryD4dIc/mqdefault.jpg", "dur": "4:58"}, {"id": "l0LeRscwEbo", "title": "Chris Stapleton ft Adele -Betrayal and Hurt (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/l0LeRscwEbo/mqdefault.jpg", "dur": "5:08"}, {"id": "Cwqh_7aM6tc", "title": "Damain marley and Adele ft sia - catch me falling(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/Cwqh_7aM6tc/mqdefault.jpg", "dur": "4:41"}, {"id": "Ygv6VTRv41A", "title": "Adele ft Taylor Swift -Backroads & Memories (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/Ygv6VTRv41A/mqdefault.jpg", "dur": "5:20"}, {"id": "_y2Wy0pn-aM", "title": "Beyonce ft Sia -Unbreakable Flame(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/_y2Wy0pn-aM/mqdefault.jpg", "dur": "5:28"}, {"id": "xDhLoNVex6g", "title": "Lady Gaga ft Sia- Broken Crown(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/xDhLoNVex6g/mqdefault.jpg", "dur": "4:11"}, {"id": "w6Ronw5NXwI", "title": "Rihanna ft Adele - One Last Night(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/w6Ronw5NXwI/mqdefault.jpg", "dur": "4:11"}, {"id": "6aG81JzsrdA", "title": "Adele ft sia - We Broke Beautifully(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/6aG81JzsrdA/mqdefault.jpg", "dur": "4:16"}, {"id": "6DRR_1X7Yc4", "title": "Adele ft Olivia - Tears We Hide(2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/6DRR_1X7Yc4/mqdefault.jpg", "dur": "4:50"}, {"id": "KQUjH6C1pPs", "title": "Chris Stapleton ft  Billie Eilish  -Whisky in the Dark (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/KQUjH6C1pPs/mqdefault.jpg", "dur": "6:30"}, {"id": "ayHyr18ByA0", "title": "Post Malone ft Snoop Dogg-Between Midnight & Sunset (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/ayHyr18ByA0/mqdefault.jpg", "dur": "5:03"}, {"id": "jRRCG4Sv8FY", "title": "Chris Stapleton ft Sia - Ashes & Halos (2026 AI Music Video)", "thumb": "https://i.ytimg.com/vi/jRRCG4Sv8FY/mqdefault.jpg", "dur": "5:27"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>

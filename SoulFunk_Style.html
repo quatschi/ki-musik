@@ -37,12 +37,32 @@
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
   .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
   .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
 </style>
 </head>
 <body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
   <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <a class="back" href="index.html">← Zurück zur Übersicht</a>
     <a class="back" href="radio2.html?kanal=SoulFunk_Style.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
@@ -59,21 +79,60 @@
   <div class="save-bar">
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
-    <button class="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
   </div>
 
 <script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
 const CHANNEL = "SoulFunk Style";
 const KANAL = "SoulFunk_Style.html";
 const VIDEOS = [{"id": "n2zKJ_-ApHA", "title": "Funky Midnight Sessions 📻 Retro Soul Grooves for Night Drive", "thumb": "https://i.ytimg.com/vi/n2zKJ_-ApHA/mqdefault.jpg", "dur": "1:29:11"}, {"id": "eKc7qpCX47Q", "title": "Soul Funk Groove Lounge ✨ Timeless Funky Beats & Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/eKc7qpCX47Q/mqdefault.jpg", "dur": "1:37:14"}, {"id": "1HJ7MlpiKb8", "title": "Vintage Soul Funk 🎶 Smooth Soul Music for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/1HJ7MlpiKb8/mqdefault.jpg", "dur": "1:37:28"}, {"id": "pixWpaI_zas", "title": "Soul Funk Groove 🌙 Soulful Grooves & Retro Atmosphere", "thumb": "https://i.ytimg.com/vi/pixWpaI_zas/mqdefault.jpg", "dur": "1:36:25"}, {"id": "vjMm-mcIB-c", "title": "Groovy Soul Cafe ☕ Vintage Funk Music & Chill Lounge Vibes", "thumb": "https://i.ytimg.com/vi/vjMm-mcIB-c/mqdefault.jpg", "dur": "1:36:25"}, {"id": "XwcQ1BeTpNM", "title": "Retro Funk Lounge 🕺 Soulful Grooves & Stylish Vintage Atmosphere", "thumb": "https://i.ytimg.com/vi/XwcQ1BeTpNM/mqdefault.jpg", "dur": "1:25:53"}, {"id": "iHhle1h3eoI", "title": "Smooth Funky Evenings ✨ Vintage Soul Music for Relax & Study", "thumb": "https://i.ytimg.com/vi/iHhle1h3eoI/mqdefault.jpg", "dur": "1:25:39"}, {"id": "8OS4DAY19Ig", "title": "Classic Soul Funk Radio 📻 Timeless Grooves & Relaxing Lounge Beats", "thumb": "https://i.ytimg.com/vi/8OS4DAY19Ig/mqdefault.jpg", "dur": "1:24:27"}, {"id": "a6StvTq6cjw", "title": "Vintage Soul Funk Groove | Smooth Groovy Music for Night City Vibes", "thumb": "https://i.ytimg.com/vi/a6StvTq6cjw/mqdefault.jpg", "dur": "1:25:36"}, {"id": "Wz6S4En0d0U", "title": "Soul Funky Sessions 🎧 Retro Soul Grooves & Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/Wz6S4En0d0U/mqdefault.jpg", "dur": "1:26:05"}, {"id": "qdkHGRAsZx4", "title": "Soulful Funk Cafe ☕ Groovy Retro Music for Coffee & Chill Time", "thumb": "https://i.ytimg.com/vi/qdkHGRAsZx4/mqdefault.jpg", "dur": "1:26:02"}, {"id": "0TchKX4lct0", "title": "Vintage Soul Lounge ✨ Smooth Funky Grooves & Timeless Rhythm", "thumb": "https://i.ytimg.com/vi/0TchKX4lct0/mqdefault.jpg", "dur": "1:25:06"}, {"id": "fGDqPQWXHMw", "title": "Retro Soul Funk Radio 🎶 Chill Groovy Beats for Relaxing Evenings", "thumb": "https://i.ytimg.com/vi/fGDqPQWXHMw/mqdefault.jpg", "dur": "1:25:57"}, {"id": "A3H6fK0mpp0", "title": "Soul Funk Groove ☕ Smooth Retro Grooves & Vintage Lounge Vibes", "thumb": "https://i.ytimg.com/vi/A3H6fK0mpp0/mqdefault.jpg", "dur": "1:24:42"}];
-let ratings = {}, changed = false, fileHandle = null;
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  renderGrid();
+}
 
 async function loadRatings() {
   try {
-    const r = await fetch('noten.json');
-    if (r.ok) { const d = await r.json(); ratings = d.ratings || {}; }
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(atob(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
   } catch(e) {}
-  renderGrid();
 }
 
 function renderGrid() {
@@ -106,6 +165,12 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
   changed = true;
   document.getElementById('changed-hint').style.display = 'inline';
   document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
@@ -116,38 +181,44 @@ function updateCount() {
   document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
 }
 
-function buildJson() {
-  return JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings }, null, 2);
-}
-
 async function saveRatings() {
-  const json = buildJson();
-  if ('showSaveFilePicker' in window) {
-    try {
-      if (!fileHandle) {
-        fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'noten.json',
-          types: [{ description: 'JSON', accept: {'application/json': ['.json']} }]
-        });
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
       }
-      const w = await fileHandle.createWritable();
-      await w.write(json); await w.close();
+    );
+    if (putResp.ok) {
       changed = false;
       document.getElementById('changed-hint').style.display = 'none';
-      document.getElementById('status-msg').textContent = '✓ Direkt gespeichert';
-      document.getElementById('status-msg').className = 'status-msg status-ok';
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; fileHandle = null; }
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
   }
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'noten.json'; a.click();
-  changed = false;
-  document.getElementById('changed-hint').style.display = 'none';
-  document.getElementById('status-msg').textContent = '↓ Als Download gespeichert';
+  btn.disabled = false;
 }
 
-loadRatings();
+init();
 </script>
 </body>
 </html>
