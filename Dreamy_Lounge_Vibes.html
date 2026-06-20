@@ -7,7 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCjCG-530e4lMxMnIKfq_fcw -->
 <!-- channel-url: https://www.youtube.com/@dreamyloungevibes -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">111 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Dreamy Lounge Vibes";
 const KANAL = "Dreamy_Lounge_Vibes.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "41ysE72e-TM", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/41ysE72e-TM/mqdefault.jpg", "dur": "1:21:53"}, {"id": "uJLDiTPjW0E", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/uJLDiTPjW0E/mqdefault.jpg", "dur": "1:21:30"}, {"id": "D5tIsIBl2oc", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/D5tIsIBl2oc/mqdefault.jpg", "dur": "1:21:32"}, {"id": "EnwYtNPeSns", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/EnwYtNPeSns/mqdefault.jpg", "dur": "1:21:15"}, {"id": "zmiZaV-RqaY", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/zmiZaV-RqaY/mqdefault.jpg", "dur": "1:21:35"}, {"id": "GAHoiH9mxzU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs 🔴 LIVE 24/7", "thumb": "https://i.ytimg.com/vi/GAHoiH9mxzU/mqdefault_live.jpg", "dur": ""}, {"id": "h2sO1FaAIUY", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/h2sO1FaAIUY/mqdefault.jpg", "dur": "1:22:22"}, {"id": "TfoW-w0mqco", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/TfoW-w0mqco/mqdefault.jpg", "dur": "1:22:31"}, {"id": "RNwqiXQ4mSE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/RNwqiXQ4mSE/mqdefault.jpg", "dur": "1:22:13"}, {"id": "cErLDqP7XLg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/cErLDqP7XLg/mqdefault.jpg", "dur": "1:22:38"}, {"id": "1lfocE7fbqE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/1lfocE7fbqE/mqdefault.jpg", "dur": "1:23:27"}, {"id": "vDmzG6D3J1A", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/vDmzG6D3J1A/mqdefault.jpg", "dur": "1:23:16"}, {"id": "pFOSMCd97Ew", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/pFOSMCd97Ew/mqdefault.jpg", "dur": "1:23:11"}, {"id": "3X5KBeaIBrg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/3X5KBeaIBrg/mqdefault.jpg", "dur": "1:22:42"}, {"id": "UwI9aDabb6w", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/UwI9aDabb6w/mqdefault.jpg", "dur": "1:23:31"}, {"id": "fhIkhqLadrM", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/fhIkhqLadrM/mqdefault.jpg", "dur": "1:23:40"}, {"id": "_-aiJLV_s2c", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/_-aiJLV_s2c/mqdefault.jpg", "dur": "1:23:36"}, {"id": "RW5i9pt5XeU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/RW5i9pt5XeU/mqdefault.jpg", "dur": "1:22:54"}, {"id": "0VYjDVt6bIs", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/0VYjDVt6bIs/mqdefault.jpg", "dur": "1:22:57"}, {"id": "NyOVQG0ZEjU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/NyOVQG0ZEjU/mqdefault.jpg", "dur": "1:22:41"}, {"id": "1DI20DY0BYQ", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/1DI20DY0BYQ/mqdefault.jpg", "dur": "1:21:53"}, {"id": "I35EBhukJfw", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/I35EBhukJfw/mqdefault.jpg", "dur": "1:22:03"}, {"id": "2Bw8PQtU_Ws", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/2Bw8PQtU_Ws/mqdefault.jpg", "dur": "1:22:50"}, {"id": "Q5VBvBfwXmg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/Q5VBvBfwXmg/mqdefault.jpg", "dur": "1:22:17"}, {"id": "MkO7cyzJRM0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/MkO7cyzJRM0/mqdefault.jpg", "dur": "1:22:27"}, {"id": "E1qTaQG4CDA", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/E1qTaQG4CDA/mqdefault.jpg", "dur": "1:22:27"}, {"id": "UVVvY39wKTQ", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/UVVvY39wKTQ/mqdefault.jpg", "dur": "1:22:09"}, {"id": "Srw3JufpdTA", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/Srw3JufpdTA/mqdefault.jpg", "dur": "1:21:51"}, {"id": "rwuutRiJyZQ", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/rwuutRiJyZQ/mqdefault.jpg", "dur": "1:22:17"}, {"id": "movIdjO48g0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/movIdjO48g0/mqdefault.jpg", "dur": "1:22:37"}, {"id": "GPQk1HSxpCQ", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/GPQk1HSxpCQ/mqdefault.jpg", "dur": "1:23:26"}, {"id": "ePcSwWJuZio", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/ePcSwWJuZio/mqdefault.jpg", "dur": "1:02:40"}, {"id": "VLx2pxVyHdI", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/VLx2pxVyHdI/mqdefault.jpg", "dur": "1:02:39"}, {"id": "wX1zKnkSxhQ", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/wX1zKnkSxhQ/mqdefault.jpg", "dur": "1:02:35"}, {"id": "zOlZBP56OD0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/zOlZBP56OD0/mqdefault.jpg", "dur": "1:02:30"}, {"id": "KxsXHd3D8-E", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/KxsXHd3D8-E/mqdefault.jpg", "dur": "1:02:36"}, {"id": "o31jOf_7ca4", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/o31jOf_7ca4/mqdefault.jpg", "dur": "1:02:35"}, {"id": "YMvYH5Edwm4", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/YMvYH5Edwm4/mqdefault.jpg", "dur": "1:02:35"}, {"id": "yfnezVSVtQM", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/yfnezVSVtQM/mqdefault.jpg", "dur": "1:02:35"}, {"id": "UA4eNkeFrFw", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/UA4eNkeFrFw/mqdefault.jpg", "dur": "1:02:30"}, {"id": "rFeh0_H5JTA", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/rFeh0_H5JTA/mqdefault.jpg", "dur": "1:02:18"}, {"id": "Mpp570-ywTI", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/Mpp570-ywTI/mqdefault.jpg", "dur": "1:01:34"}, {"id": "uo_nTMPub24", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/uo_nTMPub24/mqdefault.jpg", "dur": "1:02:03"}, {"id": "qytkHHACGEg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/qytkHHACGEg/mqdefault.jpg", "dur": "1:03:00"}, {"id": "SKzL5uO9J_A", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/SKzL5uO9J_A/mqdefault.jpg", "dur": "1:01:04"}, {"id": "B-GB0B3oexE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/B-GB0B3oexE/mqdefault.jpg", "dur": "1:01:49"}, {"id": "njEe-o1yXms", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/njEe-o1yXms/mqdefault.jpg", "dur": "1:01:03"}, {"id": "_-EnqOqe0L0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/_-EnqOqe0L0/mqdefault.jpg", "dur": "1:00:07"}, {"id": "oT-NfdVGU64", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/oT-NfdVGU64/mqdefault.jpg", "dur": "1:02:32"}, {"id": "hikLQ-IEUeo", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/hikLQ-IEUeo/mqdefault.jpg", "dur": "1:02:33"}, {"id": "64PcYOTt_xk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/64PcYOTt_xk/mqdefault.jpg", "dur": "1:02:37"}, {"id": "R-kqEttRBa8", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/R-kqEttRBa8/mqdefault.jpg", "dur": "1:02:40"}, {"id": "2mRU-nrcXRk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/2mRU-nrcXRk/mqdefault.jpg", "dur": "1:02:38"}, {"id": "_2u1FOvOk7g", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/_2u1FOvOk7g/mqdefault.jpg", "dur": "1:02:33"}, {"id": "xvrZacXHM6M", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/xvrZacXHM6M/mqdefault.jpg", "dur": "1:02:33"}, {"id": "wKKr8lT_aJE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/wKKr8lT_aJE/mqdefault.jpg", "dur": "1:02:33"}, {"id": "KVTMTIVdOf8", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/KVTMTIVdOf8/mqdefault.jpg", "dur": "1:02:32"}, {"id": "IXgkYZAytws", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/IXgkYZAytws/mqdefault.jpg", "dur": "1:02:32"}, {"id": "F1Fk_5_g_hA", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/F1Fk_5_g_hA/mqdefault.jpg", "dur": "1:02:32"}, {"id": "k3BYtwXqqfg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/k3BYtwXqqfg/mqdefault.jpg", "dur": "1:02:34"}, {"id": "S18hWobmEHU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/S18hWobmEHU/mqdefault.jpg", "dur": "1:14:15"}, {"id": "1rOZMjCrU44", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/1rOZMjCrU44/mqdefault.jpg", "dur": "1:13:45"}, {"id": "sa-sVpdDcXY", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/sa-sVpdDcXY/mqdefault.jpg", "dur": "1:13:34"}, {"id": "Lfm9CeSUMuI", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/Lfm9CeSUMuI/mqdefault.jpg", "dur": "1:13:39"}, {"id": "5FUiFya5Ikw", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/5FUiFya5Ikw/mqdefault.jpg", "dur": "1:13:39"}, {"id": "WPyt-Jyev7g", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/WPyt-Jyev7g/mqdefault.jpg", "dur": "1:13:39"}, {"id": "BWt0_gfW2pc", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/BWt0_gfW2pc/mqdefault.jpg", "dur": "1:12:53"}, {"id": "mNv2FP8FUhc", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/mNv2FP8FUhc/mqdefault.jpg", "dur": "1:18:19"}, {"id": "MyFEOjh_-X4", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/MyFEOjh_-X4/mqdefault.jpg", "dur": "1:18:19"}, {"id": "n02pXD3JOjs", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/n02pXD3JOjs/mqdefault.jpg", "dur": "1:18:19"}, {"id": "xsgyphImVik", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/xsgyphImVik/mqdefault.jpg", "dur": "1:18:19"}, {"id": "fYN4LT2Qj_Q", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/fYN4LT2Qj_Q/mqdefault.jpg", "dur": "1:19:32"}, {"id": "j_4aCEXr1i8", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/j_4aCEXr1i8/mqdefault.jpg", "dur": "1:19:54"}, {"id": "3Jb1DUoY6nI", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/3Jb1DUoY6nI/mqdefault.jpg", "dur": "1:19:26"}, {"id": "OlxejtNM0BI", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/OlxejtNM0BI/mqdefault.jpg", "dur": "1:18:52"}, {"id": "nF2htTFbrjY", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/nF2htTFbrjY/mqdefault.jpg", "dur": "1:21:32"}, {"id": "ARKeBmU7yb0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/ARKeBmU7yb0/mqdefault.jpg", "dur": "1:21:31"}, {"id": "EsoPbQlAL9Y", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/EsoPbQlAL9Y/mqdefault.jpg", "dur": "1:15:54"}, {"id": "6g4lq0BOltk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/6g4lq0BOltk/mqdefault.jpg", "dur": "1:16:22"}, {"id": "30fcbEpHMP8", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/30fcbEpHMP8/mqdefault.jpg", "dur": "1:16:56"}, {"id": "9vRNEIX9dBU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/9vRNEIX9dBU/mqdefault.jpg", "dur": "1:14:06"}, {"id": "OPqFZjp4WhM", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/OPqFZjp4WhM/mqdefault.jpg", "dur": "1:13:27"}, {"id": "4PHkguEswO0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/4PHkguEswO0/mqdefault.jpg", "dur": "1:18:53"}, {"id": "jsB1kpoGquw", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/jsB1kpoGquw/mqdefault.jpg", "dur": "1:18:52"}, {"id": "GE6k_bgleu8", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/GE6k_bgleu8/mqdefault.jpg", "dur": "1:19:02"}, {"id": "yRh02jdKDeM", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/yRh02jdKDeM/mqdefault.jpg", "dur": "1:19:02"}, {"id": "Ks3V2-Bf2og", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/Ks3V2-Bf2og/mqdefault.jpg", "dur": "1:18:32"}, {"id": "HbpSMmKEQAk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/HbpSMmKEQAk/mqdefault.jpg", "dur": "1:18:21"}, {"id": "U_2-f99pjq0", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/U_2-f99pjq0/mqdefault.jpg", "dur": "1:18:21"}, {"id": "yhmUYsEz-e4", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/yhmUYsEz-e4/mqdefault.jpg", "dur": "1:18:21"}, {"id": "lRDJV0RX-Io", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/lRDJV0RX-Io/mqdefault.jpg", "dur": "1:18:18"}, {"id": "LCgDxIaRhOU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/LCgDxIaRhOU/mqdefault.jpg", "dur": "1:19:00"}, {"id": "dTjhVj3UEVk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/dTjhVj3UEVk/mqdefault.jpg", "dur": "1:14:29"}, {"id": "u5RVXDPjFqc", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/u5RVXDPjFqc/mqdefault.jpg", "dur": "1:16:47"}, {"id": "28qpN-9HwPo", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/28qpN-9HwPo/mqdefault.jpg", "dur": "1:18:51"}, {"id": "LMOwljrYj4k", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/LMOwljrYj4k/mqdefault.jpg", "dur": "1:15:59"}, {"id": "QCoKYcBjszY", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/QCoKYcBjszY/mqdefault.jpg", "dur": "1:13:44"}, {"id": "OPVwhjlHz9k", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/OPVwhjlHz9k/mqdefault.jpg", "dur": "1:11:50"}, {"id": "dpkQSPNJsKE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/dpkQSPNJsKE/mqdefault.jpg", "dur": "1:11:58"}, {"id": "ZNB3btNkvNA", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/ZNB3btNkvNA/mqdefault.jpg", "dur": "1:14:15"}, {"id": "NOfp-cu84VU", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/NOfp-cu84VU/mqdefault.jpg", "dur": "1:14:15"}, {"id": "sXzMNi9eWEc", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/sXzMNi9eWEc/mqdefault.jpg", "dur": "1:13:33"}, {"id": "rn_MfRYtCwE", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/rn_MfRYtCwE/mqdefault.jpg", "dur": "1:13:03"}, {"id": "H2wQ7sEtXys", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/H2wQ7sEtXys/mqdefault.jpg", "dur": "1:18:29"}, {"id": "ib334_9fvJg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/ib334_9fvJg/mqdefault.jpg", "dur": "1:18:18"}, {"id": "jA1Cg6sma_g", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/jA1Cg6sma_g/mqdefault.jpg", "dur": "1:18:18"}, {"id": "PhE5NRnvCzs", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/PhE5NRnvCzs/mqdefault.jpg", "dur": "1:18:18"}, {"id": "7p0qdvIsB5s", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/7p0qdvIsB5s/mqdefault.jpg", "dur": "1:18:18"}, {"id": "tmVIJA118fg", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/tmVIJA118fg/mqdefault.jpg", "dur": "1:18:18"}, {"id": "e2wvcU44DYk", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/e2wvcU44DYk/mqdefault.jpg", "dur": "1:18:18"}, {"id": "L6X-ewtA_9U", "title": "Smooth Jazz Chill Out Lounge with Female Vocals | Soulful Romantic Jazz Songs", "thumb": "https://i.ytimg.com/vi/L6X-ewtA_9U/mqdefault.jpg", "dur": "1:18:18"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

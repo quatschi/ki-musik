@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCLII7kg6YVFA6IZwEFL0snQ -->
 <!-- channel-url: https://www.youtube.com/@ladyofsoul263 -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">79 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Lady of Soul";
 const KANAL = "Lady_of_Soul.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
 const VIDEOS = [{"id": "o1etOTHdliQ", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/o1etOTHdliQ/mqdefault.jpg", "dur": "2:04:34"}, {"id": "M1N4Blyyo-g", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/M1N4Blyyo-g/mqdefault.jpg", "dur": "1:59:51"}, {"id": "ZAURWZriECY", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/ZAURWZriECY/mqdefault.jpg", "dur": "1:59:56"}, {"id": "XP1ciC9goso", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/XP1ciC9goso/mqdefault.jpg", "dur": "2:02:11"}, {"id": "4HOySLEhslI", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/4HOySLEhslI/mqdefault.jpg", "dur": "1:59:47"}, {"id": "hM4ZVsn1FkQ", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/hM4ZVsn1FkQ/mqdefault.jpg", "dur": "1:59:58"}, {"id": "Sk7iQPNRCt0", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/Sk7iQPNRCt0/mqdefault.jpg", "dur": "1:56:06"}, {"id": "FPV_ycsLDjw", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/FPV_ycsLDjw/mqdefault.jpg", "dur": "1:50:24"}, {"id": "Y2VbejUqHbY", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/Y2VbejUqHbY/mqdefault.jpg", "dur": "1:59:53"}, {"id": "yqKSPD9AqJQ", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/yqKSPD9AqJQ/mqdefault.jpg", "dur": "1:59:53"}, {"id": "VGFbE3_nKY0", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/VGFbE3_nKY0/mqdefault.jpg", "dur": "1:56:31"}, {"id": "2gZgzWiIXOQ", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/2gZgzWiIXOQ/mqdefault.jpg", "dur": "1:57:40"}, {"id": "OOGsw4og57k", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/OOGsw4og57k/mqdefault.jpg", "dur": "1:59:52"}, {"id": "gbaB6EXJ_MI", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/gbaB6EXJ_MI/mqdefault.jpg", "dur": "1:59:54"}, {"id": "EMJIG_y9zH8", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/EMJIG_y9zH8/mqdefault.jpg", "dur": "1:59:51"}, {"id": "uzSay7A0nAw", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/uzSay7A0nAw/mqdefault.jpg", "dur": "2:00:03"}, {"id": "El-BvlmmyMY", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/El-BvlmmyMY/mqdefault.jpg", "dur": "2:09:15"}, {"id": "UbUS4qYK_zQ", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/UbUS4qYK_zQ/mqdefault.jpg", "dur": "1:59:43"}, {"id": "OyMQ1u6qpc0", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/OyMQ1u6qpc0/mqdefault.jpg", "dur": "2:00:01"}, {"id": "_GLWkR9x9sE", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/_GLWkR9x9sE/mqdefault.jpg", "dur": "2:00:06"}, {"id": "-EGh_po-iGQ", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/-EGh_po-iGQ/mqdefault.jpg", "dur": "1:59:55"}, {"id": "cmM7ogXwaR4", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/cmM7ogXwaR4/mqdefault.jpg", "dur": "2:14:36"}, {"id": "5efKizfPyVE", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/5efKizfPyVE/mqdefault.jpg", "dur": "1:59:50"}, {"id": "D6f4q-l9F5E", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/D6f4q-l9F5E/mqdefault.jpg", "dur": "1:59:58"}, {"id": "AaGbZ5DjOHg", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/AaGbZ5DjOHg/mqdefault.jpg", "dur": "1:59:57"}, {"id": "tcQaJxN7CHo", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/tcQaJxN7CHo/mqdefault.jpg", "dur": "2:12:28"}, {"id": "WEQjL3hoFG8", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/WEQjL3hoFG8/mqdefault.jpg", "dur": "2:00:00"}, {"id": "ahr0m5etuao", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/ahr0m5etuao/mqdefault.jpg", "dur": "1:59:57"}, {"id": "vAfPWikIV_I", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/vAfPWikIV_I/mqdefault.jpg", "dur": "2:07:27"}, {"id": "WXdL4DEoLkw", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/WXdL4DEoLkw/mqdefault.jpg", "dur": "1:59:56"}, {"id": "G0PeX9ATqEI", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/G0PeX9ATqEI/mqdefault.jpg", "dur": "1:59:49"}, {"id": "RMQFkeTrWu8", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/RMQFkeTrWu8/mqdefault.jpg", "dur": "2:12:52"}, {"id": "nc1WJwYLn3c", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/nc1WJwYLn3c/mqdefault.jpg", "dur": "2:00:03"}, {"id": "wkpr9mtDADE", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James & Otis Redding Style", "thumb": "https://i.ytimg.com/vi/wkpr9mtDADE/mqdefault.jpg", "dur": "2:05:23"}, {"id": "Yg0SvbfSI0Q", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/Yg0SvbfSI0Q/mqdefault.jpg", "dur": "1:38:19"}, {"id": "IXRp163SZME", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/IXRp163SZME/mqdefault.jpg", "dur": "1:59:55"}, {"id": "e7DwDUwIc00", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James & Otis Redding Style", "thumb": "https://i.ytimg.com/vi/e7DwDUwIc00/mqdefault.jpg", "dur": "1:50:24"}, {"id": "iczA_Rdwx40", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/iczA_Rdwx40/mqdefault.jpg", "dur": "1:47:19"}, {"id": "7JJBO65jykE", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/7JJBO65jykE/mqdefault.jpg", "dur": "1:58:21"}, {"id": "PAUp-9Ye6Ao", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/PAUp-9Ye6Ao/mqdefault.jpg", "dur": "1:58:21"}, {"id": "E7QcO_BuAOA", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/E7QcO_BuAOA/mqdefault.jpg", "dur": "2:21:34"}, {"id": "xkreECUKzkk", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/xkreECUKzkk/mqdefault.jpg", "dur": "1:55:19"}, {"id": "jkFO2x9FXxo", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/jkFO2x9FXxo/mqdefault.jpg", "dur": "1:52:59"}, {"id": "086QWmYFhUY", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/086QWmYFhUY/mqdefault.jpg", "dur": "1:58:45"}, {"id": "XEbLimHwlik", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James & Otis Redding Style", "thumb": "https://i.ytimg.com/vi/XEbLimHwlik/mqdefault.jpg", "dur": "1:59:40"}, {"id": "lJU65qmvQf0", "title": "Timeless Blues & Soul Love Songs | Emotional Ballads in the Etta James Style", "thumb": "https://i.ytimg.com/vi/lJU65qmvQf0/mqdefault.jpg", "dur": "2:00:34"}, {"id": "QB_qZxJ_FII", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/QB_qZxJ_FII/mqdefault.jpg", "dur": "2:01:19"}, {"id": "87pxyfXUnTg", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/87pxyfXUnTg/mqdefault.jpg", "dur": "1:59:29"}, {"id": "1cyGdmLFK-8", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/1cyGdmLFK-8/mqdefault.jpg", "dur": "1:44:12"}, {"id": "icaq66G8alQ", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/icaq66G8alQ/mqdefault.jpg", "dur": "1:42:52"}, {"id": "h0Lf5Sk2Ic8", "title": "Timeless Blues & Soul Love Songs | Emotional Ballads in the Etta James Style", "thumb": "https://i.ytimg.com/vi/h0Lf5Sk2Ic8/mqdefault.jpg", "dur": "1:57:57"}, {"id": "wob95rQEphs", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/wob95rQEphs/mqdefault.jpg", "dur": "1:58:24"}, {"id": "GNpLgr_enog", "title": "The Soul of Blues Live 🎈 Timeless Blues & Soul Classics Sung by an Incredible Performer 🎶", "thumb": "https://i.ytimg.com/vi/GNpLgr_enog/mqdefault.jpg", "dur": "1:55:19"}, {"id": "HR5DyMpU7t0", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James & Otis Redding Style", "thumb": "https://i.ytimg.com/vi/HR5DyMpU7t0/mqdefault.jpg", "dur": "1:54:33"}, {"id": "yXyA3PMlujg", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/yXyA3PMlujg/mqdefault.jpg", "dur": "11:54:56"}, {"id": "UZc52wVC31E", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/UZc52wVC31E/mqdefault.jpg", "dur": "11:54:58"}, {"id": "LN7Ld-9R1oU", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/LN7Ld-9R1oU/mqdefault.jpg", "dur": "11:54:59"}, {"id": "opCaeV7Qjtg", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/opCaeV7Qjtg/mqdefault.jpg", "dur": "11:54:58"}, {"id": "lkiiwGEn5M8", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/lkiiwGEn5M8/mqdefault.jpg", "dur": "2:02:48"}, {"id": "q9ahGCILQNE", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/q9ahGCILQNE/mqdefault.jpg", "dur": "11:54:58"}, {"id": "2BJ6iRRJ2vw", "title": "Classic Blues & Soul Ballad : Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/2BJ6iRRJ2vw/mqdefault.jpg", "dur": "11:23:30"}, {"id": "9i6mwVA5DJU", "title": "Smooth Blues & Soul Love Songs | Timeless Etta James Inspired Blues & Soul Classics", "thumb": "https://i.ytimg.com/vi/9i6mwVA5DJU/mqdefault.jpg", "dur": "2:05:23"}, {"id": "ZXansEZG_4U", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/ZXansEZG_4U/mqdefault.jpg", "dur": "1:47:35"}, {"id": "61UeSoqpdjw", "title": "Etta James Inspired Smooth Blues & Soul | Blues & Soul Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/61UeSoqpdjw/mqdefault.jpg", "dur": "1:56:31"}, {"id": "xRe9qv1bV14", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/xRe9qv1bV14/mqdefault.jpg", "dur": "1:44:26"}, {"id": "jQ9v45OWiis", "title": "Blues & Soul Love Songs | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/jQ9v45OWiis/mqdefault.jpg", "dur": "1:22:04"}, {"id": "ryuVcm2jas4", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/ryuVcm2jas4/mqdefault.jpg", "dur": "1:06:53"}, {"id": "r2vawQfSPQg", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/r2vawQfSPQg/mqdefault.jpg", "dur": "2:09:24"}, {"id": "bRoeLtbMMjk", "title": "Blues & Soul Love Smooth | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/bRoeLtbMMjk/mqdefault.jpg", "dur": "2:12:28"}, {"id": "g142q5OyTN8", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/g142q5OyTN8/mqdefault.jpg", "dur": "2:02:11"}, {"id": "W7IDwhqR4_0", "title": "Greatest Soulful Blues Love Songs Ever | Smooth Classics of Love & Heart", "thumb": "https://i.ytimg.com/vi/W7IDwhqR4_0/mqdefault.jpg", "dur": "2:03:40"}, {"id": "hb-HziwEC00", "title": "Etta James Style Acoustic Blues | Timeless Songs of Love, Heartbreak & Resilience", "thumb": "https://i.ytimg.com/vi/hb-HziwEC00/mqdefault.jpg", "dur": "11:54:58"}, {"id": "1WNYp8qQ82I", "title": "Blues & Soul Love Smooth | Etta James Style Blues Classics | Soulful Love Songs & Emotional Ballads", "thumb": "https://i.ytimg.com/vi/1WNYp8qQ82I/mqdefault.jpg", "dur": "11:54:56"}, {"id": "UdMUQcLY7DI", "title": "Soulful Nights | Timeless Blues & Deep Female Vocals to Touch Your Heart", "thumb": "https://i.ytimg.com/vi/UdMUQcLY7DI/mqdefault.jpg", "dur": "10:45"}, {"id": "sqYUbMxnSXs", "title": "Blues & Soul Memories | Vintage Vibes, Heartfelt Voices & Slow Moods", "thumb": "https://i.ytimg.com/vi/sqYUbMxnSXs/mqdefault.jpg", "dur": "12:35"}, {"id": "3tANeDXIZ2w", "title": "Blues & Soul Love Smooth | Etta James Style Classics for Timeless Memories", "thumb": "https://i.ytimg.com/vi/3tANeDXIZ2w/mqdefault.jpg", "dur": "2:09:15"}, {"id": "ErrkGl9Npm8", "title": "Etta James Inspired Smooth Blues & Soul | Timeless Love Ballads to Touch the Heart", "thumb": "https://i.ytimg.com/vi/ErrkGl9Npm8/mqdefault.jpg", "dur": "1:38:08"}, {"id": "IFZ7OKVdJpQ", "title": "Timeless Love Songs | Etta James Inspired Blues & Soul Classics - Blues & Soul Love Smooth", "thumb": "https://i.ytimg.com/vi/IFZ7OKVdJpQ/mqdefault.jpg", "dur": "1:19:58"}, {"id": "h299PO1tFpU", "title": "Etta James - Inspired Blues & Soul | Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/h299PO1tFpU/mqdefault.jpg", "dur": "1:39:56"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Soul -->
 <!-- channel-id:  -->
 <!-- channel-url: https://www.youtube.com/@soulfunkpark -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">78 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Soul Funk Park";
 const KANAL = "Soul_Funk_Park.html";
+const ORIG_CATEGORIES = "Lounge, Soul";
 const VIDEOS = [{"id": "0i5uA2sY448", "title": "Vintage Soul Funk Mix 2026 🔥 Gospel Soul, Old School Soul & Street Funk | Golden Rewind", "thumb": "https://i.ytimg.com/vi/0i5uA2sY448/mqdefault.jpg", "dur": "2:07:38"}, {"id": "DRR7hy_S0bo", "title": "Vintage Soul Funk Mix 2026 🔥 King Soul, Street Funk & Gospel Soul | Golden Rewind", "thumb": "https://i.ytimg.com/vi/DRR7hy_S0bo/mqdefault.jpg", "dur": "2:19:53"}, {"id": "_OQKB9uqFao", "title": "Vintage Soul Funk Mix 2026 🔥 Old School Funk, Gospel Soul & Deep Soul | Golden Rewind", "thumb": "https://i.ytimg.com/vi/_OQKB9uqFao/mqdefault.jpg", "dur": "2:25:32"}, {"id": "bIWvKaC5QK8", "title": "Vintage Soul Funk Mix 2026 🔥 Gospel Soul, Deep Funk & Golden Rewind | Quiet Storm", "thumb": "https://i.ytimg.com/vi/bIWvKaC5QK8/mqdefault.jpg", "dur": "2:14:39"}, {"id": "aclvID4UlRw", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Soul, Street Funk & Golden Rewind | Quiet Storm", "thumb": "https://i.ytimg.com/vi/aclvID4UlRw/mqdefault.jpg", "dur": "2:23:13"}, {"id": "ksvDmeYHoUg", "title": "Vintage Soul Funk Mix 2026 🔥 Smooth Soul, Jazz Funk & Golden Rewind | Quiet Storm", "thumb": "https://i.ytimg.com/vi/ksvDmeYHoUg/mqdefault.jpg", "dur": "2:12:03"}, {"id": "ZeV3KIsEtaw", "title": "Vintage Soul Funk Mix 2026 🔥 Street Funk, Urban Groove & Golden Rewind | Rare Groove", "thumb": "https://i.ytimg.com/vi/ZeV3KIsEtaw/mqdefault.jpg", "dur": "2:01:36"}, {"id": "VdJUiqTqWYI", "title": "Vintage Soul Funk Mix 2026 🔥 Raw Funk, Still Waters & Street Funk | Golden Rewind", "thumb": "https://i.ytimg.com/vi/VdJUiqTqWYI/mqdefault.jpg", "dur": "2:27:51"}, {"id": "gzTw24Ow3PI", "title": "Vintage Soul Funk Mix 2026 🔥 Midnight City, Late Night Drive & Funky Soul | Golden Rewind", "thumb": "https://i.ytimg.com/vi/gzTw24Ow3PI/mqdefault.jpg", "dur": "2:01:36"}, {"id": "p_QCC96kWG8", "title": "Vintage Soul Funk Mix 2026 🔥 Street Funk, Funky Soul & Golden Rewind | Gospel Soul", "thumb": "https://i.ytimg.com/vi/p_QCC96kWG8/mqdefault.jpg", "dur": "2:23:22"}, {"id": "aulUgTT_ZRM", "title": "Vintage Soul Funk Mix 2026 🔥 After Midnight, Golden Rewind & Slow Burn | Gospel Soul", "thumb": "https://i.ytimg.com/vi/aulUgTT_ZRM/mqdefault.jpg", "dur": "2:20:36"}, {"id": "jNZ3RVIqxYQ", "title": "Vintage Soul Funk Mix 2026 🔥 Golden Rewind, Slow Burn & Gospel Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/jNZ3RVIqxYQ/mqdefault.jpg", "dur": "2:29:10"}, {"id": "MTc1RVMKpbo", "title": "Vintage Soul Funk Mix 2026 🔥 Velvet Grooves, Gospel Soul & Deep Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/MTc1RVMKpbo/mqdefault.jpg", "dur": "2:15:58"}, {"id": "b29KvO1hQiU", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Funk, Gospel Soul & Midnight Jazz | Rare Groove", "thumb": "https://i.ytimg.com/vi/b29KvO1hQiU/mqdefault.jpg", "dur": "2:22:34"}, {"id": "AW0vF3J87uA", "title": "Vintage Soul Funk Mix 2026 🔥 Old School Funk, Gospel Soul & Deep Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/AW0vF3J87uA/mqdefault.jpg", "dur": "2:25:32"}, {"id": "rXWyQcIDeNc", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Soul, Gospel Soul & Midnight Jazz | Rare Groove", "thumb": "https://i.ytimg.com/vi/rXWyQcIDeNc/mqdefault.jpg", "dur": "2:30:42"}, {"id": "dnXZOsOSkPw", "title": "Vintage Soul Funk Mix 2026 🔥 Uptown Funk, Gospel Soul & Deep Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/dnXZOsOSkPw/mqdefault.jpg", "dur": "2:16:51"}, {"id": "WH_kMtPWWK0", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Soul, Gospel Soul & Rare Groove | Quiet Storm", "thumb": "https://i.ytimg.com/vi/WH_kMtPWWK0/mqdefault.jpg", "dur": "2:24:26"}, {"id": "NOudZuHQVko", "title": "Vintage Soul Funk Mix 2026 🔥 City Funk, Gospel Soul & Deep Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/NOudZuHQVko/mqdefault.jpg", "dur": "2:08:43"}, {"id": "AiE4DruKHBc", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Soul, Gospel Soul & Rare Groove | Midnight Funk", "thumb": "https://i.ytimg.com/vi/AiE4DruKHBc/mqdefault.jpg", "dur": "2:13:43"}, {"id": "RomfSl4TLc0", "title": "Vintage Soul Funk Mix 2026 🔥 Jazz Fusion, Deep Soul & Gospel Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/RomfSl4TLc0/mqdefault.jpg", "dur": "2:01:30"}, {"id": "tSq2qmVuec0", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Gospel, Old School Funk & Gospel Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/tSq2qmVuec0/mqdefault.jpg", "dur": "2:11:39"}, {"id": "AYwiyRNG5fk", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Funk, Street Soul & Rare Groove | Midnight Groove", "thumb": "https://i.ytimg.com/vi/AYwiyRNG5fk/mqdefault.jpg", "dur": "2:23:43"}, {"id": "Diia0fR5byw", "title": "Vintage Soul Funk Mix 2026 🔥 Midnight Groove, Deep Funk & Gospel Soul | Rare Groove", "thumb": "https://i.ytimg.com/vi/Diia0fR5byw/mqdefault.jpg", "dur": "2:22:59"}, {"id": "N8KKfxnRutM", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Gospel Soul & Gospel Funk | Street Groove", "thumb": "https://i.ytimg.com/vi/N8KKfxnRutM/mqdefault.jpg", "dur": "2:11:23"}, {"id": "63p6JslVtL8", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Soul & Gospel Funk | Street Groove", "thumb": "https://i.ytimg.com/vi/63p6JslVtL8/mqdefault.jpg", "dur": "2:15:06"}, {"id": "9iprwQ_ta1o", "title": "Vintage Soul Funk Mix 2026 🔥 Street Groove, Deep Funk & Rare Soul | Smooth Soul Grooves", "thumb": "https://i.ytimg.com/vi/9iprwQ_ta1o/mqdefault.jpg", "dur": "2:10:14"}, {"id": "-yn49GAyC4k", "title": "Vintage Soul Funk Mix 2026 🔥 Soul Journey, Deep Soul & Gospel Funk | Rare Groove", "thumb": "https://i.ytimg.com/vi/-yn49GAyC4k/mqdefault.jpg", "dur": "2:10:07"}, {"id": "jw5sSy0n67c", "title": "Vintage Soul Funk Mix 2026 🔥 Get Up & Move | Rare Groove, Deep Soul & Gospel Funk", "thumb": "https://i.ytimg.com/vi/jw5sSy0n67c/mqdefault.jpg", "dur": "2:03:45"}, {"id": "zWeG2ZB--Xw", "title": "Vintage Soul Funk Mix 2026 🔥 Get On Up, Rare Groove & Deep Soul | Vintage Vibes", "thumb": "https://i.ytimg.com/vi/zWeG2ZB--Xw/mqdefault.jpg", "dur": "2:16:48"}, {"id": "Lg3B0gKSAqk", "title": "Vintage Soul Funk Mix 2026 🔥 Get On Up, Rare Groove & Deep Soul | Vintage Vibes", "thumb": "https://i.ytimg.com/vi/Lg3B0gKSAqk/mqdefault.jpg", "dur": "2:18:33"}, {"id": "Dl20SpM6ZpE", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Soul & Gospel Funk | 70s Vibes", "thumb": "https://i.ytimg.com/vi/Dl20SpM6ZpE/mqdefault.jpg", "dur": "2:20:25"}, {"id": "vTwWDjgwfyI", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Soul & Gospel Funk | Vintage Vibes", "thumb": "https://i.ytimg.com/vi/vTwWDjgwfyI/mqdefault.jpg", "dur": "2:19:05"}, {"id": "oO_P_EuEi7s", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Soul & Rare Funk | Best Vintage Soul Hits", "thumb": "https://i.ytimg.com/vi/oO_P_EuEi7s/mqdefault.jpg", "dur": "2:27:29"}, {"id": "a8S-3Qz11KU", "title": "Vintage 70s Soul Funk 🔥 Soul Funk Groove, Rare Groove & Deep Soul | Funk Mix 2026", "thumb": "https://i.ytimg.com/vi/a8S-3Qz11KU/mqdefault.jpg", "dur": "2:28:21"}, {"id": "ajby2Hu_MKU", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Funk, Rare Groove & 70s Soul Funk | Chill Vibes", "thumb": "https://i.ytimg.com/vi/ajby2Hu_MKU/mqdefault.jpg", "dur": "2:16:27"}, {"id": "4i_xG3bs8K4", "title": "Vintage Soul Funk Mix 2026 🔥 Deep Soul, Rare Groove & 70s Soul Funk | Chill Vibes", "thumb": "https://i.ytimg.com/vi/4i_xG3bs8K4/mqdefault.jpg", "dur": "2:17:39"}, {"id": "2J0NHOgq5bI", "title": "Vintage Soul Funk Mix 🔥 Rare Groove & 70s Soul Funk | Deep Groove Session", "thumb": "https://i.ytimg.com/vi/2J0NHOgq5bI/mqdefault.jpg", "dur": "2:25:28"}, {"id": "E-YTc58wTns", "title": "Vintage Soul Funk Groove 🔥 70s Funk, Rare Groove & Jazzy Soul Mix | Deep Groove", "thumb": "https://i.ytimg.com/vi/E-YTc58wTns/mqdefault.jpg", "dur": "2:02:44"}, {"id": "HCF-qfeqFm4", "title": "Vintage Soul Funk 🔥 Rare Groove, Deep Soul & Soul Funk Grooves Mix | Jazzy Soul", "thumb": "https://i.ytimg.com/vi/HCF-qfeqFm4/mqdefault.jpg", "dur": "1:48:36"}, {"id": "OkXHai-Qf0Q", "title": "Vintage Soul Funk Grooves 🔥 Rare Groove, Jazzy Soul & Deep Groove Playlist", "thumb": "https://i.ytimg.com/vi/OkXHai-Qf0Q/mqdefault.jpg", "dur": "2:08:33"}, {"id": "AmmrHkDzuHU", "title": "Vintage Soul Funk Mix 🔥 Rare Groove, Jazzy Soul & Deep Groove Playlist", "thumb": "https://i.ytimg.com/vi/AmmrHkDzuHU/mqdefault.jpg", "dur": "2:07:39"}, {"id": "bXPt9sEcAxw", "title": "Vintage Soul Funk & Gospel Soul Music Mix 🔥 Deep Soul Grooves & 70s Funk Playlist", "thumb": "https://i.ytimg.com/vi/bXPt9sEcAxw/mqdefault.jpg", "dur": "2:18:28"}, {"id": "_kG-s3aJVgA", "title": "Vintage Soul Funk Mix 🔥 Deep Soul Music Grooves & Chill Vibes Playlist", "thumb": "https://i.ytimg.com/vi/_kG-s3aJVgA/mqdefault.jpg", "dur": "2:02:15"}, {"id": "GfWWimvH1VU", "title": "Vintage Soul Funk Mix 🔥 Rare Groove & 70s Soul Music for Focus & Chill", "thumb": "https://i.ytimg.com/vi/GfWWimvH1VU/mqdefault.jpg", "dur": "2:04:05"}, {"id": "KQmh-9nkLVc", "title": "🔥Rare Groove & Soul Funk Mix 2026 | Old School Retro Funk Vibes", "thumb": "https://i.ytimg.com/vi/KQmh-9nkLVc/mqdefault.jpg", "dur": "2:02:55"}, {"id": "pAcaiDSpdyU", "title": "Chill Funk & Rare Groove Mix | Deep Vintage 70s Soul Funk You've Been Seeking", "thumb": "https://i.ytimg.com/vi/pAcaiDSpdyU/mqdefault.jpg", "dur": "2:06:51"}, {"id": "7qgwtuPYFFQ", "title": "Soul Funk Groove 🎷 Vintage Soul Music | Smooth Old School Vibes", "thumb": "https://i.ytimg.com/vi/7qgwtuPYFFQ/mqdefault.jpg", "dur": "2:16:08"}, {"id": "HoWyHVgvbFI", "title": "Soul Funk Mix | Vintage Deep Groove & Old School Vibes", "thumb": "https://i.ytimg.com/vi/HoWyHVgvbFI/mqdefault.jpg", "dur": "2:12:10"}, {"id": "F4Hsamnstgg", "title": "🔥 Vintage Soul Funk Groove You've Been Looking For | Raw 70s Funk & Deep Soul Flow Mix", "thumb": "https://i.ytimg.com/vi/F4Hsamnstgg/mqdefault.jpg", "dur": "2:02:27"}, {"id": "MfjNneC99YY", "title": "70s Soul Funk Groove | Raw, Minimal & Deep Vintage Soul Funk Mix", "thumb": "https://i.ytimg.com/vi/MfjNneC99YY/mqdefault.jpg", "dur": "2:19:44"}, {"id": "s_6buKb_mH4", "title": "Rare Groove Mix & Deep Funk 🔥 Vintage Soul Music You Need to Hear", "thumb": "https://i.ytimg.com/vi/s_6buKb_mH4/mqdefault.jpg", "dur": "2:02:33"}, {"id": "oxBDU8Uiirs", "title": "Ultimate 70s Soul Funk Mix 🔥 Rare Groove & Vintage Soul Music", "thumb": "https://i.ytimg.com/vi/oxBDU8Uiirs/mqdefault.jpg", "dur": "2:01:56"}, {"id": "hzGE5tdtz5s", "title": "Ultimate 70s Soul Funk Mix 2026 | Deep Rare Groove & Vintage Vibes 🎶 Soul Funk Park", "thumb": "https://i.ytimg.com/vi/hzGE5tdtz5s/mqdefault.jpg", "dur": "2:26:01"}, {"id": "KMZjo8d2ROg", "title": "Vintage Soul Funk Explosion | Deep Raw 70s Grooves & Rare Funk Vibes Vol.2４", "thumb": "https://i.ytimg.com/vi/KMZjo8d2ROg/mqdefault.jpg", "dur": "2:01:48"}, {"id": "X4bKP9WNprs", "title": "Vintage 70s Soul Funk Grooves You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes Vol.23", "thumb": "https://i.ytimg.com/vi/X4bKP9WNprs/mqdefault.jpg", "dur": "2:02:10"}, {"id": "OY67K3oGMbM", "title": "Vintage 70s Soul Funk Grooves | Bone-Dry Raw Studio Energy Vol.22", "thumb": "https://i.ytimg.com/vi/OY67K3oGMbM/mqdefault.jpg", "dur": "2:06:56"}, {"id": "-RDbI7Kbego", "title": "Vintage Soul Funk | Raw Spiritual Rhythm & Rare Deep Groove Vol.21", "thumb": "https://i.ytimg.com/vi/-RDbI7Kbego/mqdefault.jpg", "dur": "2:15:37"}, {"id": "k8LqIF-gC0o", "title": "Silent Heat – Deep Vintage Soul Funk Grooves | Hypnotic & Dry Flow Vol.20", "thumb": "https://i.ytimg.com/vi/k8LqIF-gC0o/mqdefault.jpg", "dur": "2:35:33"}, {"id": "Xrc5s_ylisE", "title": "Between Today and Tomorrow – Hypnotic Vintage Soul Funk Grooves | Deep Rare Flow Vol.19", "thumb": "https://i.ytimg.com/vi/Xrc5s_ylisE/mqdefault.jpg", "dur": "2:16:23"}, {"id": "geXJspFP0UM", "title": "Nothing Left to Prove – Deep Vintage Soul Funk Grooves | Minimal Raw Flow Vol.18", "thumb": "https://i.ytimg.com/vi/geXJspFP0UM/mqdefault.jpg", "dur": "1:58:43"}, {"id": "k-ZMKzj0LoE", "title": "Soul Funk in My Own Lane | Deep Pocket Vintage Groove | Vol.17", "thumb": "https://i.ytimg.com/vi/k-ZMKzj0LoE/mqdefault.jpg", "dur": "1:28:22"}, {"id": "AVmXzrjg43A", "title": "Feel So Right – Deep 70s Soul Funk Grooves | Vintage Soul Playlist Vol.16", "thumb": "https://i.ytimg.com/vi/AVmXzrjg43A/mqdefault.jpg", "dur": "2:01:08"}, {"id": "q-xx1xJpQ6A", "title": "Feel Like Gold – 70s Soul Funk Grooves | Vintage Funk & Soul Playlist Vol.15", "thumb": "https://i.ytimg.com/vi/q-xx1xJpQ6A/mqdefault.jpg", "dur": "2:07:12"}, {"id": "3XLgNzewTi4", "title": "70s Soul Funk for Quiet Confidence | Vintage Late Night Groove Playlist Vol.14", "thumb": "https://i.ytimg.com/vi/3XLgNzewTi4/mqdefault.jpg", "dur": "2:06:32"}, {"id": "73PhRBAAMEg", "title": "Vintage Grooves to Trust Yourself – 70s Soul Funk for Late Night Confidence | Vol.13", "thumb": "https://i.ytimg.com/vi/73PhRBAAMEg/mqdefault.jpg", "dur": "1:57:31"}, {"id": "iM8nzfCF4n8", "title": "Feel So Great | 70s Golden Era Funk & Soul Grooves Vol. 12", "thumb": "https://i.ytimg.com/vi/iM8nzfCF4n8/mqdefault.jpg", "dur": "1:55:44"}, {"id": "ZavfXu8VfZg", "title": "Good Times Flow – Smooth 70s Soul Funk | Relaxed Vintage Groove Playlist | Vol.11", "thumb": "https://i.ytimg.com/vi/ZavfXu8VfZg/mqdefault.jpg", "dur": "1:52:08"}, {"id": "FSsLP837elw", "title": "That Golden Feeling – 70s Soul Funk Grooves | Chill Vintage Soul Playlist Vol.10", "thumb": "https://i.ytimg.com/vi/FSsLP837elw/mqdefault.jpg", "dur": "1:49:46"}, {"id": "ZYPISfJEc-k", "title": "Vintage Funk & Soul Grooves | Soul & Funk Playlist Vol. 9", "thumb": "https://i.ytimg.com/vi/ZYPISfJEc-k/mqdefault.jpg", "dur": "1:33:28"}, {"id": "lxKj4Vs63xs", "title": "Feel So Good – 70s Golden Era Soul Funk | Vintage Late Night Grooves | Vol. 8", "thumb": "https://i.ytimg.com/vi/lxKj4Vs63xs/mqdefault.jpg", "dur": "1:48:29"}, {"id": "PlEK048e9_Q", "title": "Vintage Soul & Funk You’ve Been Waiting For | Groovy Chill Vibes Vol. 7", "thumb": "https://i.ytimg.com/vi/PlEK048e9_Q/mqdefault.jpg", "dur": "2:11:24"}, {"id": "ymMDNWnEvJM", "title": "Vintage Funk & Soul Grooves | The Soul & Funk Archive Vol. 6", "thumb": "https://i.ytimg.com/vi/ymMDNWnEvJM/mqdefault.jpg", "dur": "1:55:29"}, {"id": "W6jjlVb0vjI", "title": "Deep Funk & Soulful Beats | Vintage Funk & Soul Grooves Vol. 5", "thumb": "https://i.ytimg.com/vi/W6jjlVb0vjI/mqdefault.jpg", "dur": "2:07:25"}, {"id": "-B94M6ASL6s", "title": "Feel Like Gold – Street Soul Funk Grooves | Vintage Soul & Funk Playlist Vol. 4", "thumb": "https://i.ytimg.com/vi/-B94M6ASL6s/mqdefault.jpg", "dur": "1:53:12"}, {"id": "dqb0jZXMXPw", "title": "Feel So Right | Vintage Funk & Soul Essentials Vol. 3", "thumb": "https://i.ytimg.com/vi/dqb0jZXMXPw/mqdefault.jpg", "dur": "1:33:14"}, {"id": "Pho6NZCoOrc", "title": "Retro Soul Sessions | Vintage Funk & Soul Grooves Vol. 2", "thumb": "https://i.ytimg.com/vi/Pho6NZCoOrc/mqdefault.jpg", "dur": "1:40:18"}, {"id": "2xDjz-vOhDc", "title": "Urban Soul & Vintage Funk | Smooth 70s Groove Session Vol. 1", "thumb": "https://i.ytimg.com/vi/2xDjz-vOhDc/mqdefault.jpg", "dur": "1:50:13"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

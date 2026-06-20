@@ -7,7 +7,7 @@
 <!-- categories: Latin -->
 <!-- channel-id: UCpopQdNYB6m2bOzxlKJ7Gzg -->
 <!-- channel-url: https://youtube.com/@simplysalsamusic -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">57 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Salsa Music";
 const KANAL = "Salsa_Music.html";
+const ORIG_CATEGORIES = "Latin";
 const VIDEOS = [{"id": "mAoxg4d8Srk", "title": "Lazy Havana 🌴 Instrumental Salsa Playlist | Relaxing Cuban Music Mix", "thumb": "https://i.ytimg.com/vi/mAoxg4d8Srk/mqdefault.jpg", "dur": "1:31:50"}, {"id": "sZPxR4D5XjQ", "title": "Salsa Instrumental Lounge 🌅 Smooth Latin Music for Dinner & Cocktails", "thumb": "https://i.ytimg.com/vi/sZPxR4D5XjQ/mqdefault.jpg", "dur": "1:17:45"}, {"id": "Xqwqdi9hwR0", "title": "Son Cubano Salsa Music | The Feel-Good Playlist 2026 🌴", "thumb": "https://i.ytimg.com/vi/Xqwqdi9hwR0/mqdefault.jpg", "dur": "56:13"}, {"id": "ev2GcgSwflY", "title": "Salsa Brava Mix 2026 🔥 | Cuban Music, Latin Rhythms & Dance Hits", "thumb": "https://i.ytimg.com/vi/ev2GcgSwflY/mqdefault.jpg", "dur": "1:06:37"}, {"id": "e1uBtiVEeIM", "title": "Salsa Dura para Bailar 💃 | Greatest Salsa Classics 2026", "thumb": "https://i.ytimg.com/vi/e1uBtiVEeIM/mqdefault.jpg", "dur": "1:04:40"}, {"id": "65hrYBLEX60", "title": "SALSA RUMBA MIX 2026 🥁 The Hottest Cuban Vibes | Pa' Bailar 🔥", "thumb": "https://i.ytimg.com/vi/65hrYBLEX60/mqdefault.jpg", "dur": "1:04:36"}, {"id": "a0oY34_4ofY", "title": "New York Salsa Playlist 🔥 Hot Summer City Mix to Dance & Feel Alive 2026", "thumb": "https://i.ytimg.com/vi/a0oY34_4ofY/mqdefault.jpg", "dur": "1:01:10"}, {"id": "2qwB9GuRNPI", "title": "Salsa Caleña 🔥 Cali Colombia Mix · Pure Passion & Energy 2026", "thumb": "https://i.ytimg.com/vi/2qwB9GuRNPI/mqdefault.jpg", "dur": "1:03:53"}, {"id": "cs_AzG8W-ME", "title": "Salsa Cubano Vibes ☀️ Happy Latin Mix for Dancing & Good Times", "thumb": "https://i.ytimg.com/vi/cs_AzG8W-ME/mqdefault.jpg", "dur": "59:55"}, {"id": "hRKBlmdogbE", "title": "Salsa Lounge Music ☀️ The Feel-Good Summer Mix to Dance & Smile", "thumb": "https://i.ytimg.com/vi/hRKBlmdogbE/mqdefault.jpg", "dur": "1:02:48"}, {"id": "U3-cLgSczjk", "title": "SALSA LOUNGE MUSIC 🌴 Cuban Chill Mix for Relaxing & Dancing (2026)", "thumb": "https://i.ytimg.com/vi/U3-cLgSczjk/mqdefault.jpg", "dur": "1:13:51"}, {"id": "XWkuu04oBN8", "title": "Salsa Lounge for Summer Nights 🌙 Son Cubano · Laid-Back Groove · Pure Cuban Soul", "thumb": "https://i.ytimg.com/vi/XWkuu04oBN8/mqdefault.jpg", "dur": "1:20:31"}, {"id": "hSfXd4h_GmQ", "title": "Salsa Dura Playlist 2026 | Latin Vibes & Party Energy 🔥", "thumb": "https://i.ytimg.com/vi/hSfXd4h_GmQ/mqdefault.jpg", "dur": "1:05:36"}, {"id": "IN_p7SmpQJw", "title": "Latin Salsa Lounge 🌴 Relaxing Instrumental Mix 2026", "thumb": "https://i.ytimg.com/vi/IN_p7SmpQJw/mqdefault.jpg", "dur": "1:03:44"}, {"id": "muJYNeUF6vY", "title": "Salsa Jazz Nights in Havana 🌙 Latin Lounge Music for Warm Summer Evenings", "thumb": "https://i.ytimg.com/vi/muJYNeUF6vY/mqdefault.jpg", "dur": "1:27:30"}, {"id": "bXZu3wzT05s", "title": "Salsa Lounge Jazz — Best Instrumental Mix 2026 | Non-Stop Latin Grooves", "thumb": "https://i.ytimg.com/vi/bXZu3wzT05s/mqdefault.jpg", "dur": "1:01:13"}, {"id": "sI6XOs4CG2c", "title": "1 Hour Salsa Lounge Music 2026 🎷 Cuban Nights · Havana Vibes", "thumb": "https://i.ytimg.com/vi/sI6XOs4CG2c/mqdefault.jpg", "dur": "1:18:21"}, {"id": "jEUYgorlXgg", "title": "Legendary Cuban Salsa Lounge — Old Havana Sessions | Smooth Vintage Mix", "thumb": "https://i.ytimg.com/vi/jEUYgorlXgg/mqdefault.jpg", "dur": "1:09:14"}, {"id": "F5sLdEul4Dg", "title": "The Salsa Lounge Mix Vol. 1 — Smooth Cuban Jazz Grooves", "thumb": "https://i.ytimg.com/vi/F5sLdEul4Dg/mqdefault.jpg", "dur": "1:11:52"}, {"id": "as7z-w2lymk", "title": "Salsa Lounge Music 🌙 Smooth Latin Jazz & Sunset Mix | 2 hours", "thumb": "https://i.ytimg.com/vi/as7z-w2lymk/mqdefault.jpg", "dur": "2:08:21"}, {"id": "cXUZVQzXlHQ", "title": "Latin Salsa Music for Rooftop Jazz Vibes | Salsa Dura Lounge | 1 Hour 2026 🔥", "thumb": "https://i.ytimg.com/vi/cXUZVQzXlHQ/mqdefault.jpg", "dur": "2:01:23"}, {"id": "6UAbutnPM1Y", "title": "SALSA DURA MIX 🔥 Nonstop Latin Dance Energy", "thumb": "https://i.ytimg.com/vi/6UAbutnPM1Y/mqdefault.jpg", "dur": "1:06:27"}, {"id": "OiCxYsEsREY", "title": "💃 Salsa Dura That Makes You Happy | Cuban Havana Mix | 1 Hour Pure Joy", "thumb": "https://i.ytimg.com/vi/OiCxYsEsREY/mqdefault.jpg", "dur": "1:09:22"}, {"id": "hkXuQIAWzL0", "title": "For Old Souls 🎺 | Pure Cuban Salsa Mix | 1 Hour", "thumb": "https://i.ytimg.com/vi/hkXuQIAWzL0/mqdefault.jpg", "dur": "1:22:19"}, {"id": "efOdW-_EWO8", "title": "The Real Sounds of Salsa 🎺 | Authentic Cuban Classics", "thumb": "https://i.ytimg.com/vi/efOdW-_EWO8/mqdefault.jpg", "dur": "1:02:07"}, {"id": "ipi4toWxIiM", "title": "The Ultimate Cuban Salsa Night Mix 🎺 Rum & Havana Vibes", "thumb": "https://i.ytimg.com/vi/ipi4toWxIiM/mqdefault.jpg", "dur": "1:10:22"}, {"id": "mI662SM2RfI", "title": "🌙 Havana Nights Salsa Romántica | Late Night Cuban Lounge music mix", "thumb": "https://i.ytimg.com/vi/mI662SM2RfI/mqdefault.jpg", "dur": "1:12:05"}, {"id": "jSllQ4OSDxk", "title": "Cuban Salsa Dura That Will Change Your Mood Instantly 🇨🇺", "thumb": "https://i.ytimg.com/vi/jSllQ4OSDxk/mqdefault.jpg", "dur": "1:21:47"}, {"id": "99NlRd6ti_w", "title": "Best Cuban Music Mix for Salsa Dura | 60 Minutes of Raw Power — NO BREAKS 🔥", "thumb": "https://i.ytimg.com/vi/99NlRd6ti_w/mqdefault.jpg", "dur": "1:03:55"}, {"id": "S3veJPg7QPA", "title": "SALSA CUBANA 🇨🇺🔥 1 Hour of Cuban Dance Hits That Hit Your Soul — Non-Stop Mix 2026", "thumb": "https://i.ytimg.com/vi/S3veJPg7QPA/mqdefault.jpg", "dur": "1:06:49"}, {"id": "0mBExtv5j-Y", "title": "The Best Havana Cubana Salsa Mix 🥃 Drink & Dance All Night", "thumb": "https://i.ytimg.com/vi/0mBExtv5j-Y/mqdefault.jpg", "dur": "1:01:46"}, {"id": "VfkncWn8vnA", "title": "SON CUBANO SALSA MIX 🔥 1 Hour of Old Havana Classic Cuban Sound", "thumb": "https://i.ytimg.com/vi/VfkncWn8vnA/mqdefault.jpg", "dur": "1:07:20"}, {"id": "lwlUGWCx6Jo", "title": "SALSA DURA 🔥 Classic Havana Hits for Dancing | 1 Hour Non-Stop", "thumb": "https://i.ytimg.com/vi/lwlUGWCx6Jo/mqdefault.jpg", "dur": "1:16:37"}, {"id": "thZI2pgWhyo", "title": "Old Havana Music 🇨🇺 | Son Cubano, Cha-Cha-Chá & Salsa Cubana Clásica", "thumb": "https://i.ytimg.com/vi/thZI2pgWhyo/mqdefault.jpg", "dur": "1:24:20"}, {"id": "COVf_wZsP3c", "title": "THE REAL SOUND OF HAVANA 🇨🇺 1 Hour Cuban Salsa Mix", "thumb": "https://i.ytimg.com/vi/COVf_wZsP3c/mqdefault.jpg", "dur": "1:15:07"}, {"id": "YvklMyUCO1w", "title": "🌙 SALSA ROMÁNTICA MIX 2026 | 1 Hour of Pure Cuban Love — NON STOP", "thumb": "https://i.ytimg.com/vi/YvklMyUCO1w/mqdefault.jpg", "dur": "1:13:55"}, {"id": "LWdC4N7z1ik", "title": "🔥 SALSA DURA MIX 2026 | 1 Hour of Pure Cuban Fire — NON STOP", "thumb": "https://i.ytimg.com/vi/LWdC4N7z1ik/mqdefault.jpg", "dur": "1:03:55"}, {"id": "Dm0R53DiFEs", "title": "SALSA WITH SOUL 💃 The Mix That Takes You Back To The Good Times 🔥", "thumb": "https://i.ytimg.com/vi/Dm0R53DiFEs/mqdefault.jpg", "dur": "1:08:32"}, {"id": "8YZWd87HwmY", "title": "This Is What Salsa Felt Like in 1980 ❤️🎵", "thumb": "https://i.ytimg.com/vi/8YZWd87HwmY/mqdefault.jpg", "dur": "1:01:36"}, {"id": "fyU7ELWStHs", "title": "This Salsa Mix Will Make You Drop Everything and Dance 💃", "thumb": "https://i.ytimg.com/vi/fyU7ELWStHs/mqdefault.jpg", "dur": "1:04:21"}, {"id": "XU8pSMiuOrs", "title": "This Salsa mix Will Make You Fall In Love Again 🎺❤️ (Willie Colón Vibes)", "thumb": "https://i.ytimg.com/vi/XU8pSMiuOrs/mqdefault.jpg", "dur": "1:13:09"}, {"id": "NOutb9E-S0E", "title": "Best New Year Salsa Mix 2026 | Non-Stop Countdown & Party Hits", "thumb": "https://i.ytimg.com/vi/NOutb9E-S0E/mqdefault.jpg", "dur": "2:17:59"}, {"id": "-iKgAoV8Bsw", "title": "Salsa Dura 2025 | 35+ Min Non-Stop Fast Tempo Mix for Dancing", "thumb": "https://i.ytimg.com/vi/-iKgAoV8Bsw/mqdefault.jpg", "dur": "37:23"}, {"id": "iC3R5h7EJ6k", "title": "Salsa Mix of the Year – Dance Like Nobody’s Watching!", "thumb": "https://i.ytimg.com/vi/iC3R5h7EJ6k/mqdefault.jpg", "dur": "1:40:07"}, {"id": "jZgNKKMO104", "title": "Non-Stop Passion: A Salsa Mix for Dancers & Lovers", "thumb": "https://i.ytimg.com/vi/jZgNKKMO104/mqdefault.jpg", "dur": "34:15"}, {"id": "NxeOKJRA3DU", "title": "Buena Vista Social Club Inspired Music - Relaxing Cuban Son & Bolero Playlist", "thumb": "https://i.ytimg.com/vi/NxeOKJRA3DU/mqdefault.jpg", "dur": "36:42"}, {"id": "88PXJTbzvgE", "title": "The ultimate salsa song for a dance night!", "thumb": "https://i.ytimg.com/vi/88PXJTbzvgE/mqdefault.jpg", "dur": "3:34"}, {"id": "azYMRTJmbrw", "title": "2025 Salsa Dura Mambo Remix - High Energy Salsa Music for the Dance Floor", "thumb": "https://i.ytimg.com/vi/azYMRTJmbrw/mqdefault.jpg", "dur": "15:41"}, {"id": "LPlmfk0otPQ", "title": "1 Hour Salsa Mix | Ultimate salsa dancing songs inspired by Willie Colón, Marc Anthony & Célia Cruz", "thumb": "https://i.ytimg.com/vi/LPlmfk0otPQ/mqdefault.jpg", "dur": "1:00:58"}, {"id": "_BqAgLtbfn8", "title": "2025 Festive Latin Music - An Upbeat Salsa Dance Playlist inspired by Celia Cruz", "thumb": "https://i.ytimg.com/vi/_BqAgLtbfn8/mqdefault.jpg", "dur": "19:57"}, {"id": "03boEnucL-g", "title": "Salsa Night Remix: Energetic Latin Rhythms for Salsa Dancing - Music inspired by Celia Cruz", "thumb": "https://i.ytimg.com/vi/03boEnucL-g/mqdefault.jpg", "dur": "25:21"}, {"id": "DBzhrZorGj4", "title": "Upbeat Salsa Mix 2025: Salsa music inspired by Celia Cruz", "thumb": "https://i.ytimg.com/vi/DBzhrZorGj4/mqdefault.jpg", "dur": "21:59"}, {"id": "aNwKnyDJM3Q", "title": "High-Energy Salsa Dance Mix 2025 | Fania Style Dancing Music", "thumb": "https://i.ytimg.com/vi/aNwKnyDJM3Q/mqdefault.jpg", "dur": "21:29"}, {"id": "zzrHMX9aAoE", "title": "The Ultimate Salsa Mix: Celia Cruz, Héctor Lavoe, Fania All-Stars, Willie Colón, Johnny Pacheco", "thumb": "https://i.ytimg.com/vi/zzrHMX9aAoE/mqdefault.jpg", "dur": "23:13"}, {"id": "1UzFGtai7os", "title": "The Hottest Cuban Salsa Mix 2025 | Ultimate Energy for the Dance Floor", "thumb": "https://i.ytimg.com/vi/1UzFGtai7os/mqdefault.jpg", "dur": "21:24"}, {"id": "2vkE3ZLfGR0", "title": "The Best Salsa Mix 2025 | Romantic & Smooth Latin Dance Music", "thumb": "https://i.ytimg.com/vi/2vkE3ZLfGR0/mqdefault.jpg", "dur": "29:28"}, {"id": "EqTQXkccB_g", "title": "Best Salsa Music for Dancing 💃 Ultimate Salsa Hits Mix 2025", "thumb": "https://i.ytimg.com/vi/EqTQXkccB_g/mqdefault.jpg", "dur": "25:58"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

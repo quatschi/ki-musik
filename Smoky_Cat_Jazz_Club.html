@@ -7,7 +7,7 @@
 <!-- categories: Jazz -->
 <!-- channel-id: UCu64h45LMJH9DnmQdu5eNmQ -->
 <!-- channel-url: https://youtube.com/@smokycatjazzclub -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">53 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Smoky Cat Jazz Club";
 const KANAL = "Smoky_Cat_Jazz_Club.html";
+const ORIG_CATEGORIES = "Jazz";
 const VIDEOS = [{"id": "VZrlIueVcyA", "title": "Smoky Jazz Nights | 1940s Vintage Noir Jazz for Study, Coffee & Relaxation", "thumb": "https://i.ytimg.com/vi/VZrlIueVcyA/mqdefault.jpg", "dur": "2:38:25"}, {"id": "RG4fNLkiMGo", "title": "Vintage Noir Jazz 1940s 🕯️ Soft Piano & Smoky Sax for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/RG4fNLkiMGo/mqdefault.jpg", "dur": "3:01:26"}, {"id": "-i_fw-PlhLU", "title": "Vintage Noir Jazz 1940s 🎺 Smoky Jazz Club Ambience for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/-i_fw-PlhLU/mqdefault.jpg", "dur": "3:27:56"}, {"id": "vmOlsTVievs", "title": "Smoky 1940s Vintage Noir Jazz ☕ Dark Late Night Jazz for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/vmOlsTVievs/mqdefault.jpg", "dur": "2:54:05"}, {"id": "FHtWw_5UVHc", "title": "🎷 Relaxing Sax Noir Jazz 🐈‍⬛ | Late Evening Calm for Deep Relaxation & Cozy Nights", "thumb": "https://i.ytimg.com/vi/FHtWw_5UVHc/mqdefault.jpg", "dur": "8:50:38"}, {"id": "BKKSECatwtc", "title": "Smoky 1940s Vintage Noir Jazz ☕ Slow Night Jazz for Deep Thoughts & Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/BKKSECatwtc/mqdefault.jpg", "dur": "11:55:01"}, {"id": "KWJzLBnPyvM", "title": "A Slow Night Begins… ☕ Vintage Noir Jazz for Deep Focus & Relaxing", "thumb": "https://i.ytimg.com/vi/KWJzLBnPyvM/mqdefault.jpg", "dur": "2:49:35"}, {"id": "BuZV3KEYCIQ", "title": "Vintage Noir Jazz 🎷 Silent Room, Heavy Thoughts", "thumb": "https://i.ytimg.com/vi/BuZV3KEYCIQ/mqdefault.jpg", "dur": "2:43:25"}, {"id": "Lus74uaKL3k", "title": "Nothing Moves… 🐈 Vintage Noir Jazz ☕ Soft Piano & Low Sax", "thumb": "https://i.ytimg.com/vi/Lus74uaKL3k/mqdefault.jpg", "dur": "2:47:44"}, {"id": "Nq5LzIRtRNc", "title": "Too Quiet Tonight… 🐈‍⬛ Vintage Noir Jazz for Deep Focus & Relaxing", "thumb": "https://i.ytimg.com/vi/Nq5LzIRtRNc/mqdefault.jpg", "dur": "2:47:44"}, {"id": "NwZ_EiQEqWU", "title": "Morning Secrets… 🐈 Vintage Noir Jazz ☕ Piano & Low Sax", "thumb": "https://i.ytimg.com/vi/NwZ_EiQEqWU/mqdefault.jpg", "dur": "2:44:13"}, {"id": "tgUKpXC5CFQ", "title": "Vintage Noir Jazz ☕ Piano & Low Sax for Late Night Focus", "thumb": "https://i.ytimg.com/vi/tgUKpXC5CFQ/mqdefault.jpg", "dur": "2:48:54"}, {"id": "Zf9Ym6fw8UQ", "title": "Vintage Noir Jazz ☕ Slow Piano & Soft Sax for Late Night Relaxing", "thumb": "https://i.ytimg.com/vi/Zf9Ym6fw8UQ/mqdefault.jpg", "dur": "2:33:46"}, {"id": "GnUt5h5VzWc", "title": "Vintage Noir Jazz at Midnight ☕ Smooth Jazz Café Ambience with a Black Cat", "thumb": "https://i.ytimg.com/vi/GnUt5h5VzWc/mqdefault.jpg", "dur": "11:51:01"}, {"id": "8xpwRWRmbto", "title": "Vintage Noir Jazz at Midnight ☕ Smooth 1940s Jazz for Late Night Coffee & Relaxation", "thumb": "https://i.ytimg.com/vi/8xpwRWRmbto/mqdefault.jpg", "dur": "2:15:38"}, {"id": "msCow6BWI-Y", "title": "The Art of Doing Nothing 🐈 Vintage Noir Jazz for Relaxing Coffee Break Moments", "thumb": "https://i.ytimg.com/vi/msCow6BWI-Y/mqdefault.jpg", "dur": "3:33:20"}, {"id": "UvROX9XnEUY", "title": "Duty? Never. |  Smooth Noir Jazz Mix for Deep Focus & Relaxing Nights", "thumb": "https://i.ytimg.com/vi/UvROX9XnEUY/mqdefault.jpg", "dur": "2:02:59"}, {"id": "7lTCQc122_A", "title": "Mentally Offline ☕ Vintage Noir Jazz for Coffee Breaks, Reading and Relaxation", "thumb": "https://i.ytimg.com/vi/7lTCQc122_A/mqdefault.jpg", "dur": "11:55:00"}, {"id": "2rJ_4cdFWEw", "title": "Leave Me Alone ☕ Midnight Noir Jazz for Lonely Evenings", "thumb": "https://i.ytimg.com/vi/2rJ_4cdFWEw/mqdefault.jpg", "dur": "3:51:06"}, {"id": "QKjPkksEs6A", "title": "Hurry? Never. ☕ Smoky Noir Jazz 1940s for Midnight Calm & Cozy Vibes", "thumb": "https://i.ytimg.com/vi/QKjPkksEs6A/mqdefault.jpg", "dur": "2:03:29"}, {"id": "YHedzYYopHw", "title": "Not in the Mood ☕ Midnight Noir Jazz for Lonely Evenings", "thumb": "https://i.ytimg.com/vi/YHedzYYopHw/mqdefault.jpg", "dur": "4:04:05"}, {"id": "WcO_BqtOxg4", "title": "Vintage Noir Jazz for Slow Evenings 🖤 Relaxing Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/WcO_BqtOxg4/mqdefault.jpg", "dur": "2:24:01"}, {"id": "FN56iUrWLjU", "title": "Mood: Unavailable 🐈 Vintage Jazz Café for Slow Mornings and Peaceful Backgrounds", "thumb": "https://i.ytimg.com/vi/FN56iUrWLjU/mqdefault.jpg", "dur": "3:44:21"}, {"id": "APq7HRiCL54", "title": "Vintage Noir Jazz at Midnight 🌙 | Slow City Nights for Tired Hearts & Quiet Souls", "thumb": "https://i.ytimg.com/vi/APq7HRiCL54/mqdefault.jpg", "dur": "2:02:51"}, {"id": "PgUmKgXlJVY", "title": "Too Tired to Care 🖤 Vintage Jazz for Lazy Mornings, Coffee and Rainy Day Vibes", "thumb": "https://i.ytimg.com/vi/PgUmKgXlJVY/mqdefault.jpg", "dur": "7:05:36"}, {"id": "wyi5PqDgft0", "title": "Not Today, World ☕ Vintage Noir Jazz for Slow Mornings, Coffee and Quiet Moments", "thumb": "https://i.ytimg.com/vi/wyi5PqDgft0/mqdefault.jpg", "dur": "2:02:56"}, {"id": "Kjneimo43KI", "title": "Not Today, World ☕ Vintage Noir Jazz for Slow Mornings & Coffee Breaks", "thumb": "https://i.ytimg.com/vi/Kjneimo43KI/mqdefault.jpg", "dur": "8:32:35"}, {"id": "0FqBOb8lTYg", "title": "Too Tired to Care ☕ Vintage Jazz for Slow Mornings, Coffee & Lazy Days", "thumb": "https://i.ytimg.com/vi/0FqBOb8lTYg/mqdefault.jpg", "dur": "10:04:46"}, {"id": "64G1xqEZEX0", "title": "Too Tired to Think ☕ Vintage Noir Jazz for Quiet Baths & Slow Evenings", "thumb": "https://i.ytimg.com/vi/64G1xqEZEX0/mqdefault.jpg", "dur": "2:35:38"}, {"id": "VQvOXdAGQG8", "title": "Old School Jazz Café 🎷 1930s Vinyl Swing Music for Rainy Nights and Deep Focus", "thumb": "https://i.ytimg.com/vi/VQvOXdAGQG8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "wS_wasy4nW0", "title": "Smooth Swing Jazz Nights 🎷 1930s Vinyl Classics for Cozy Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/wS_wasy4nW0/mqdefault.jpg", "dur": "4:23:25"}, {"id": "3DS2AEQG9Lc", "title": "Coffee First ☕ Vintage Noir Jazz & Black Cat Vibes for Peaceful Mornings", "thumb": "https://i.ytimg.com/vi/3DS2AEQG9Lc/mqdefault.jpg", "dur": "2:35:36"}, {"id": "fDkxpLcgxkE", "title": "Vintage Evening Jazz Radio 📻 1930s & 1940s Smooth Swing Vinyl Vibes for Relaxing", "thumb": "https://i.ytimg.com/vi/fDkxpLcgxkE/mqdefault.jpg", "dur": "8:39:35"}, {"id": "3K7dQHQF-GM", "title": "Retro Jazz Nights 🎺 1940s Swing Vinyl Music for Relaxing, Studying and Working", "thumb": "https://i.ytimg.com/vi/3K7dQHQF-GM/mqdefault.jpg", "dur": "11:55:01"}, {"id": "WNxuod9F90o", "title": "Classic Jazz Night – Smooth Swing of the 1930s and 1940s & Background Music", "thumb": "https://i.ytimg.com/vi/WNxuod9F90o/mqdefault.jpg", "dur": "3:49:21"}, {"id": "-VGvcQT8vZI", "title": "No Stage, Just the Fire — Vintage Jazz Beneath the Rainy Stars", "thumb": "https://i.ytimg.com/vi/-VGvcQT8vZI/mqdefault.jpg", "dur": "2:03:57"}, {"id": "ut2dnmi_wcQ", "title": "Vintage Jazz Classics – Retro Jazz Hits & Timeless Classics #5r", "thumb": "https://i.ytimg.com/vi/ut2dnmi_wcQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "eP6OYLoZnxg", "title": "Vintage Evening Cat Jazz – 1930s 1940s Smooth Swing & Vinyl Background Music 4r", "thumb": "https://i.ytimg.com/vi/eP6OYLoZnxg/mqdefault.jpg", "dur": "11:54:56"}, {"id": "LenJEu2o-Hs", "title": "Vintage Evening Jazz – 1930s 1940s Smooth Swing & Vinyl Background Music #1r", "thumb": "https://i.ytimg.com/vi/LenJEu2o-Hs/mqdefault.jpg", "dur": "3:43:10"}, {"id": "0pGs9-8qZvQ", "title": "Relaxing Jazz - Slow Jazz Music - 24/7 Live Stream - Music For Work & Study #2r", "thumb": "https://i.ytimg.com/vi/0pGs9-8qZvQ/mqdefault.jpg", "dur": "3:06:05"}, {"id": "0bLq9LbOdwY", "title": "Vintage Jazz Classics – Retro Jazz Hits & Timeless Classics #3r", "thumb": "https://i.ytimg.com/vi/0bLq9LbOdwY/mqdefault.jpg", "dur": "2:36:25"}, {"id": "4y6F35Azpno", "title": "Vintage Jazz Performance: Baritone Vocals and Upright Bass by the Lake", "thumb": "https://i.ytimg.com/vi/4y6F35Azpno/mqdefault.jpg", "dur": "2:16:42"}, {"id": "db8q2Wfvy6o", "title": "Smoky Sax & Rainy Streets… This Jazz Hits Different", "thumb": "https://i.ytimg.com/vi/db8q2Wfvy6o/mqdefault.jpg", "dur": "2:16:46"}, {"id": "dJHUd5kCqa8", "title": "Just Salt and Slow Coals — Vintage Seaside Jazz That Feels Like a Dream", "thumb": "https://i.ytimg.com/vi/dJHUd5kCqa8/mqdefault.jpg", "dur": "2:09:18"}, {"id": "L48SvPaFtT8", "title": "Deep Saxophone & Bass | Noir Jazz Mix for Late Night Overthinking", "thumb": "https://i.ytimg.com/vi/L48SvPaFtT8/mqdefault.jpg", "dur": "2:09:09"}, {"id": "8OQPpUaGyrU", "title": "My Favorite Way to Start: Vintage Noir Jazz for a Tender Morning", "thumb": "https://i.ytimg.com/vi/8OQPpUaGyrU/mqdefault.jpg", "dur": "2:24:48"}, {"id": "Kqhqrix5wDA", "title": "The Night Fell Softly in Halcyon | Vintage Noir Jazz for Weary Souls", "thumb": "https://i.ytimg.com/vi/Kqhqrix5wDA/mqdefault.jpg", "dur": "2:24:51"}, {"id": "kXHnF6TMypE", "title": "Vintage Noir Jazz Saxophone for Weary Souls | The Night Was Soft in Halcyon", "thumb": "https://i.ytimg.com/vi/kXHnF6TMypE/mqdefault.jpg", "dur": "2:03:06"}, {"id": "b_bmp9fxANU", "title": "No Umbrella Jazz — Moody Rain, Smoky Sax & Walking Bass", "thumb": "https://i.ytimg.com/vi/b_bmp9fxANU/mqdefault.jpg", "dur": "2:03:06"}, {"id": "K7dA4xCzumo", "title": "Today, We Let the Morning Be Slow | Vintage Noir Jazz Saxophone for Soft Hearts", "thumb": "https://i.ytimg.com/vi/K7dA4xCzumo/mqdefault.jpg", "dur": "2:00:09"}, {"id": "mQWaUz6LQws", "title": "Vintage Noir Jazz | Why This Saxophone Hits Different ☕", "thumb": "https://i.ytimg.com/vi/mQWaUz6LQws/mqdefault.jpg", "dur": "2:03:17"}, {"id": "rByNyVq4AQs", "title": "Bass-Forward Jazz Club Music | Baritone & Tenor Sax with Walking Bass", "thumb": "https://i.ytimg.com/vi/rByNyVq4AQs/mqdefault.jpg", "dur": "1:33:26"}, {"id": "Zuezpkq5Fv0", "title": "The Night Was Soft in Halcyon | Vintage Noir Jazz for Weary Souls", "thumb": "https://i.ytimg.com/vi/Zuezpkq5Fv0/mqdefault.jpg", "dur": "1:06:03"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

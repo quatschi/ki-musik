@@ -7,7 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCZRRb2N1zJVe4V2xE4fSTLQ -->
 <!-- channel-url: https://www.youtube.com/@softvintage -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">48 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "SOFT VINTAGE";
 const KANAL = "SOFT_VINTAGE.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "NRAMCvD3T_A", "title": "Rare Soul Funk with Dangerous Deep Groove 🔥 Smooth Vintage Vibes After Dark", "thumb": "https://i.ytimg.com/vi/NRAMCvD3T_A/mqdefault.jpg", "dur": "57:29"}, {"id": "zm4AZxnzVQE", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes #2025", "thumb": "https://i.ytimg.com/vi/zm4AZxnzVQE/mqdefault.jpg", "dur": "57:36"}, {"id": "IRqztfS7nDw", "title": "This Soul Funk Groove Locks You In Instantly 🎧 Deep Pocket Groove for Late Night Vibes", "thumb": "https://i.ytimg.com/vi/IRqztfS7nDw/mqdefault.jpg", "dur": "58:07"}, {"id": "gdeI3rHfCcY", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/gdeI3rHfCcY/mqdefault.jpg", "dur": "58:18"}, {"id": "X4d5ecVsCfo", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/X4d5ecVsCfo/mqdefault.jpg", "dur": "49:21"}, {"id": "12xXznf_-uo", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/12xXznf_-uo/mqdefault.jpg", "dur": "50:04"}, {"id": "ChP9iqZC4Ig", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes #2025", "thumb": "https://i.ytimg.com/vi/ChP9iqZC4Ig/mqdefault.jpg", "dur": "49:21"}, {"id": "X64oAcCPHUo", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/X64oAcCPHUo/mqdefault.jpg", "dur": "50:06"}, {"id": "EKqECHaUsSY", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/EKqECHaUsSY/mqdefault.jpg", "dur": "49:39"}, {"id": "FM-YE6d7aGM", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes", "thumb": "https://i.ytimg.com/vi/FM-YE6d7aGM/mqdefault.jpg", "dur": "58:29"}, {"id": "iw8-JEfw-2k", "title": "70s High Energy Funk 🔥 Nonstop Groove LIVE", "thumb": "https://i.ytimg.com/vi/iw8-JEfw-2k/mqdefault.jpg", "dur": "58:29"}, {"id": "HvXWgME1xAk", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/HvXWgME1xAk/mqdefault.jpg", "dur": "58:22"}, {"id": "z7EO0eFfamg", "title": "Midnight Soul Funk Radio 🌙 Smooth Vintage Grooves That Keep You Hooked LIVE 24/7", "thumb": "https://i.ytimg.com/vi/z7EO0eFfamg/mqdefault_live.jpg", "dur": ""}, {"id": "ZcHq2qTq0Kg", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes #2025", "thumb": "https://i.ytimg.com/vi/ZcHq2qTq0Kg/mqdefault.jpg", "dur": "57:01"}, {"id": "J3qxYGv4YOY", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/J3qxYGv4YOY/mqdefault.jpg", "dur": "59:06"}, {"id": "kF_0s_IcBEk", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/kF_0s_IcBEk/mqdefault.jpg", "dur": "58:08"}, {"id": "eg8VUg3Bz8s", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/eg8VUg3Bz8s/mqdefault.jpg", "dur": "58:33"}, {"id": "_Rcq_PNBaPc", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/_Rcq_PNBaPc/mqdefault.jpg", "dur": "58:56"}, {"id": "KERPkkPlLAw", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes", "thumb": "https://i.ytimg.com/vi/KERPkkPlLAw/mqdefault.jpg", "dur": "1:11:23"}, {"id": "qEdeRYQeHqo", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/qEdeRYQeHqo/mqdefault.jpg", "dur": "1:10:25"}, {"id": "XCdUndFlIYk", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/XCdUndFlIYk/mqdefault.jpg", "dur": "1:10:25"}, {"id": "L-Y82XgrU1w", "title": "Ultimate Vintage Soul Groove | Old School 70s Funk Mix 2026", "thumb": "https://i.ytimg.com/vi/L-Y82XgrU1w/mqdefault_live.jpg", "dur": ""}, {"id": "KNOvggBuO20", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/KNOvggBuO20/mqdefault.jpg", "dur": "1:10:25"}, {"id": "ZjOVlQ7km1w", "title": "70s High Energy Funk 🔥 Nonstop Groove LIVE", "thumb": "https://i.ytimg.com/vi/ZjOVlQ7km1w/mqdefault.jpg", "dur": "1:09:41"}, {"id": "qt7y8RnLW24", "title": "This 70s Soul Funk Groove Is Addictive… You’ve Been Warned", "thumb": "https://i.ytimg.com/vi/qt7y8RnLW24/mqdefault.jpg", "dur": "1:09:41"}, {"id": "lSngeXeCOIc", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/lSngeXeCOIc/mqdefault.jpg", "dur": "1:11:23"}, {"id": "gYN8Q_5yfjg", "title": "70s High Energy Funk 🔥 Nonstop Groove LIVE", "thumb": "https://i.ytimg.com/vi/gYN8Q_5yfjg/mqdefault_live.jpg", "dur": ""}, {"id": "7lGyibzfh1w", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/7lGyibzfh1w/mqdefault.jpg", "dur": "1:11:14"}, {"id": "NyMq4JcWrX4", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes #2025", "thumb": "https://i.ytimg.com/vi/NyMq4JcWrX4/mqdefault.jpg", "dur": "1:10:25"}, {"id": "ibfua1oA72A", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/ibfua1oA72A/mqdefault.jpg", "dur": "52:45"}, {"id": "q1L94_eCorI", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes #2025", "thumb": "https://i.ytimg.com/vi/q1L94_eCorI/mqdefault.jpg", "dur": "53:21"}, {"id": "7CEjE3bHm60", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes #2", "thumb": "https://i.ytimg.com/vi/7CEjE3bHm60/mqdefault.jpg", "dur": "54:09"}, {"id": "HVaC4OvXVrM", "title": "A Groove You Can’t Let Go Of…🔥 Old School Groove & Deep Soul Vibes", "thumb": "https://i.ytimg.com/vi/HVaC4OvXVrM/mqdefault.jpg", "dur": "52:58"}, {"id": "OdRQ3xcHkCY", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/OdRQ3xcHkCY/mqdefault.jpg", "dur": "53:47"}, {"id": "vXP81xSgP-Y", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/vXP81xSgP-Y/mqdefault.jpg", "dur": "53:36"}, {"id": "wWLr3qSc87A", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/wWLr3qSc87A/mqdefault.jpg", "dur": "55:18"}, {"id": "mRMOxxYBh_E", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Funk & Old School 70s Soul VOL2", "thumb": "https://i.ytimg.com/vi/mRMOxxYBh_E/mqdefault.jpg", "dur": "52:38"}, {"id": "tNomO6A_tLo", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/tNomO6A_tLo/mqdefault.jpg", "dur": "54:32"}, {"id": "T4EQcqr0TZg", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes", "thumb": "https://i.ytimg.com/vi/T4EQcqr0TZg/mqdefault.jpg", "dur": "52:48"}, {"id": "2_L0lAhFC78", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes #2", "thumb": "https://i.ytimg.com/vi/2_L0lAhFC78/mqdefault.jpg", "dur": "52:17"}, {"id": "-Zuh3Enrkr8", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/-Zuh3Enrkr8/mqdefault.jpg", "dur": "52:17"}, {"id": "D8NRWTDSdQM", "title": "A Groove You Can’t Let Go Of…🔥 Old School Groove & Deep Soul Vibes", "thumb": "https://i.ytimg.com/vi/D8NRWTDSdQM/mqdefault.jpg", "dur": "54:08"}, {"id": "tisjcLge_ho", "title": "Vintage Soul Funk Groove 🎷 Retro Soul Music | Smooth Funky Vibes & Old School Energy", "thumb": "https://i.ytimg.com/vi/tisjcLge_ho/mqdefault.jpg", "dur": "52:48"}, {"id": "g4nFrV93eZ4", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/g4nFrV93eZ4/mqdefault.jpg", "dur": "52:16"}, {"id": "yadRWmEEzYo", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Funk & Old School 70s Soul", "thumb": "https://i.ytimg.com/vi/yadRWmEEzYo/mqdefault.jpg", "dur": "52:16"}, {"id": "xFQWwNF6qd0", "title": "🔥 The Vintage Soul Funk Vibe You’ve Been Craving | Deep Groove & Grit", "thumb": "https://i.ytimg.com/vi/xFQWwNF6qd0/mqdefault.jpg", "dur": "52:45"}, {"id": "3kz8uufyFrM", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes", "thumb": "https://i.ytimg.com/vi/3kz8uufyFrM/mqdefault.jpg", "dur": "53:21"}, {"id": "Vwjx0JGnIVw", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes", "thumb": "https://i.ytimg.com/vi/Vwjx0JGnIVw/mqdefault.jpg", "dur": "51:40"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

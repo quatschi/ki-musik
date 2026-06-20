@@ -7,7 +7,7 @@
 <!-- categories: Rock -->
 <!-- channel-id: UCgEDHVx24v7h3icM67Eq1ng -->
 <!-- channel-url: https://www.youtube.com/@B%C3%ADchXu%C3%A2nTr%E1%BA%A7n-j3e -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">27 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "70sRock AI";
 const KANAL = "70sRock_AI.html";
+const ORIG_CATEGORIES = "Rock";
 const VIDEOS = [{"id": "024X0of7Rqs", "title": "Gary Moore & Jimi Hendrix 🔥 Midnight Crossroads | Emotional Blues Guitar Legends (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/024X0of7Rqs/mqdefault.jpg", "dur": "2:31:30"}, {"id": "mQxc3xDN7mM", "title": "Santana & Pink Floyd 🔥 Mountain of Echoes | Psychedelic Latin Rock Journey 432Hz (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/mQxc3xDN7mM/mqdefault.jpg", "dur": "2:31:30"}, {"id": "NLx6OVgH9Mk", "title": "Santana – Whiskey Knows My Name Slow Blues Guitar Night Session Santana Blues", "thumb": "https://i.ytimg.com/vi/NLx6OVgH9Mk/mqdefault.jpg", "dur": "1:45:38"}, {"id": "fNP9GuRd4wM", "title": "Carlos Santana & Robert Plant 🔥 Raw Blues Rock Explosion | Lost 70s Vocal Session (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/fNP9GuRd4wM/mqdefault.jpg", "dur": "2:22:29"}, {"id": "NAybxFQSdTE", "title": "Santana & Aretha Franklin - LIVE at Fillmore West 1971 (Lost Tapes - Full Album) [TRIBUTE]", "thumb": "https://i.ytimg.com/vi/NAybxFQSdTE/mqdefault.jpg", "dur": "2:22:29"}, {"id": "npCSXKLJQV8", "title": "Santana & Mark Knopfler – Soul Blues Explosion | Raw Emotion Inspired Tribute Session", "thumb": "https://i.ytimg.com/vi/npCSXKLJQV8/mqdefault.jpg", "dur": "2:22:29"}, {"id": "HcGvoBwDzKk", "title": "Pink Floyd & Santana – Psychedelic Rock & Cosmic Guitar | Full Experience Tribute", "thumb": "https://i.ytimg.com/vi/HcGvoBwDzKk/mqdefault.jpg", "dur": "2:06:37"}, {"id": "ETCld9G9euU", "title": "Gary Moore & Santana – Midnight Blues Inspired Tribute Soulful Guitar Legends Session", "thumb": "https://i.ytimg.com/vi/ETCld9G9euU/mqdefault.jpg", "dur": "2:06:37"}, {"id": "C9MYrcsSr_U", "title": "Carlos Santana & Mark Knopfler – The Sultans of Latin Rock | Legendary Guitar Tribute (Live 1980s)", "thumb": "https://i.ytimg.com/vi/C9MYrcsSr_U/mqdefault.jpg", "dur": "2:06:37"}, {"id": "86xCXVBOycs", "title": "Carlos Santana & Gary Moore – Midnight Sustain 1970s Electric Blues Duel - Inspired Tribute Session", "thumb": "https://i.ytimg.com/vi/86xCXVBOycs/mqdefault.jpg", "dur": "1:56:54"}, {"id": "4zZUsn0zHU4", "title": "Santana & Hendrix – Lost Tape Tribute | Rare Psychedelic Blues Rock Guitar Session", "thumb": "https://i.ytimg.com/vi/4zZUsn0zHU4/mqdefault.jpg", "dur": "1:56:54"}, {"id": "JaTqta9B194", "title": "Gary Moore & Santana – Midnight Blues Inspired Tribute Soulful Guitar Legends Session", "thumb": "https://i.ytimg.com/vi/JaTqta9B194/mqdefault.jpg", "dur": "1:56:54"}, {"id": "p4UvkJQsztU", "title": "Eric Clapton & B.B. King 🔥 Legendary Blues Session | Slow Hand Meets Lucille (Inspired Tribute)", "thumb": "https://i.ytimg.com/vi/p4UvkJQsztU/mqdefault.jpg", "dur": "1:56:17"}, {"id": "etad6ns8OSo", "title": "Janis Joplin & Etta James – Raw Blues Soul Experience | Lost Sessions Inspired Tribute", "thumb": "https://i.ytimg.com/vi/etad6ns8OSo/mqdefault.jpg", "dur": "1:56:17"}, {"id": "p0GVkGahPpI", "title": "Gary Moore & Mark Knopfler – Lost Blues Masterpiece | Emotional Guitar Tribute Experience", "thumb": "https://i.ytimg.com/vi/p0GVkGahPpI/mqdefault.jpg", "dur": "1:56:17"}, {"id": "9-T4fcxpcz0", "title": "Pink Floyd & Santana – Psychedelic Rock & Cosmic Guitar | Full Experience Tribute", "thumb": "https://i.ytimg.com/vi/9-T4fcxpcz0/mqdefault.jpg", "dur": "2:18:26"}, {"id": "zJe8Zd3avH4", "title": "Carlos Santana & Peter Green – Supernatural Albatross 1969 Psychedelic Blues Rare Inspired Tribute", "thumb": "https://i.ytimg.com/vi/zJe8Zd3avH4/mqdefault.jpg", "dur": "2:18:26"}, {"id": "MjPPwv2FZmE", "title": "Gary Moore & Santana – Midnight Blues Inspired Tribute Soulful Guitar Legends Session #music", "thumb": "https://i.ytimg.com/vi/MjPPwv2FZmE/mqdefault.jpg", "dur": "2:18:26"}, {"id": "0egDWJQltHM", "title": "B B King & Santana  – Midnight Blues Inspired Tribute Soulful Guitar Legends Session", "thumb": "https://i.ytimg.com/vi/0egDWJQltHM/mqdefault.jpg", "dur": "2:21:56"}, {"id": "NcwOtCmMR2c", "title": "B B King & Eric Clapton – The Thrill of the Crossroads 🎸 Classic Blues Guitar Album 1980s Style I", "thumb": "https://i.ytimg.com/vi/NcwOtCmMR2c/mqdefault.jpg", "dur": "2:21:56"}, {"id": "Z2Qz8E81-XU", "title": "John Lee Hooker & Howlin' Wolf – The Deep Growl Session 1962 Chicago Blues Rare Inspired Tribute Se", "thumb": "https://i.ytimg.com/vi/Z2Qz8E81-XU/mqdefault.jpg", "dur": "2:21:56"}, {"id": "AZ2CwtfgegI", "title": "Pink Floyd & David Gilmour 🎸 The Endless Solo (1975 Lost Sessions) | Psychedelic – Inspired Tribute", "thumb": "https://i.ytimg.com/vi/AZ2CwtfgegI/mqdefault.jpg", "dur": "2:14:24"}, {"id": "7dTFFni8HHk", "title": "B B King & Aretha Franklin – Lost Soul Blues Sessions Inspired Tribute Album", "thumb": "https://i.ytimg.com/vi/7dTFFni8HHk/mqdefault.jpg", "dur": "2:14:24"}, {"id": "50rfXuo11Gk", "title": "B B King & Eric Clapton – The Thrill of the Crossroads 🎸 Classic Blues Guitar Album 1980s Style I", "thumb": "https://i.ytimg.com/vi/50rfXuo11Gk/mqdefault.jpg", "dur": "2:14:24"}, {"id": "D8w7zITG6UY", "title": "Gary Moore & Santana – Midnight Blues Inspired Tribute Soulful Guitar Legends Session", "thumb": "https://i.ytimg.com/vi/D8w7zITG6UY/mqdefault.jpg", "dur": "2:08:03"}, {"id": "-lPr_8eBIU0", "title": "Carlos Santana & Mark Knopfler – The Sultans of Latin Rock | Legendary Guitar Tribute (Live 1980s)", "thumb": "https://i.ytimg.com/vi/-lPr_8eBIU0/mqdefault.jpg", "dur": "2:08:56"}, {"id": "OepORPm1-Og", "title": "Santana & Eric Clapton – Lost Guitar Sessions Latin Blues Rock Fusion (Full Album Tribute)", "thumb": "https://i.ytimg.com/vi/OepORPm1-Og/mqdefault.jpg", "dur": "2:08:56"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

@@ -7,7 +7,7 @@
 <!-- categories: Jazz, Lounge, Smooth Jazz -->
 <!-- channel-id: UCUrkQAoFC_RrE2hkJszT0-Q -->
 <!-- channel-url: https://www.youtube.com/@ravcafejazzbgm -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">49 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "RAV Cafe Jazz BGM";
 const KANAL = "RAV_Cafe_Jazz_BGM.html";
+const ORIG_CATEGORIES = "Jazz, Lounge, Smooth Jazz";
 const VIDEOS = [{"id": "vDAf1VReMlk", "title": "Botanical Garden Jazz 🌿 Relaxing Piano Jazz Music for Work, Study & Summer Calm Live", "thumb": "https://i.ytimg.com/vi/vDAf1VReMlk/mqdefault.jpg", "dur": "11:54:20"}, {"id": "XOK9H7jPhHM", "title": "Vintage Bookstore Jazz 📚 Relaxing Jazz Music for Work, Study & Cozy Reading Mood Vol.2", "thumb": "https://i.ytimg.com/vi/XOK9H7jPhHM/mqdefault_live.jpg", "dur": ""}, {"id": "LEWCmfWgeJo", "title": "Mountain Cabin Morning Jazz 🌲 Relaxing Jazz Music for Work, Study & Coffee Time Live", "thumb": "https://i.ytimg.com/vi/LEWCmfWgeJo/mqdefault.jpg", "dur": "11:52:55"}, {"id": "21I3NUDY7_k", "title": "Vintage Train Window Jazz 🚂 Relaxing Jazz Music for Work, Study & Scenic Travel Mood | Album Vol.1", "thumb": "https://i.ytimg.com/vi/21I3NUDY7_k/mqdefault.jpg", "dur": ""}, {"id": "vcU7M4NxUzo", "title": "City Rooftop Evening Jazz Live 🌆 Smooth Jazz Music for Work, Study & Night Relax Ambience", "thumb": "https://i.ytimg.com/vi/vcU7M4NxUzo/mqdefault.jpg", "dur": "11:52:02"}, {"id": "Z9PFZ4DQEMo", "title": "Cozy Summer Study Jazz 📚 Relaxing Piano Jazz Music for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/Z9PFZ4DQEMo/mqdefault.jpg", "dur": "11:46:48"}, {"id": "L0njI5nR72k", "title": "Desert Coffee Jazz 🌅 Smooth Jazz Music for Relaxing Evening, Work & Focus", "thumb": "https://i.ytimg.com/vi/L0njI5nR72k/mqdefault.jpg", "dur": "11:44:32"}, {"id": "EBKegjIyLN4", "title": "Beach Morning Coffee Jazz 🌊 Relaxing Summer Jazz Music for Work, Study & Ocean Calm", "thumb": "https://i.ytimg.com/vi/EBKegjIyLN4/mqdefault.jpg", "dur": "11:11:45"}, {"id": "KaQgB0sBLFg", "title": "Rainy Summer Cafe Jazz 🌧️ Smooth Piano Jazz Music for Work, Study & Relaxing Night", "thumb": "https://i.ytimg.com/vi/KaQgB0sBLFg/mqdefault.jpg", "dur": "11:31:21"}, {"id": "uy4TOOZXuyk", "title": "Summer Night Backyard Jazz ✨ Smooth Jazz Music for Relaxing Evening, Work & Unwind", "thumb": "https://i.ytimg.com/vi/uy4TOOZXuyk/mqdefault.jpg", "dur": "11:52:15"}, {"id": "saf3RoHHr8s", "title": "Lakeside Morning Coffee Jazz 🌞 Relaxing Summer Jazz Music for Work, Study & Calm Morning", "thumb": "https://i.ytimg.com/vi/saf3RoHHr8s/mqdefault.jpg", "dur": "11:53:15"}, {"id": "fQ8KltX6adc", "title": "Early Summer Patio Cafe Jazz 🌿 Relaxing Morning Jazz Music for Work, Study & Coffee Time", "thumb": "https://i.ytimg.com/vi/fQ8KltX6adc/mqdefault.jpg", "dur": "11:45:17"}, {"id": "4_5SOnyL97Y", "title": "Almost Summer Morning Jazz ☕ Cozy Cafe Piano & Soft Bossa Nova for Reading and Work", "thumb": "https://i.ytimg.com/vi/4_5SOnyL97Y/mqdefault.jpg", "dur": "11:51:38"}, {"id": "Pyen_PcmYEI", "title": "Happy Friday Morning Jazz ☕ Positive Coffee Music & Delicate Bossa Nova Piano for Joyful Moods", "thumb": "https://i.ytimg.com/vi/Pyen_PcmYEI/mqdefault.jpg", "dur": "11:32:28"}, {"id": "GHsecqXS1eQ", "title": "Quiet Afternoon Rain Jazz 🌧️ Smooth Piano Jazz for Work, Study and Relaxation", "thumb": "https://i.ytimg.com/vi/GHsecqXS1eQ/mqdefault.jpg", "dur": "11:17:38"}, {"id": "lQzGy2r8Y_A", "title": "Happy May Morning Jazz ☕ Positive Coffee Music and Delicate Bossa Nova Piano for Joyful Moods Feel", "thumb": "https://i.ytimg.com/vi/lQzGy2r8Y_A/mqdefault.jpg", "dur": "11:54:56"}, {"id": "-czSBoBMbfc", "title": "Cozy Rain Porch Jazz ☕ Relaxing Piano Jazz & Nature Ambience for Deep Focus", "thumb": "https://i.ytimg.com/vi/-czSBoBMbfc/mqdefault.jpg", "dur": "11:54:57"}, {"id": "Gmgl1V4dhdw", "title": "Happy May Morning Jazz ☕ Positive Coffee Music and Delicate Bossa Nova Piano for Joyful Moods Feel", "thumb": "https://i.ytimg.com/vi/Gmgl1V4dhdw/mqdefault.jpg", "dur": "11:54:56"}, {"id": "l54znovEZ-0", "title": "Cozy Jazz Café 🎷 Smooth Sleep & Relaxing Night Ambience | Jazz Melody", "thumb": "https://i.ytimg.com/vi/l54znovEZ-0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "iazpZWM1M5A", "title": "Smooth Jazz and Bossa Nova for Home Relaxation and Inner Calm", "thumb": "https://i.ytimg.com/vi/iazpZWM1M5A/mqdefault.jpg", "dur": "11:03:41"}, {"id": "A1LBoXxUDbE", "title": "Relaxing Jazz Music Stream for Work, Study, Ambiance Bosster Mood", "thumb": "https://i.ytimg.com/vi/A1LBoXxUDbE/mqdefault.jpg", "dur": "11:54:57"}, {"id": "atIsRtQ7_qk", "title": "Rav Café ☕ Soft Bossa Nova Morning JAZZ : Cozy Coffe Ambiance For Work Study and Relax", "thumb": "https://i.ytimg.com/vi/atIsRtQ7_qk/mqdefault.jpg", "dur": "11:34:25"}, {"id": "bHkJj6Z8zrU", "title": "Relaxing Coffee Shop Jazz: Books, Piano Music and Peaceful Reading Ambience All Day - Live by Rav", "thumb": "https://i.ytimg.com/vi/bHkJj6Z8zrU/mqdefault.jpg", "dur": "11:49:06"}, {"id": "0mCgEjM-N8M", "title": "Late Afternoon Books Jazz: Live 24/7 Smooth Cafe Music for Reading, Study and Coffee at Home", "thumb": "https://i.ytimg.com/vi/0mCgEjM-N8M/mqdefault.jpg", "dur": "11:03:05"}, {"id": "AaKu3Fd7gtQ", "title": "Coffee and Books Jazz Music: Smooth Cafe Ambience for Study and Relaxation at Home Live by: RAV", "thumb": "https://i.ytimg.com/vi/AaKu3Fd7gtQ/mqdefault.jpg", "dur": "10:25:32"}, {"id": "WOmh_lzhdj4", "title": "Books & Cafe Jazz Music for Reading, Study & Relaxing Coffee Shop Ambience All Day", "thumb": "https://i.ytimg.com/vi/WOmh_lzhdj4/mqdefault.jpg", "dur": "10:04:21"}, {"id": "-i0ubSQOxS0", "title": "Warm Morning Jazz by the RAV☕ Cozy Coffee Shop Ambience with Jazz Relaxing Music for Work, Study", "thumb": "https://i.ytimg.com/vi/-i0ubSQOxS0/mqdefault.jpg", "dur": "8:02:30"}, {"id": "RDrgrszpn4w", "title": "Smooth Jazz Instrumental Music & Cozy Coffee Shop Ambience #1k", "thumb": "https://i.ytimg.com/vi/RDrgrszpn4w/mqdefault.jpg", "dur": "11:55:01"}, {"id": "BdIU1uVfLkg", "title": "Find Your Inner Calm: Smooth Jazz & Bossa Nova for Ultimate Home Relaxation", "thumb": "https://i.ytimg.com/vi/BdIU1uVfLkg/mqdefault.jpg", "dur": "11:55:01"}, {"id": "IPOGGUEzWlY", "title": "Boost Focus & Creativity: Relaxing Jazz Music for Work, Study, and Ambiance", "thumb": "https://i.ytimg.com/vi/IPOGGUEzWlY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "aK3tQTlcPGE", "title": "The Secret To A Perfect Evening: Vintage 1930s 40s Radio Jazz", "thumb": "https://i.ytimg.com/vi/aK3tQTlcPGE/mqdefault.jpg", "dur": "11:55:01"}, {"id": "sYmhJNgnXKg", "title": "Rainy Night Cafe Jazz ☕ Smooth Piano Jazz & Coffee Shop Music for Deep Work and Study #RAV", "thumb": "https://i.ytimg.com/vi/sYmhJNgnXKg/mqdefault.jpg", "dur": "1:20:47"}, {"id": "3E3O6k0lS3Q", "title": "Night Terrace Coffee Jazz ☕ Smooth Jazz Piano & Slow Bossa Nova for Relaxing Evening #jazz", "thumb": "https://i.ytimg.com/vi/3E3O6k0lS3Q/mqdefault.jpg", "dur": "25:21"}, {"id": "xfugQqmlyxw", "title": "Relaxing Music for Stress Relief 🌿 Meditation Music, Healing Music & Deep Sleep Calm Piano", "thumb": "https://i.ytimg.com/vi/xfugQqmlyxw/mqdefault_live.jpg", "dur": ""}, {"id": "1GepaNQGf2E", "title": "Tropical Night Rain Cafe ☕ Cozy Coffee Shop for Sleep, Relaxation & Meditation", "thumb": "https://i.ytimg.com/vi/1GepaNQGf2E/mqdefault.jpg", "dur": "8:00:06"}, {"id": "_zi6fXV2oVw", "title": "Rainy Cafe in the Tropics – Relaxing Rain Sounds for Sleep & Anxiety Relief", "thumb": "https://i.ytimg.com/vi/_zi6fXV2oVw/mqdefault.jpg", "dur": "8:00:04"}, {"id": "hGJbx-KAdYk", "title": "Tropical Rain Cafe for Deep Sleep 🌧️ Soothing Rain & Coffee Shop Ambience", "thumb": "https://i.ytimg.com/vi/hGJbx-KAdYk/mqdefault.jpg", "dur": "7:59:59"}, {"id": "JhgYXbUWchw", "title": "Relaxing Rain Sounds, Night Cafe Ambience –  Tropical Rain Coffee Shop", "thumb": "https://i.ytimg.com/vi/JhgYXbUWchw/mqdefault.jpg", "dur": "8:00:02"}, {"id": "4-i6Gpe7FvI", "title": "Tropical Rain Cafe Ambience 🌧️ Coffee Shop Sounds for Focus, Sleep & Stress Relief", "thumb": "https://i.ytimg.com/vi/4-i6Gpe7FvI/mqdefault.jpg", "dur": "8:00:01"}, {"id": "gb1_K9mMP7Y", "title": "Rainy Tropical Cafe ☕ Gentle Rain & Coffee Shop Ambience for Studying and Sleeping", "thumb": "https://i.ytimg.com/vi/gb1_K9mMP7Y/mqdefault.jpg", "dur": "8:00:00"}, {"id": "xNCvhDaR0vw", "title": "Cozy Tropical Rain Cafe – Coffee Shop Rain Sounds for Deep Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/xNCvhDaR0vw/mqdefault.jpg", "dur": "8:00:00"}, {"id": "ozrf2yfYFuo", "title": "Calm Anytime with Cozy Bedroom Rain Visual for Relaxation and Focus", "thumb": "https://i.ytimg.com/vi/ozrf2yfYFuo/mqdefault.jpg", "dur": "11:54:58"}, {"id": "rT_bKBQASBs", "title": "Cozy Bedroom Rain | Peaceful Night Ambience for Deep Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/rT_bKBQASBs/mqdefault.jpg", "dur": "8:08:46"}, {"id": "F3rqqbnl0hI", "title": "Cozy Bedroom with Fireplace & Gentle Rain on Window | Relaxing Night Rain for Sleep, Study & Calm", "thumb": "https://i.ytimg.com/vi/F3rqqbnl0hI/mqdefault.jpg", "dur": "11:32:00"}, {"id": "qHZNFylxHz8", "title": "Luxury Bedroom with Glowing Fireplace & Cinematic Rain on Window | Dark Cozy Night Ambience", "thumb": "https://i.ytimg.com/vi/qHZNFylxHz8/mqdefault.jpg", "dur": "11:55:00"}, {"id": "08NNOsvSUfM", "title": "Heavy Rain & Thunderstorm for Deep Sleep — Heavy Rain on Roof ASMR  | 1 Hours", "thumb": "https://i.ytimg.com/vi/08NNOsvSUfM/mqdefault.jpg", "dur": "1:00:28"}, {"id": "qSFPmCf93NY", "title": "Soothing Rain 🌧️ Soft Piano Peaceful Birds Sounds  Relax Unwind & Sleep", "thumb": "https://i.ytimg.com/vi/qSFPmCf93NY/mqdefault.jpg", "dur": "7:20:37"}, {"id": "ZLQhs_f_QgM", "title": "🌧️ Rain, Birds & Gentle Thunder in Peaceful Countryside | Deep Relaxation", "thumb": "https://i.ytimg.com/vi/ZLQhs_f_QgM/mqdefault.jpg", "dur": "10:01:58"}, {"id": "sGFyh8dqJ1E", "title": "Rain Sounds & Ambient Night Pad 🌧️ Deep Sleep, Relaxation & Stress Relief | City Night Ambience", "thumb": "https://i.ytimg.com/vi/sGFyh8dqJ1E/mqdefault.jpg", "dur": "3:19:06"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

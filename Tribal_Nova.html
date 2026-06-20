@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Tribal -->
 <!-- channel-id: UCTwWFK3Jw18iSS89wqHKwwA -->
 <!-- channel-url: https://www.youtube.com/@tribalnova12 -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">54 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Tribal Nova ";
 const KANAL = "Tribal_Nova.html";
+const ORIG_CATEGORIES = "Lounge, Tribal";
 const VIDEOS = [{"id": "49pv-Ou1Zto", "title": "Tribal Lounge Jazz – Ritual Beneath the Stars | Smooth Tribal Night Vibes", "thumb": "https://i.ytimg.com/vi/49pv-Ou1Zto/mqdefault.jpg", "dur": "2:26:29"}, {"id": "5aEhF2ThqAg", "title": "Tribal Lounge Jazz – Sacred Moon Echo | Deep Desert Groove Flow", "thumb": "https://i.ytimg.com/vi/5aEhF2ThqAg/mqdefault.jpg", "dur": "2:26:29"}, {"id": "6zq0Utt7biA", "title": "Tribal Lounge Jazz – Shadow Flame Ritual | Deep Tribal Lounge Escape", "thumb": "https://i.ytimg.com/vi/6zq0Utt7biA/mqdefault.jpg", "dur": "2:26:29"}, {"id": "xQjyxVw28e8", "title": "Tribal Lounge Jazz – Sacred Ember Nights | Deep Tribal Groove Ritual", "thumb": "https://i.ytimg.com/vi/xQjyxVw28e8/mqdefault.jpg", "dur": "2:26:29"}, {"id": "PVoDUnWQYH0", "title": "Tribal Lounge Jazz – Ritual of Shadows | Smooth Night Groove Vibes", "thumb": "https://i.ytimg.com/vi/PVoDUnWQYH0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "qFdr0gWt57M", "title": "Tribal Lounge Jazz – Sacred Oasis | Deep Midnight Tribal Flow", "thumb": "https://i.ytimg.com/vi/qFdr0gWt57M/mqdefault.jpg", "dur": "2:26:29"}, {"id": "NsMzdsZ9ljw", "title": "Tribal Lounge Jazz – Echoes of Silence | Dark Tribal Lounge Mood", "thumb": "https://i.ytimg.com/vi/NsMzdsZ9ljw/mqdefault.jpg", "dur": "2:26:29"}, {"id": "SukIIvzWnso", "title": "Tribal Lounge Jazz – Night Temple | Sacred Groove Atmosphere", "thumb": "https://i.ytimg.com/vi/SukIIvzWnso/mqdefault.jpg", "dur": "2:26:29"}, {"id": "tqw68Ied2B0", "title": "Tribal Lounge Jazz – Mystic Twilight | Tribal Lounge After Sunset", "thumb": "https://i.ytimg.com/vi/tqw68Ied2B0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "KBnm4GQKrIg", "title": "Tribal Lounge Jazz – Hidden Sanctuary | Sacred Night Jazz Flow", "thumb": "https://i.ytimg.com/vi/KBnm4GQKrIg/mqdefault.jpg", "dur": "2:26:29"}, {"id": "GEcFfK1Wt2U", "title": "Tribal Lounge Jazz – Ancient Pulse | Deep Lounge Tribal Energy", "thumb": "https://i.ytimg.com/vi/GEcFfK1Wt2U/mqdefault.jpg", "dur": "2:26:29"}, {"id": "vyN1sbMreQI", "title": "Tribal Lounge Jazz – Desert Spirits | Late Night Tribal Jazz Vibes", "thumb": "https://i.ytimg.com/vi/vyN1sbMreQI/mqdefault.jpg", "dur": "2:26:29"}, {"id": "2yIDXVvm6qc", "title": "Tribal Lounge Jazz – Moonlit Ceremony | Smooth Night Groove Ritual", "thumb": "https://i.ytimg.com/vi/2yIDXVvm6qc/mqdefault.jpg", "dur": "2:26:29"}, {"id": "fJRFDrF42Ao", "title": "Tribal Lounge Jazz – Sacred Dusk | Deep Tribal Evening Flow", "thumb": "https://i.ytimg.com/vi/fJRFDrF42Ao/mqdefault.jpg", "dur": "2:26:29"}, {"id": "TOaADO6FWSE", "title": "Tribal Lounge Jazz – Shadow Ritual | Tribal Jazz After Hours", "thumb": "https://i.ytimg.com/vi/TOaADO6FWSE/mqdefault.jpg", "dur": "2:26:29"}, {"id": "_4Vm4Hh-Nq0", "title": "Tribal Lounge Jazz – Sacred Mirage | Deep Desert Night Grooves", "thumb": "https://i.ytimg.com/vi/_4Vm4Hh-Nq0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "QBkva6gcCbs", "title": "Tribal Lounge Jazz – Lunar Ritual | Smooth Tribal Midnight Flow", "thumb": "https://i.ytimg.com/vi/QBkva6gcCbs/mqdefault.jpg", "dur": "2:26:29"}, {"id": "_eDW8h4LW-I", "title": "Tribal Lounge Jazz – Echoes of Fire | Dark Lounge Tribal Vibes", "thumb": "https://i.ytimg.com/vi/_eDW8h4LW-I/mqdefault.jpg", "dur": "2:26:29"}, {"id": "dbD_EliwWSI", "title": "Tribal Lounge Jazz – Spirit Horizon | Late Night Sacred Jazz", "thumb": "https://i.ytimg.com/vi/dbD_EliwWSI/mqdefault.jpg", "dur": "2:26:29"}, {"id": "OQJWvyp3rZs", "title": "Tribal Lounge Jazz – Temple of Rhythm | Deep Tribal Lounge Session", "thumb": "https://i.ytimg.com/vi/OQJWvyp3rZs/mqdefault.jpg", "dur": "2:26:29"}, {"id": "jkj51zuANVA", "title": "Tribal Lounge Jazz – Nightfall Ceremony | Deep Lounge Tribal Beats", "thumb": "https://i.ytimg.com/vi/jkj51zuANVA/mqdefault.jpg", "dur": "2:26:29"}, {"id": "4CVFwTQa8MY", "title": "Tribal Lounge Jazz – Sacred Drift | Chill Tribal Night Atmosphere", "thumb": "https://i.ytimg.com/vi/4CVFwTQa8MY/mqdefault.jpg", "dur": "2:26:29"}, {"id": "n3i19nn2NGI", "title": "Tribal Lounge Jazz – Mystic Sands | Tribal Jazz Under Moonlight", "thumb": "https://i.ytimg.com/vi/n3i19nn2NGI/mqdefault.jpg", "dur": "2:26:29"}, {"id": "4UkiGeAWJzQ", "title": "Tribal Lounge Jazz – Ancestral Flow | Smooth Sacred Groove", "thumb": "https://i.ytimg.com/vi/4UkiGeAWJzQ/mqdefault.jpg", "dur": "2:26:29"}, {"id": "qn97KJTCHNQ", "title": "Tribal Lounge Jazz – Sacred Pulse | Deep Night Tribal Vibes", "thumb": "https://i.ytimg.com/vi/qn97KJTCHNQ/mqdefault.jpg", "dur": "2:26:29"}, {"id": "3tQ0JvPxsE8", "title": "Tribal Lounge Jazz – Moonlight Spirits | Smooth Ritual Grooves", "thumb": "https://i.ytimg.com/vi/3tQ0JvPxsE8/mqdefault.jpg", "dur": "2:26:29"}, {"id": "SFfnuULKMRs", "title": "Tribal Lounge Jazz – Desert Echo | Late Night Tribal Jazz", "thumb": "https://i.ytimg.com/vi/SFfnuULKMRs/mqdefault.jpg", "dur": "2:26:29"}, {"id": "WBWrMoPOXPA", "title": "Tribal Lounge Jazz – Ancient Rhythm | Sacred Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/WBWrMoPOXPA/mqdefault.jpg", "dur": "2:26:29"}, {"id": "z0g1dhY0u_0", "title": "Tribal Lounge Jazz – Mystic Drums | Tribal Lounge After Dark", "thumb": "https://i.ytimg.com/vi/z0g1dhY0u_0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "pVeHQmoNHzM", "title": "Tribal Lounge Jazz – Sacred Journey | Deep Chill Tribal Flow", "thumb": "https://i.ytimg.com/vi/pVeHQmoNHzM/mqdefault.jpg", "dur": "2:26:29"}, {"id": "HL8WmQ6nHWI", "title": "Tribal Lounge Jazz – Night Fire | Deep Tribal Groove Session", "thumb": "https://i.ytimg.com/vi/HL8WmQ6nHWI/mqdefault.jpg", "dur": "2:26:29"}, {"id": "AazECU248As", "title": "Tribal Lounge Jazz – Hidden Echoes | Tribal Jazz Night Mood", "thumb": "https://i.ytimg.com/vi/AazECU248As/mqdefault.jpg", "dur": "2:26:29"}, {"id": "j7w9yrc_WnI", "title": "Tribal Lounge Jazz – Midnight Tribe | Sacred Lounge Rhythms", "thumb": "https://i.ytimg.com/vi/j7w9yrc_WnI/mqdefault.jpg", "dur": "2:26:29"}, {"id": "-s8CFoZr7fc", "title": "Tribal Lounge Jazz – Spirit of the Desert | Smooth Night Grooves", "thumb": "https://i.ytimg.com/vi/-s8CFoZr7fc/mqdefault.jpg", "dur": "2:26:29"}, {"id": "WZhfzxgBrcM", "title": "Tribal Lounge Jazz – Sacred Rhythm | Deep Lounge Tribal Night", "thumb": "https://i.ytimg.com/vi/WZhfzxgBrcM/mqdefault.jpg", "dur": "2:26:29"}, {"id": "3Vxk4GWBObE", "title": "Tribal Lounge Jazz – Mystic Horizon | Tribal Grooves at Midnight", "thumb": "https://i.ytimg.com/vi/3Vxk4GWBObE/mqdefault.jpg", "dur": "2:26:29"}, {"id": "TrnBXHTNlbE", "title": "Tribal Lounge Jazz – Spirit of Fire | Late Night Tribal Lounge", "thumb": "https://i.ytimg.com/vi/TrnBXHTNlbE/mqdefault.jpg", "dur": "2:26:29"}, {"id": "uGka_XVkk6w", "title": "Tribal Lounge Jazz – Hidden Ritual | Deep Tribal Jazz Atmosphere", "thumb": "https://i.ytimg.com/vi/uGka_XVkk6w/mqdefault.jpg", "dur": "2:26:29"}, {"id": "5Tsijrhijhw", "title": "Tribal Lounge Jazz – Night of the Tribe | Sacred Lounge Flow", "thumb": "https://i.ytimg.com/vi/5Tsijrhijhw/mqdefault.jpg", "dur": "2:26:29"}, {"id": "DZAMHKSC2rU", "title": "Tribal Lounge Jazz – Ancient Firelight | Smooth Tribal Groove", "thumb": "https://i.ytimg.com/vi/DZAMHKSC2rU/mqdefault.jpg", "dur": "2:26:29"}, {"id": "nM0Gp245TvQ", "title": "Tribal Lounge Jazz – Desert Moon | Tribal Jazz After Hours", "thumb": "https://i.ytimg.com/vi/nM0Gp245TvQ/mqdefault.jpg", "dur": "2:26:29"}, {"id": "Glfss9FcDXY", "title": "Tribal Lounge Jazz – Whispering Spirits | Midnight Lounge Ritual", "thumb": "https://i.ytimg.com/vi/Glfss9FcDXY/mqdefault.jpg", "dur": "2:26:29"}, {"id": "zVS0u6u7EF0", "title": "Tribal Lounge Jazz – Sacred Horizon | Deep Tribal Night Vibes", "thumb": "https://i.ytimg.com/vi/zVS0u6u7EF0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "y1hY7yiDvwc", "title": "Tribal Lounge Jazz – Echoes at Dusk | Tribal Jazz Chill Vibes", "thumb": "https://i.ytimg.com/vi/y1hY7yiDvwc/mqdefault.jpg", "dur": "2:26:29"}, {"id": "UHV0LoGF2SQ", "title": "Tribal Lounge Jazz – Sacred Echo | Deep Lounge Tribal Atmosphere", "thumb": "https://i.ytimg.com/vi/UHV0LoGF2SQ/mqdefault.jpg", "dur": "2:26:29"}, {"id": "XDQ4dib4zb4", "title": "Tribal Lounge Jazz – Hidden Temple | Sacred Night Lounge Grooves", "thumb": "https://i.ytimg.com/vi/XDQ4dib4zb4/mqdefault.jpg", "dur": "2:26:29"}, {"id": "WYJVrcASJR0", "title": "Tribal Lounge Jazz – Dark Ceremony | Smooth Tribal Night Rhythms", "thumb": "https://i.ytimg.com/vi/WYJVrcASJR0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "Do5kfCZ9-Ps", "title": "Tribal Lounge Jazz – Spirit Drums | Midnight Tribal Jazz Flow", "thumb": "https://i.ytimg.com/vi/Do5kfCZ9-Ps/mqdefault.jpg", "dur": "2:26:29"}, {"id": "WW-y-eOoyFs", "title": "Tribal Lounge Jazz – Desert Night | Tribal Jazz Under the Stars", "thumb": "https://i.ytimg.com/vi/WW-y-eOoyFs/mqdefault.jpg", "dur": "2:26:29"}, {"id": "M8QvfM6dQ94", "title": "Tribal Lounge Jazz – Moonlight Ritual | Sacred Tribal Lounge Vibes", "thumb": "https://i.ytimg.com/vi/M8QvfM6dQ94/mqdefault.jpg", "dur": "2:26:29"}, {"id": "mogA9tn26d0", "title": "Tribal Lounge Jazz – Ancient Spirits | Deep Lounge Drum Journey", "thumb": "https://i.ytimg.com/vi/mogA9tn26d0/mqdefault.jpg", "dur": "2:26:29"}, {"id": "LNhEhndDUGQ", "title": "Tribal Lounge Jazz – Night Ceremony | Tribal Chill After Dark", "thumb": "https://i.ytimg.com/vi/LNhEhndDUGQ/mqdefault.jpg", "dur": "2:26:29"}, {"id": "NCPtG4bqqVk", "title": "Tribal Lounge Jazz – Mystic Fire | Smooth Ritual Grooves", "thumb": "https://i.ytimg.com/vi/NCPtG4bqqVk/mqdefault.jpg", "dur": "2:26:29"}, {"id": "TtKjMEAynSw", "title": "Tribal Lounge Jazz – Sacred Shadows | Deep Night Tribal Flow", "thumb": "https://i.ytimg.com/vi/TtKjMEAynSw/mqdefault.jpg", "dur": "2:26:29"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

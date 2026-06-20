@@ -7,7 +7,7 @@
 <!-- categories: Jazz -->
 <!-- channel-id: UCelPmQpSK7jeyh-VdG-lNRw -->
 <!-- channel-url: https://www.youtube.com/@No.14VinylShop -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">50 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "14\ubc88\uc9c0 LP\uac00\uac8c";
 const KANAL = "14\ubc88\uc9c0_LP\uac00\uac8c.html";
+const ORIG_CATEGORIES = "Jazz";
 const VIDEOS = [{"id": "W1jQAXfcqJ0", "title": "[JAZZ Playlist] 재즈라는 시대의 푸른 전설을 새기다│Inspired by  Miles Davis", "thumb": "https://i.ytimg.com/vi/W1jQAXfcqJ0/mqdefault.jpg", "dur": "2:38:33"}, {"id": "JjUW51ka78k", "title": "[Classic JAZZ] 1999년 노르웨이, 소리 없는 대지에 번지는 시린 새벽", "thumb": "https://i.ytimg.com/vi/JjUW51ka78k/mqdefault.jpg", "dur": "1:55:31"}, {"id": "avP8NlIpfSU", "title": "[JAZZ Cinema] 1960년 홍콩, 끝내 채울 수 없는 잔인한 결핍과 외로움", "thumb": "https://i.ytimg.com/vi/avP8NlIpfSU/mqdefault.jpg", "dur": "2:12:17"}, {"id": "KKGyUOtKO7U", "title": "[Classic JAZZ] 1998년 프라하, 잊혀진 거장이 마주한 찬란한 침묵처럼", "thumb": "https://i.ytimg.com/vi/KKGyUOtKO7U/mqdefault.jpg", "dur": "2:03:56"}, {"id": "ZlyDFbrTtKU", "title": "[JAZZ Cinema] 지독하고 찬란했던 그 열병에 대하여", "thumb": "https://i.ytimg.com/vi/ZlyDFbrTtKU/mqdefault.jpg", "dur": "2:29:01"}, {"id": "r1mCeM2An90", "title": "[Cinematic R&B] 사랑은 왜 늘 어긋날까│Daniel Caesar - Who knows, Always", "thumb": "https://i.ytimg.com/vi/r1mCeM2An90/mqdefault.jpg", "dur": "7:32"}, {"id": "JV4zwsv9Fw0", "title": "[JAZZ Cinema] 1999년, 엇갈린 시간이 남긴 마지막 편지│Inspired by the film Failan", "thumb": "https://i.ytimg.com/vi/JV4zwsv9Fw0/mqdefault.jpg", "dur": "2:13:10"}, {"id": "xzg9nxq_zs0", "title": "[JAZZ Cinema] 1995년 홍콩, 타락한 천사들의 위태로운 비행", "thumb": "https://i.ytimg.com/vi/xzg9nxq_zs0/mqdefault.jpg", "dur": "2:23:13"}, {"id": "R1LWMOgjug0", "title": "[JAZZ Cinema] 2018년 베이징, 유부남이 되어 다시 마주한 첫사랑│영화 ‘먼 훗날 우리’", "thumb": "https://i.ytimg.com/vi/R1LWMOgjug0/mqdefault.jpg", "dur": "2:27:11"}, {"id": "wzvkh6KmElg", "title": "[JAZZ Playlist] 1961년 빌리지 게이트에서 완성된 ‘The Sound’의 전설│Stan Getz homage", "thumb": "https://i.ytimg.com/vi/wzvkh6KmElg/mqdefault.jpg", "dur": "1:45:28"}, {"id": "eOZH5ZS7B2g", "title": "[Classic JAZZ] 2002년 베를린, 젊은 천재 피아니스트가 완성한 숭고한 클래식 재즈의 서막", "thumb": "https://i.ytimg.com/vi/eOZH5ZS7B2g/mqdefault.jpg", "dur": "2:27:04"}, {"id": "VQX8DvJtoyM", "title": "[JAZZ Cinema] 1961년 뉴욕, 우리의 마음을 훔친 티파니의 낭만│빈티지 보컬 재즈", "thumb": "https://i.ytimg.com/vi/VQX8DvJtoyM/mqdefault.jpg", "dur": "2:00:09"}, {"id": "l7qMGKcJRjs", "title": "[JAZZ Baritone] 1983년 웨스트 코스트, 재즈의 정체성을 달리 한 쿨재즈의 거장", "thumb": "https://i.ytimg.com/vi/l7qMGKcJRjs/mqdefault.jpg", "dur": "2:25:59"}, {"id": "JOMw4MIXYIc", "title": "[JAZZ Piano] 황홀한 재즈 피아노에 담아 보내는 축복과 감사 | 해피 크리스마스", "thumb": "https://i.ytimg.com/vi/JOMw4MIXYIc/mqdefault.jpg", "dur": "3:09:51"}, {"id": "Juriv6_IHRU", "title": "[JAZZ Cinema] 1997년 아르헨티나, 세상의 끝을 향하는 그들에게 묻다│故 장국영을 추모하며", "thumb": "https://i.ytimg.com/vi/Juriv6_IHRU/mqdefault.jpg", "dur": "1:41:55"}, {"id": "49MWu-gCjoU", "title": "[JAZZ piano] 어느 누구도 듣지 못한 그의 8마디 작별 블루스처럼│재즈 연주 플레이리스트", "thumb": "https://i.ytimg.com/vi/49MWu-gCjoU/mqdefault.jpg", "dur": "1:38:03"}, {"id": "Rogr-9H5zQ8", "title": "[Classic JAZZ] 누군가 남기고 간 47분짜리 마지막 연주처럼│재즈 연주 플레이리스트", "thumb": "https://i.ytimg.com/vi/Rogr-9H5zQ8/mqdefault.jpg", "dur": "2:14:03"}, {"id": "WuapmTVQ7LU", "title": "[JAZZ Playlist] 아무도 들지 않는 49분짜리 독립영화처럼 (Inspired by Chet Baker)", "thumb": "https://i.ytimg.com/vi/WuapmTVQ7LU/mqdefault.jpg", "dur": "1:22:00"}, {"id": "MbvaDbs3W-g", "title": "[Jazz Cinema] 1996년 홍콩발 뉴욕행, 마침내 완성된 애틋하고 아련한 재회│‘첨밀밀’처럼", "thumb": "https://i.ytimg.com/vi/MbvaDbs3W-g/mqdefault.jpg", "dur": "2:00:37"}, {"id": "kfLMyK4xVTk", "title": "[JAZZ Quartet] 1959년 코펜하겐, 완벽하게 계산된 변칙 박자의 미학", "thumb": "https://i.ytimg.com/vi/kfLMyK4xVTk/mqdefault.jpg", "dur": "1:53:26"}, {"id": "4hMsufoDRjE", "title": "[JAZZ Trio] 2025년 브루클린 루프탑, 세련된 무드를 완성하는 감각적인 재즈 그루브", "thumb": "https://i.ytimg.com/vi/4hMsufoDRjE/mqdefault.jpg", "dur": "1:24:03"}, {"id": "yom2b3ldkz0", "title": "[JAZZ Cinema] 1994년 홍콩, 유통기한 없는 찰나의 꿈을 위하여", "thumb": "https://i.ytimg.com/vi/yom2b3ldkz0/mqdefault.jpg", "dur": "1:28:25"}, {"id": "v1VGD2CMw0A", "title": "[JAZZ Cinema] 1962년 홍콩, 말할 수 없는 갈망과 그 쓸쓸함에 대하여", "thumb": "https://i.ytimg.com/vi/v1VGD2CMw0A/mqdefault.jpg", "dur": "1:30:05"}, {"id": "BA_rbqBQQjw", "title": "[JAZZ Piano] 1961년 브루클린, 시대를 대표하는 피아니스트의 마지막 독백", "thumb": "https://i.ytimg.com/vi/BA_rbqBQQjw/mqdefault.jpg", "dur": "1:57:55"}, {"id": "kbCK3PVBSik", "title": "[JAZZ Saxophone] 1964년 영혼의 명곡이 완성되던 밤, 재즈의 불멸로 남은 그에게│John Coltrane Homage", "thumb": "https://i.ytimg.com/vi/kbCK3PVBSik/mqdefault.jpg", "dur": "1:34:57"}, {"id": "_hGofW_Ooyw", "title": "[JAZZ Cello] 1993년 파리, 심연의 고독이 그려낸 첼로 재즈의 숭고한 절정", "thumb": "https://i.ytimg.com/vi/_hGofW_Ooyw/mqdefault.jpg", "dur": "1:40:31"}, {"id": "G6eBvrBMmbQ", "title": "[JAZZ Piano] 1993년 베를린. 현세대 거장들의 스승이 정의한 우아한 재즈의 철학", "thumb": "https://i.ytimg.com/vi/G6eBvrBMmbQ/mqdefault.jpg", "dur": "1:43:39"}, {"id": "bhYimKkEOw4", "title": "[JAZZ piano] 눈 내리는 뉴욕, 낭만을 채워주는 재즈 캐롤│성탄 에디션 Part.01", "thumb": "https://i.ytimg.com/vi/bhYimKkEOw4/mqdefault.jpg", "dur": "1:40:52"}, {"id": "ie-qNvjy3xQ", "title": "[JAZZ Cinema] 1983년 이탈리아 크레마, 끝나지 않는 청춘영화처럼", "thumb": "https://i.ytimg.com/vi/ie-qNvjy3xQ/mqdefault.jpg", "dur": "1:27:21"}, {"id": "8qbp5xlUrpU", "title": "[JAZZ Trio] 1964년 LA, 압도적 테크닉과 완벽한 스윙으로 재즈 트리오의 교과서가 되다", "thumb": "https://i.ytimg.com/vi/8qbp5xlUrpU/mqdefault.jpg", "dur": "1:19:59"}, {"id": "fxDdBvoX7Ok", "title": "[JAZZ Cello] 2004년 스톡홀름, 극한의 처연함으로 빚어낸 북유럽 재즈의 서정", "thumb": "https://i.ytimg.com/vi/fxDdBvoX7Ok/mqdefault.jpg", "dur": "1:23:10"}, {"id": "VfsKDN_clKU", "title": "[JAZZ Quartet] 1963년 카네기홀, 4분의 5박자 파격 리듬으로 완성된 재즈 콰르텟의 전설", "thumb": "https://i.ytimg.com/vi/VfsKDN_clKU/mqdefault.jpg", "dur": "1:46:51"}, {"id": "_oMI4ho7XEo", "title": "[JAZZ Piano] 1995년 홋카이도 오타루, 눈꽃 속에 갇힌 첫사랑의 편지", "thumb": "https://i.ytimg.com/vi/_oMI4ho7XEo/mqdefault.jpg", "dur": "2:25:53"}, {"id": "r7pUAnPVTTA", "title": "[Swing JAZZ] 1975년 브로드웨이, 빈티지 스윙 재즈가 뮤지컬 무대를 휩쓸던 순간", "thumb": "https://i.ytimg.com/vi/r7pUAnPVTTA/mqdefault.jpg", "dur": "1:13:59"}, {"id": "EiFfZ4FwlZ0", "title": "[JAZZ Saxophone] 1981년 뉴욕의 블루 노트, 소울 재즈에서 터져 나오던 묵직한 쓸쓸함", "thumb": "https://i.ytimg.com/vi/EiFfZ4FwlZ0/mqdefault.jpg", "dur": "1:37:41"}, {"id": "Svr4H_6heQs", "title": "[JAZZ Trio] 1999년 늦가을의 보스턴, 탄탄한 인터플레이로 완성된 재즈의 미학", "thumb": "https://i.ytimg.com/vi/Svr4H_6heQs/mqdefault.jpg", "dur": "1:24:36"}, {"id": "NGjqid4OtQ4", "title": "[JAZZ story] 창덕궁 옆 오래된 한옥에서, 고요함과 함께 하는 작은 재즈 콘서트", "thumb": "https://i.ytimg.com/vi/NGjqid4OtQ4/mqdefault.jpg", "dur": "1:34:01"}, {"id": "9FRLOXYkwZw", "title": "[JAZZ Piano] 클래식 재즈의 정점, 그린 북의 그 남자│돈 셜리 오마주 에디션 Part.2", "thumb": "https://i.ytimg.com/vi/9FRLOXYkwZw/mqdefault.jpg", "dur": "1:25:46"}, {"id": "jXyg281SdVc", "title": "[JAZZ piano] 1975년 1월 24일 쾰른에서의 ‘순간’은 ‘영원’이 되었다 (Keith Jarrett Homage)", "thumb": "https://i.ytimg.com/vi/jXyg281SdVc/mqdefault.jpg", "dur": "1:40:25"}, {"id": "hRr9yQqCJN8", "title": "[JAZZ piano] 10월의 뉴욕 맨해튼, 창문 너머 가을은 어느새 재즈 빛깔로 물들었다", "thumb": "https://i.ytimg.com/vi/hRr9yQqCJN8/mqdefault.jpg", "dur": "1:29:59"}, {"id": "rralFeQ7aZs", "title": "[JAZZ Trumpet] 20세기 재즈는 그를 통해 진화했다│마일스 데이비스 Homage", "thumb": "https://i.ytimg.com/vi/rralFeQ7aZs/mqdefault.jpg", "dur": "1:49:26"}, {"id": "jAMn6jYqzOc", "title": "[JAZZ piano] 제89회 아카데미도 인정한 그들의 꿈과 음악, 뮤지컬 재즈 (Inspired by La La Land.)", "thumb": "https://i.ytimg.com/vi/jAMn6jYqzOc/mqdefault.jpg", "dur": "1:22:09"}, {"id": "NK-cv5eS8gE", "title": "[JAZZ Piano] 1962년 카네기홀에서 완성된 재즈의 품격, 돈 셜리에게 보내는 헌사 (Inspired by Green Book.)", "thumb": "https://i.ytimg.com/vi/NK-cv5eS8gE/mqdefault.jpg", "dur": "1:28:54"}, {"id": "_cZ5xrLacuA", "title": "[Night JAZZ] 잠 못 이루는 밤 12시 42분, 편안한 내일을 위한 재즈연주 플레이리스트", "thumb": "https://i.ytimg.com/vi/_cZ5xrLacuA/mqdefault.jpg", "dur": "1:32:35"}, {"id": "hTyafBNJzro", "title": "[JAZZ piano] 1980년 9월 15일 그의 연주가 멈춘 날, 빌 에반스를 그리며", "thumb": "https://i.ytimg.com/vi/hTyafBNJzro/mqdefault.jpg", "dur": "1:21:27"}, {"id": "LB1Pu3Bkj2U", "title": "[playlist] 고독이 머무는 50번 국도 다이너에서│재즈팝송 플레이리스트", "thumb": "https://i.ytimg.com/vi/LB1Pu3Bkj2U/mqdefault.jpg", "dur": "1:37:22"}, {"id": "a1Hs7QW3SVM", "title": "[playlist] 쓸쓸함 가득한 97분짜리 흑백영화처럼│재즈연주 플레이리스트(Inspired by Chet Baker)", "thumb": "https://i.ytimg.com/vi/a1Hs7QW3SVM/mqdefault.jpg", "dur": "2:09:19"}, {"id": "PO8JIoUoqhI", "title": "[playlist] 빵 굽는 냄새 가득한 64번지 베이커리│달큰한 재즈팝송 플레이리스트", "thumb": "https://i.ytimg.com/vi/PO8JIoUoqhI/mqdefault.jpg", "dur": "1:28:34"}, {"id": "Gv695y8eC0g", "title": "[playlist] 가을을 준비하는 26번가 카페에서│낭만 가득한 재즈팝송 플레이리스트", "thumb": "https://i.ytimg.com/vi/Gv695y8eC0g/mqdefault.jpg", "dur": "1:20:20"}, {"id": "cHpn7NfG8O0", "title": "[playlist] 커피를 내리는 아침 7시 14분🍵│카페 재즈팝송 플레이리스트", "thumb": "https://i.ytimg.com/vi/cHpn7NfG8O0/mqdefault.jpg", "dur": "2:13:55"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

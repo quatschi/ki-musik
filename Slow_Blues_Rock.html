@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Rock, Blues -->
 <!-- channel-id: UCPc5zfdc2PVuCnb2YGG3VOg -->
 <!-- channel-url: https://www.youtube.com/@slow-blues-rock -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">36 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Slow Blues Rock";
 const KANAL = "Slow_Blues_Rock.html";
+const ORIG_CATEGORIES = "Lounge, Rock, Blues";
 const VIDEOS = [{"id": "-gyzrfIEyuk", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/-gyzrfIEyuk/mqdefault.jpg", "dur": "1:11:15"}, {"id": "O368hk_7_bY", "title": "Joss Stone, Etta James, Janis Joplin, Amy Winehouse | Nasty Slow Blues & Smoky Woman Vocal", "thumb": "https://i.ytimg.com/vi/O368hk_7_bY/mqdefault.jpg", "dur": "1:30:55"}, {"id": "WtLNJVLOsp8", "title": "Etta James, Led Zeppelin, Janis Joplin Style 🎸Slow Blues Rock Guitar Riffs | One More Night of Blues", "thumb": "https://i.ytimg.com/vi/WtLNJVLOsp8/mqdefault.jpg", "dur": "1:13:40"}, {"id": "_Pq21Pq1fp8", "title": "Janis Joplin,Etta James,Amy Winehouse Style || Slow Blues Rock Guitar Riffs || Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/_Pq21Pq1fp8/mqdefault.jpg", "dur": "1:10:37"}, {"id": "T1JfSv7CSH0", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/T1JfSv7CSH0/mqdefault.jpg", "dur": "1:43:49"}, {"id": "zMxscX_5AKY", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/zMxscX_5AKY/mqdefault.jpg", "dur": "1:07:59"}, {"id": "YRH6e4HlE4w", "title": "Janis Joplin,Etta James,Amy Winehouse Style || Slow Blues Rock Guitar Riffs || Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/YRH6e4HlE4w/mqdefault.jpg", "dur": "1:10:19"}, {"id": "wlk7oRRxffg", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse🎸 Power Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/wlk7oRRxffg/mqdefault.jpg", "dur": "1:31:12"}, {"id": "RyCAeytf45Q", "title": "🎸 Janis Joplin × Amy Winehouse 🎸 | Slow Blues Rock Guitar Riffs | Midnight Whiskey Blues", "thumb": "https://i.ytimg.com/vi/RyCAeytf45Q/mqdefault.jpg", "dur": "1:30:56"}, {"id": "CTGApMTcNdM", "title": "Janis Joplin, Etta James, Amy Winehouse Style 🎸 Slow Blues Rock Guitar Riffs | Late Night Vibes", "thumb": "https://i.ytimg.com/vi/CTGApMTcNdM/mqdefault.jpg", "dur": "1:30:13"}, {"id": "GTbfPq_QdQM", "title": "Slow Blues Rock Guitar Album – Late Night Whiskey Vibes | Inspired by Led Zeppelin & Janis Joplin", "thumb": "https://i.ytimg.com/vi/GTbfPq_QdQM/mqdefault.jpg", "dur": "1:42:03"}, {"id": "pfsJiFfk9Wc", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Mix 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/pfsJiFfk9Wc/mqdefault.jpg", "dur": "1:40:13"}, {"id": "71VCpP7AmY0", "title": "Top Slow Blues Rock Guitar 🎸 | Deep Blues Riffs & Chill Vibes - Janis Joplin, Etta James", "thumb": "https://i.ytimg.com/vi/71VCpP7AmY0/mqdefault.jpg", "dur": "1:59:22"}, {"id": "0iK3lmS7n70", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/0iK3lmS7n70/mqdefault.jpg", "dur": "58:45"}, {"id": "-D8nT21ppp0", "title": "Ultimate Blues Rock Guitar Playlist 🎸 | Slow Blues & Vintage Vibes - Etta James, Amy Winehouse", "thumb": "https://i.ytimg.com/vi/-D8nT21ppp0/mqdefault.jpg", "dur": "1:35:39"}, {"id": "mZSZAZBlYmg", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/mZSZAZBlYmg/mqdefault.jpg", "dur": "1:06:35"}, {"id": "D6DA_IFg8V8", "title": "Best Slow Blues Rock Guitar Riffs 🎸🔥 | Relaxing Blues Playlist 2026 - Etta James, Amy Winehouse", "thumb": "https://i.ytimg.com/vi/D6DA_IFg8V8/mqdefault.jpg", "dur": "1:39:44"}, {"id": "QdKKAeyfzRo", "title": "Janis Joplin,Etta James,Amy Winehouse Style || Slow Blues Rock Guitar Riffs || Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/QdKKAeyfzRo/mqdefault.jpg", "dur": "1:38:00"}, {"id": "Xk2hTEUnOc0", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/Xk2hTEUnOc0/mqdefault.jpg", "dur": "1:01:21"}, {"id": "5Upl-F7e6g4", "title": "Ultimate Blues Rock Guitar Playlist 🎸 | Slow Blues & Vintage Vibes", "thumb": "https://i.ytimg.com/vi/5Upl-F7e6g4/mqdefault.jpg", "dur": "1:37:12"}, {"id": "BQ2FVGkVsYo", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse 🎤Slow Blues Rock Guitar Riffs Playlist", "thumb": "https://i.ytimg.com/vi/BQ2FVGkVsYo/mqdefault.jpg", "dur": "58:38"}, {"id": "Dt4eCs8vW4A", "title": "Janis Joplin,Etta James,Amy Winehouse Style || Slow Blues Rock Guitar Riffs || Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/Dt4eCs8vW4A/mqdefault.jpg", "dur": "1:41:16"}, {"id": "nCUSi2zn5Jg", "title": "Etta James, Led Zeppelin, Janis Joplin Style 🎸Slow Blues Rock Guitar Riffs | One More Night of Blues", "thumb": "https://i.ytimg.com/vi/nCUSi2zn5Jg/mqdefault.jpg", "dur": "1:04:57"}, {"id": "cSngrz2CSjA", "title": "Best Slow Blues Rock Guitar Riffs 🎸🔥 | Relaxing Blues Playlist - Janis Joplin, ZZ Top, Led Zeppelin", "thumb": "https://i.ytimg.com/vi/cSngrz2CSjA/mqdefault.jpg", "dur": "1:33:02"}, {"id": "UQs6MPWJqzs", "title": "Power Blues Rock Guitar Riffs 🎸 | Slow Blues Playlist 🌙 Janis Joplin, ZZ Top, Led Zeppelin Vibes", "thumb": "https://i.ytimg.com/vi/UQs6MPWJqzs/mqdefault.jpg", "dur": "1:25:42"}, {"id": "BlflZDBsVAw", "title": "Power Blues Rock Guitar Riffs Playlist 2026 🎸 | Janis Joplin, ZZ Top, Led Zeppelin Blues Vibes", "thumb": "https://i.ytimg.com/vi/BlflZDBsVAw/mqdefault.jpg", "dur": "1:34:33"}, {"id": "AK_WYxzizzQ", "title": "Best Power Blues Rock Guitar Riffs 🎸🔥 | Janis Joplin, ZZ Top, Led Zeppelin Style Playlist", "thumb": "https://i.ytimg.com/vi/AK_WYxzizzQ/mqdefault.jpg", "dur": "1:29:05"}, {"id": "vQ0haAqR0U4", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Janis Joplin, Led Zeppelin, ZZ Top Style Blues Hits", "thumb": "https://i.ytimg.com/vi/vQ0haAqR0U4/mqdefault.jpg", "dur": "1:33:29"}, {"id": "AALT3EKwGKM", "title": "Power Blues Rock Guitar Riffs Playlist 🎸 | Slow Vintage Blues ( Janis Joplin, Led Zeppelin, ZZ Top)", "thumb": "https://i.ytimg.com/vi/AALT3EKwGKM/mqdefault.jpg", "dur": "1:36:44"}, {"id": "BHee6jNflqs", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse 🎤Slow Blues Rock Guitar Riffs Playlist", "thumb": "https://i.ytimg.com/vi/BHee6jNflqs/mqdefault.jpg", "dur": "1:29:05"}, {"id": "x-KkVV-Q1ho", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/x-KkVV-Q1ho/mqdefault.jpg", "dur": "1:25:07"}, {"id": "Dv5Fgprew3I", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/Dv5Fgprew3I/mqdefault.jpg", "dur": "1:33:22"}, {"id": "4dHGHLdoqCg", "title": "Etta James, Led Zeppelin, Janis Joplin Style 🎸Slow Blues Rock Guitar Riffs | One More Night of Blues", "thumb": "https://i.ytimg.com/vi/4dHGHLdoqCg/mqdefault.jpg", "dur": "1:36:07"}, {"id": "ihCnUCGm4Yw", "title": "Amy Winehouse, Janis Joplin, Etta James Style 🎤 Slow Blues Rock Guitar Riffs | Lonely Whiskey Blues", "thumb": "https://i.ytimg.com/vi/ihCnUCGm4Yw/mqdefault.jpg", "dur": "1:31:57"}, {"id": "36j_zKXxf3Q", "title": "Janis Joplin, ZZ Top, Led Zeppelin, Etta James, Amy Winehouse - Power Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/36j_zKXxf3Q/mqdefault.jpg", "dur": "1:29:18"}, {"id": "bSUBtk1nAWc", "title": "Janis Joplin, Etta James, Led Zeppelin, Amy Winehouse Style 🎸 🍻 | Slow Blues Rock Guitar Riffs", "thumb": "https://i.ytimg.com/vi/bSUBtk1nAWc/mqdefault.jpg", "dur": "1:29:53"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

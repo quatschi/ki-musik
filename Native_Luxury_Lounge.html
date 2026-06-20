@@ -7,7 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCaLkDGvyb8iBgC1X5-qS7ig -->
 <!-- channel-url: https://www.youtube.com/@nativeluxurylounge -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">21 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Native Luxury Lounge";
 const KANAL = "Native_Luxury_Lounge.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "sdZ02urephM", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/sdZ02urephM/mqdefault.jpg", "dur": "1:05:41"}, {"id": "zAHyvApwLaQ", "title": "Tribal Luxury Jazz Lounge - Stylish Native Decor | Smooth Saxophone & Calm Vibes", "thumb": "https://i.ytimg.com/vi/zAHyvApwLaQ/mqdefault.jpg", "dur": "1:04:36"}, {"id": "f7JzVZQEMI4", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/f7JzVZQEMI4/mqdefault.jpg", "dur": "1:05:48"}, {"id": "P7RsFCtblWE", "title": "Native Tribal Lounge Jazz - Vintage Jazz Room | Smooth Sax & Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/P7RsFCtblWE/mqdefault.jpg", "dur": "1:05:57"}, {"id": "40Q_fz7u6TI", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/40Q_fz7u6TI/mqdefault.jpg", "dur": "1:04:51"}, {"id": "2ToW5tWv6is", "title": "Tribal Lounge Jazz - Cozy Native Sax & Piano Nights | Luxury Lounge Relaxing Ambience", "thumb": "https://i.ytimg.com/vi/2ToW5tWv6is/mqdefault.jpg", "dur": "1:06:26"}, {"id": "Njz1X8aaA1U", "title": "Tribal Night Jazz Lounge | Modern Cozy Interior | Elegant Sax & Lounge Piano Flow", "thumb": "https://i.ytimg.com/vi/Njz1X8aaA1U/mqdefault.jpg", "dur": "1:04:21"}, {"id": "Qg1vqUhXTj0", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/Qg1vqUhXTj0/mqdefault.jpg", "dur": "1:06:52"}, {"id": "-mvrk4na1e8", "title": "Tribal Chill Jazz Lounge - Intimate Night Ambience | Warm Sax & Soft Piano Mood", "thumb": "https://i.ytimg.com/vi/-mvrk4na1e8/mqdefault.jpg", "dur": "1:06:11"}, {"id": "XTo2_UvDmSA", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/XTo2_UvDmSA/mqdefault.jpg", "dur": "1:06:42"}, {"id": "gecAj5luNeo", "title": "Native Tribal Lounge Jazz - Vintage Jazz Room | Smooth Sax & Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/gecAj5luNeo/mqdefault.jpg", "dur": "1:05:10"}, {"id": "DhmNquxTSZc", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/DhmNquxTSZc/mqdefault.jpg", "dur": "1:04:40"}, {"id": "NMgd0dpniOE", "title": "Tribal Lounge Jazz - Native Luxury Lounge | Smooth Saxophone & Warm Vibes", "thumb": "https://i.ytimg.com/vi/NMgd0dpniOE/mqdefault.jpg", "dur": "1:06:15"}, {"id": "GAP5na3U2Dg", "title": "Tribal Jazz Lounge Music | Modern Cozy Interior & Native Luxury Lounge", "thumb": "https://i.ytimg.com/vi/GAP5na3U2Dg/mqdefault.jpg", "dur": "1:04:09"}, {"id": "xIhhr1DB0Fg", "title": "Tribal Ambient Jazz Lounge - Dreamy Native Room | Deep Sax & Relaxing Piano Sounds", "thumb": "https://i.ytimg.com/vi/xIhhr1DB0Fg/mqdefault.jpg", "dur": "1:05:14"}, {"id": "VSTnN4QIaXY", "title": "Tribal Luxury Jazz Lounge - Stylish Native Decor | Smooth Saxophone & Calm Vibes", "thumb": "https://i.ytimg.com/vi/VSTnN4QIaXY/mqdefault.jpg", "dur": "1:07:13"}, {"id": "zi40KVut99A", "title": "Tribal Lounge Jazz for Intimate Nights - Warm Sax & Soft Piano Ambiance", "thumb": "https://i.ytimg.com/vi/zi40KVut99A/mqdefault.jpg", "dur": "1:05:09"}, {"id": "OjB50OdDnu4", "title": "Tribal Piano Jazz Lounge - Sophisticated Native Style | Relaxing Sax & Lounge Flow", "thumb": "https://i.ytimg.com/vi/OjB50OdDnu4/mqdefault.jpg", "dur": "1:04:44"}, {"id": "0ocbWg8hC6w", "title": "Native Luxury Lounge Jazz ~ Tribal Chill Evening Escape", "thumb": "https://i.ytimg.com/vi/0ocbWg8hC6w/mqdefault.jpg", "dur": "1:06:03"}, {"id": "8UQOCjdMkOA", "title": "Tribal Sax Lounge Jazz - Deep Relaxing Native Mood | Elegant Piano & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/8UQOCjdMkOA/mqdefault.jpg", "dur": "1:06:06"}, {"id": "_nX8ll1GDSk", "title": "Tribal Jazz Lounge - Warm Leather Sofa Vibes | Smooth Saxophone & Late Night Piano", "thumb": "https://i.ytimg.com/vi/_nX8ll1GDSk/mqdefault.jpg", "dur": "1:01:02"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

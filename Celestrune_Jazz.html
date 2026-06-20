@@ -7,7 +7,7 @@
 <!-- categories: Jazz -->
 <!-- channel-id: UCyq_EWcm2g_ZBrk6Bk_blMw -->
 <!-- channel-url: https://www.youtube.com/@CelestruneJazz -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">22 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Celestrune Jazz";
 const KANAL = "Celestrune_Jazz.html";
+const ORIG_CATEGORIES = "Jazz";
 const VIDEOS = [{"id": "sShgDQRqKg0", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/sShgDQRqKg0/mqdefault.jpg", "dur": "1:20:36"}, {"id": "jBCy8KQmFTM", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/jBCy8KQmFTM/mqdefault.jpg", "dur": "1:20:07"}, {"id": "lvo2d9ovdd4", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/lvo2d9ovdd4/mqdefault.jpg", "dur": "1:19:58"}, {"id": "0UOqR51SB8s", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/0UOqR51SB8s/mqdefault.jpg", "dur": "1:21:28"}, {"id": "CNGVVV8Gsmo", "title": "Rainy Night Jazz 🌧️ Moody Saxophone Chill for Stormy Evenings, Cozy Rain Vibes & Atmospheric Calm", "thumb": "https://i.ytimg.com/vi/CNGVVV8Gsmo/mqdefault.jpg", "dur": "1:22:47"}, {"id": "gQirgHootC0", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/gQirgHootC0/mqdefault.jpg", "dur": "1:19:03"}, {"id": "qe4OBasn8PM", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/qe4OBasn8PM/mqdefault.jpg", "dur": "1:21:13"}, {"id": "Zha1vQNzpDk", "title": "Midnight Jazz Lounge for Late Nights 🌙 Smooth Sax & Soft Ambience for Gentle Hours & Quiet Comfort", "thumb": "https://i.ytimg.com/vi/Zha1vQNzpDk/mqdefault.jpg", "dur": "1:19:47"}, {"id": "vMN1Z2JVVzQ", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/vMN1Z2JVVzQ/mqdefault.jpg", "dur": "1:20:32"}, {"id": "LwknvGF-Rjs", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/LwknvGF-Rjs/mqdefault.jpg", "dur": "1:19:34"}, {"id": "T5v5p80aaRk", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/T5v5p80aaRk/mqdefault.jpg", "dur": "1:19:50"}, {"id": "ZOpOlrNofuk", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/ZOpOlrNofuk/mqdefault.jpg", "dur": "1:18:25"}, {"id": "bYrEdLYwZHE", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/bYrEdLYwZHE/mqdefault.jpg", "dur": "1:18:32"}, {"id": "wZsWDmRPOWk", "title": "After Midnight Jazz Lounge 🎷🌙 Soft Music for Quiet Hours, Deep Night Calm & Post-Midnight Peace", "thumb": "https://i.ytimg.com/vi/wZsWDmRPOWk/mqdefault.jpg", "dur": "1:20:29"}, {"id": "smcu9eBKl7w", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/smcu9eBKl7w/mqdefault.jpg", "dur": "1:19:43"}, {"id": "vbfbhNi9ZkY", "title": "Late Night Jazz Lounge 🌙 Smooth Saxophone & After-Dark Lounge Rhythms for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/vbfbhNi9ZkY/mqdefault.jpg", "dur": "1:19:19"}, {"id": "SDbjll-Ms34", "title": "Smooth Sax Jazz at Midnight 🌙 Premium Lounge Sessions for Late Nights, Upscale Vibes & Refined Taste", "thumb": "https://i.ytimg.com/vi/SDbjll-Ms34/mqdefault.jpg", "dur": "1:18:44"}, {"id": "D-XxY-MBkvA", "title": "Midnight Jazz Lounge for Late Nights 🌙 Smooth Sax & Soft Ambience for Gentle Hours & Quiet Comfort", "thumb": "https://i.ytimg.com/vi/D-XxY-MBkvA/mqdefault.jpg", "dur": "1:19:58"}, {"id": "XbMZCQ85uOQ", "title": "Late Night Coffee Jazz ☕ Smooth Sax for Night Owls, Caffeine Hours & Creative Late Sessions", "thumb": "https://i.ytimg.com/vi/XbMZCQ85uOQ/mqdefault.jpg", "dur": "1:19:41"}, {"id": "5KDYxn3mqwM", "title": "Rainy Night Jazz 🌧️ Moody Saxophone Chill for Stormy Evenings, Cozy Rain Vibes & Atmospheric Calm", "thumb": "https://i.ytimg.com/vi/5KDYxn3mqwM/mqdefault.jpg", "dur": "1:19:41"}, {"id": "g5uOkwn6S-U", "title": "Midnight Sax Lounge Jazz 🌙 After Dark Music for Relaxed Nights, Unwinding & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/g5uOkwn6S-U/mqdefault.jpg", "dur": "1:19:50"}, {"id": "2nWH0nfkMVA", "title": "Midnight Whisper Jazz 🌙 Smooth Sax & Calm Nights for Intimate Moments, Deep Sleep & Quiet Reflection", "thumb": "https://i.ytimg.com/vi/2nWH0nfkMVA/mqdefault.jpg", "dur": "1:20:06"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

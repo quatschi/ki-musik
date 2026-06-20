@@ -7,7 +7,7 @@
 <!-- categories: Funk, R&B, Soul -->
 <!-- channel-id: UCAouaBMgfyZEmmk0yLqufmg -->
 <!-- channel-url: https://youtube.com/@retrofunky -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">33 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "RetroFunky";
 const KANAL = "RetroFunky.html";
+const ORIG_CATEGORIES = "Funk, R&B, Soul";
 const VIDEOS = [{"id": "eyiL1o0e7bs", "title": "BLUES Meet REGGAE 2026 🎸 Soulful Guitar Vibes for Relaxing Nights & Good Times 🎶", "thumb": "https://i.ytimg.com/vi/eyiL1o0e7bs/mqdefault.jpg", "dur": "37:12"}, {"id": "l7MCng_LeS0", "title": "Relaxing Reggae Blues 🎸 Soulful Guitar Blues Reggae for Stress Relief & Chill Vibes", "thumb": "https://i.ytimg.com/vi/l7MCng_LeS0/mqdefault.jpg", "dur": "26:25"}, {"id": "18QUn3KVhGE", "title": "BLUES Meet REGGAE 2026 🎶 | Soulful Blues Guitar Meets Island Reggae Vibes", "thumb": "https://i.ytimg.com/vi/18QUn3KVhGE/mqdefault.jpg", "dur": "43:25"}, {"id": "9-MxBUOnrU8", "title": "REGGAE BLUES | Soulful Guitar Grooves in a Smoky Blues Bar 🌙 Relax & Unwind", "thumb": "https://i.ytimg.com/vi/9-MxBUOnrU8/mqdefault.jpg", "dur": "43:38"}, {"id": "nt6NphO17Zc", "title": "Reggae Blues Guitar 🎸 Deep Roots Grooves for Relaxing, Working & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/nt6NphO17Zc/mqdefault.jpg", "dur": "41:13"}, {"id": "mUhq5mm-EnA", "title": "REGGAE BLUES 🎸 Soulful Guitar Grooves for Relaxing Evenings | Deep Roots & Blues Vibes", "thumb": "https://i.ytimg.com/vi/mUhq5mm-EnA/mqdefault.jpg", "dur": "41:00"}, {"id": "5pv6geEGR5w", "title": "Relaxing Reggae Blues 🌴 Soulful Music for Unwinding & Good Vibes", "thumb": "https://i.ytimg.com/vi/5pv6geEGR5w/mqdefault.jpg", "dur": "37:10"}, {"id": "WtsebmeBI4s", "title": "Reggae Blues 🔥 Soulful Guitar Grooves from the Heart of Texas", "thumb": "https://i.ytimg.com/vi/WtsebmeBI4s/mqdefault.jpg", "dur": "40:18"}, {"id": "-dvR1gEcmMA", "title": "Roots Reggae Blues 🎸 Deep Guitar Grooves for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/-dvR1gEcmMA/mqdefault.jpg", "dur": "38:50"}, {"id": "-CS9XRHC_S8", "title": "Japanese Jazz Funk 🌃 Retro Tokyo Night Groove for Study, Work & Late Drive", "thumb": "https://i.ytimg.com/vi/-CS9XRHC_S8/mqdefault.jpg", "dur": "1:07:36"}, {"id": "bF3tkJmauRs", "title": "Japanese Jazz Funk ☕🎷 Warm Vintage Bass Grooves for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/bF3tkJmauRs/mqdefault.jpg", "dur": "49:47"}, {"id": "4eXcYpc6IWE", "title": "Japanese Jazz ☕ Warm Tokyo Night Vibes | Smooth Bass Cafe Music for Relax & Study", "thumb": "https://i.ytimg.com/vi/4eXcYpc6IWE/mqdefault.jpg", "dur": "46:27"}, {"id": "ffljIBSCFtQ", "title": "Japanese Jazz Funk ☕ Warm Retro Night Groove", "thumb": "https://i.ytimg.com/vi/ffljIBSCFtQ/mqdefault.jpg", "dur": "1:00:33"}, {"id": "UE3XisOoX7A", "title": "WARM BASS VIBES 🎸 Smooth Funk Groove for Relaxing, Studying & Late Night Chill", "thumb": "https://i.ytimg.com/vi/UE3XisOoX7A/mqdefault.jpg", "dur": "51:12"}, {"id": "j5Q_uAyUjJs", "title": "Roots Reggae Meets Dirty Blues 🎸 Smoky Guitar Grooves & Deep Night Vibes", "thumb": "https://i.ytimg.com/vi/j5Q_uAyUjJs/mqdefault.jpg", "dur": "34:34"}, {"id": "DRyASU8bppw", "title": "Roots Reggae Meets Dirty Blues | Relaxing Vintage Groove", "thumb": "https://i.ytimg.com/vi/DRyASU8bppw/mqdefault.jpg", "dur": "35:03"}, {"id": "_sUcHwdNdMY", "title": "Lionel Richie – Stuck On You (Relaxing Guitar Instrumental)", "thumb": "https://i.ytimg.com/vi/_sUcHwdNdMY/mqdefault.jpg", "dur": "3:02"}, {"id": "j-Z-jNoOc-0", "title": "Eric Clapton – Wonderful Tonight (Cozy Fingerstyle Cover)", "thumb": "https://i.ytimg.com/vi/j-Z-jNoOc-0/mqdefault.jpg", "dur": "2:49"}, {"id": "8em1qyI9P6I", "title": "The Beatles – Yesterday (Relaxing Acoustic Fingerstyle)", "thumb": "https://i.ytimg.com/vi/8em1qyI9P6I/mqdefault.jpg", "dur": "3:34"}, {"id": "txZRalakHio", "title": "Smooth Funk Bass Grooves 🎸 Vintage Chill Funk Vibes for Relaxing Night Drive & Cozy Sessions", "thumb": "https://i.ytimg.com/vi/txZRalakHio/mqdefault.jpg", "dur": "25:14"}, {"id": "P8N07syTLBg", "title": "終電の黄昏 🌙 Late Train Dusk | Japanese Jazz Funk LoFi Groove", "thumb": "https://i.ytimg.com/vi/P8N07syTLBg/mqdefault.jpg", "dur": "52:05"}, {"id": "mhDHzRnJ2EI", "title": "Smooth Funk Groove 🎧 Vintage Bass Vibes for Work, Focus & Relax", "thumb": "https://i.ytimg.com/vi/mhDHzRnJ2EI/mqdefault.jpg", "dur": "39:22"}, {"id": "gXXOYpt-rUo", "title": "SMOOTH FUNK GROOVE 🎧 Vintage Bass Vibes for Work, Focus & Relax", "thumb": "https://i.ytimg.com/vi/gXXOYpt-rUo/mqdefault.jpg", "dur": "55:41"}, {"id": "l7Hf-PZwb_w", "title": "Barry White - You're The First, The Last, My Everything (Funk Groove Cover You’ve Never Heard Bfore)", "thumb": "https://i.ytimg.com/vi/l7Hf-PZwb_w/mqdefault.jpg", "dur": "3:57"}, {"id": "zFBX0jVF4Sk", "title": "Smooth Funk Bass Groove 🌴 Work & Chill in Tropical Nature (Vintage Vibes)", "thumb": "https://i.ytimg.com/vi/zFBX0jVF4Sk/mqdefault.jpg", "dur": "52:46"}, {"id": "GGRbfa1SR9U", "title": "The Beatles – Let It Be (80s Funk Groove Version) | Retro Funk Cover", "thumb": "https://i.ytimg.com/vi/GGRbfa1SR9U/mqdefault.jpg", "dur": "4:44"}, {"id": "ICJZIa0NX6A", "title": "The Beatles – Come Together (Funk Groove Cover You’ve Never Heard Before)", "thumb": "https://i.ytimg.com/vi/ICJZIa0NX6A/mqdefault.jpg", "dur": "4:17"}, {"id": "JuOhlEzC3k4", "title": "I Can See Clearly Now – Funk Groove Cover (Slap Bass) | You’ve Never Heard This Before", "thumb": "https://i.ytimg.com/vi/JuOhlEzC3k4/mqdefault.jpg", "dur": "4:28"}, {"id": "z2Cfb80nwk0", "title": "POV: You're Still Working at 11PM (Overtime Funk)", "thumb": "https://i.ytimg.com/vi/z2Cfb80nwk0/mqdefault.jpg", "dur": "10:35"}, {"id": "RanK9hvHSZI", "title": "Slap Bass Funk Groove 🎸 | Smooth & Chill Beats for Work (No Distractions)", "thumb": "https://i.ytimg.com/vi/RanK9hvHSZI/mqdefault.jpg", "dur": "20:27"}, {"id": "OKquYUEQca8", "title": "I Will Survive – 1930s Vintage Jazz That Hits Different", "thumb": "https://i.ytimg.com/vi/OKquYUEQca8/mqdefault.jpg", "dur": "5:04"}, {"id": "ZRMdvL0RWNI", "title": "Oh! Darling – 1930s Vintage Jazz That Hits Different", "thumb": "https://i.ytimg.com/vi/ZRMdvL0RWNI/mqdefault.jpg", "dur": "4:23"}, {"id": "0_sd11FrVkM", "title": "Wonderful Tonight (1950s Jazz Version) – Vintage Lounge Vibes", "thumb": "https://i.ytimg.com/vi/0_sd11FrVkM/mqdefault.jpg", "dur": "3:37"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Jazz, Tribal -->
 <!-- channel-id: UCPjuh06TMFQtiG-j1WeU5vw -->
 <!-- channel-url: https://www.youtube.com/@LushTribalHour -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">34 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Lush Tribal Hour";
 const KANAL = "Lush_Tribal_Hour.html";
+const ORIG_CATEGORIES = "Lounge, Jazz, Tribal";
 const VIDEOS = [{"id": "63em_iPi_vk", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/63em_iPi_vk/mqdefault.jpg", "dur": "2:08:17"}, {"id": "spTkzL1Fcp0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Focus", "thumb": "https://i.ytimg.com/vi/spTkzL1Fcp0/mqdefault.jpg", "dur": "2:04:25"}, {"id": "7Vz-jut9Hpc", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual ~ Deep Ritual Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/7Vz-jut9Hpc/mqdefault.jpg", "dur": "2:00:36"}, {"id": "qX95AgRB45E", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Ritual Jazz Instrumental for Midnight Focus & Chill", "thumb": "https://i.ytimg.com/vi/qX95AgRB45E/mqdefault.jpg", "dur": "2:02:05"}, {"id": "C5Ed0c5yPPQ", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental for Sacred Grooves & Focus", "thumb": "https://i.ytimg.com/vi/C5Ed0c5yPPQ/mqdefault.jpg", "dur": "2:02:07"}, {"id": "cfE90kYhXlg", "title": "Hypnotic Tribal Grooves | Sacred Grooves & Midnight Ritual | Deep Tribal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/cfE90kYhXlg/mqdefault.jpg", "dur": "2:05:04"}, {"id": "-eh34JV42Tk", "title": "Hypnotic Tribal Jazz Grooves Sacred Ritual Music for Deep Focus", "thumb": "https://i.ytimg.com/vi/-eh34JV42Tk/mqdefault.jpg", "dur": "2:03:52"}, {"id": "3xwq2iriufs", "title": "Dark Tribal Lounge Jazz ~ Midnight Afro Ritual for Deep Focus & Sacred Grooves", "thumb": "https://i.ytimg.com/vi/3xwq2iriufs/mqdefault.jpg", "dur": "2:03:16"}, {"id": "6M5E07mtLuE", "title": "Nocturnal Tribal Jazz - Deep Tribal Jazz Instrumental & Sacred Grooves for Midnight Rituals", "thumb": "https://i.ytimg.com/vi/6M5E07mtLuE/mqdefault.jpg", "dur": "2:04:41"}, {"id": "HYnvqN-RUM0", "title": "Tribal Lounge Jazz - Sacred Grooves & Deep Tribal Jazz Instrumental for Late Night Rituals", "thumb": "https://i.ytimg.com/vi/HYnvqN-RUM0/mqdefault.jpg", "dur": "2:04:05"}, {"id": "ZIXXRA9xlI8", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ Hypnotic Sacred Grooves for Focus", "thumb": "https://i.ytimg.com/vi/ZIXXRA9xlI8/mqdefault.jpg", "dur": "2:03:59"}, {"id": "hInohte5m1w", "title": "Tribal Lounge Jazz | Sacred Grooves | Deep Instrumental for Late Night Rituals and Focus Now", "thumb": "https://i.ytimg.com/vi/hInohte5m1w/mqdefault.jpg", "dur": "2:03:32"}, {"id": "SCFpL_LJl80", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for Late Night Calm", "thumb": "https://i.ytimg.com/vi/SCFpL_LJl80/mqdefault.jpg", "dur": "2:02:31"}, {"id": "1CwpYK5qstM", "title": "Tribal Lounge Jazz | Hypnotic Tribal Grooves | After Hours Ritual Jazz | Relaxing Music", "thumb": "https://i.ytimg.com/vi/1CwpYK5qstM/mqdefault.jpg", "dur": "2:04:39"}, {"id": "3a4-GtkwMSg", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves for Midnight Afro Ritual & Tribal Lounge Jazz", "thumb": "https://i.ytimg.com/vi/3a4-GtkwMSg/mqdefault.jpg", "dur": "2:07:45"}, {"id": "bNBjqGomYvg", "title": "midnight afro ritual - ritual jazz - hypnotic tribal grooves - late night tribal jazz & co", "thumb": "https://i.ytimg.com/vi/bNBjqGomYvg/mqdefault.jpg", "dur": "2:05:15"}, {"id": "sybQP86c05E", "title": "Midnight Afro Ritual | Tribal Lounge Jazz - Sacred Grooves for Late Night Deep Focus Chill", "thumb": "https://i.ytimg.com/vi/sybQP86c05E/mqdefault.jpg", "dur": "2:04:11"}, {"id": "TlaxOHLggE0", "title": "Tribal Lounge Jazz - Sacred Grooves & Midnight Afro Ritual Music for Deep Focus and Chill", "thumb": "https://i.ytimg.com/vi/TlaxOHLggE0/mqdefault.jpg", "dur": "2:06:40"}, {"id": "YPSc9wc4Jc8", "title": "Deep Tribal Jazz Instrumental - Sacred Grooves & Midnight Afro Ritual for After Hours Study", "thumb": "https://i.ytimg.com/vi/YPSc9wc4Jc8/mqdefault_live.jpg", "dur": ""}, {"id": "hY6CHtKrR5Y", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual | Relaxing Tribal Lounge Jazz Rhythms", "thumb": "https://i.ytimg.com/vi/hY6CHtKrR5Y/mqdefault.jpg", "dur": "2:04:57"}, {"id": "fbVSadQTBO0", "title": "Midnight Afro Ritual ~ Deep Tribal Jazz Instrumental for Sacred Grooves and Late Night Focus", "thumb": "https://i.ytimg.com/vi/fbVSadQTBO0/mqdefault.jpg", "dur": "1:01:06"}, {"id": "picE14n_xXU", "title": "After Hours Ritual Jazz | Hypnotic Tribal Grooves and Relaxing Nocturnal Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/picE14n_xXU/mqdefault.jpg", "dur": "1:03:25"}, {"id": "8FqoGRXbMGU", "title": "Tribal Lounge Jazz - Sacred Grooves ~ Deep Tribal Jazz Instrumental & After Hours Ritual Jazz", "thumb": "https://i.ytimg.com/vi/8FqoGRXbMGU/mqdefault.jpg", "dur": "1:01:09"}, {"id": "R15uCApKrPc", "title": "Tribal Lounge Jazz - After Hours Ritual Jazz & Relaxing Nocturnal Tribal Jazz Melodies", "thumb": "https://i.ytimg.com/vi/R15uCApKrPc/mqdefault.jpg", "dur": "1:03:09"}, {"id": "wEW98-m9erk", "title": "Deep Tribal Jazz Instrumental | Sacred Grooves & Midnight Afro Ritual for After Hours Bliss", "thumb": "https://i.ytimg.com/vi/wEW98-m9erk/mqdefault.jpg", "dur": "1:02:28"}, {"id": "Gyl4i6DUJDc", "title": "Deep Tribal Jazz Instrumental | After Hours Ritual Jazz ~ Relaxing Midnight Afro Rituals", "thumb": "https://i.ytimg.com/vi/Gyl4i6DUJDc/mqdefault.jpg", "dur": "1:01:02"}, {"id": "ZkLorSzF468", "title": "Tribal lounge jazz - Sacred grooves - Midnight afro ritual & deep tribal jazz instrumental", "thumb": "https://i.ytimg.com/vi/ZkLorSzF468/mqdefault.jpg", "dur": "1:00:12"}, {"id": "sTfZ5D2ToPg", "title": "Hypnotic Tribal Lounge Jazz ~ Deep Focus Ritual Grooves for Relaxation", "thumb": "https://i.ytimg.com/vi/sTfZ5D2ToPg/mqdefault.jpg", "dur": "1:03:29"}, {"id": "mSQ2Dh3J-hM", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental & Sacred Grooves for Late Night Focus", "thumb": "https://i.ytimg.com/vi/mSQ2Dh3J-hM/mqdefault.jpg", "dur": "1:01:01"}, {"id": "H_1d9pISVvs", "title": "Hypnotic Tribal Grooves | After Hours Ritual Jazz | Deep Tribal Jazz Instrumental Relaxation", "thumb": "https://i.ytimg.com/vi/H_1d9pISVvs/mqdefault.jpg", "dur": "1:03:35"}, {"id": "YCnE6-V_K-4", "title": "Deep Tribal Jazz Instrumental | Midnight Afro Ritual ~ After Hours Sacred Grooves Relaxing", "thumb": "https://i.ytimg.com/vi/YCnE6-V_K-4/mqdefault.jpg", "dur": "1:01:38"}, {"id": "S-dl8SIZrpA", "title": "Tribal lounge jazz | Sacred grooves for deep focus and midnight afro ritual at after hours", "thumb": "https://i.ytimg.com/vi/S-dl8SIZrpA/mqdefault.jpg", "dur": "1:00:26"}, {"id": "RdV_UxV3G-U", "title": "Midnight Afro Ritual - Hypnotic Tribal Grooves | Relaxing Tribal Lounge Jazz For Deep Focus", "thumb": "https://i.ytimg.com/vi/RdV_UxV3G-U/mqdefault.jpg", "dur": "1:01:54"}, {"id": "eZXB572z52c", "title": "Midnight Afro Ritual | Deep Tribal Jazz Instrumental | Sacred Grooves for Spiritual Focus", "thumb": "https://i.ytimg.com/vi/eZXB572z52c/mqdefault.jpg", "dur": "1:00:14"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

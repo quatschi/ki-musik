@@ -71,10 +71,10 @@
 </div>
   <a class="back" id="back-btn" href="index.html">← Übersicht</a>
   <script>
-    (function() {
+    document.addEventListener('DOMContentLoaded', function() {
       const p = new URLSearchParams(window.location.search).get('kanal');
       if (p) { const b = document.getElementById('back-btn'); b.href = p; b.textContent = '← Zur Kanalliste'; }
-    })();
+    });
   </script>
   <h1>🎵 KI-Musik Radio</h1>
   <p class="subtitle" id="subtitle">Zufälliger Kanal · Zufälliges Video</p>
@@ -114,6 +114,26 @@
   const videoParam = urlParams.get('video') || null;   // z.B. &video=dQw4w9WgXcQ – direkt diesen Titel starten
   let kanalVideosCache = null;                          // Videos des fixierten Kanals (nur einmal laden)
   let randomStartEnabled = true;                        // Zufälliger Zeiteinstieg an/aus
+
+  // iOS Hintergrund-Wiedergabe: stiller Audio-Kontext verhindert dass Safari den Tab einfriert
+  let iosAudioCtx = null;
+  function keepAliveAudio() {
+    try {
+      if (!iosAudioCtx) {
+        iosAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (iosAudioCtx.state === 'suspended') iosAudioCtx.resume();
+      const buf = iosAudioCtx.createBuffer(1, 1, 22050);
+      const src = iosAudioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(iosAudioCtx.destination);
+      src.start(0);
+    } catch(e) {}
+  }
+  // Alle 20 Sekunden stillen Ton abspielen
+  setInterval(keepAliveAudio, 20000);
+  // Beim ersten Antippen der Seite starten (iOS erlaubt AudioContext nur nach User-Geste)
+  document.addEventListener('touchstart', keepAliveAudio, { once: false });
 
   // YouTube IFrame API laden
   const tag = document.createElement('script');

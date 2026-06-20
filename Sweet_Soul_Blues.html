@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Soul Blues</title>
+<!-- categories: Soul, Blues -->
+<!-- channel-id: UCBgT8msAuaZ_MJnTFMd17iQ -->
+<!-- channel-url: https://youtube.com/@sweetsoulblues -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Sweet_Soul_Blues.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/KJtVTmOzdsFZQhl4y8BpnhJsKW1xU81aJCaM_X4UXUyj9LlcB7TCODMzxwGL7FipQeG6BlLP=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Sweet Soul Blues</div>
+      <div class="channel-count">37 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Sweet Soul Blues";
+const KANAL = "Sweet_Soul_Blues.html";
+const ORIG_CATEGORIES = "Soul, Blues";
+const VIDEOS = [{"id": "7TE3LssgZ0Q", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #3", "thumb": "https://i.ytimg.com/vi/7TE3LssgZ0Q/mqdefault.jpg", "dur": "2:34:50"}, {"id": "ushMKwH9ngQ", "title": "Etta James-Inspired Blues & Soul💙 | Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/ushMKwH9ngQ/mqdefault.jpg", "dur": "2:34:46"}, {"id": "aFEwBwSBOiU", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style #2", "thumb": "https://i.ytimg.com/vi/aFEwBwSBOiU/mqdefault.jpg", "dur": "2:00:14"}, {"id": "GmRC07fSzUY", "title": "🎙️Etta James-Inspired Blues & Soul | Timeless Songs of Love, Heartbreak & Strength.", "thumb": "https://i.ytimg.com/vi/GmRC07fSzUY/mqdefault.jpg", "dur": "2:22:41"}, {"id": "HlIt72zVLSI", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #1", "thumb": "https://i.ytimg.com/vi/HlIt72zVLSI/mqdefault.jpg", "dur": "2:24:38"}, {"id": "FSSoTheFkRw", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/FSSoTheFkRw/mqdefault.jpg", "dur": "1:38:51"}, {"id": "c4svpZRD90Y", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/c4svpZRD90Y/mqdefault.jpg", "dur": "2:45:24"}, {"id": "gQ6ILYdR16A", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/gQ6ILYdR16A/mqdefault.jpg", "dur": "2:21:16"}, {"id": "uoUTOuXB86U", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/uoUTOuXB86U/mqdefault.jpg", "dur": "2:05:42"}, {"id": "MOPNixFodPc", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/MOPNixFodPc/mqdefault.jpg", "dur": "2:33:19"}, {"id": "s5zajuOkOho", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/s5zajuOkOho/mqdefault.jpg", "dur": "2:20:15"}, {"id": "P8qxL7OXl-g", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/P8qxL7OXl-g/mqdefault.jpg", "dur": "2:15:18"}, {"id": "nNGm6F2nAJA", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/nNGm6F2nAJA/mqdefault.jpg", "dur": "2:10:36"}, {"id": "A2AggIHIMmU", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength Love", "thumb": "https://i.ytimg.com/vi/A2AggIHIMmU/mqdefault.jpg", "dur": "2:19:58"}, {"id": "nDdidGTJqxg", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #1", "thumb": "https://i.ytimg.com/vi/nDdidGTJqxg/mqdefault.jpg", "dur": "1:36:27"}, {"id": "JE3I_Exiin4", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/JE3I_Exiin4/mqdefault.jpg", "dur": "1:38:03"}, {"id": "jv0h4_DZDWY", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #2", "thumb": "https://i.ytimg.com/vi/jv0h4_DZDWY/mqdefault.jpg", "dur": "1:27:59"}, {"id": "P_DdQm2ZtuU", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/P_DdQm2ZtuU/mqdefault.jpg", "dur": "1:28:36"}, {"id": "Qi4ow-bAgPQ", "title": "Blues & Soul Love Songs | Timeless Love Songs - Feel the Etta James Style", "thumb": "https://i.ytimg.com/vi/Qi4ow-bAgPQ/mqdefault.jpg", "dur": "1:46:05"}, {"id": "x1jlNvxS2WM", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/x1jlNvxS2WM/mqdefault.jpg", "dur": "1:51:51"}, {"id": "l2_bq_6sI5U", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/l2_bq_6sI5U/mqdefault.jpg", "dur": "1:43:38"}, {"id": "n7H4sU2AQ5o", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #1", "thumb": "https://i.ytimg.com/vi/n7H4sU2AQ5o/mqdefault.jpg", "dur": "1:38:23"}, {"id": "N1AD3REkRp0", "title": "Etta James Inspired Blues & Soul Mix - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/N1AD3REkRp0/mqdefault.jpg", "dur": "1:45:01"}, {"id": "ZTg2WffPmbw", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/ZTg2WffPmbw/mqdefault.jpg", "dur": "1:39:05"}, {"id": "XNyvPnDG59k", "title": "Etta James–Inspired Blues & Soul: Stories of Love, Loss, and Strength", "thumb": "https://i.ytimg.com/vi/XNyvPnDG59k/mqdefault.jpg", "dur": "1:30:47"}, {"id": "2UVLmnl5jwk", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/2UVLmnl5jwk/mqdefault.jpg", "dur": "1:36:05"}, {"id": "sHUxIcS1-nk", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #1", "thumb": "https://i.ytimg.com/vi/sHUxIcS1-nk/mqdefault.jpg", "dur": "1:39:41"}, {"id": "ZZ4QEjlNN20", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/ZZ4QEjlNN20/mqdefault.jpg", "dur": "1:45:42"}, {"id": "JXRMx5roM8I", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength #blues", "thumb": "https://i.ytimg.com/vi/JXRMx5roM8I/mqdefault.jpg", "dur": "1:42:42"}, {"id": "VWev__pf5s4", "title": "Etta James Inspired Blues & Soulful - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/VWev__pf5s4/mqdefault.jpg", "dur": "1:39:15"}, {"id": "GJ_RuKKg69o", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/GJ_RuKKg69o/mqdefault.jpg", "dur": "1:27:43"}, {"id": "mboKyxD0e5s", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/mboKyxD0e5s/mqdefault.jpg", "dur": "1:42:39"}, {"id": "WfQafbmltKw", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/WfQafbmltKw/mqdefault.jpg", "dur": "1:29:58"}, {"id": "dZPTJU2VIa0", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/dZPTJU2VIa0/mqdefault.jpg", "dur": "1:39:34"}, {"id": "BvtSZYkf78o", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/BvtSZYkf78o/mqdefault.jpg", "dur": "1:27:22"}, {"id": "7gZpmUbm0qE", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/7gZpmUbm0qE/mqdefault.jpg", "dur": "1:36:25"}, {"id": "r9WvFQr548s", "title": "Etta James Inspired Blues & Soul - Timeless Songs of Love, Heartbreak & Strength", "thumb": "https://i.ytimg.com/vi/r9WvFQr548s/mqdefault.jpg", "dur": "1:33:28"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+init();
+</script>
+</body>
+</html>

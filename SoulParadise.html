@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Soul -->
 <!-- channel-id: UCiTheyP89FAw-vGi0vxJMsg -->
 <!-- channel-url: https://www.youtube.com/@soulparadise_01 -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">22 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "SoulParadise";
 const KANAL = "SoulParadise.html";
+const ORIG_CATEGORIES = "Lounge, Soul";
 const VIDEOS = [{"id": "mUCutBTkBB4", "title": "Vintage Soul Funk Mix 🎷 Deep Groove Session & Analog Soul Flow | SoulParadise", "thumb": "https://i.ytimg.com/vi/mUCutBTkBB4/mqdefault.jpg", "dur": "2:14:30"}, {"id": "4q5JPpelVRQ", "title": "Vintage Soul Funk Mix | They Don't Make Soul Funk Like This Anymore | Deep Groove Mix 2026", "thumb": "https://i.ytimg.com/vi/4q5JPpelVRQ/mqdefault.jpg", "dur": "1:54:07"}, {"id": "zJ_MomG3zU8", "title": "🎷 This Vintage Soul Funk Mix Will Restore Your Faith In Real Music", "thumb": "https://i.ytimg.com/vi/zJ_MomG3zU8/mqdefault.jpg", "dur": "2:01:38"}, {"id": "m34rOkM3r74", "title": "Vintage Soul Funk That Hits So Deep You'll Feel It In Your Soul", "thumb": "https://i.ytimg.com/vi/m34rOkM3r74/mqdefault.jpg", "dur": "2:01:23"}, {"id": "szymIhLyTI0", "title": "Vintage Soul Funk 70s #soulparadise #vintagesoulfunk #music #soultune #raregroovemix #funkyjazz", "thumb": "https://i.ytimg.com/vi/szymIhLyTI0/mqdefault.jpg", "dur": "0:24"}, {"id": "BUaVT7Ig7Vs", "title": "Subscribe to the channel to watch the complete collection of the best songs of all time  #soulfunk", "thumb": "https://i.ytimg.com/vi/BUaVT7Ig7Vs/mqdefault.jpg", "dur": "1:01"}, {"id": "-oqt0rqIgEo", "title": "Vintage Soul Funk Mix 🔥 After Hours Rare Groove & Deep Golden Soul - SoulParadise", "thumb": "https://i.ytimg.com/vi/-oqt0rqIgEo/mqdefault.jpg", "dur": "1:58:00"}, {"id": "uOp_c7EIR54", "title": "Vintage Soul Funk 70s ✨ Timeless Groove #soulparadise #vintagesoulfunk", "thumb": "https://i.ytimg.com/vi/uOp_c7EIR54/mqdefault.jpg", "dur": "1:00"}, {"id": "_5U5ODyhLf8", "title": "Subscribe to the channel to listen to the best music of the 70s. #soulparadise #vintagesoulfunk", "thumb": "https://i.ytimg.com/vi/_5U5ODyhLf8/mqdefault.jpg", "dur": "0:32"}, {"id": "Zop6r8bxizc", "title": "Vintage Soul & Funk Vibes ✨ Get Ready to Dance! #vintagesoulfunk #soulfunk #soulfunkplaylist", "thumb": "https://i.ytimg.com/vi/Zop6r8bxizc/mqdefault.jpg", "dur": "0:52"}, {"id": "qlXB_K6cGkg", "title": "Vintage Soul Funk Playlist 🔥 Smooth Rare Groove Lounge & Velvet Soul Flow luxury - SoulParadise", "thumb": "https://i.ytimg.com/vi/qlXB_K6cGkg/mqdefault.jpg", "dur": "1:46:23"}, {"id": "PXQLWY7B6vg", "title": "Comingsoon 9 A.M (LA) - SoulParadise", "thumb": "https://i.ytimg.com/vi/PXQLWY7B6vg/mqdefault.jpg", "dur": "0:30"}, {"id": "pzLvfF3drtM", "title": "Vintage Soul Funk Mix 🔥 Deep Rare Groove & Timeless 70s Soul - SoulParadise", "thumb": "https://i.ytimg.com/vi/pzLvfF3drtM/mqdefault.jpg", "dur": "2:11:59"}, {"id": "mKdXcMVVbi0", "title": "Vintage Soul Funk Mix 🔥 Deep Body Groove Session & Rare 70s Vibes - SoulParadise", "thumb": "https://i.ytimg.com/vi/mKdXcMVVbi0/mqdefault.jpg", "dur": "1:55:52"}, {"id": "M8iag5PbMYI", "title": "Vintage Soul Funk Mix🔥Ultimate Luxury Groove Lounge & Old School vibes of the 70s - SoulParadise", "thumb": "https://i.ytimg.com/vi/M8iag5PbMYI/mqdefault.jpg", "dur": "1:51:14"}, {"id": "gGNHKZdPeKE", "title": "Vintage Soul Funk Mix 🔥 Rare Groove Session & Deep 70s Basslines - SoulParadise", "thumb": "https://i.ytimg.com/vi/gGNHKZdPeKE/mqdefault.jpg", "dur": "2:04:23"}, {"id": "OpPfJ5SHYEA", "title": "Vintage Soul Funk Mix 🔥 Rare Groove Lounge & Warm 70s Vibes -", "thumb": "https://i.ytimg.com/vi/OpPfJ5SHYEA/mqdefault.jpg", "dur": "1:47:55"}, {"id": "oId5gkrGIYo", "title": "Vintage Soul Funk Mix 🔥 Rare Groove Nights & Deep 70s Flow - SoulParadise", "thumb": "https://i.ytimg.com/vi/oId5gkrGIYo/mqdefault.jpg", "dur": "1:55:23"}, {"id": "Q8Ro-RvaeAI", "title": "Vintage Soul Funk Mix 🔥 Deep Rare Groove & Analog 70s Vibes", "thumb": "https://i.ytimg.com/vi/Q8Ro-RvaeAI/mqdefault.jpg", "dur": "2:08:00"}, {"id": "kVQ-cXrvdHk", "title": "Vintage Soul Funk Mix 🔥 Luxury Rare Groove Lounge & Old School 70s Vibes - SoulParadise", "thumb": "https://i.ytimg.com/vi/kVQ-cXrvdHk/mqdefault.jpg", "dur": "2:37:51"}, {"id": "zioHibSc9ZU", "title": "Vintage Soul Funk Mix🔥Luxury Rare Groove Lounge & Old School 70s Vibes - SoulParadise", "thumb": "https://i.ytimg.com/vi/zioHibSc9ZU/mqdefault.jpg", "dur": "1:49:29"}, {"id": "mCRhtT45HSk", "title": "Vintage Soul Funk Mix🔥Luxury Groove Lounge & Old School vibes of the 70s - SoulParadise", "thumb": "https://i.ytimg.com/vi/mCRhtT45HSk/mqdefault.jpg", "dur": "1:55:29"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

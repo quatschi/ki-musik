@@ -7,7 +7,7 @@
 <!-- categories: Smooth Jazz, Lounge -->
 <!-- channel-id: UCHpcJUKAFlwT1vHpqo_OrsQ -->
 <!-- channel-url: https://www.youtube.com/@CalmLeafBGM -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">62 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Calm Leaf BGM";
 const KANAL = "Calm_Leaf_BGM.html";
+const ORIG_CATEGORIES = "Smooth Jazz, Lounge";
 const VIDEOS = [{"id": "75KNqvaAT7g", "title": "Smooth Jazz Fusion – Analog Serenity", "thumb": "https://i.ytimg.com/vi/75KNqvaAT7g/mqdefault.jpg", "dur": "1:13:09"}, {"id": "sWLcEu0yELM", "title": "Ambient Jazz Fusion – Cognitive Flow & Productive Focus", "thumb": "https://i.ytimg.com/vi/sWLcEu0yELM/mqdefault.jpg", "dur": "1:22:43"}, {"id": "fxjSmkP6EbU", "title": "Smooth Jazz Fusion – Pure & Timeless Jazz Fusion", "thumb": "https://i.ytimg.com/vi/fxjSmkP6EbU/mqdefault.jpg", "dur": "1:04:59"}, {"id": "XBGdVHwqMug", "title": "Retro Smooth Jazz Fusion – 70s Inspired Chill Vibes", "thumb": "https://i.ytimg.com/vi/XBGdVHwqMug/mqdefault.jpg", "dur": "1:00:40"}, {"id": "YdXBEARmuDs", "title": "Smooth Jazz Fusion – Sophisticated City Vibes", "thumb": "https://i.ytimg.com/vi/YdXBEARmuDs/mqdefault.jpg", "dur": "1:08:11"}, {"id": "neKwlU8Wj-A", "title": "Jazz Fusion – Mystic African Nights", "thumb": "https://i.ytimg.com/vi/neKwlU8Wj-A/mqdefault.jpg", "dur": "1:06:30"}, {"id": "775UaNnVTZg", "title": "Smooth Jazz Fusion – Cinematic Velvet Night", "thumb": "https://i.ytimg.com/vi/775UaNnVTZg/mqdefault.jpg", "dur": "1:10:43"}, {"id": "5baXAlRPv7c", "title": "Smooth Jazz Fusion - Neon City Nights", "thumb": "https://i.ytimg.com/vi/5baXAlRPv7c/mqdefault.jpg", "dur": "1:03:51"}, {"id": "5Ua9sn7ZZso", "title": "Rainy Night Jazz Fusion – City Lights from Above", "thumb": "https://i.ytimg.com/vi/5Ua9sn7ZZso/mqdefault.jpg", "dur": "1:02:02"}, {"id": "bU1wdvAJ4Dg", "title": "Smooth Jazz Fusion – Rhythmic Grooves for Cozy Evenings with Vintage Vibes", "thumb": "https://i.ytimg.com/vi/bU1wdvAJ4Dg/mqdefault.jpg", "dur": "1:05:39"}, {"id": "sHEfyh73xr8", "title": "Smooth Jazz Fusion – Chill Beats for Night Listening", "thumb": "https://i.ytimg.com/vi/sHEfyh73xr8/mqdefault.jpg", "dur": "1:04:30"}, {"id": "NC-FKL4JxF8", "title": "Smooth Jazz Fusion – Memories of Late Summer Nights", "thumb": "https://i.ytimg.com/vi/NC-FKL4JxF8/mqdefault.jpg", "dur": "1:04:46"}, {"id": "bx4OaTpEj9w", "title": "Smooth Jazz Fusion – Cinematic Midnight Escape", "thumb": "https://i.ytimg.com/vi/bx4OaTpEj9w/mqdefault.jpg", "dur": "1:04:27"}, {"id": "8GurE6scwq4", "title": "Night Jazz Fusion – Calm & Cozy | Smooth Jazz for Relaxing Evenings", "thumb": "https://i.ytimg.com/vi/8GurE6scwq4/mqdefault.jpg", "dur": "1:02:07"}, {"id": "rRmN8lIWvJQ", "title": "Starry Night – Smooth Jazz Fusion with a Cinematic Urban Touch", "thumb": "https://i.ytimg.com/vi/rRmN8lIWvJQ/mqdefault.jpg", "dur": "1:02:32"}, {"id": "lPB-lJ4GvY8", "title": "Smooth Jazz Fusion – Rhythmic Grooves for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/lPB-lJ4GvY8/mqdefault.jpg", "dur": "1:01:39"}, {"id": "LzfkaG1qm2A", "title": "Starry Night – Smooth Jazz Fusion for a Dreamy Urban Lounge", "thumb": "https://i.ytimg.com/vi/LzfkaG1qm2A/mqdefault.jpg", "dur": "1:03:21"}, {"id": "3kyiZ4i4mKQ", "title": "Smooth Jazz Fusion × Future Beats – Midnight City Lounge", "thumb": "https://i.ytimg.com/vi/3kyiZ4i4mKQ/mqdefault.jpg", "dur": "1:00:07"}, {"id": "-4RO0ff1x_w", "title": "Bossa Nova × Smooth Jazz Fusion – Summer Night Cafe", "thumb": "https://i.ytimg.com/vi/-4RO0ff1x_w/mqdefault.jpg", "dur": "1:01:28"}, {"id": "VGFmTKhP8KU", "title": "Cinematic Smooth Jazz Fusion – Nights with a Dramatic Build", "thumb": "https://i.ytimg.com/vi/VGFmTKhP8KU/mqdefault.jpg", "dur": "1:10:54"}, {"id": "M9y10Mpc_vY", "title": "City Pop × Smooth Jazz Fusion – Neon Nights in the 80s", "thumb": "https://i.ytimg.com/vi/M9y10Mpc_vY/mqdefault.jpg", "dur": "1:07:15"}, {"id": "ybuu_JMIqQg", "title": "Late Night Jazz Fusion – A Touch of Melancholy & Warmth", "thumb": "https://i.ytimg.com/vi/ybuu_JMIqQg/mqdefault.jpg", "dur": "1:01:04"}, {"id": "ZikyYFJ3HT8", "title": "Smooth Jazz Fusion × Future Beats – Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/ZikyYFJ3HT8/mqdefault.jpg", "dur": "1:05:45"}, {"id": "_OOAysjzUsY", "title": "Rainy Night Jazz Fusion - Quiet Moments", "thumb": "https://i.ytimg.com/vi/_OOAysjzUsY/mqdefault.jpg", "dur": "1:02:26"}, {"id": "Q5Jq3MTcNBA", "title": "Smooth Jazz Fusion – Vinyl Nights & Gentle Light", "thumb": "https://i.ytimg.com/vi/Q5Jq3MTcNBA/mqdefault.jpg", "dur": "1:01:04"}, {"id": "T73Hl2dCOGM", "title": "Midnight Jazz – Tokyo Heat, Soft Light", "thumb": "https://i.ytimg.com/vi/T73Hl2dCOGM/mqdefault.jpg", "dur": "1:00:55"}, {"id": "B8GNT8T0SM8", "title": "Midnight Smooth Jazz – Melancholic & Cozy Vibes", "thumb": "https://i.ytimg.com/vi/B8GNT8T0SM8/mqdefault.jpg", "dur": "1:09:10"}, {"id": "dpdcSSwT9Mk", "title": "Smooth Swing Jazz Fusion – Late Night Lounge Vibes", "thumb": "https://i.ytimg.com/vi/dpdcSSwT9Mk/mqdefault.jpg", "dur": "1:03:09"}, {"id": "9LVe34k5yaU", "title": "Summer Night Jazz – Gentle Breeze & City Lights", "thumb": "https://i.ytimg.com/vi/9LVe34k5yaU/mqdefault.jpg", "dur": "1:00:01"}, {"id": "3xQC_f4OqcM", "title": "Smooth Chill Jazz in a Modern Café", "thumb": "https://i.ytimg.com/vi/3xQC_f4OqcM/mqdefault.jpg", "dur": "1:00:14"}, {"id": "OocQbjNd9U0", "title": "Cinematic Jazz Fusion – Night Scenes", "thumb": "https://i.ytimg.com/vi/OocQbjNd9U0/mqdefault.jpg", "dur": "1:08:42"}, {"id": "Extca3oalo8", "title": "Urban Night Jazz – Smooth & Moody Fusion", "thumb": "https://i.ytimg.com/vi/Extca3oalo8/mqdefault.jpg", "dur": "59:39"}, {"id": "H31_LXJvrhk", "title": "Urban Stillness: Smooth Jazz in ECM Style", "thumb": "https://i.ytimg.com/vi/H31_LXJvrhk/mqdefault.jpg", "dur": "1:06:30"}, {"id": "CykNC-bbZiw", "title": "City Lounge Vibes – Smooth Jazz Fusion with City Pop Flavor", "thumb": "https://i.ytimg.com/vi/CykNC-bbZiw/mqdefault.jpg", "dur": "1:03:37"}, {"id": "JzF5ffB4KqI", "title": "Late Night Minimal Jazz – Smooth & Serene Sounds", "thumb": "https://i.ytimg.com/vi/JzF5ffB4KqI/mqdefault.jpg", "dur": "59:36"}, {"id": "3Yr6ldNwdtI", "title": "Rainy Night Jazz Fusion – Smooth & Mellow Fusion for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/3Yr6ldNwdtI/mqdefault.jpg", "dur": "1:05:23"}, {"id": "p-lsqElWO3o", "title": "Smooth Jazz Fusion – Warm Tones for Quiet Moments", "thumb": "https://i.ytimg.com/vi/p-lsqElWO3o/mqdefault.jpg", "dur": "1:07:18"}, {"id": "L9y4sle0W_k", "title": "Midnight Soul – Smooth Jazz Fusion with Neo Soul Vibes", "thumb": "https://i.ytimg.com/vi/L9y4sle0W_k/mqdefault.jpg", "dur": "1:04:13"}, {"id": "UG4gdYT9EqY", "title": "Smooth Jazz Fusion with a Cinematic Touch", "thumb": "https://i.ytimg.com/vi/UG4gdYT9EqY/mqdefault.jpg", "dur": "1:01:24"}, {"id": "1yKtgTJ0sGE", "title": "Smooth Jazz Fusion for Nighttime", "thumb": "https://i.ytimg.com/vi/1yKtgTJ0sGE/mqdefault.jpg", "dur": "1:01:22"}, {"id": "JOWEL9mm_ac", "title": "Chill Sunset Bossa – Smooth Jazz Guitar Vibes", "thumb": "https://i.ytimg.com/vi/JOWEL9mm_ac/mqdefault.jpg", "dur": "1:06:53"}, {"id": "1W0KitDapeM", "title": "Smooth Jazz Fusion – Mellow Grooves & Gentle Vibes", "thumb": "https://i.ytimg.com/vi/1W0KitDapeM/mqdefault.jpg", "dur": "1:02:33"}, {"id": "wOnmMV_7XSI", "title": "Late Night Jazz Fusion – Smooth & Melodic Lounge Vibes", "thumb": "https://i.ytimg.com/vi/wOnmMV_7XSI/mqdefault.jpg", "dur": "1:06:11"}, {"id": "9F5Yy8DN6NI", "title": "Vintage Swing Jazz – Uplifting Big Band Sounds", "thumb": "https://i.ytimg.com/vi/9F5Yy8DN6NI/mqdefault.jpg", "dur": "1:05:46"}, {"id": "AvlXBMd2Mjc", "title": "Bebop Jazz Club – Energetic Sounds from NYC", "thumb": "https://i.ytimg.com/vi/AvlXBMd2Mjc/mqdefault.jpg", "dur": "1:02:14"}, {"id": "g-akziYgkhI", "title": "Vintage Jazz Lounge – Chill Instrumentals from the 50s Era", "thumb": "https://i.ytimg.com/vi/g-akziYgkhI/mqdefault.jpg", "dur": "1:01:35"}, {"id": "NK2ivMSxtuU", "title": "Midnight Jazz Lounge – Cinematic Piano & Saxophone", "thumb": "https://i.ytimg.com/vi/NK2ivMSxtuU/mqdefault.jpg", "dur": "1:02:50"}, {"id": "oPVRUKZvCmI", "title": "Sunny Jazz Ride – Feel-Good Music for Driving & Relaxing", "thumb": "https://i.ytimg.com/vi/oPVRUKZvCmI/mqdefault.jpg", "dur": "1:00:01"}, {"id": "QQAzYe7LTZc", "title": "Quiet Night Jazz – Melancholic Piano & Saxophone", "thumb": "https://i.ytimg.com/vi/QQAzYe7LTZc/mqdefault.jpg", "dur": "1:01:29"}, {"id": "E3MAXDsTrZU", "title": "Late Night Jazz – Smooth Piano & Saxophone Sounds", "thumb": "https://i.ytimg.com/vi/E3MAXDsTrZU/mqdefault.jpg", "dur": "1:02:37"}, {"id": "X1N12dxwaxk", "title": "Urban Jazz Fusion – Chill & Cool Instrumentals", "thumb": "https://i.ytimg.com/vi/X1N12dxwaxk/mqdefault.jpg", "dur": "1:00:01"}, {"id": "uqVwadDENGU", "title": "Sunset Bossa Jazz – Chill Guitar Instrumentals", "thumb": "https://i.ytimg.com/vi/uqVwadDENGU/mqdefault.jpg", "dur": "1:00:42"}, {"id": "DKon0HHakZM", "title": "Quiet Night Jazz – Cozy & Chill", "thumb": "https://i.ytimg.com/vi/DKon0HHakZM/mqdefault.jpg", "dur": "1:01:40"}, {"id": "uD1SktCvgBs", "title": "Rainy Night Jazz Fusion – Smooth & Cozy", "thumb": "https://i.ytimg.com/vi/uD1SktCvgBs/mqdefault.jpg", "dur": "1:01:19"}, {"id": "lanhgnZRwOA", "title": "Late Night Jazz Piano– Smooth & Cozy", "thumb": "https://i.ytimg.com/vi/lanhgnZRwOA/mqdefault.jpg", "dur": "1:02:35"}, {"id": "uqtd3cNBZKI", "title": "Night Jazz Fusion – Midnight Focus", "thumb": "https://i.ytimg.com/vi/uqtd3cNBZKI/mqdefault.jpg", "dur": "1:04:10"}, {"id": "tR2WD9FAhhQ", "title": "Night Jazz Fusion – Smooth & Tranquil", "thumb": "https://i.ytimg.com/vi/tR2WD9FAhhQ/mqdefault.jpg", "dur": "1:02:54"}, {"id": "v8RQQVHgPKU", "title": "Evening Jazz Fusion – Cozy & Light Grooves", "thumb": "https://i.ytimg.com/vi/v8RQQVHgPKU/mqdefault.jpg", "dur": "1:02:05"}, {"id": "g32WpFG7_RA", "title": "Feel-Good Jazz Fusion – Smooth & Upbeat", "thumb": "https://i.ytimg.com/vi/g32WpFG7_RA/mqdefault.jpg", "dur": "1:00:36"}, {"id": "He75QageDBk", "title": "Lo-fi Chill  HipHop  Mix", "thumb": "https://i.ytimg.com/vi/He75QageDBk/mqdefault.jpg", "dur": "1:00:10"}, {"id": "urrEuArtfic", "title": "Morning Focus – 1 Hour of Minimal Ambient Music", "thumb": "https://i.ytimg.com/vi/urrEuArtfic/mqdefault.jpg", "dur": "1:14:23"}, {"id": "uycLwSV0aog", "title": "Calm Horizon： 1-Hour Ambient for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/uycLwSV0aog/mqdefault.jpg", "dur": "1:01:36"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

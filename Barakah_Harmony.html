@@ -7,7 +7,7 @@
 <!-- categories: Weltmusik, Jazz -->
 <!-- channel-id: UCBWb1JYR6-qr6K3LI4Vkfjw -->
 <!-- channel-url: https://youtube.com/@barakaharmony11 -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">78 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Barakah Harmony";
 const KANAL = "Barakah_Harmony.html";
+const ORIG_CATEGORIES = "Weltmusik, Jazz";
 const VIDEOS = [{"id": "dngw5lwSH-A", "title": "Arabian Relaxation 🌿 Peaceful Oud Music for Sleep, Meditation & Stress Relief", "thumb": "https://i.ytimg.com/vi/dngw5lwSH-A/mqdefault.jpg", "dur": "2:29:06"}, {"id": "xikKpLWL5NI", "title": "Arabian Oud Harmony 🌙 Relaxing Middle Eastern Instrumental Music", "thumb": "https://i.ytimg.com/vi/xikKpLWL5NI/mqdefault.jpg", "dur": "1:09:55"}, {"id": "p8z6EhrS_1w", "title": "Arabian Relaxing Oud Harmony 🌙 Peaceful Middle Eastern Instrumental Music", "thumb": "https://i.ytimg.com/vi/p8z6EhrS_1w/mqdefault.jpg", "dur": "2:13:31"}, {"id": "skX0M6x86QA", "title": "Arabian Harmony🌙 Relaxing Oud Music for Sleep, Meditation & Peaceful Evenings jpeg", "thumb": "https://i.ytimg.com/vi/skX0M6x86QA/mqdefault.jpg", "dur": "2:05:26"}, {"id": "YftlPNb7Y_Y", "title": "Arabian Melodies 🌙 Relaxing Oud Music for Peaceful Arabian Nights", "thumb": "https://i.ytimg.com/vi/YftlPNb7Y_Y/mqdefault.jpg", "dur": "2:12:07"}, {"id": "u6Jgq-MRZOo", "title": "Arabian Harmony 🌙 Peaceful Oud, Qanun & Ney Instrumental Music", "thumb": "https://i.ytimg.com/vi/u6Jgq-MRZOo/mqdefault.jpg", "dur": "2:19:12"}, {"id": "MDC8eOmFNyk", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Events, Calm Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/MDC8eOmFNyk/mqdefault.jpg", "dur": "1:51:58"}, {"id": "VhqmN5TIygE", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Events, Calm Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/VhqmN5TIygE/mqdefault.jpg", "dur": "2:02:18"}, {"id": "D4VExo-QzRU", "title": "Arabian Night Harmony 🌙 Relaxing Oud Music for Deep Focus & Inner Peace", "thumb": "https://i.ytimg.com/vi/D4VExo-QzRU/mqdefault.jpg", "dur": "1:53:39"}, {"id": "E46ob1tmz40", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/E46ob1tmz40/mqdefault.jpg", "dur": "2:02:29"}, {"id": "HzBJ845GE0w", "title": "Arabian Oud Harmony 🌅 Elegant Middle Eastern Instrumental Music", "thumb": "https://i.ytimg.com/vi/HzBJ845GE0w/mqdefault.jpg", "dur": "2:07:54"}, {"id": "lKuQ3aANG4o", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Deep Focus & Inner Peace", "thumb": "https://i.ytimg.com/vi/lKuQ3aANG4o/mqdefault.jpg", "dur": "2:03:17"}, {"id": "yJfz9HOXkPI", "title": "Arabian Melodies 🌅 Golden Oud Music for Relaxation & Peaceful Evenings", "thumb": "https://i.ytimg.com/vi/yJfz9HOXkPI/mqdefault.jpg", "dur": "2:08:33"}, {"id": "09DNw0abzts", "title": "Arabian Oud Harmony 🌙 Relaxing Middle Eastern Instrumental | Barakah Harmony", "thumb": "https://i.ytimg.com/vi/09DNw0abzts/mqdefault.jpg", "dur": "1:09:42"}, {"id": "eUQ19jpc9OI", "title": "Arabian Melodies 🌙 Relaxing Oud Music for Sleep, Focus & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/eUQ19jpc9OI/mqdefault.jpg", "dur": "2:05:55"}, {"id": "x8ujjmhIK5U", "title": "Arabian Relaxing Melodies 🌙 Peaceful Oud Instrumental for Sleep & Deep Focus", "thumb": "https://i.ytimg.com/vi/x8ujjmhIK5U/mqdefault.jpg", "dur": "1:53:01"}, {"id": "BYhmedBPwT0", "title": "Arabian Relaxing Oud Harmony 🌙 Peaceful Middle Eastern Instrumental Music", "thumb": "https://i.ytimg.com/vi/BYhmedBPwT0/mqdefault.jpg", "dur": "1:55:00"}, {"id": "iA3IsHveWyo", "title": "Arabian Harmony ✨ Peaceful Oud Music & Luxury Middle Eastern Ambience", "thumb": "https://i.ytimg.com/vi/iA3IsHveWyo/mqdefault.jpg", "dur": "2:16:55"}, {"id": "y2QAiW_APrw", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/y2QAiW_APrw/mqdefault.jpg", "dur": "2:05:24"}, {"id": "RyoVm3Ov_RI", "title": "Arabian Music Harmony ✨ Relaxing Oud & Middle Eastern Ambience", "thumb": "https://i.ytimg.com/vi/RyoVm3Ov_RI/mqdefault.jpg", "dur": "2:26:31"}, {"id": "dtdWHr62ago", "title": "Arabic Oud Melodies ✨ Elegant Middle Eastern Relaxation Music", "thumb": "https://i.ytimg.com/vi/dtdWHr62ago/mqdefault.jpg", "dur": "2:01:46"}, {"id": "HwgwON9GPtE", "title": "Arabian Melodies 🌙 Relaxing Oud Music for Events, Calm Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/HwgwON9GPtE/mqdefault.jpg", "dur": "2:02:57"}, {"id": "4tvvkPY4HdY", "title": "Elegant Arabian Nights ✨ Luxury Oud & Middle Eastern Instrumental Ambience", "thumb": "https://i.ytimg.com/vi/4tvvkPY4HdY/mqdefault.jpg", "dur": "2:01:53"}, {"id": "KRhzCkP1EHU", "title": "Arabian Oud Music 🌙 Deep Relaxation & Peaceful Middle Eastern Instrumental", "thumb": "https://i.ytimg.com/vi/KRhzCkP1EHU/mqdefault.jpg", "dur": "1:59:18"}, {"id": "Yx38KNdu3aI", "title": "Arabian Oud Music 🌙 Deep Relaxation & Peaceful Middle Eastern Instrumental", "thumb": "https://i.ytimg.com/vi/Yx38KNdu3aI/mqdefault.jpg", "dur": "2:03:17"}, {"id": "gmbh_EYCSO0", "title": "Arabian Melodies ✨ Relaxing Oud Music for Sleep, Focus & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/gmbh_EYCSO0/mqdefault.jpg", "dur": "2:03:46"}, {"id": "nv2wjhC4cNA", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Peaceful Nights & Calm Energy", "thumb": "https://i.ytimg.com/vi/nv2wjhC4cNA/mqdefault.jpg", "dur": "2:00:59"}, {"id": "5jOTxyNllso", "title": "Arabian Oud Harmony✨ Deep Focus & Relaxing Instrumental", "thumb": "https://i.ytimg.com/vi/5jOTxyNllso/mqdefault.jpg", "dur": "1:57:44"}, {"id": "G3CS8IuBVK4", "title": "Arabian Oud Harmony✨ Deep Focus & Relaxing Instrumental", "thumb": "https://i.ytimg.com/vi/G3CS8IuBVK4/mqdefault.jpg", "dur": "1:57:53"}, {"id": "Y2_N_tyz4T8", "title": "Arabian Harmony 🌙 Relaxing Oud Music with Water Reflection Ambience for Deep Calm", "thumb": "https://i.ytimg.com/vi/Y2_N_tyz4T8/mqdefault.jpg", "dur": "2:08:34"}, {"id": "3LsUI2rXDZQ", "title": "Arabian Super Relaxing Music ✨ Calm Oud & Middle Eastern Instrumental for Deep Focus", "thumb": "https://i.ytimg.com/vi/3LsUI2rXDZQ/mqdefault.jpg", "dur": "2:11:12"}, {"id": "RzF80uCz0zc", "title": "2 Hour Arabian Night Music 🌙 Relaxing Oud & Ney | Peaceful Desert Atmosphere", "thumb": "https://i.ytimg.com/vi/RzF80uCz0zc/mqdefault.jpg", "dur": "2:23:51"}, {"id": "l9QI1Ytaa5A", "title": "Golden Oud Harmony ✨ Relaxing Arabic Music for Focus & Inner Peace", "thumb": "https://i.ytimg.com/vi/l9QI1Ytaa5A/mqdefault.jpg", "dur": "2:07:36"}, {"id": "o4XSteoa4jw", "title": "Arabian Harmony 🌙 Relaxing Oud Music for Deep Focus & Inner Peace", "thumb": "https://i.ytimg.com/vi/o4XSteoa4jw/mqdefault.jpg", "dur": "1:59:53"}, {"id": "g5veVjsfZPA", "title": "Arabian Relaxing Oud Music 🌿 Calm Middle Eastern Instrumental for Focus & Peace", "thumb": "https://i.ytimg.com/vi/g5veVjsfZPA/mqdefault.jpg", "dur": "2:05:34"}, {"id": "4a8VW_eAbeI", "title": "Relaxing Oud Music ✨ Arabian Instrumental for Deep Calm & Focus", "thumb": "https://i.ytimg.com/vi/4a8VW_eAbeI/mqdefault.jpg", "dur": "1:55:50"}, {"id": "8j6BI02d1IQ", "title": "Arabian Palace Ambience ✨ Relaxing Oud Music", "thumb": "https://i.ytimg.com/vi/8j6BI02d1IQ/mqdefault.jpg", "dur": "1:48:13"}, {"id": "2vvvo01qRY8", "title": "✨ Arabian Oud Music 🌿 Relaxing Instrumental for Focus & Calm", "thumb": "https://i.ytimg.com/vi/2vvvo01qRY8/mqdefault.jpg", "dur": "2:06:37"}, {"id": "3jyR9ghvJJc", "title": "Arabian Night 🌙 Relaxing Oud Music for Deep Calm & Sleep", "thumb": "https://i.ytimg.com/vi/3jyR9ghvJJc/mqdefault.jpg", "dur": "2:05:24"}, {"id": "5mY-Ht35Zc8", "title": "Arabian Relax Music 🌙 Deep Oud Instrumental for Calm & Peaceful Mind", "thumb": "https://i.ytimg.com/vi/5mY-Ht35Zc8/mqdefault.jpg", "dur": "2:05:52"}, {"id": "sBWkcZDRvbI", "title": "Deep Relaxing Oud Music ✨ | Warm Golden Atmosphere", "thumb": "https://i.ytimg.com/vi/sBWkcZDRvbI/mqdefault.jpg", "dur": "2:19:01"}, {"id": "ZRAlYSyYfKI", "title": "Deep Relaxation with Oud Music 🌙 | Mystical Night Ambience", "thumb": "https://i.ytimg.com/vi/ZRAlYSyYfKI/mqdefault.jpg", "dur": "2:05:21"}, {"id": "g-DTu434YaY", "title": "ARABIAN ✨ Calm Oud Music | Luxurious Middle Eastern Ambience", "thumb": "https://i.ytimg.com/vi/g-DTu434YaY/mqdefault.jpg", "dur": "2:15:00"}, {"id": "b3RbU5J0MSY", "title": "ARABIAN 🌙 Calm Oud Instrumental | Peaceful Night Vibes", "thumb": "https://i.ytimg.com/vi/b3RbU5J0MSY/mqdefault.jpg", "dur": "2:13:41"}, {"id": "kfMA-GWfr68", "title": "ARABIAN 🌿 Relaxing Oud Music | Peaceful Cozy Ambience", "thumb": "https://i.ytimg.com/vi/kfMA-GWfr68/mqdefault.jpg", "dur": "2:20:10"}, {"id": "qe2SIRzLCk8", "title": "Arabian✨ Warm Oud Music  Relaxing Middle Eastern Luxury Ambience", "thumb": "https://i.ytimg.com/vi/qe2SIRzLCk8/mqdefault.jpg", "dur": "2:08:33"}, {"id": "en4Yu8JnGXs", "title": "ARABIAN NIGHT 🌙 Relaxing Oud Music | Peaceful City Lights Ambience", "thumb": "https://i.ytimg.com/vi/en4Yu8JnGXs/mqdefault.jpg", "dur": "2:04:59"}, {"id": "ojVMj29ZjR0", "title": "ARABIAN 🌅 Sunset Oud Music | Cozy Middle Eastern Ambience for Relaxation", "thumb": "https://i.ytimg.com/vi/ojVMj29ZjR0/mqdefault.jpg", "dur": "2:12:28"}, {"id": "ZMyzcLEEzbY", "title": "ARABIAN 🌙 Deep Night Oud Music | Calm & Peaceful Islamic Ambience", "thumb": "https://i.ytimg.com/vi/ZMyzcLEEzbY/mqdefault.jpg", "dur": "1:55:06"}, {"id": "4FrGeUNSCZY", "title": "ARABIAN 🌙 Majestic Oud Music | Deep Relaxation & Peaceful Middle Eastern Ambience", "thumb": "https://i.ytimg.com/vi/4FrGeUNSCZY/mqdefault.jpg", "dur": "1:58:17"}, {"id": "vHnYNI_AwmA", "title": "ARABIAN OASIS 🌴 Relaxing Oud Music | Desert Ambience & Calm Vibes", "thumb": "https://i.ytimg.com/vi/vHnYNI_AwmA/mqdefault.jpg", "dur": "1:55:18"}, {"id": "wW4ROBPcjMI", "title": "✨ Arabian Oud Music | Majestic Dome Ambience for Deep Relaxation - Vol. 03", "thumb": "https://i.ytimg.com/vi/wW4ROBPcjMI/mqdefault.jpg", "dur": "2:02:16"}, {"id": "l53A6eD12RI", "title": "✨ Arabian Oud Music | Majestic Dome Ambience for Deep Relaxation - Vol. 02", "thumb": "https://i.ytimg.com/vi/l53A6eD12RI/mqdefault.jpg", "dur": "1:55:02"}, {"id": "36IfCQkAY2o", "title": "ARABIAN Oud Ambience 🌴 Calm Tropical Atmosphere Relaxing", "thumb": "https://i.ytimg.com/vi/36IfCQkAY2o/mqdefault.jpg", "dur": "1:59:37"}, {"id": "sybyCSy0VOI", "title": "🔥 ARABIAN Relaxing Oud Music 🌧️ Rainy Ambience", "thumb": "https://i.ytimg.com/vi/sybyCSy0VOI/mqdefault.jpg", "dur": "2:01:32"}, {"id": "g9j5pUFILxI", "title": "🔥 Rainy Glass Dome 🌧️ Arabian Oud Music for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/g9j5pUFILxI/mqdefault.jpg", "dur": "1:55:39"}, {"id": "rujAOAZ3A8E", "title": "✨ Arabian Oud Music  Peaceful Daytime Mountain View Ambience", "thumb": "https://i.ytimg.com/vi/rujAOAZ3A8E/mqdefault.jpg", "dur": "2:05:41"}, {"id": "x6E7HxbUlfI", "title": "✨ Arabian Oud Music | Majestic Dome Ambience for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/x6E7HxbUlfI/mqdefault.jpg", "dur": "2:13:15"}, {"id": "sBj0IWFAwp0", "title": "Cozy Arabian Day Room ☀️ Relaxing Oud Music Ambience", "thumb": "https://i.ytimg.com/vi/sBj0IWFAwp0/mqdefault.jpg", "dur": "1:56:02"}, {"id": "zu-zMYt-t2Q", "title": "Cozy Arabian Rain Room 🌧️ Relaxing Oud Music for Deep Focus, Study & Sleep", "thumb": "https://i.ytimg.com/vi/zu-zMYt-t2Q/mqdefault.jpg", "dur": "2:01:25"}, {"id": "D1oEG9l52Q0", "title": "Cozy Arabian Beach Day ☀️ Relaxing Oud Music  Ocean Breeze Ambience", "thumb": "https://i.ytimg.com/vi/D1oEG9l52Q0/mqdefault.jpg", "dur": "1:55:30"}, {"id": "WUX3jZ-iNqA", "title": "Cozy Arabian Rain Garden 🌧️ Relaxing Oud Music | Warm Night Ambience", "thumb": "https://i.ytimg.com/vi/WUX3jZ-iNqA/mqdefault.jpg", "dur": "1:56:33"}, {"id": "Wkz77x0TUeQ", "title": "Cozy Arabian Rain Garden 🌧️ Relaxing Oud Music | Warm Night Ambience", "thumb": "https://i.ytimg.com/vi/Wkz77x0TUeQ/mqdefault.jpg", "dur": "1:57:47"}, {"id": "LmulgYqGJPU", "title": "Arabian Oasis Rain Night 🌧️ Relaxing Oud & Ney | Cozy Desert Ambience", "thumb": "https://i.ytimg.com/vi/LmulgYqGJPU/mqdefault.jpg", "dur": "2:05:04"}, {"id": "CqYE1s5w6QQ", "title": "Cozy Arabian Desert Night 🌙 Relaxing Oud Music | Starry Sky Sleep Ambience", "thumb": "https://i.ytimg.com/vi/CqYE1s5w6QQ/mqdefault.jpg", "dur": "1:53:33"}, {"id": "VILY7xkq6_M", "title": "Cozy Arabian Desert Night 🌙 Relaxing Oud Music | Starry Sky Ambience", "thumb": "https://i.ytimg.com/vi/VILY7xkq6_M/mqdefault.jpg", "dur": "2:28:24"}, {"id": "lnzts0SqxWc", "title": "Cozy Arabian Rain Garden 🌧️ Relaxing Oud Music | Warm Night Ambience", "thumb": "https://i.ytimg.com/vi/lnzts0SqxWc/mqdefault.jpg", "dur": "1:58:30"}, {"id": "ZdbkVg04f8w", "title": "Cozy Arabian Rain Night 🌙 Relaxing Oud Music | Warm Ambient Room for Sleep", "thumb": "https://i.ytimg.com/vi/ZdbkVg04f8w/mqdefault.jpg", "dur": "1:59:52"}, {"id": "Z1RR0oj3YeU", "title": "Vintage Arabian Rain Night 🌧️ Relaxing Oud & Ney | Cozy Desert Ambience for Sleep", "thumb": "https://i.ytimg.com/vi/Z1RR0oj3YeU/mqdefault.jpg", "dur": "1:43:40"}, {"id": "8M7hCkogpso", "title": "Arabian Oasis Rain Night 🌧️ Relaxing Oud & Ney | Cozy Desert Ambience", "thumb": "https://i.ytimg.com/vi/8M7hCkogpso/mqdefault.jpg", "dur": "1:56:42"}, {"id": "5o5i6EOk8ck", "title": "Luxury Arabian Palace Rain 🌧️ Relaxing Oud & Ney | Calm Night Ambience", "thumb": "https://i.ytimg.com/vi/5o5i6EOk8ck/mqdefault.jpg", "dur": "1:43:59"}, {"id": "W-_cX6patxE", "title": "Luxury Arabian Rain Night 🌧️ Relaxing Oud & Ney | Cozy Villa Ambience", "thumb": "https://i.ytimg.com/vi/W-_cX6patxE/mqdefault.jpg", "dur": "1:38:47"}, {"id": "9_Q1hKEALec", "title": "Arabian Rain Night Music 🌧️ Relaxing Oud & Ney | Luxury Cozy Ambience", "thumb": "https://i.ytimg.com/vi/9_Q1hKEALec/mqdefault.jpg", "dur": "1:40:34"}, {"id": "lWkNTx0eOWQ", "title": "Arabian Rain Night Music 🌧️ Relaxing Oud & Ney | Cozy Desert Ambience", "thumb": "https://i.ytimg.com/vi/lWkNTx0eOWQ/mqdefault.jpg", "dur": "1:46:47"}, {"id": "QUQ99zXqK-w", "title": "Arabian Desert Day Music ☀️ Relaxing Oud & Ney | Calm Middle Eastern Ambience", "thumb": "https://i.ytimg.com/vi/QUQ99zXqK-w/mqdefault.jpg", "dur": "1:45:41"}, {"id": "a5RqM181yFM", "title": "Arabian Night Instrumental Music 🌙 Relaxing Oud & Ney | Desert Starry Sky Ambience", "thumb": "https://i.ytimg.com/vi/a5RqM181yFM/mqdefault.jpg", "dur": "1:52:35"}, {"id": "8nrMiztvCwg", "title": "Arabian Night Instrumental Music 🌙 Relaxing Middle Eastern Oud & Ney  Ramadan Calm Music - Vol.02", "thumb": "https://i.ytimg.com/vi/8nrMiztvCwg/mqdefault.jpg", "dur": "1:53:19"}, {"id": "vjiLlcc3XV0", "title": "Arabian Night Instrumental Music 🌙 Relaxing Middle Eastern Oud & Ney | Ramadan Calm Music - Vol.01", "thumb": "https://i.ytimg.com/vi/vjiLlcc3XV0/mqdefault.jpg", "dur": "2:01:41"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

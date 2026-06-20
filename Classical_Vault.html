@@ -7,7 +7,7 @@
 <!-- categories: Klassik -->
 <!-- channel-id: UCb3rU_MjHjzUXFtaMfKrqbQ -->
 <!-- channel-url: https://www.youtube.com/@M%C3%BAsica-Cl%C3%A1sica -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">20 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Classical Vault";
 const KANAL = "Classical_Vault.html";
+const ORIG_CATEGORIES = "Klassik";
 const VIDEOS = [{"id": "YceC7jrzp-M", "title": "The Great Piano Sonatas · 3 Hours of Beethoven, Chopin & Schubert | Moonlight, Appassionata", "thumb": "https://i.ytimg.com/vi/YceC7jrzp-M/mqdefault.jpg", "dur": "2:33:03"}, {"id": "8qvVfYIJoT8", "title": "Schubert — Ave Maria", "thumb": "https://i.ytimg.com/vi/8qvVfYIJoT8/mqdefault.jpg", "dur": "6:07"}, {"id": "32TX4oPSYac", "title": "Schubert · Ave Maria (Ellens dritter Gesang) D. 839 | Sacred Classical", "thumb": "https://i.ytimg.com/vi/32TX4oPSYac/mqdefault.jpg", "dur": "6:07"}, {"id": "Dkhjj7Ix5B4", "title": "Classical Music for Deep Focus · 8 Hours of Bach, Mozart & Schubert | Study, Coding, Deep Work", "thumb": "https://i.ytimg.com/vi/Dkhjj7Ix5B4/mqdefault.jpg", "dur": "8:04:13"}, {"id": "n_W5xmWt2vU", "title": "Bach · Goldberg Variations & Classical Piano Journey | 3 Hours of Bach, Mozart, Schubert", "thumb": "https://i.ytimg.com/vi/n_W5xmWt2vU/mqdefault.jpg", "dur": "2:42:30"}, {"id": "_sep43btl5k", "title": "Satie - Gymnopédie No. 1 in D major | Piano", "thumb": "https://i.ytimg.com/vi/_sep43btl5k/mqdefault.jpg", "dur": "3:25"}, {"id": "dyR8ize0CBs", "title": "Satie — Gymnopédie No. 1", "thumb": "https://i.ytimg.com/vi/dyR8ize0CBs/mqdefault.jpg", "dur": "3:25"}, {"id": "P9kR9xYjWD8", "title": "Classical Music for Rainy Day · 8 Hours of Romantic Piano | Mussorgsky, Schubert, Chopin", "thumb": "https://i.ytimg.com/vi/P9kR9xYjWD8/mqdefault.jpg", "dur": "8:01:08"}, {"id": "jocs2Rj7as0", "title": "Franz Schubert · 3 Hours of Piano Sonatas D. 845, D. 850, D. 958, D. 959 + Impromptus", "thumb": "https://i.ytimg.com/vi/jocs2Rj7as0/mqdefault.jpg", "dur": "3:01:24"}, {"id": "7n2QMqYXibQ", "title": "Schumann - Träumerei Op. 15 No. 7 (Kinderszenen) | Piano", "thumb": "https://i.ytimg.com/vi/7n2QMqYXibQ/mqdefault.jpg", "dur": "2:28"}, {"id": "4wMA2ePYeCg", "title": "3 Hours of Romantic Late Works | Schumann Kinderszenen, Chopin Op. 35, Mussorgsky & Grieg", "thumb": "https://i.ytimg.com/vi/4wMA2ePYeCg/mqdefault.jpg", "dur": "2:39:28"}, {"id": "0ncenUPDeAQ", "title": "Debussy - Clair de Lune", "thumb": "https://i.ytimg.com/vi/0ncenUPDeAQ/mqdefault.jpg", "dur": "4:10"}, {"id": "lCSGimgud38", "title": "Classical Music for Reading · 8 Hours of Bach Goldberg & Slow Romantic Piano", "thumb": "https://i.ytimg.com/vi/lCSGimgud38/mqdefault.jpg", "dur": "8:02:32"}, {"id": "4nNNJMROTeg", "title": "Beethoven · Mozart · Schubert · 3 Hours of Classical Piano Sonatas | Moonlight & Appassionata", "thumb": "https://i.ytimg.com/vi/4nNNJMROTeg/mqdefault.jpg", "dur": "2:47:33"}, {"id": "eVgFV1xIU4E", "title": "Chopin - Nocturne Op. 9 No. 2 in E-flat Major | Piano", "thumb": "https://i.ytimg.com/vi/eVgFV1xIU4E/mqdefault.jpg", "dur": "4:32"}, {"id": "VhUJCmY7zeM", "title": "Classical Music for Studying · 8 Hours of Piano | Chopin, Bach, Debussy, Beethoven", "thumb": "https://i.ytimg.com/vi/VhUJCmY7zeM/mqdefault.jpg", "dur": "8:00:46"}, {"id": "LqLm9fPqQK0", "title": "Liszt - Liebestraum No. 3", "thumb": "https://i.ytimg.com/vi/LqLm9fPqQK0/mqdefault.jpg", "dur": "4:21"}, {"id": "XoYlH8tJtc8", "title": "Classical Music for Deep Sleep ・ 8 Hours of Chopin Nocturnes & Romantic Piano", "thumb": "https://i.ytimg.com/vi/XoYlH8tJtc8/mqdefault.jpg", "dur": "8:00:17"}, {"id": "0rcyYbw_BD0", "title": "Classical Music for Heartbreak | Chopin Nocturnes, Ballade & Fantaisie-Impromptu", "thumb": "https://i.ytimg.com/vi/0rcyYbw_BD0/mqdefault.jpg", "dur": "33:53"}, {"id": "wKq5G3KTJZs", "title": "Beethoven - Für Elise", "thumb": "https://i.ytimg.com/vi/wKq5G3KTJZs/mqdefault.jpg", "dur": "2:51"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

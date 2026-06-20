@@ -7,7 +7,7 @@
 <!-- categories: Blues, Rock -->
 <!-- channel-id: UCofKebDY9FI8WWNaIHlfzjQ -->
 <!-- channel-url: https://www.youtube.com/@BlueSuitBluess -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">132 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Blue Suit Blues";
 const KANAL = "Blue_Suit_Blues.html";
+const ORIG_CATEGORIES = "Blues, Rock";
 const VIDEOS = [{"id": "SIaHtg5XGus", "title": "Blue Suit Blues – Slow Chicago Blues for Quiet Late Night Vibes", "thumb": "https://i.ytimg.com/vi/SIaHtg5XGus/mqdefault.jpg", "dur": "1:01:34"}, {"id": "cTYb9SWTgQs", "title": "Blue Suit Blues – Slow Midnight Chicago Blues for Lonely Whiskey Nights", "thumb": "https://i.ytimg.com/vi/cTYb9SWTgQs/mqdefault.jpg", "dur": "1:00:59"}, {"id": "xe1iUVx7kzk", "title": "Blue Suit Blues – Midnight Blues, Smooth Jazz for Whiskey Hour Relaxation", "thumb": "https://i.ytimg.com/vi/xe1iUVx7kzk/mqdefault.jpg", "dur": "1:00:16"}, {"id": "3GbUxUmDzYI", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/3GbUxUmDzYI/mqdefault.jpg", "dur": "1:01:57"}, {"id": "FrtHhUcdRJU", "title": "Blue Suit Blues – Slow Chicago Blues for Lonely Midnight Thoughts", "thumb": "https://i.ytimg.com/vi/FrtHhUcdRJU/mqdefault.jpg", "dur": "1:18:47"}, {"id": "CMoNzrnwJZ4", "title": "Blue Suit Blues – Slow Midnight Chicago Blues & Smooth Jazz for Lonely Night Vibes", "thumb": "https://i.ytimg.com/vi/CMoNzrnwJZ4/mqdefault.jpg", "dur": "1:06:15"}, {"id": "kCDc36FdH3Q", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Lonely Whiskey Nights", "thumb": "https://i.ytimg.com/vi/kCDc36FdH3Q/mqdefault.jpg", "dur": "1:05:17"}, {"id": "68kF5KX8kWc", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Quiet Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/68kF5KX8kWc/mqdefault.jpg", "dur": "1:14:14"}, {"id": "oikM9ILSzmE", "title": "Blue Suit Blues – Slow Midnight Chicago Blues & Smooth Jazz for Calm Late Night Vibes", "thumb": "https://i.ytimg.com/vi/oikM9ILSzmE/mqdefault.jpg", "dur": "1:02:54"}, {"id": "8HnZXziJRyI", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Quiet Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/8HnZXziJRyI/mqdefault.jpg", "dur": "1:14:54"}, {"id": "yZrTXpXHYOg", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Lonely Night Relaxation", "thumb": "https://i.ytimg.com/vi/yZrTXpXHYOg/mqdefault.jpg", "dur": "58:51"}, {"id": "kQcTOqig0gI", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Night Relaxation", "thumb": "https://i.ytimg.com/vi/kQcTOqig0gI/mqdefault.jpg", "dur": "1:04:17"}, {"id": "pHu5YSsT740", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Quiet Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/pHu5YSsT740/mqdefault.jpg", "dur": "1:12:40"}, {"id": "sNd2wRqdgvg", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Quiet Late Night Vibes", "thumb": "https://i.ytimg.com/vi/sNd2wRqdgvg/mqdefault.jpg", "dur": "1:16:55"}, {"id": "807QG-83Xrk", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Quiet Midnight Emotion", "thumb": "https://i.ytimg.com/vi/807QG-83Xrk/mqdefault.jpg", "dur": "1:03:39"}, {"id": "oicrfzBa1IQ", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Deep Midnight Emotion", "thumb": "https://i.ytimg.com/vi/oicrfzBa1IQ/mqdefault.jpg", "dur": "1:03:32"}, {"id": "EvgUBG6-noo", "title": "Blue Suit Blues – Slow Chicago Blues for Melancholic Midnight Vibes", "thumb": "https://i.ytimg.com/vi/EvgUBG6-noo/mqdefault.jpg", "dur": "1:07:15"}, {"id": "Q_LeXVLCZdo", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Melancholy", "thumb": "https://i.ytimg.com/vi/Q_LeXVLCZdo/mqdefault.jpg", "dur": "1:02:34"}, {"id": "STJAuY13JEk", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Lonely Late Night Vibes", "thumb": "https://i.ytimg.com/vi/STJAuY13JEk/mqdefault.jpg", "dur": "1:06:05"}, {"id": "yLiCn-OGm1w", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Melancholic Late Night Mood", "thumb": "https://i.ytimg.com/vi/yLiCn-OGm1w/mqdefault.jpg", "dur": "1:02:14"}, {"id": "AtTTBWyXj-k", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night Whiskey Mood and Deep Relaxation", "thumb": "https://i.ytimg.com/vi/AtTTBWyXj-k/mqdefault.jpg", "dur": "1:12:10"}, {"id": "jjizA04Mc2Q", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/jjizA04Mc2Q/mqdefault.jpg", "dur": "57:55"}, {"id": "IK4Z59IjwJs", "title": "Blue Suit Blues – Slow Chicago Blues for Whiskey Night Vibes", "thumb": "https://i.ytimg.com/vi/IK4Z59IjwJs/mqdefault.jpg", "dur": "1:02:04"}, {"id": "0Dcft3PZPQA", "title": "Blue Suit Blues – Slow Chicago Blues for Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/0Dcft3PZPQA/mqdefault.jpg", "dur": "1:05:39"}, {"id": "WsEL-GZm7Q0", "title": "Blue Suit Blues – Slow Chicago Blues for Midnight Whiskey Mood", "thumb": "https://i.ytimg.com/vi/WsEL-GZm7Q0/mqdefault.jpg", "dur": "55:17"}, {"id": "hZEzXz_2Bg4", "title": "Blue Suit Blues – Slow Chicago Blues for Midnight Vibes", "thumb": "https://i.ytimg.com/vi/hZEzXz_2Bg4/mqdefault.jpg", "dur": "1:00:14"}, {"id": "3mnhueXepdM", "title": "Blue Suit Blues – Slow Chicago Blues for Late Night Vibes", "thumb": "https://i.ytimg.com/vi/3mnhueXepdM/mqdefault.jpg", "dur": "1:04:20"}, {"id": "d1U25DTiOQE", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Emotion and Relaxation", "thumb": "https://i.ytimg.com/vi/d1U25DTiOQE/mqdefault.jpg", "dur": "1:01:20"}, {"id": "fDNR3aGBAgg", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night Romantic Vibes", "thumb": "https://i.ytimg.com/vi/fDNR3aGBAgg/mqdefault.jpg", "dur": "1:02:54"}, {"id": "QuLGHPI8lwQ", "title": "Blue Suit Blues – Slow Chicago Blues for Midnight Emotion & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/QuLGHPI8lwQ/mqdefault.jpg", "dur": "1:07:05"}, {"id": "9yFKO4Wzwn0", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Deep Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/9yFKO4Wzwn0/mqdefault.jpg", "dur": "1:02:55"}, {"id": "MrfsNhIum-w", "title": "Blue Suit Blues – Chicago Blues & Jazz for Late Night Relax Vibes", "thumb": "https://i.ytimg.com/vi/MrfsNhIum-w/mqdefault.jpg", "dur": "1:00:21"}, {"id": "LPLPpkOLx9M", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Quiet Midnight Drift", "thumb": "https://i.ytimg.com/vi/LPLPpkOLx9M/mqdefault.jpg", "dur": "1:03:07"}, {"id": "UNyFVZh188o", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Night Whiskey Relaxation", "thumb": "https://i.ytimg.com/vi/UNyFVZh188o/mqdefault.jpg", "dur": "1:03:22"}, {"id": "uAcbXIqNSew", "title": "Blue Suit Blues – Slow Chicago Blues for Calm Midnight Serenity & Jazz Mood", "thumb": "https://i.ytimg.com/vi/uAcbXIqNSew/mqdefault.jpg", "dur": "1:01:38"}, {"id": "iawPHFIXWxE", "title": "Blue Suit Blues – Slow Chicago Blues for Quiet Midnight Drift & Jazz Mood", "thumb": "https://i.ytimg.com/vi/iawPHFIXWxE/mqdefault.jpg", "dur": "1:02:22"}, {"id": "GNzkV4yHeDg", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Haze and Quiet Nights", "thumb": "https://i.ytimg.com/vi/GNzkV4yHeDg/mqdefault.jpg", "dur": "1:03:23"}, {"id": "fhAhUrqeuAw", "title": "Blue Suit Blues – Slow Chicago Blues for Deep Night Ease & Jazz Mood", "thumb": "https://i.ytimg.com/vi/fhAhUrqeuAw/mqdefault.jpg", "dur": "1:02:06"}, {"id": "MeSqWT9rOTI", "title": "Blue Suit Blues – Slow Chicago Blues for Calm Midnight Flow & Jazz Mood", "thumb": "https://i.ytimg.com/vi/MeSqWT9rOTI/mqdefault.jpg", "dur": "1:05:32"}, {"id": "j5DcPw_B-1I", "title": "Blue Suit Blues – Slow Chicago Blues for Midnight Stillness & Smooth Jazz Mood", "thumb": "https://i.ytimg.com/vi/j5DcPw_B-1I/mqdefault.jpg", "dur": "1:04:51"}, {"id": "kfzpYCVj0vY", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Unwind and Deep Relaxation", "thumb": "https://i.ytimg.com/vi/kfzpYCVj0vY/mqdefault.jpg", "dur": "1:03:30"}, {"id": "W7o3LbsJln8", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Deep Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/W7o3LbsJln8/mqdefault.jpg", "dur": "1:02:28"}, {"id": "kPDZgOQkZA8", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/kPDZgOQkZA8/mqdefault.jpg", "dur": "1:02:25"}, {"id": "KQBxo1nG0eM", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Deep Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/KQBxo1nG0eM/mqdefault.jpg", "dur": "1:09:27"}, {"id": "xenSiwL2beo", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/xenSiwL2beo/mqdefault.jpg", "dur": "1:02:04"}, {"id": "1WzB-TIlRrM", "title": "Blue Suit Blues – Slow Chicago Blues Guitar for Dark After, Hours Nights", "thumb": "https://i.ytimg.com/vi/1WzB-TIlRrM/mqdefault.jpg", "dur": "1:00:31"}, {"id": "WSl1BVGF6Ds", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight After-Hours Vibes", "thumb": "https://i.ytimg.com/vi/WSl1BVGF6Ds/mqdefault.jpg", "dur": "1:03:40"}, {"id": "1BXpRFlcU2w", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night After-Hours Mood", "thumb": "https://i.ytimg.com/vi/1BXpRFlcU2w/mqdefault.jpg", "dur": "1:03:23"}, {"id": "PJtMU3e6-nw", "title": "Blue Suit Blues – Late Night Chicago Blues & Smooth Jazz for Deep After - Hours Relaxation", "thumb": "https://i.ytimg.com/vi/PJtMU3e6-nw/mqdefault.jpg", "dur": "1:08:43"}, {"id": "KwTSU6G3UrE", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/KwTSU6G3UrE/mqdefault.jpg", "dur": "1:00:51"}, {"id": "LDANTDmYF3U", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/LDANTDmYF3U/mqdefault.jpg", "dur": "1:01:46"}, {"id": "ar0aFwrl4vE", "title": "Blue Suit Blues -  Late Night Chicago Blues – Slow Blues Guitar for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/ar0aFwrl4vE/mqdefault.jpg", "dur": "1:01:20"}, {"id": "oODmnQ1r8_I", "title": "Blue Suit Blues – Slow Midnight Chicago Blues for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/oODmnQ1r8_I/mqdefault.jpg", "dur": "1:01:43"}, {"id": "4jrG2nLuU7w", "title": "Blue Suit Blues - Smooth Chicago Blues  – Midnight Blues Lounge & Jazz Nights", "thumb": "https://i.ytimg.com/vi/4jrG2nLuU7w/mqdefault.jpg", "dur": "1:01:06"}, {"id": "xqidd87bPu8", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Lonely Late Nights", "thumb": "https://i.ytimg.com/vi/xqidd87bPu8/mqdefault.jpg", "dur": "1:10:57"}, {"id": "KE2t4QPuFWk", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/KE2t4QPuFWk/mqdefault.jpg", "dur": "1:01:14"}, {"id": "aF0vYgn4rYY", "title": "Blue Suit Blues - Midnight Slow Chicago Blues for Deep Night Relaxation - Blues Playlist", "thumb": "https://i.ytimg.com/vi/aF0vYgn4rYY/mqdefault.jpg", "dur": "1:06:02"}, {"id": "Ktvsh7tp5E0", "title": "Blue Suit Blues - Slow Chicago Blues for Late Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/Ktvsh7tp5E0/mqdefault.jpg", "dur": "58:07"}, {"id": "dHIOSb8h8Ho", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Night Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/dHIOSb8h8Ho/mqdefault.jpg", "dur": "1:00:53"}, {"id": "_MYeBDgiqLw", "title": "Blue Suit Blues - Midnight Chicago Blues, Jazz - Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/_MYeBDgiqLw/mqdefault.jpg", "dur": "1:09:12"}, {"id": "I-V73lJTM3Q", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Relaxation", "thumb": "https://i.ytimg.com/vi/I-V73lJTM3Q/mqdefault.jpg", "dur": "1:01:24"}, {"id": "_UJOYytfyfo", "title": "Blue Suit Blues – Slow Chicago Blues for Deep Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/_UJOYytfyfo/mqdefault.jpg", "dur": "1:04:05"}, {"id": "Yy3KQqy5d8c", "title": "Blue Suit Blues – Midnight Chicago Blues & Slow Blues for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/Yy3KQqy5d8c/mqdefault.jpg", "dur": "1:19:42"}, {"id": "C0bgXQIDJcY", "title": "Blue Suit Blues – Slow Chicago Blues & Midnight Blues for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/C0bgXQIDJcY/mqdefault.jpg", "dur": "1:16:46"}, {"id": "bfSG69ebog8", "title": "Blue Suit Blues – Slow Chicago Blues for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/bfSG69ebog8/mqdefault.jpg", "dur": "1:02:53"}, {"id": "4Mc7W2WXPms", "title": "Blue Suit Blues – Slow Chicago Blues for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/4Mc7W2WXPms/mqdefault.jpg", "dur": "1:12:46"}, {"id": "8S5eQTCyHj8", "title": "Blue Suit Blues – Midnight Slow Chicago Blues | Melancholic Blues Guitar Playlist 2026", "thumb": "https://i.ytimg.com/vi/8S5eQTCyHj8/mqdefault.jpg", "dur": "1:04:59"}, {"id": "vjxYYYZ5Ftc", "title": "Blue Suit Blues – Midnight Chicago Blues, Jazz for Late Night Relax Blues", "thumb": "https://i.ytimg.com/vi/vjxYYYZ5Ftc/mqdefault.jpg", "dur": "1:05:02"}, {"id": "JEmAhay9Vic", "title": "Blue Suit Blues – Midnight Chicago Blues Guitar for Late Night Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/JEmAhay9Vic/mqdefault.jpg", "dur": "1:04:28"}, {"id": "plpvvcetwFQ", "title": "Blue Suit Blues – Midnight Chicago Blues Guitar for Whiskey Nights", "thumb": "https://i.ytimg.com/vi/plpvvcetwFQ/mqdefault.jpg", "dur": "1:08:51"}, {"id": "7lL9Qzn84zQ", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/7lL9Qzn84zQ/mqdefault.jpg", "dur": "1:09:24"}, {"id": "-53UJRo6geQ", "title": "Blue Suit Blues – Midnight Slow Chicago Blues for Whiskey Nights", "thumb": "https://i.ytimg.com/vi/-53UJRo6geQ/mqdefault.jpg", "dur": "1:03:54"}, {"id": "wRKQ9QdKGFM", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night Relaxation | Blues Playlist", "thumb": "https://i.ytimg.com/vi/wRKQ9QdKGFM/mqdefault.jpg", "dur": "1:05:42"}, {"id": "IPlPYSfbG7E", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz Deep Night Vibes", "thumb": "https://i.ytimg.com/vi/IPlPYSfbG7E/mqdefault.jpg", "dur": "1:04:57"}, {"id": "82A7-oFte8s", "title": "Blue Suit Blues – Slow Chicago Blues for Late Night Blues Relaxation", "thumb": "https://i.ytimg.com/vi/82A7-oFte8s/mqdefault.jpg", "dur": "1:03:15"}, {"id": "1-FPgemIVN0", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/1-FPgemIVN0/mqdefault.jpg", "dur": "1:05:53"}, {"id": "JzHgFBSh5xc", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/JzHgFBSh5xc/mqdefault.jpg", "dur": "1:02:16"}, {"id": "f93NaeM34KE", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/f93NaeM34KE/mqdefault.jpg", "dur": "1:05:17"}, {"id": "VOfMShi6EnE", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/VOfMShi6EnE/mqdefault.jpg", "dur": "1:07:06"}, {"id": "tSVPWiZ0LLk", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz Night Vibes", "thumb": "https://i.ytimg.com/vi/tSVPWiZ0LLk/mqdefault.jpg", "dur": "1:05:34"}, {"id": "xndoUfiEitg", "title": "Blue Suit Blues – Midnight Slow Chicago Blues, Jazz & Whiskey Playlist", "thumb": "https://i.ytimg.com/vi/xndoUfiEitg/mqdefault.jpg", "dur": "1:06:56"}, {"id": "j2B7ehgcCT4", "title": "Blue Suit Blues - Slow Chicago Blues, Jazz – Late Night Slow Blues Playlist", "thumb": "https://i.ytimg.com/vi/j2B7ehgcCT4/mqdefault.jpg", "dur": "1:03:04"}, {"id": "fG2mMI8uZ-E", "title": "Blue Suit Blues – Slow Chicago Blues Guitar for Midnight Whiskey Nights", "thumb": "https://i.ytimg.com/vi/fG2mMI8uZ-E/mqdefault.jpg", "dur": "1:03:37"}, {"id": "V1alAzd2DRU", "title": "Blue Suit Blues – Slow Chicago Blues Guitar & Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/V1alAzd2DRU/mqdefault.jpg", "dur": "1:03:42"}, {"id": "IWAOo3YSuNg", "title": "Blue Suit Blues – Slow Melancholic Chicago Blues for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/IWAOo3YSuNg/mqdefault.jpg", "dur": "1:04:24"}, {"id": "W4U_4aF3oy8", "title": "Blue Suit Blues - Chicago Blues – Slow Chicago Blues & Smooth Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/W4U_4aF3oy8/mqdefault.jpg", "dur": "1:02:18"}, {"id": "j4vV7HddlJw", "title": "Blue Suit Blues – Slow Blues & Smooth Jazz for Emotional Midnight", "thumb": "https://i.ytimg.com/vi/j4vV7HddlJw/mqdefault.jpg", "dur": "1:01:02"}, {"id": "ulFWxbp_Otc", "title": "Blue Suit Blues – Chicago Blues & Midnight Jazz for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/ulFWxbp_Otc/mqdefault.jpg", "dur": "1:04:13"}, {"id": "ebWGTGJtJlg", "title": "Blue Suit Blues – Slow Chicago Blues for Late Night Jazz Relaxation", "thumb": "https://i.ytimg.com/vi/ebWGTGJtJlg/mqdefault.jpg", "dur": "1:16:25"}, {"id": "eZaCS56RAGY", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/eZaCS56RAGY/mqdefault.jpg", "dur": "1:05:32"}, {"id": "ApqOi2Fgjas", "title": "Blue Suit Blues – Slow Chicago Blues & Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/ApqOi2Fgjas/mqdefault.jpg", "dur": "1:16:11"}, {"id": "SUSluLSzLQI", "title": "Blue Suit Blues – Midnight Chicago Blues Playlist for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/SUSluLSzLQI/mqdefault.jpg", "dur": "1:02:41"}, {"id": "gkqo1JHBzTY", "title": "Blue Suit Blues - Midnight Chicago Blues for a Melancholy Mood, Jazz Night", "thumb": "https://i.ytimg.com/vi/gkqo1JHBzTY/mqdefault.jpg", "dur": "1:09:52"}, {"id": "b_SPaV3KdHM", "title": "Blue Suit Blues, Midnight Chicago Blues - Relaxing Jazz Music", "thumb": "https://i.ytimg.com/vi/b_SPaV3KdHM/mqdefault.jpg", "dur": "1:09:21"}, {"id": "2gjPHw7ZOS8", "title": "Blue Suit Blues -  Slow Blues Guitar for Deep Night Emotions", "thumb": "https://i.ytimg.com/vi/2gjPHw7ZOS8/mqdefault.jpg", "dur": "1:06:19"}, {"id": "jJPr0k-GGLU", "title": "Blue Suit Blues – Midnight Chicago Blues, Relaxing Jazz Vibes for Late Night Music", "thumb": "https://i.ytimg.com/vi/jJPr0k-GGLU/mqdefault.jpg", "dur": "1:02:44"}, {"id": "CyFsF8vJnG8", "title": "Blue Suit Blues – Slow Chicago Blues Guitar for Midnight Relax & Jazz Nights", "thumb": "https://i.ytimg.com/vi/CyFsF8vJnG8/mqdefault.jpg", "dur": "58:37"}, {"id": "kv2Mm1Tmdnk", "title": "Blue Suit Blues, Midnight Chicago Blues for a Melancholy Mood & Jazz Night", "thumb": "https://i.ytimg.com/vi/kv2Mm1Tmdnk/mqdefault.jpg", "dur": "1:01:44"}, {"id": "i_5yMCUvx44", "title": "Blue Suit Blues , Midnight Slow Chicago Blues with Smoky Jazz Atmosphere", "thumb": "https://i.ytimg.com/vi/i_5yMCUvx44/mqdefault.jpg", "dur": "1:15:36"}, {"id": "ZfNdSi9dNrk", "title": "Blue Suit Blues - Slow Chicago Blues, Midnight Mood", "thumb": "https://i.ytimg.com/vi/ZfNdSi9dNrk/mqdefault.jpg", "dur": "1:01:42"}, {"id": "_8casQYaFjA", "title": "Blue Suit Blues – Slow Chicago Blues for Deep Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/_8casQYaFjA/mqdefault.jpg", "dur": "1:03:16"}, {"id": "k8bON97nCyE", "title": "Blue Suit Blues, Midnight Chicago Blues - Relaxing Jazz Vibes", "thumb": "https://i.ytimg.com/vi/k8bON97nCyE/mqdefault.jpg", "dur": "1:00:32"}, {"id": "BTbcBeaH0aM", "title": "Blue Suit Blues – Slow Chicago Blues, Smooth Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/BTbcBeaH0aM/mqdefault.jpg", "dur": "1:10:12"}, {"id": "usCFQLCJ1AM", "title": "Blue Suit Blues – Midnight Chicago Blues, Smooth Jazz for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/usCFQLCJ1AM/mqdefault.jpg", "dur": "1:32:24"}, {"id": "ia--i5KFkFw", "title": "Blue Suit Blues - Midnight Chicago Blues,  Slow Guitar for Late Night Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/ia--i5KFkFw/mqdefault.jpg", "dur": "1:02:14"}, {"id": "FPPIc_9wLbQ", "title": "Blue Suit Blues – Midnight Chicago Blues, Smooth Jazz for Late Night", "thumb": "https://i.ytimg.com/vi/FPPIc_9wLbQ/mqdefault.jpg", "dur": "1:14:22"}, {"id": "9_Y4xbINpR8", "title": "Blue Suit Blues – Midnight Chicago Blues & Smoky Jazz for Late Night", "thumb": "https://i.ytimg.com/vi/9_Y4xbINpR8/mqdefault.jpg", "dur": "1:04:26"}, {"id": "TkgjUEJ_Yvc", "title": "Blue Suit Blues – Midnight Chicago Blues & Smoky Jazz", "thumb": "https://i.ytimg.com/vi/TkgjUEJ_Yvc/mqdefault.jpg", "dur": "1:07:14"}, {"id": "2sHEOqzgnQo", "title": "Blue Suit Blues, Late Night Chicago Blues – Smooth Jazz & Relaxing Blues Vibes", "thumb": "https://i.ytimg.com/vi/2sHEOqzgnQo/mqdefault.jpg", "dur": "1:03:28"}, {"id": "fSMFUY_vWlA", "title": "Blue Suit Blues – Midnight Chicago Blues & Smooth Jazz for Late Nights", "thumb": "https://i.ytimg.com/vi/fSMFUY_vWlA/mqdefault.jpg", "dur": "1:25:01"}, {"id": "sMdr8R0F1CY", "title": "Blue Suit Blues – Slow Chicago Blues & Jazz for Late Night Relax", "thumb": "https://i.ytimg.com/vi/sMdr8R0F1CY/mqdefault.jpg", "dur": "1:09:19"}, {"id": "OEjQ9lJOKNY", "title": "Blue Suit Blues – Midnight Chicago Blues,  Jazz for Late Nights", "thumb": "https://i.ytimg.com/vi/OEjQ9lJOKNY/mqdefault.jpg", "dur": "1:05:38"}, {"id": "Oa6hc3qLqqQ", "title": "Blue Suit Blues - Midnight Chicago Blues, Jazz - Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/Oa6hc3qLqqQ/mqdefault.jpg", "dur": "1:30:11"}, {"id": "5Op1GpHaBBY", "title": "Midnight Chicago Blues – Relaxing Slow Guitar for Whiskey Nights - Blue Suit Blues", "thumb": "https://i.ytimg.com/vi/5Op1GpHaBBY/mqdefault.jpg", "dur": "1:02:43"}, {"id": "yHlBHAaBcpA", "title": "Blue Suit Blues – Chicago Blues, Jazz for Late Night Relax Blues", "thumb": "https://i.ytimg.com/vi/yHlBHAaBcpA/mqdefault.jpg", "dur": "1:01:01"}, {"id": "Zr9OX7HH2DA", "title": "Slow Chicago Blues, Relax Jazz & Whiskey Vibes Late Night - Blue Suit Blues", "thumb": "https://i.ytimg.com/vi/Zr9OX7HH2DA/mqdefault.jpg", "dur": "1:02:16"}, {"id": "hYn9uq-mYUU", "title": "Blue Suit Blues - Relaxation, Warm Whiskey Chicago Blues, Jazz Playlist for Late Nights", "thumb": "https://i.ytimg.com/vi/hYn9uq-mYUU/mqdefault.jpg", "dur": "1:13:21"}, {"id": "ySi6ykg_dHw", "title": "Blue Suit Blues – Late Night Chicago Blues & Smooth Jazz", "thumb": "https://i.ytimg.com/vi/ySi6ykg_dHw/mqdefault.jpg", "dur": "1:04:00"}, {"id": "GbP76ldYJTo", "title": "Blue Suit Blues – Chicago Blues, Jazz for Late Night Relax Blues", "thumb": "https://i.ytimg.com/vi/GbP76ldYJTo/mqdefault.jpg", "dur": "1:08:16"}, {"id": "u0n6Fun_pY8", "title": "Blue Suit Blues – Relaxing Chicago Blues, Smooth Jazz for Late Night Whiskey Mood", "thumb": "https://i.ytimg.com/vi/u0n6Fun_pY8/mqdefault.jpg", "dur": "1:13:14"}, {"id": "6sfdra-nV0o", "title": "Blue Suit Blues – Slow Chicago Blues & Jazz, After Midnight Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/6sfdra-nV0o/mqdefault.jpg", "dur": "1:02:29"}, {"id": "O2i151oUg_g", "title": "Blue Suit Blues - Relaxing Chicago Blues & Jazz, Midnight Whiskey Mood for Late Night", "thumb": "https://i.ytimg.com/vi/O2i151oUg_g/mqdefault.jpg", "dur": "49:47"}, {"id": "owJKINwbw8g", "title": "Blue Suit Blues, Slow Chicago Blues, Midnight Whiskey Mood & Relax Jazz", "thumb": "https://i.ytimg.com/vi/owJKINwbw8g/mqdefault.jpg", "dur": "1:00:32"}, {"id": "uBwxc_F2ckQ", "title": "Blue Suit Blues - After Midnight Chicago Blues, Whiskey Mood", "thumb": "https://i.ytimg.com/vi/uBwxc_F2ckQ/mqdefault.jpg", "dur": "1:00:14"}, {"id": "qfNqh-IvY0w", "title": "Blue Suit Blues - Midnight Chicago Blues, Whiskey Mood Jazz", "thumb": "https://i.ytimg.com/vi/qfNqh-IvY0w/mqdefault.jpg", "dur": "55:25"}, {"id": "W9dGC2-03y8", "title": "Blue Suit Blues - Slow Chicago Blues After Midnight, Jazz", "thumb": "https://i.ytimg.com/vi/W9dGC2-03y8/mqdefault.jpg", "dur": "59:20"}, {"id": "c7X9rGuyDKQ", "title": "Blue Suit Blues - Relaxing Chicago Blues for Late Night, Jazz Blues", "thumb": "https://i.ytimg.com/vi/c7X9rGuyDKQ/mqdefault.jpg", "dur": "1:17:14"}, {"id": "j_WatQNxW_Y", "title": "Blue Suit Blues  - Late Nlght Chicago Blues Music Collection Relax", "thumb": "https://i.ytimg.com/vi/j_WatQNxW_Y/mqdefault.jpg", "dur": "46:44"}, {"id": "Lg7A7E4dEAk", "title": "Blue Suit Blues | Smooth Chicago Blues, Midnight Whiskey Mood", "thumb": "https://i.ytimg.com/vi/Lg7A7E4dEAk/mqdefault.jpg", "dur": "47:40"}, {"id": "JqKx3bP9mzI", "title": "Blue Suit Blues | Night Blues – Chicago Blues for Late Night Listening", "thumb": "https://i.ytimg.com/vi/JqKx3bP9mzI/mqdefault.jpg", "dur": "57:40"}, {"id": "9Ph05YaIC-4", "title": "Blue Suit Blues | Late-Night Chicago Blues, Whiskey & Deep Focus - Volume 6", "thumb": "https://i.ytimg.com/vi/9Ph05YaIC-4/mqdefault.jpg", "dur": "48:36"}, {"id": "W16rwSYsLyo", "title": "Blue Suit Blues | Late Night Jazz & Chicago Blues – Smooth & Soulful", "thumb": "https://i.ytimg.com/vi/W16rwSYsLyo/mqdefault.jpg", "dur": "49:51"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

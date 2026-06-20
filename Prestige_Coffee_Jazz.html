@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCupl8SvYuqAvn8PNoBYylkw -->
 <!-- channel-url: https://www.youtube.com/@prestigecoffeejazz -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">18 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Prestige Coffee Jazz";
 const KANAL = "Prestige_Coffee_Jazz.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
 const VIDEOS = [{"id": "pdx9OQUuSKY", "title": "Relaxing Jazz Coffee | Morning Coffee Jazz & Smooth Jazz Coffee Shop Music for Study Work", "thumb": "https://i.ytimg.com/vi/pdx9OQUuSKY/mqdefault.jpg", "dur": "2:03:29"}, {"id": "CG9yxNa6kLM", "title": "Relaxing Jazz Coffee & Smooth Morning Coffee Jazz Music for a Positive Day and Focus Work", "thumb": "https://i.ytimg.com/vi/CG9yxNa6kLM/mqdefault.jpg", "dur": "2:06:18"}, {"id": "en4pv5UfJHI", "title": "Relaxing Jazz Coffee Music | Smooth Coffee Shop Jazz & Cafe Jazz Ambience for Focus & Chill -", "thumb": "https://i.ytimg.com/vi/en4pv5UfJHI/mqdefault.jpg", "dur": "2:04:08"}, {"id": "RpA4RiMjVbk", "title": "Relaxing Jazz Coffee | Morning Vibes & Smooth Melodies for Your Cafe", "thumb": "https://i.ytimg.com/vi/RpA4RiMjVbk/mqdefault.jpg", "dur": "2:06:44"}, {"id": "d3oQgIdM180", "title": "Jazz Coffee & Chill Cafe Ambience | Relaxing Smooth Jazz for Morning Serenity", "thumb": "https://i.ytimg.com/vi/d3oQgIdM180/mqdefault.jpg", "dur": "2:02:32"}, {"id": "Up3vJtMU_3Q", "title": "Relaxing Jazz Coffee - Soft Jazz Cafe Music for Your Morning Coffee Jazz ~ Smooth Melodies", "thumb": "https://i.ytimg.com/vi/Up3vJtMU_3Q/mqdefault.jpg", "dur": "2:01:59"}, {"id": "aE7GQFVZQb4", "title": "Relaxing Jazz Coffee Vibes ~ Smooth Jazz Music for Coffee Time", "thumb": "https://i.ytimg.com/vi/aE7GQFVZQb4/mqdefault.jpg", "dur": "2:04:09"}, {"id": "Rv46AEiZ4kA", "title": "Relaxing Jazz Coffee | Smooth Jazz Music Cafe ~ Cozy Coffee Lounge Jazz Instrumental Ambient", "thumb": "https://i.ytimg.com/vi/Rv46AEiZ4kA/mqdefault.jpg", "dur": "2:04:19"}, {"id": "iHtnPJEziqc", "title": "Morning Coffee Jazz ~ Relaxing Cafe Ambiance for Your Day", "thumb": "https://i.ytimg.com/vi/iHtnPJEziqc/mqdefault.jpg", "dur": "2:05:25"}, {"id": "IQhAClIHdBA", "title": "Relaxing Jazz Coffee - Smooth Coffee Jazz Music & Cozy Coffee Shop Jazz Cafe Ambience Rela", "thumb": "https://i.ytimg.com/vi/IQhAClIHdBA/mqdefault.jpg", "dur": "2:03:50"}, {"id": "zenFdHd_fyI", "title": "Relaxing Jazz Coffee & Smooth Morning Coffee Jazz - Chill Coffee Shop Jazz Music Ambience", "thumb": "https://i.ytimg.com/vi/zenFdHd_fyI/mqdefault.jpg", "dur": "2:01:47"}, {"id": "cxansjrBHKY", "title": "Morning coffee jazz | Relaxing jazz coffee and cafe jazz ambience for a productive day", "thumb": "https://i.ytimg.com/vi/cxansjrBHKY/mqdefault.jpg", "dur": "2:07:33"}, {"id": "FdD2M4-HRN0", "title": "Relaxing Jazz Coffee Music | Smooth Jazz Cafe Ambience for Work, Study & Morning Coffee Time", "thumb": "https://i.ytimg.com/vi/FdD2M4-HRN0/mqdefault.jpg", "dur": "2:05:08"}, {"id": "zIziueyGDpM", "title": "Morning Coffee Jazz | Relaxing Ocean View & Smooth Cafe Jazz Music Ambience", "thumb": "https://i.ytimg.com/vi/zIziueyGDpM/mqdefault.jpg", "dur": "2:01:58"}, {"id": "TF6Dxc_vslg", "title": "Relaxing Jazz Coffee & Smooth Jazz Coffee Music ~ Soft Jazz Cafe Ambience for Chill Morning-", "thumb": "https://i.ytimg.com/vi/TF6Dxc_vslg/mqdefault.jpg", "dur": "2:00:17"}, {"id": "WK2BmnSesOM", "title": "Relaxing Jazz Coffee - Smooth Morning Coffee Jazz & Chill Cafe Jazz Ambience for Studying", "thumb": "https://i.ytimg.com/vi/WK2BmnSesOM/mqdefault.jpg", "dur": "2:07:03"}, {"id": "3o7Tml9c3hU", "title": "Relaxing Jazz Coffee | Smooth Morning Coffee Jazz Music & Cozy Cafe Ambiance for Focus Now", "thumb": "https://i.ytimg.com/vi/3o7Tml9c3hU/mqdefault.jpg", "dur": "2:03:48"}, {"id": "jIux6wS4RmY", "title": "Relaxing Jazz Coffee Music | Smooth Jazz Cafe Ambience for Work, Study & Morning Focus", "thumb": "https://i.ytimg.com/vi/jIux6wS4RmY/mqdefault.jpg", "dur": "2:05:41"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

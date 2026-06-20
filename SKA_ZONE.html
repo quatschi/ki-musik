@@ -7,7 +7,7 @@
 <!-- categories: Reggae, Latin -->
 <!-- channel-id: UCTW0V0gs6-7mtNm1fBTZ9yg -->
 <!-- channel-url: https://youtube.com/@skazone11 -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">126 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "SKA ZONE";
 const KANAL = "SKA_ZONE.html";
+const ORIG_CATEGORIES = "Reggae, Latin";
 const VIDEOS = [{"id": "5IbQuXdwmLo", "title": "Vintage Ska & Rocksteady - The 60s & 70s Connection", "thumb": "https://i.ytimg.com/vi/5IbQuXdwmLo/mqdefault.jpg", "dur": "1:01:51"}, {"id": "R82jV8RpJhY", "title": "Old School Ska Playlist | Jamaican Rocksteady & Vintage Ska Beats", "thumb": "https://i.ytimg.com/vi/R82jV8RpJhY/mqdefault.jpg", "dur": "1:00:01"}, {"id": "tfF4kR6xldc", "title": "Classic Ska Hits | Vintage Jamaican Ska 1960s | Roots & Street Vibes |", "thumb": "https://i.ytimg.com/vi/tfF4kR6xldc/mqdefault.jpg", "dur": "1:00:17"}, {"id": "wwwV67tez0I", "title": "Classic Ska Playlist - Skunking Through Britain - Rare Playlist", "thumb": "https://i.ytimg.com/vi/wwwV67tez0I/mqdefault.jpg", "dur": "1:01:52"}, {"id": "BwbQTTkKbhk", "title": "Old School Ska Dance Time / When the beat hits, you can’t stand still.", "thumb": "https://i.ytimg.com/vi/BwbQTTkKbhk/mqdefault.jpg", "dur": "1:01:31"}, {"id": "YiQWx1j0dvI", "title": "SKA Night Vibes | Rocksteady Mix 2026 | 2 Tone Groove Playlist", "thumb": "https://i.ytimg.com/vi/YiQWx1j0dvI/mqdefault.jpg", "dur": "1:01:52"}, {"id": "Ox3zmvYgvAA", "title": "The Golden Age of Ska | Vibrant Brass and Iconic Rhythms | Unique Playlist", "thumb": "https://i.ytimg.com/vi/Ox3zmvYgvAA/mqdefault.jpg", "dur": "1:01:24"}, {"id": "7oW8i_IVrxQ", "title": "🎺  Old School Jamaican Ska - Feel the 60s Rhythm | Rare Playlist 🎶", "thumb": "https://i.ytimg.com/vi/7oW8i_IVrxQ/mqdefault.jpg", "dur": "1:01:00"}, {"id": "2MUzj1-nYyg", "title": "Ska Beat - The Heartbeat of 1960s Music (Vintage Ska Mix)", "thumb": "https://i.ytimg.com/vi/2MUzj1-nYyg/mqdefault.jpg", "dur": "1:01:22"}, {"id": "gOx8pyTw91A", "title": "Vintage Jamaican SKA | 1960s Vibes Playlist | Roots & Street Spirit | Old Mix", "thumb": "https://i.ytimg.com/vi/gOx8pyTw91A/mqdefault.jpg", "dur": "1:00:02"}, {"id": "1nKgYkRiWX0", "title": "Classic Ska Vibes: Dance to the Beat of 70s Ska Playlist", "thumb": "https://i.ytimg.com/vi/1nKgYkRiWX0/mqdefault.jpg", "dur": "1:00:48"}, {"id": "QBZEnbcbxvY", "title": "Classic SKA & Soundsystem Culture | Original Jamaican SKA Playlist 🎺", "thumb": "https://i.ytimg.com/vi/QBZEnbcbxvY/mqdefault.jpg", "dur": "1:02:10"}, {"id": "4APxFgNOlb4", "title": "Ska Sunshine: Feel-Good Brass & Rocksteady Beats", "thumb": "https://i.ytimg.com/vi/4APxFgNOlb4/mqdefault.jpg", "dur": "1:00:42"}, {"id": "MqRfr7u4z_I", "title": "SKA REVIVAL 60s-70s | Non-Stop Classics", "thumb": "https://i.ytimg.com/vi/MqRfr7u4z_I/mqdefault.jpg", "dur": "1:00:07"}, {"id": "6uvzDUlgt3Y", "title": "Ultimate Ska Classics & Rocksteady | Feel-Good Vibes & Brass Lines", "thumb": "https://i.ytimg.com/vi/6uvzDUlgt3Y/mqdefault.jpg", "dur": "1:01:11"}, {"id": "qxxQyyQUTZg", "title": "Sunny Side Ska: The Ultimate Rocksteady Mix for a Perfect Weekend", "thumb": "https://i.ytimg.com/vi/qxxQyyQUTZg/mqdefault.jpg", "dur": "1:00:04"}, {"id": "IiMOSxJ4H5k", "title": "Vintage Ska & Rocksteady Music | 60s & 70s Culture & Rhythm", "thumb": "https://i.ytimg.com/vi/IiMOSxJ4H5k/mqdefault.jpg", "dur": "1:00:36"}, {"id": "hOXFznUpxk8", "title": "Ultimate Ska Classics | 60s Vintage Vibes", "thumb": "https://i.ytimg.com/vi/hOXFznUpxk8/mqdefault.jpg", "dur": "1:01:33"}, {"id": "l6QfpC_zvGc", "title": "Vintage Ska & Rocksteady Mix - Sunny Side of the Street", "thumb": "https://i.ytimg.com/vi/l6QfpC_zvGc/mqdefault.jpg", "dur": "1:01:58"}, {"id": "3jmJALjZ4uw", "title": "Classic Jamaican Ska | Energetic Brass & Sunburst Fun", "thumb": "https://i.ytimg.com/vi/3jmJALjZ4uw/mqdefault.jpg", "dur": "1:00:07"}, {"id": "fboSxeSXihs", "title": "Retro Ska Groove: 60s Vintage Vibes", "thumb": "https://i.ytimg.com/vi/fboSxeSXihs/mqdefault.jpg", "dur": "1:00:49"}, {"id": "c6Gwg0hTm4s", "title": "SKA BEAT | High Energy 2 Tone Ska & Vintage Rocksteady Mix", "thumb": "https://i.ytimg.com/vi/c6Gwg0hTm4s/mqdefault.jpg", "dur": "1:01:44"}, {"id": "V15XjfTcwv0", "title": "Old Radio Ska: Dusty Groove & Rocksteady Vinyl Mix", "thumb": "https://i.ytimg.com/vi/V15XjfTcwv0/mqdefault.jpg", "dur": "1:02:18"}, {"id": "NgW-ED8_FGI", "title": "Ultimate 60s Ska Classics | Vintage Ska & Retro Vibes", "thumb": "https://i.ytimg.com/vi/NgW-ED8_FGI/mqdefault.jpg", "dur": "1:00:18"}, {"id": "T7y7OyIQpLE", "title": "Vintage Ska & Rocksteady Sessions - The 60s & 70s Connection", "thumb": "https://i.ytimg.com/vi/T7y7OyIQpLE/mqdefault.jpg", "dur": "1:00:31"}, {"id": "xWIdezsLoxA", "title": "Vintage Ska Mix - Classic Rocksteady & Ska Sounds from the 60s", "thumb": "https://i.ytimg.com/vi/xWIdezsLoxA/mqdefault.jpg", "dur": "1:00:01"}, {"id": "HCtBZQ7NOPY", "title": "Sunny Rocksteady Ska / Feel good, move easy, smile wide", "thumb": "https://i.ytimg.com/vi/HCtBZQ7NOPY/mqdefault.jpg", "dur": "1:01:23"}, {"id": "B3MWS4WrPOM", "title": "Retro Ska Explosion – Two Tone Ska Night", "thumb": "https://i.ytimg.com/vi/B3MWS4WrPOM/mqdefault.jpg", "dur": "1:02:20"}, {"id": "EcbwCCn-fhQ", "title": "Roots Ska Classics | Traditional Jamaican Ska Mix", "thumb": "https://i.ytimg.com/vi/EcbwCCn-fhQ/mqdefault.jpg", "dur": "1:00:58"}, {"id": "DeDdHuV1KiY", "title": "Classic Ska & Soundsystem Culture | Original Jamaican Ska", "thumb": "https://i.ytimg.com/vi/DeDdHuV1KiY/mqdefault.jpg", "dur": "1:00:41"}, {"id": "KAZTrRCS0jg", "title": "Classic 2 Tone Ska – High Energy Crowd", "thumb": "https://i.ytimg.com/vi/KAZTrRCS0jg/mqdefault.jpg", "dur": "1:00:19"}, {"id": "3MF_uzL1gFU", "title": "SKA MIX – 1960s Ska Streetscape", "thumb": "https://i.ytimg.com/vi/3MF_uzL1gFU/mqdefault.jpg", "dur": "1:00:56"}, {"id": "RL2o5hOGyG4", "title": "1970s Ska Mix | Old School Ska", "thumb": "https://i.ytimg.com/vi/RL2o5hOGyG4/mqdefault.jpg", "dur": "1:01:11"}, {"id": "dE30wbIYcI4", "title": "Classic Ska Vibes: Dance to the Beat of 70s Ska", "thumb": "https://i.ytimg.com/vi/dE30wbIYcI4/mqdefault.jpg", "dur": "1:00:23"}, {"id": "_VnWNgtpMtE", "title": "Vintage Ska Mix - Classic Rocksteady & Ska Sounds from the 60s", "thumb": "https://i.ytimg.com/vi/_VnWNgtpMtE/mqdefault.jpg", "dur": "1:00:34"}, {"id": "qlDsMHj3xkA", "title": "2 Tone Ska - The Sound of Youth and Revolution", "thumb": "https://i.ytimg.com/vi/qlDsMHj3xkA/mqdefault.jpg", "dur": "1:01:56"}, {"id": "2O5ze7Dx6u4", "title": "Ska Beat - The Heartbeat of 1960s Music (Vintage Ska Mix)", "thumb": "https://i.ytimg.com/vi/2O5ze7Dx6u4/mqdefault.jpg", "dur": "1:01:31"}, {"id": "bRsOzUgsUFI", "title": "Ultimate Ska Classics | 60s Vintage Vibes", "thumb": "https://i.ytimg.com/vi/bRsOzUgsUFI/mqdefault.jpg", "dur": "1:00:27"}, {"id": "s6z5v2z4xdM", "title": "The Sound of Ska: A 60s & 70s Ska Revival!", "thumb": "https://i.ytimg.com/vi/s6z5v2z4xdM/mqdefault.jpg", "dur": "1:00:20"}, {"id": "shGIyeC7tng", "title": "The Golden Age of Ska | Vibrant Brass and Iconic Rhythms", "thumb": "https://i.ytimg.com/vi/shGIyeC7tng/mqdefault.jpg", "dur": "1:00:01"}, {"id": "9jrwLXWdUPQ", "title": "Classic Ska - Two Tone Vibes and Dance Craze", "thumb": "https://i.ytimg.com/vi/9jrwLXWdUPQ/mqdefault.jpg", "dur": "57:51"}, {"id": "TWHLVue6orw", "title": "Classic Ska & Rocksteady - The Soul of the 70s", "thumb": "https://i.ytimg.com/vi/TWHLVue6orw/mqdefault.jpg", "dur": "1:00:17"}, {"id": "y7gsDUx_cu0", "title": "Ska Music Madness: Vintage Style, Endless Energy", "thumb": "https://i.ytimg.com/vi/y7gsDUx_cu0/mqdefault.jpg", "dur": "1:00:33"}, {"id": "y-C7sDtDi80", "title": "Vintage Ska & Rocksteady: Culture from the 60s & 70s", "thumb": "https://i.ytimg.com/vi/y-C7sDtDi80/mqdefault.jpg", "dur": "1:00:29"}, {"id": "10nbE9hV3u4", "title": "Classic Ska Mixtape / Vintage Rocksteady & Ska groove!", "thumb": "https://i.ytimg.com/vi/10nbE9hV3u4/mqdefault.jpg", "dur": "1:01:33"}, {"id": "j4ydkuNogzs", "title": "SKA VIBES | High Energy 2 Tone Ska & Vintage Rocksteady Mix", "thumb": "https://i.ytimg.com/vi/j4ydkuNogzs/mqdefault.jpg", "dur": "1:01:09"}, {"id": "H2Ei0BKX2Xk", "title": "Ska Vibes - The Legacy of Sound | Classic Ska Mix", "thumb": "https://i.ytimg.com/vi/H2Ei0BKX2Xk/mqdefault.jpg", "dur": "1:01:09"}, {"id": "7eSgaC3n368", "title": "Vintage Ska & Rocksteady - The 60s & 70s Connection", "thumb": "https://i.ytimg.com/vi/7eSgaC3n368/mqdefault.jpg", "dur": "1:01:24"}, {"id": "xO2HD7IMd0Q", "title": "Old Radio Ska: Dusty Groove & Rocksteady Vinyl Mix", "thumb": "https://i.ytimg.com/vi/xO2HD7IMd0Q/mqdefault.jpg", "dur": "1:01:19"}, {"id": "epxbU8rLk5U", "title": "The Ska Revolution: Vintage Ska of Classic Sound / Two Tone Ska", "thumb": "https://i.ytimg.com/vi/epxbU8rLk5U/mqdefault.jpg", "dur": "1:00:55"}, {"id": "u5qGORRAAfc", "title": "Rocksteady Ska Parade: Horns Up, Smiles On, and Let the Rhythm Move You!", "thumb": "https://i.ytimg.com/vi/u5qGORRAAfc/mqdefault.jpg", "dur": "59:06"}, {"id": "phfodi5iMs4", "title": "Sunny Rocksteady Ska / Let the sunshine groove!", "thumb": "https://i.ytimg.com/vi/phfodi5iMs4/mqdefault.jpg", "dur": "1:02:16"}, {"id": "D7bGv_kWi4k", "title": "Feel Good Rocksteady Ska / It just makes everything better", "thumb": "https://i.ytimg.com/vi/D7bGv_kWi4k/mqdefault.jpg", "dur": "59:55"}, {"id": "fCxtOgOZqxk", "title": "Ska Keeps the World Moving / Relax, Dance, and Feel the Island Groove", "thumb": "https://i.ytimg.com/vi/fCxtOgOZqxk/mqdefault.jpg", "dur": "1:00:19"}, {"id": "ZCLakh6_4uA", "title": "Old School Ska / Dance Like Back in the Day", "thumb": "https://i.ytimg.com/vi/ZCLakh6_4uA/mqdefault.jpg", "dur": "59:49"}, {"id": "Wsvf5jQVErE", "title": "Old School Ska Dance Time / When the beat hits, you can’t stand still.", "thumb": "https://i.ytimg.com/vi/Wsvf5jQVErE/mqdefault.jpg", "dur": "1:01:48"}, {"id": "Lis_6ms7sak", "title": "Good Time Rocksteady Ska / Turn every moment into music", "thumb": "https://i.ytimg.com/vi/Lis_6ms7sak/mqdefault.jpg", "dur": "1:01:04"}, {"id": "UvpZSCilzOg", "title": "Echoes of Rocksteady Ska / Step into the rhythm of the island soul", "thumb": "https://i.ytimg.com/vi/UvpZSCilzOg/mqdefault.jpg", "dur": "1:01:57"}, {"id": "dljf6uL3r4Q", "title": "Sunny Rocksteady Ska / Feel good, move easy, smile wide", "thumb": "https://i.ytimg.com/vi/dljf6uL3r4Q/mqdefault.jpg", "dur": "59:53"}, {"id": "EYYE0beRhlY", "title": "Let’s Rocksteady Ska! / Celebrate the rhythm!", "thumb": "https://i.ytimg.com/vi/EYYE0beRhlY/mqdefault.jpg", "dur": "1:02:06"}, {"id": "Yqtg6eF2HaU", "title": "Rocksteady Ska Parade / Horns up, smiles on, let’s move!", "thumb": "https://i.ytimg.com/vi/Yqtg6eF2HaU/mqdefault.jpg", "dur": "1:00:58"}, {"id": "RvN73LwfJOY", "title": "SKA MIX 2025 | 2 Tone Ska Jam", "thumb": "https://i.ytimg.com/vi/RvN73LwfJOY/mqdefault.jpg", "dur": "1:01:07"}, {"id": "X8e-yAZZLuI", "title": "SKA VIBES - The Skanking Sound of the Streets", "thumb": "https://i.ytimg.com/vi/X8e-yAZZLuI/mqdefault.jpg", "dur": "1:01:15"}, {"id": "3Ag7bTlWT3I", "title": "Ska Vibes − Classic Two Tone Brass Grooves", "thumb": "https://i.ytimg.com/vi/3Ag7bTlWT3I/mqdefault.jpg", "dur": "1:00:46"}, {"id": "K-s8iQTLEJI", "title": "SKA Session – The Sound of 2 Tone Revival", "thumb": "https://i.ytimg.com/vi/K-s8iQTLEJI/mqdefault.jpg", "dur": "1:01:28"}, {"id": "TE7BvdHXHb0", "title": "SKA MIX 2025 | 2 Tone Mixtape", "thumb": "https://i.ytimg.com/vi/TE7BvdHXHb0/mqdefault.jpg", "dur": "1:00:35"}, {"id": "A_b603403-k", "title": "SKA VIBES – Classic 2 Tone Groove Mix", "thumb": "https://i.ytimg.com/vi/A_b603403-k/mqdefault.jpg", "dur": "1:00:23"}, {"id": "mzN8Ri_dA8U", "title": "UK Ska Club Two Tone Session | Classic Ska Mix", "thumb": "https://i.ytimg.com/vi/mzN8Ri_dA8U/mqdefault.jpg", "dur": "1:00:18"}, {"id": "Snw5ds5rTbI", "title": "Non Stop 2 Tone Madness– Ska Explosion!", "thumb": "https://i.ytimg.com/vi/Snw5ds5rTbI/mqdefault.jpg", "dur": "1:00:49"}, {"id": "ks6T7umVtwA", "title": "Ska & Rocksteady Classics | Vintage Ska Mix 2025", "thumb": "https://i.ytimg.com/vi/ks6T7umVtwA/mqdefault.jpg", "dur": "1:00:47"}, {"id": "cJ5s90Nm_l8", "title": "SKA & 2 Tone Mixtape", "thumb": "https://i.ytimg.com/vi/cJ5s90Nm_l8/mqdefault.jpg", "dur": "1:00:00"}, {"id": "nk7v_HUQ2SY", "title": "Ultimate 2 Tone Ska Party – Nonstop Mix", "thumb": "https://i.ytimg.com/vi/nk7v_HUQ2SY/mqdefault.jpg", "dur": "1:00:55"}, {"id": "kKyhC3eTOow", "title": "2-Tone Ska Classics – Ultimate Black & White Mix", "thumb": "https://i.ytimg.com/vi/kKyhC3eTOow/mqdefault.jpg", "dur": "1:00:18"}, {"id": "Lx-BuZiX3MA", "title": "Old School Ska - Feel the 60s Rhythm", "thumb": "https://i.ytimg.com/vi/Lx-BuZiX3MA/mqdefault.jpg", "dur": "1:00:55"}, {"id": "lAEE33w54E8", "title": "Skankin' All Day - Upbeat Ska Punk Mix for Good Vibes", "thumb": "https://i.ytimg.com/vi/lAEE33w54E8/mqdefault.jpg", "dur": "59:05"}, {"id": "rk78XhUgFz0", "title": "Street Ska Vibes – The Brass Revolution", "thumb": "https://i.ytimg.com/vi/rk78XhUgFz0/mqdefault.jpg", "dur": "1:00:26"}, {"id": "6Q5BMljZe_Y", "title": "Pure SKA Energy – The SKA Street Session", "thumb": "https://i.ytimg.com/vi/6Q5BMljZe_Y/mqdefault.jpg", "dur": "1:01:34"}, {"id": "yrsEl34WPi4", "title": "This Is SKA! (2-Tone Classic Vibes)", "thumb": "https://i.ytimg.com/vi/yrsEl34WPi4/mqdefault.jpg", "dur": "1:01:26"}, {"id": "NtsvGHfuWCo", "title": "Vintage Ska Selection | Rocksteady & Ska Mix", "thumb": "https://i.ytimg.com/vi/NtsvGHfuWCo/mqdefault.jpg", "dur": "59:45"}, {"id": "6DeEPGp1GNo", "title": "Skankin’ Ska Mix | 2 Tone Ska Style", "thumb": "https://i.ytimg.com/vi/6DeEPGp1GNo/mqdefault.jpg", "dur": "1:01:36"}, {"id": "6bo5hWPcIns", "title": "Ska & 2 Tone Ska Mix 2025 – The Beat Never Stops", "thumb": "https://i.ytimg.com/vi/6bo5hWPcIns/mqdefault.jpg", "dur": "59:46"}, {"id": "HJQ4wRBco5k", "title": "SKA Vibes | Classic 2 Tone Ska Mix 2025", "thumb": "https://i.ytimg.com/vi/HJQ4wRBco5k/mqdefault.jpg", "dur": "1:01:37"}, {"id": "H7cf66Ubu1M", "title": "Best of SKA – 2 Tone Classics & Modern Grooves", "thumb": "https://i.ytimg.com/vi/H7cf66Ubu1M/mqdefault.jpg", "dur": "1:01:27"}, {"id": "KA-eWcULwZY", "title": "Ska & Rocksteady Mix 2025 | 2 Tone Groove", "thumb": "https://i.ytimg.com/vi/KA-eWcULwZY/mqdefault.jpg", "dur": "1:00:49"}, {"id": "5XHgB8fngmw", "title": "Sunshine Ska - Pure Island Vibration", "thumb": "https://i.ytimg.com/vi/5XHgB8fngmw/mqdefault.jpg", "dur": "1:00:26"}, {"id": "tRthI0YT7_U", "title": "Classic Ska Mix | Rocksteady & Vintage Ska Vibes", "thumb": "https://i.ytimg.com/vi/tRthI0YT7_U/mqdefault.jpg", "dur": "57:41"}, {"id": "W8VkHBISCdU", "title": "SKA! – The Sound of 2 Tone Revival", "thumb": "https://i.ytimg.com/vi/W8VkHBISCdU/mqdefault.jpg", "dur": "59:32"}, {"id": "0sYztzy9vhg", "title": "SKA MIX 2025 | 2 Tone Ska Jam", "thumb": "https://i.ytimg.com/vi/0sYztzy9vhg/mqdefault.jpg", "dur": "1:01:33"}, {"id": "Y5xPoz3ajpg", "title": "Classic Ska Revival - Skankin’ in the Streets", "thumb": "https://i.ytimg.com/vi/Y5xPoz3ajpg/mqdefault.jpg", "dur": "58:23"}, {"id": "btSEWDQ3GSE", "title": "SKA VIBES - The Skanking Sound of the Streets", "thumb": "https://i.ytimg.com/vi/btSEWDQ3GSE/mqdefault.jpg", "dur": "1:00:09"}, {"id": "lE1SoIS4gF4", "title": "1970s Ska Mix - March of the Skankers", "thumb": "https://i.ytimg.com/vi/lE1SoIS4gF4/mqdefault.jpg", "dur": "1:00:14"}, {"id": "8ztrUQW1FvQ", "title": "SKA & 2 Tone Ska Mixtape", "thumb": "https://i.ytimg.com/vi/8ztrUQW1FvQ/mqdefault.jpg", "dur": "1:02:03"}, {"id": "ppurMC975wU", "title": "SKA ENERGY MIX – The Sound of 2 Tone Ska Revolution", "thumb": "https://i.ytimg.com/vi/ppurMC975wU/mqdefault.jpg", "dur": "1:01:36"}, {"id": "23Ghqo2kcec", "title": "Classic Ska Mix - Vintage Sound Walks the Streets | Two Tone Ska", "thumb": "https://i.ytimg.com/vi/23Ghqo2kcec/mqdefault.jpg", "dur": "1:01:23"}, {"id": "tbhMve-yzdY", "title": "Ska & Rocksteady Classics | Vintage Ska Mix 2025", "thumb": "https://i.ytimg.com/vi/tbhMve-yzdY/mqdefault.jpg", "dur": "1:01:25"}, {"id": "gM7VSDbztcg", "title": "Classic Ska Mix - Step Back to the 70s | Rocksteady | Vintage Ska", "thumb": "https://i.ytimg.com/vi/gM7VSDbztcg/mqdefault.jpg", "dur": "53:16"}, {"id": "052YIkBGCzk", "title": "1970s Ska Club Session | Old School Ska | Classic Two Tone Ska", "thumb": "https://i.ytimg.com/vi/052YIkBGCzk/mqdefault.jpg", "dur": "1:02:36"}, {"id": "PpkMjRlEBLw", "title": "2 TONE SKA GROOVE | Original Ska & Rocksteady Vibes", "thumb": "https://i.ytimg.com/vi/PpkMjRlEBLw/mqdefault.jpg", "dur": "1:01:55"}, {"id": "isygAM_NSVU", "title": "SKA MIX 2025 | 2 Tone Mixtape", "thumb": "https://i.ytimg.com/vi/isygAM_NSVU/mqdefault.jpg", "dur": "3:56:36"}, {"id": "xyRRqPw9G88", "title": "SKA! | 2 Tone Ska Vibes Forever", "thumb": "https://i.ytimg.com/vi/xyRRqPw9G88/mqdefault.jpg", "dur": "1:02:53"}, {"id": "l869gbUHKlU", "title": "Ska & 2 Tone Ska Mix 2025 | Rocksteady Classics", "thumb": "https://i.ytimg.com/vi/l869gbUHKlU/mqdefault.jpg", "dur": "1:10:51"}, {"id": "m6OYyLD7SXk", "title": "Ska Mix | Vintage 2 Tone Rhythm", "thumb": "https://i.ytimg.com/vi/m6OYyLD7SXk/mqdefault.jpg", "dur": "1:10:16"}, {"id": "KZlpQkCweL0", "title": "SKA Vibes | Classic 2 Tone Ska Mix 2025", "thumb": "https://i.ytimg.com/vi/KZlpQkCweL0/mqdefault.jpg", "dur": "1:06:54"}, {"id": "OtQcRaZU-PI", "title": "2 Tone Ska Mix | Rocksteady & Vintage Ska Vibes", "thumb": "https://i.ytimg.com/vi/OtQcRaZU-PI/mqdefault.jpg", "dur": "1:01:36"}, {"id": "CyeSqJNNYPc", "title": "SKA! | Classic 2 Tone Style Dance Vibes", "thumb": "https://i.ytimg.com/vi/CyeSqJNNYPc/mqdefault.jpg", "dur": "1:01:11"}, {"id": "48MOSJzMHWQ", "title": "Skankin’ Ska Mix | 2 Tone Ska Style", "thumb": "https://i.ytimg.com/vi/48MOSJzMHWQ/mqdefault.jpg", "dur": "1:00:27"}, {"id": "vppRg6KfomM", "title": "Vintage Jamaican Ska 1960s | Roots & Street Vibes | Ska Mix", "thumb": "https://i.ytimg.com/vi/vppRg6KfomM/mqdefault.jpg", "dur": "1:01:17"}, {"id": "7-uC_-DNYAw", "title": "Ska & Rocksteady Mix 2025 | 2 Tone Groove", "thumb": "https://i.ytimg.com/vi/7-uC_-DNYAw/mqdefault.jpg", "dur": "1:01:35"}, {"id": "KKLeNuCSM18", "title": "SKA & 2 Tone Mixtape", "thumb": "https://i.ytimg.com/vi/KKLeNuCSM18/mqdefault.jpg", "dur": "1:01:19"}, {"id": "yoEH1h-UbFw", "title": "Ska & Rocksteady Classics | Jamaican Vintage Mix 2025", "thumb": "https://i.ytimg.com/vi/yoEH1h-UbFw/mqdefault.jpg", "dur": "1:01:54"}, {"id": "4zmHAIOWvQU", "title": "Classic Ska Music | Old School Jamaican Ska & Rocksteady Rhythms", "thumb": "https://i.ytimg.com/vi/4zmHAIOWvQU/mqdefault.jpg", "dur": "1:03:45"}, {"id": "6GIcSeJk0Ro", "title": "1970s Ska Mix | Old School Jamaican Grooves", "thumb": "https://i.ytimg.com/vi/6GIcSeJk0Ro/mqdefault.jpg", "dur": "1:02:40"}, {"id": "DzO-fxDcHCY", "title": "Roots Ska Mix – Dance the Rocksteady Way", "thumb": "https://i.ytimg.com/vi/DzO-fxDcHCY/mqdefault.jpg", "dur": "1:04:05"}, {"id": "mbiOOQ8THYk", "title": "Vintage Ska Mix – Groovin’ in the 60s", "thumb": "https://i.ytimg.com/vi/mbiOOQ8THYk/mqdefault.jpg", "dur": "1:04:17"}, {"id": "GqU6I7hDoWY", "title": "Ska Classics 1970s | Vintage Ska Mix & Rocksteady", "thumb": "https://i.ytimg.com/vi/GqU6I7hDoWY/mqdefault.jpg", "dur": "1:01:50"}, {"id": "1Q3YHvblkVA", "title": "Vintage Ska Selection | Rocksteady & Ska Mix", "thumb": "https://i.ytimg.com/vi/1Q3YHvblkVA/mqdefault.jpg", "dur": "1:02:35"}, {"id": "QZkbw8Tv1sE", "title": "Back to the Roots Ska Mix | Vintage Jamaican Ska Grooves", "thumb": "https://i.ytimg.com/vi/QZkbw8Tv1sE/mqdefault.jpg", "dur": "1:01:49"}, {"id": "M9mq5xP-jfE", "title": "Classic Jamaican Ska 1960s | Vintage Ska & Rocksteady Essentials", "thumb": "https://i.ytimg.com/vi/M9mq5xP-jfE/mqdefault.jpg", "dur": "1:02:02"}, {"id": "RbCB4BHZCBg", "title": "1970s Ska Mix | Old School Jamaican Ska", "thumb": "https://i.ytimg.com/vi/RbCB4BHZCBg/mqdefault.jpg", "dur": "1:00:27"}, {"id": "GQb6GQEjv8Y", "title": "Roots Ska Classics | Traditional Jamaican Ska Mix", "thumb": "https://i.ytimg.com/vi/GQb6GQEjv8Y/mqdefault.jpg", "dur": "1:01:51"}, {"id": "eJQd16Zh6pU", "title": "Vintage Jamaican Ska & Rocksteady Vibes | Old School Mix 2025", "thumb": "https://i.ytimg.com/vi/eJQd16Zh6pU/mqdefault.jpg", "dur": "1:04:37"}, {"id": "qr3mmVAimyw", "title": "Old School Ska Mix | Jamaican Rocksteady & Vintage Ska Vibes", "thumb": "https://i.ytimg.com/vi/qr3mmVAimyw/mqdefault.jpg", "dur": "1:03:39"}, {"id": "ayhqZJxZXMU", "title": "Ska & Rocksteady Classics | Jamaican Vintage Mix 2025", "thumb": "https://i.ytimg.com/vi/ayhqZJxZXMU/mqdefault.jpg", "dur": "1:01:22"}, {"id": "Vxe4RWnVvFA", "title": "Vintage Ska Mix 2025 | Classic Jamaican Ska & Rocksteady Vibes", "thumb": "https://i.ytimg.com/vi/Vxe4RWnVvFA/mqdefault.jpg", "dur": "1:02:21"}, {"id": "ejzFogYIjGY", "title": "Feel the Beat of 1960s Jamaica – Pure Ska Vibes!", "thumb": "https://i.ytimg.com/vi/ejzFogYIjGY/mqdefault.jpg", "dur": "1:04:34"}, {"id": "dNSyTJ4SwfU", "title": "Old School Ska - Feel the 60s Rhythm", "thumb": "https://i.ytimg.com/vi/dNSyTJ4SwfU/mqdefault.jpg", "dur": "1:03:56"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

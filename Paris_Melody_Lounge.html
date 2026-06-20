@@ -7,7 +7,7 @@
 <!-- categories: Jazz, Smooth Jazz, French -->
 <!-- channel-id: UCBodPZV1P63It1I2chGOzxw -->
 <!-- channel-url: https://youtube.com/@parismelodylounge -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">62 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Paris Melody Lounge";
 const KANAL = "Paris_Melody_Lounge.html";
+const ORIG_CATEGORIES = "Jazz, Smooth Jazz, French";
 const VIDEOS = [{"id": "zK1nX90BGVY", "title": "Soft Saxophone Instrumental Music 🌿 Romantic Jazz for Stress Relief", "thumb": "https://i.ytimg.com/vi/zK1nX90BGVY/mqdefault.jpg", "dur": "3:19:18"}, {"id": "R9KPZeNYA60", "title": "Relaxing Saxophone Music in the Rain 🎷Romantic Jazz Ambience for Deep Sleep", "thumb": "https://i.ytimg.com/vi/R9KPZeNYA60/mqdefault.jpg", "dur": "3:07:57"}, {"id": "scmkpZRCb94", "title": "Cozy Evening Jazz Café ☕🎷 Relaxing Saxophone Instrumentals & Soft Mood", "thumb": "https://i.ytimg.com/vi/scmkpZRCb94/mqdefault.jpg", "dur": "3:21:12"}, {"id": "BBL0hWjLEhg", "title": "Dreamy Saxophone Melodies 🎷 Romantic Smooth Jazz for Night Relaxation", "thumb": "https://i.ytimg.com/vi/BBL0hWjLEhg/mqdefault.jpg", "dur": "3:23:39"}, {"id": "wyR1N88Scu0", "title": "Rainy Night Jazz 🎷 Romantic Saxophone Music for Calm Mind & Cozy Sleep", "thumb": "https://i.ytimg.com/vi/wyR1N88Scu0/mqdefault.jpg", "dur": "3:08:00"}, {"id": "Rbvc1Y1M6X0", "title": "Late Night Saxophone 🎷 Smooth Romantic Jazz for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/Rbvc1Y1M6X0/mqdefault.jpg", "dur": "3:11:52"}, {"id": "eslLSqZU6sQ", "title": "Midnight Saxophone Dreams 🌙 Smooth Jazz for Relaxing Evenings & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/eslLSqZU6sQ/mqdefault.jpg", "dur": "1:04:04"}, {"id": "C3ydx6hsIUY", "title": "Gentle Saxophone Jazz 🎷 Calm Night Music for Peaceful Evening Ambience", "thumb": "https://i.ytimg.com/vi/C3ydx6hsIUY/mqdefault.jpg", "dur": "3:19:56"}, {"id": "NO2hoFJDMlw", "title": "🌙 Late Night Sax Vibes ✨ Relaxing Jazz Music for Calm Evenings, Cozy Moments & Stress Relief", "thumb": "https://i.ytimg.com/vi/NO2hoFJDMlw/mqdefault.jpg", "dur": "12:44"}, {"id": "QgiVwfF_U4k", "title": "Romantic Jazz Lounge 🎷 Soft Saxophone Music for Sleep, Relax & Study", "thumb": "https://i.ytimg.com/vi/QgiVwfF_U4k/mqdefault.jpg", "dur": "3:34:22"}, {"id": "QieC7GvPoqk", "title": "🎷 Behind the Music | Creating New Smooth Saxophone Melodies for You", "thumb": "https://i.ytimg.com/vi/QieC7GvPoqk/mqdefault.jpg", "dur": "11:23"}, {"id": "SwOA0vs3hGc", "title": "Midnight Saxophone Dreams 🌙 Smooth Jazz Instrumentals for Quiet Nights", "thumb": "https://i.ytimg.com/vi/SwOA0vs3hGc/mqdefault.jpg", "dur": "3:24:38"}, {"id": "Da4wqCeawrQ", "title": "Smooth Saxophone Jazz 🎷 Relaxing Instrumental Music for Cozy Evenings & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/Da4wqCeawrQ/mqdefault.jpg", "dur": "1:15:26"}, {"id": "U5EN4lM4Upg", "title": "Golden Saxophone Collection ✨ Best Smooth Jazz Instrumentals for Relaxation and Stress Relief", "thumb": "https://i.ytimg.com/vi/U5EN4lM4Upg/mqdefault.jpg", "dur": "1:23:39"}, {"id": "UYg55CbNIGM", "title": "Romantic Saxophone Melodies 🎷 Beautiful Instrumental Music to Relax, Unwind & Dream", "thumb": "https://i.ytimg.com/vi/UYg55CbNIGM/mqdefault.jpg", "dur": "1:33:53"}, {"id": "cHIwQfaIMdQ", "title": "Relaxing Evening Jazz 🎷 Romantic Saxophone Music for Calm & Stress Relief", "thumb": "https://i.ytimg.com/vi/cHIwQfaIMdQ/mqdefault.jpg", "dur": "3:34:41"}, {"id": "kjPH5KhYeQE", "title": "Soft Jazz Saxophone 🎷 Peaceful Instrumental Music for Cozy Night Vibes", "thumb": "https://i.ytimg.com/vi/kjPH5KhYeQE/mqdefault.jpg", "dur": "3:23:06"}, {"id": "EUJJOdrazFI", "title": "Romantic Saxophone Nights 🎷 Smooth Jazz Melodies for Relaxing Evening Mood", "thumb": "https://i.ytimg.com/vi/EUJJOdrazFI/mqdefault.jpg", "dur": "3:13:55"}, {"id": "UbvPd6_Odic", "title": "Golden Hour Saxophone 🎷 Relaxing Jazz Music for Coffee, Work & Study", "thumb": "https://i.ytimg.com/vi/UbvPd6_Odic/mqdefault.jpg", "dur": "1:40:15"}, {"id": "3cuGq4Volp4", "title": "Late Night Sax Jazz 2026 🌙 Smooth Lounge Session for Deep Relaxation & Cozy Nights", "thumb": "https://i.ytimg.com/vi/3cuGq4Volp4/mqdefault.jpg", "dur": "3:16:58"}, {"id": "bYADJEq11So", "title": "After Dark Saxophone Lounge 🌃 Smooth Midnight Jazz for Relaxing Nights, Cozy Ambience & Deep Sleep", "thumb": "https://i.ytimg.com/vi/bYADJEq11So/mqdefault.jpg", "dur": "3:17:54"}, {"id": "Oa0NcUpdwVk", "title": "Midnight Sax Vibes ✨ Soft Jazz Music for Late Night Relaxation, Calm Moments & Dreamy Nights", "thumb": "https://i.ytimg.com/vi/Oa0NcUpdwVk/mqdefault.jpg", "dur": "3:45:18"}, {"id": "svKR_J0TvOU", "title": "Moonlight Sax Jazz 🌙 Relaxing Night Music for Stress Relief, Quiet Evenings & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/svKR_J0TvOU/mqdefault.jpg", "dur": "3:30:36"}, {"id": "Drwl1Re9m0E", "title": "Late Night Jazz Escape 🌌 Smooth Saxophone Melodies for Cozy Nights, Gentle Rain & Relaxation", "thumb": "https://i.ytimg.com/vi/Drwl1Re9m0E/mqdefault.jpg", "dur": "3:25:09"}, {"id": "cSrqrZLEiFM", "title": "Dreamy Midnight Sax 🎷 Chill Jazz Lounge for Sleep, Stress Relief & Romantic Evening Ambience", "thumb": "https://i.ytimg.com/vi/cSrqrZLEiFM/mqdefault.jpg", "dur": "3:13:14"}, {"id": "_KvIf1lFaWU", "title": "Smooth After Hours Jazz 🌠 Relaxing Saxophone Music for Midnight Coffee, Calm Nights & Soft Dreams", "thumb": "https://i.ytimg.com/vi/_KvIf1lFaWU/mqdefault.jpg", "dur": "3:25:57"}, {"id": "OSfDvko0Rk0", "title": "Midnight Romantic Saxophone 🎷 Soft Jazz Melodies for Relaxing Evenings & Cozy Nights", "thumb": "https://i.ytimg.com/vi/OSfDvko0Rk0/mqdefault.jpg", "dur": "10:23"}, {"id": "5ONewLehs-A", "title": "Smooth Saxophone Nights 2026 🎷 Chill Jazz Lounge Music for Relaxing Evenings & Midnight Vibes", "thumb": "https://i.ytimg.com/vi/5ONewLehs-A/mqdefault.jpg", "dur": "3:27:24"}, {"id": "liyi4tdi0nc", "title": "Late Night Love Saxophone 🎷 Smooth Jazz Instrumentals for Deep Relaxation & Peaceful Moments", "thumb": "https://i.ytimg.com/vi/liyi4tdi0nc/mqdefault.jpg", "dur": "13:17"}, {"id": "AEVcUadWFYs", "title": "Smooth Saxophone Serenity 🎷 Calm Romantic Instrumental Jazz Collection", "thumb": "https://i.ytimg.com/vi/AEVcUadWFYs/mqdefault.jpg", "dur": "15:40"}, {"id": "r-FqsuiL_6Y", "title": "Gentle Saxophone Melodies 🎶 Soft Romantic Instrumental Music for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/r-FqsuiL_6Y/mqdefault.jpg", "dur": "10:22"}, {"id": "aiRtLwLJvnQ", "title": "Midnight Saxophone Lounge 🎷 Relaxing Jazz Chillout Music for Calm Nights & Soft Moods", "thumb": "https://i.ytimg.com/vi/aiRtLwLJvnQ/mqdefault.jpg", "dur": "3:11:52"}, {"id": "tntu_zHVCdI", "title": "Romantic Saxophone Jazz 2026 ✨ Smooth Chill Lounge Music for Night Drive & Relax Time", "thumb": "https://i.ytimg.com/vi/tntu_zHVCdI/mqdefault.jpg", "dur": "3:10:57"}, {"id": "URn1ZRt5LAE", "title": "After Dark Saxophone Session 🌃 Smooth Jazz Lounge for Stress Relief & Peaceful Nights", "thumb": "https://i.ytimg.com/vi/URn1ZRt5LAE/mqdefault.jpg", "dur": "3:26:49"}, {"id": "kd6jeI6HTVY", "title": "Cozy Jazz Lounge 2026 🎷 Soft Saxophone Chillout Music for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/kd6jeI6HTVY/mqdefault.jpg", "dur": "3:12:06"}, {"id": "c_yWFnkdSy8", "title": "Soft Saxophone & Piano Nights 🎷 Beautiful Chill Jazz for Romance, Coffee & Relaxation", "thumb": "https://i.ytimg.com/vi/c_yWFnkdSy8/mqdefault.jpg", "dur": "3:17:48"}, {"id": "m7hCCpFHHoY", "title": "Rainy Night Saxophone 🎷 Romantic Smooth Jazz for Relaxation, Sleep & Emotional Healing", "thumb": "https://i.ytimg.com/vi/m7hCCpFHHoY/mqdefault.jpg", "dur": "3:08:05"}, {"id": "Q1qR4COv8_k", "title": "Romantic Saxophone Dreams 🎷 Smooth Jazz Instrumental for Cozy Nights & Relaxing Mood", "thumb": "https://i.ytimg.com/vi/Q1qR4COv8_k/mqdefault.jpg", "dur": "3:05:43"}, {"id": "6soQk2q5jmw", "title": "Romantic Evening Saxophone 🎷 Calm Jazz Instrumentals for Slow Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/6soQk2q5jmw/mqdefault.jpg", "dur": "3:28:44"}, {"id": "HTCaSmWeGGE", "title": "Luxury Lounge Sax 2026 ✨ Romantic Jazz Instrumentals for Fine Dining & Cozy Atmosphere", "thumb": "https://i.ytimg.com/vi/HTCaSmWeGGE/mqdefault.jpg", "dur": "3:18:34"}, {"id": "pX7DobbsbQY", "title": "Elegant Saxophone Lounge 2026 ✨ Chill Instrumental Jazz for Candlelight Dinner & Night Vibes", "thumb": "https://i.ytimg.com/vi/pX7DobbsbQY/mqdefault.jpg", "dur": "3:26:18"}, {"id": "P7ohTJ0Evk8", "title": "Ultimate Saxophone Relax Mix 2026 🎷 Smooth Jazz Lounge | Peaceful Chill Nights", "thumb": "https://i.ytimg.com/vi/P7ohTJ0Evk8/mqdefault.jpg", "dur": "3:27:20"}, {"id": "PDLlTzgk0A8", "title": "Chill Sax & Smooth Jazz 2026 🎷 Relaxing Lounge Mix | Calm Evening & Night Vibes", "thumb": "https://i.ytimg.com/vi/PDLlTzgk0A8/mqdefault.jpg", "dur": "3:19:47"}, {"id": "uef2VSZzrsI", "title": "Saxophone Lounge Session 2026 🎷 Smooth Jazz Chillout | Late Night Relaxing Music", "thumb": "https://i.ytimg.com/vi/uef2VSZzrsI/mqdefault.jpg", "dur": "3:25:05"}, {"id": "tdXiIto_hK8", "title": "Best Saxophone Chill Mix 2026 🎷 Relaxing Jazz Nights | Smooth Lounge & Cozy Vibes", "thumb": "https://i.ytimg.com/vi/tdXiIto_hK8/mqdefault.jpg", "dur": "3:07:45"}, {"id": "9C3egsyVS-k", "title": "Smooth Saxophone Vibes 2026 🎷 Chill Jazz Lounge | Relaxing Evening Music & Soft Sax", "thumb": "https://i.ytimg.com/vi/9C3egsyVS-k/mqdefault.jpg", "dur": "3:13:42"}, {"id": "Qz-GcCMrBBU", "title": "Nightfall Saxophone Jazz 🌃 Smooth Lounge Sounds for Unwinding, Late Night Calm & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/Qz-GcCMrBBU/mqdefault.jpg", "dur": "3:15:12"}, {"id": "0Gv5K6pDCKs", "title": "Midnight Sax Chillout 🎷 Soft Jazz Lounge for Quiet Nights, Relaxing Moments & Gentle Vibes", "thumb": "https://i.ytimg.com/vi/0Gv5K6pDCKs/mqdefault.jpg", "dur": "3:31:27"}, {"id": "K7ApgGNu8jE", "title": "After Hours Sax Jazz 🌙 Midnight Chill Music for Stress Relief, Slow Evenings & Dreamy Mood", "thumb": "https://i.ytimg.com/vi/K7ApgGNu8jE/mqdefault.jpg", "dur": "3:25:33"}, {"id": "6C7hfd1Cuz0", "title": "Late Night Saxophone Lounge 🌌 Smooth Jazz for Deep Relaxation, Calm Nights & Cozy Vibes", "thumb": "https://i.ytimg.com/vi/6C7hfd1Cuz0/mqdefault.jpg", "dur": "3:15:57"}, {"id": "qKbg0l6kd-k", "title": "Midnight Rain in Paris ☕ Smooth Jazz Café for Deep Night Peace", "thumb": "https://i.ytimg.com/vi/qKbg0l6kd-k/mqdefault.jpg", "dur": "1:22:44"}, {"id": "7XqzLBfOJdo", "title": "Paris Jazz Lounge at Night ☕ Soft Music for Relax, Study & Sleep", "thumb": "https://i.ytimg.com/vi/7XqzLBfOJdo/mqdefault.jpg", "dur": "3:24:10"}, {"id": "ktAsR2mf88k", "title": "Rainy Night Jazz Café ☕ Paris Ambience for Sleep, Relax & Focus", "thumb": "https://i.ytimg.com/vi/ktAsR2mf88k/mqdefault.jpg", "dur": "3:35:10"}, {"id": "SRtmVQ-t-JE", "title": "Late Night Paris Café ☕ Soft Jazz Music for Deep Relax & Calm Mind", "thumb": "https://i.ytimg.com/vi/SRtmVQ-t-JE/mqdefault.jpg", "dur": "3:14:04"}, {"id": "VM_FgnmTcCM", "title": "Smooth Sax Chillout | Deep Relaxing Jazz Session", "thumb": "https://i.ytimg.com/vi/VM_FgnmTcCM/mqdefault.jpg", "dur": "3:01:03"}, {"id": "TY8RXJUKjgA", "title": "Deep Night Jazz | Smooth Saxophone for Relax & Focus", "thumb": "https://i.ytimg.com/vi/TY8RXJUKjgA/mqdefault.jpg", "dur": "3:21:34"}, {"id": "pPsWHbmSLeo", "title": "Relaxing Saxophone Session | Deep Smooth Jazz Mood", "thumb": "https://i.ytimg.com/vi/pPsWHbmSLeo/mqdefault.jpg", "dur": "3:13:40"}, {"id": "abyUU39caaU", "title": "Late Night Saxophone Jazz ✨ Relaxing Lounge Music for Calm Evenings", "thumb": "https://i.ytimg.com/vi/abyUU39caaU/mqdefault.jpg", "dur": "2:12:24"}, {"id": "spZDkXyUp-0", "title": "Romantic French Saxophone Music 🇫🇷 | Chill & Relax in Monet’s Garden 🌸", "thumb": "https://i.ytimg.com/vi/spZDkXyUp-0/mqdefault.jpg", "dur": "3:33"}, {"id": "QD-6v1xHbPE", "title": "Saxophone Relaxant 🎷 Musique pour Travailler & Se Concentrer", "thumb": "https://i.ytimg.com/vi/QD-6v1xHbPE/mqdefault.jpg", "dur": "36:05"}, {"id": "wgPSDYgqwew", "title": "French Saxophone Relaxation | Monet’s Woman with a Parasol Comes to Life (Dreamy AI Art)", "thumb": "https://i.ytimg.com/vi/wgPSDYgqwew/mqdefault.jpg", "dur": "4:01"}, {"id": "zn-kLMmLVqQ", "title": "Saxophone Chill Nuit 🌙 Relaxation Totale", "thumb": "https://i.ytimg.com/vi/zn-kLMmLVqQ/mqdefault.jpg", "dur": "1:04:02"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

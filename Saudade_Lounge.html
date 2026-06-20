@@ -7,7 +7,7 @@
 <!-- categories: Lounge, Latin -->
 <!-- channel-id: UCH93B2u_8IKw0vJWDyrazfQ -->
 <!-- channel-url: https://www.youtube.com/@saudadelounge-j9n -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">17 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Saudade Lounge";
 const KANAL = "Saudade_Lounge.html";
+const ORIG_CATEGORIES = "Lounge, Latin";
 const VIDEOS = [{"id": "liISm44Nk8Q", "title": "Essência Brasileira Lounge | Bossa Nova Elegante, Samba Fino & MPB Relaxante | Playlist", "thumb": "https://i.ytimg.com/vi/liISm44Nk8Q/mqdefault.jpg", "dur": "38:15"}, {"id": "6-3Lu98jIiw", "title": "Lounge Brasileiro Sofisticado | Bossa Nova Elegante, MPB & Samba Fino | Playlist", "thumb": "https://i.ytimg.com/vi/6-3Lu98jIiw/mqdefault.jpg", "dur": "47:03"}, {"id": "OavU_QUsB90", "title": "Noite Brasileira Sofisticada | Bossa Nova Chic, Samba & MPB Relaxante | Café Playlist", "thumb": "https://i.ytimg.com/vi/OavU_QUsB90/mqdefault.jpg", "dur": "50:05"}, {"id": "DG5qNr73IVI", "title": "Bossa Lounge Premium | MPB Brasileira, Samba Fino & Jazz Café | Relax Playlist", "thumb": "https://i.ytimg.com/vi/DG5qNr73IVI/mqdefault.jpg", "dur": "42:35"}, {"id": "Vb7_r2WSBus", "title": "Café Brasileiro Elegante | Samba Suave, Bossa Nova & MPB Refinado | Lounge Music", "thumb": "https://i.ytimg.com/vi/Vb7_r2WSBus/mqdefault.jpg", "dur": "32:50"}, {"id": "dNCDXnmKwCI", "title": "Veludo Carioca | Samba Canção, Bossa Nova Fina & MPB Atemporal | Brazilian Lounge Playlist", "thumb": "https://i.ytimg.com/vi/dNCDXnmKwCI/mqdefault.jpg", "dur": "45:23"}, {"id": "MKw_e_Ri1WQ", "title": "Café & Samba | MPB Elegante, Bossa Nova Clássica e Ritmos do Brasil | Relax Lounge", "thumb": "https://i.ytimg.com/vi/MKw_e_Ri1WQ/mqdefault.jpg", "dur": "35:15"}, {"id": "qcVlCLkTOT8", "title": "Noites do Rio | Bossa Nova Sofisticada, MPB Suave & Samba de Salão | Lounge Brasileiro", "thumb": "https://i.ytimg.com/vi/qcVlCLkTOT8/mqdefault.jpg", "dur": "26:53"}, {"id": "CIzjsDk7heA", "title": "Café Brasileiro Noturno | Sophisticated Bossa Nova & Relaxing Samba Playlist", "thumb": "https://i.ytimg.com/vi/CIzjsDk7heA/mqdefault.jpg", "dur": "46:54"}, {"id": "fuVFf7Jo0H0", "title": "Brazilian Sunset Lounge | Elegant Bossa, Smooth Samba & MPB Vibes", "thumb": "https://i.ytimg.com/vi/fuVFf7Jo0H0/mqdefault.jpg", "dur": "39:54"}, {"id": "O1RD9za8V2A", "title": "Noites de Ouro | Bossa Nova Chic, MPB Suave & Samba Lounge", "thumb": "https://i.ytimg.com/vi/O1RD9za8V2A/mqdefault.jpg", "dur": "33:13"}, {"id": "DHL1fzT7PuU", "title": "Lounge Brasileiro Sofisticado | Bossa Nova Elegante, MPB & Samba Fino | Playlist", "thumb": "https://i.ytimg.com/vi/DHL1fzT7PuU/mqdefault.jpg", "dur": "1:13:16"}, {"id": "pzDibzW_fzk", "title": "Lounge Brasileiro Sofisticado | Bossa Nova Elegante, MPB & Samba Fino | Playlist", "thumb": "https://i.ytimg.com/vi/pzDibzW_fzk/mqdefault.jpg", "dur": "1:03:12"}, {"id": "zmLxsg8YrOs", "title": "Lounge Brasileiro Sofisticado | Bossa Nova Elegante, MPB & Samba Fino | Playlist", "thumb": "https://i.ytimg.com/vi/zmLxsg8YrOs/mqdefault.jpg", "dur": "55:02"}, {"id": "PMjsyXycJhI", "title": "Bossa Nova & Samba Fino: A Trilha Sonora dos Melhores Momentos Tranquilos e Ambientes Requintados", "thumb": "https://i.ytimg.com/vi/PMjsyXycJhI/mqdefault.jpg", "dur": "53:13"}, {"id": "V8AjuTSQ5Z0", "title": "Bossa Nova & Samba Fino: A Trilha Sonora dos Melhores Momentos Tranquilos e Ambientes Requintados", "thumb": "https://i.ytimg.com/vi/V8AjuTSQ5Z0/mqdefault.jpg", "dur": "41:07"}, {"id": "QxUAwPynZOg", "title": "Bossa Nova & Samba Fino: A Trilha Sonora dos Melhores Momentos Tranquilos e Ambientes Requintados", "thumb": "https://i.ytimg.com/vi/QxUAwPynZOg/mqdefault.jpg", "dur": "35:29"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(

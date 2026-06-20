@@ -7,7 +7,7 @@
 <!-- categories: Smooth Jazz, Jazz, Lounge -->
 <!-- channel-id: UCRZpTMaElYFpj7FMlEH4e2g -->
 <!-- channel-url: https://youtube.com/@smoothjazz-classic -->
-<!-- created: 2026-06-18 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -50,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -74,6 +88,22 @@
       <div class="channel-count">20 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -86,11 +116,28 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Smooth Jazz Classic";
 const KANAL = "Smooth_Jazz_Classic.html";
+const ORIG_CATEGORIES = "Smooth Jazz, Jazz, Lounge";
 const VIDEOS = [{"id": "CwLA9U2owcE", "title": "George Benson - Moody's Mood | Timeless Smooth Jazz Guitar & Soulful Night Vibes|Smooth Jazz Classic", "thumb": "https://i.ytimg.com/vi/CwLA9U2owcE/mqdefault.jpg", "dur": "5:55"}, {"id": "FeGXb27g2Ic", "title": "George Benson – Songs That Live Forever | Timeless Smooth Jazz, Soul & Jazz Pop Classics", "thumb": "https://i.ytimg.com/vi/FeGXb27g2Ic/mqdefault.jpg", "dur": "2:16:32"}, {"id": "VTMlvj7vrD8", "title": "George Benson - Blue Monday | Smooth Jazz Guitar Nights • Timeless Smooth Jazz Classic", "thumb": "https://i.ytimg.com/vi/VTMlvj7vrD8/mqdefault.jpg", "dur": "5:29"}, {"id": "uGvX8tYw0Ik", "title": "George Benson – 30 Timeless Hits | Smooth Jazz, Jazz Pop & Soul Classics That Never Get Old", "thumb": "https://i.ytimg.com/vi/uGvX8tYw0Ik/mqdefault.jpg", "dur": "2:26:21"}, {"id": "SohaT8bcO4g", "title": "George Benson – Walking to New Orleans | Timeless Smooth Jazz Guitar & Soulful Nights", "thumb": "https://i.ytimg.com/vi/SohaT8bcO4g/mqdefault.jpg", "dur": "5:23"}, {"id": "Ax61s8V8O0k", "title": "George Benson - Midnight Letters & Neon Dreams | Classic Smooth Jazz Guitar for Relaxing", "thumb": "https://i.ytimg.com/vi/Ax61s8V8O0k/mqdefault.jpg", "dur": "2:21:54"}, {"id": "nmMkYJ0QAIg", "title": "george benson - Turn The Feeling Around | Smooth Jazz Classic Guitar Vibes for Relaxing & Unwinding", "thumb": "https://i.ytimg.com/vi/nmMkYJ0QAIg/mqdefault.jpg", "dur": "3:55"}, {"id": "QsorpUyvEiQ", "title": "George Benson – 30 Greatest Hits Collection | Timeless Smooth Jazz, Soul & R&B Classics", "thumb": "https://i.ytimg.com/vi/QsorpUyvEiQ/mqdefault.jpg", "dur": "2:04:49"}, {"id": "gUnevyW72DQ", "title": "George Benson – Breezin' | Timeless Smooth Jazz Guitar Masterpiece & Relaxing Jazz Classics", "thumb": "https://i.ytimg.com/vi/gUnevyW72DQ/mqdefault.jpg", "dur": "4:10"}, {"id": "xf15ogOc5JE", "title": "George Benson – In Flight Nights | Timeless Smooth Jazz & Soul Classics", "thumb": "https://i.ytimg.com/vi/xf15ogOc5JE/mqdefault.jpg", "dur": "40:25"}, {"id": "YbGYdP8jVcg", "title": "George Benson – Nature Boy | Timeless Smooth Jazz & Soul Masterpiece", "thumb": "https://i.ytimg.com/vi/YbGYdP8jVcg/mqdefault.jpg", "dur": "4:25"}, {"id": "T4txDpZ1rac", "title": "George Benson – The Blue Hour Revue | Smooth Jazz Nights & Timeless Soul Grooves", "thumb": "https://i.ytimg.com/vi/T4txDpZ1rac/mqdefault.jpg", "dur": "40:51"}, {"id": "h6WjjOv7Mp4", "title": "George Benson – Turn Your Love Around – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/h6WjjOv7Mp4/mqdefault.jpg", "dur": "4:25"}, {"id": "Ohbg3kLmb8I", "title": "George Benson – Behind the Velvet Smile – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/Ohbg3kLmb8I/mqdefault.jpg", "dur": "4:30"}, {"id": "vN3m08kolAM", "title": "George Benson's - Every Beat Leads to You – Smooth Jazz Nights | Timeless Jazz,Soul & R&B Love Songs", "thumb": "https://i.ytimg.com/vi/vN3m08kolAM/mqdefault.jpg", "dur": "41:49"}, {"id": "h45JUtGHxMQ", "title": "George Benson's - Love X Love Inspired – Smooth Jazz Nights | Classic Jazz, Soul & R&B Groove", "thumb": "https://i.ytimg.com/vi/h45JUtGHxMQ/mqdefault.jpg", "dur": "4:15"}, {"id": "6JSk3KwsviU", "title": "George Benson \"Soulfire Blues\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.", "thumb": "https://i.ytimg.com/vi/6JSk3KwsviU/mqdefault.jpg", "dur": "1:06:30"}, {"id": "sFTvv2wOHE4", "title": "George Benson - \"Give Me the Night\" – Smooth Jazz Nights, Soul & R&B Night Vibes.", "thumb": "https://i.ytimg.com/vi/sFTvv2wOHE4/mqdefault.jpg", "dur": "4:32"}, {"id": "zlNauIGnuGE", "title": "George Benson \"Forever In Your Eyes\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits.", "thumb": "https://i.ytimg.com/vi/zlNauIGnuGE/mqdefault.jpg", "dur": "42:26"}, {"id": "WC8CMXQ5x8k", "title": "George Benson - \"Give Me the Night\" – Smooth Jazz Nights | George Benson's Timeless Greatest Hits", "thumb": "https://i.ytimg.com/vi/WC8CMXQ5x8k/mqdefault.jpg", "dur": "43:13"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -117,7 +164,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -128,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -186,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(
