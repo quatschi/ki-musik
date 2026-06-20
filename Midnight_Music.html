@@ -125,6 +125,20 @@ const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
 let kanalMeta = {};
 
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
   if (!t) return;
@@ -162,7 +176,7 @@ async function loadKanalMeta() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      kanalMeta = JSON.parse(atob(data.content));
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
     }
   } catch(e) {}
   const entry = kanalMeta[KANAL] || {};
@@ -192,10 +206,10 @@ async function saveMeta() {
     if (getResp.ok) {
       const existing = await getResp.json();
       sha = existing.sha;
-      currentMeta = JSON.parse(atob(existing.content));
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
     }
     currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
     const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
     if (sha) body.sha = sha;
     const putResp = await fetch(
@@ -227,7 +241,7 @@ async function loadRatings() {
     );
     if (resp.ok) {
       const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
+      const content = JSON.parse(b64DecodeUtf8(data.content));
       ratings = content.ratings || {};
       meta = content.meta || {};
     }
@@ -285,7 +299,7 @@ async function saveRatings() {
   btn.disabled = true;
   setStatus('Speichern...', '');
   const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(
