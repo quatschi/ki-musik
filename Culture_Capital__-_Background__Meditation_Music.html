@@ -7,6 +7,7 @@
 <!-- categories: Ambient -->
 <!-- channel-id: UCWFm6GGEPmA3i2AUJ1GZ2EA -->
 <!-- channel-url: https://youtube.com/@culturecapitalmusic -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">99 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Culture Capital  - Background & Meditation Music";
+const KANAL = "Culture_Capital__-_Background__Meditation_Music.html";
+const ORIG_CATEGORIES = "Ambient";
 const VIDEOS = [{"id": "TTQkBkPoejo", "title": "Deep & Spiritual African Meditation Music | Healing Background Music | Beautiful Ambient Soundscape", "thumb": "https://i.ytimg.com/vi/TTQkBkPoejo/mqdefault.jpg", "dur": "2:24:20"}, {"id": "Dk96INSsFBw", "title": "SHANTI | Deep Ambient Meditation Music | Third Eye Awakening & Pineal Activation | 432Hz & 528Hz", "thumb": "https://i.ytimg.com/vi/Dk96INSsFBw/mqdefault.jpg", "dur": "2:35:32"}, {"id": "e7E18d1cGcY", "title": "Deep Healing African Meditation Music | Spiritual Ambient Music | Relaxing African Background Music", "thumb": "https://i.ytimg.com/vi/e7E18d1cGcY/mqdefault.jpg", "dur": "57:37"}, {"id": "C-ZOWag2BhA", "title": "432Hz Tibetan Meditation Music | Deep Healing Singing Bowls & Monastery Chanting for Inner Peace", "thumb": "https://i.ytimg.com/vi/C-ZOWag2BhA/mqdefault.jpg", "dur": "1:02:30"}, {"id": "AdUWac4X69M", "title": "Deep African Tribal Inspired Music | West African Instrumental for Meditation, Focus & Healing", "thumb": "https://i.ytimg.com/vi/AdUWac4X69M/mqdefault.jpg", "dur": "1:01:57"}, {"id": "O_wQTt1lc7c", "title": "ZAYNA | Deep Spiritual Ambient Music | Middle Eastern Meditation & Relaxation Soundscape", "thumb": "https://i.ytimg.com/vi/O_wQTt1lc7c/mqdefault.jpg", "dur": "1:01:27"}, {"id": "70gFaSBdyrE", "title": "Deep Meditation Music 528Hz 🌿 Healing Frequency for Relaxation & Inner Peace | Hindu Indian Inspired", "thumb": "https://i.ytimg.com/vi/70gFaSBdyrE/mqdefault.jpg", "dur": "58:33"}, {"id": "IHgeV2owGn0", "title": "Beautiful Persian Instrumental Music | Relaxing Iranian Sounds for Meditation & Stress Relief", "thumb": "https://i.ytimg.com/vi/IHgeV2owGn0/mqdefault.jpg", "dur": "2:04:15"}, {"id": "bqyegEQk1Kw", "title": "UMLILO | Deep African Meditation Music | Spiritual Ambient Soundscape | Zulu & Xhosa Inspired Music", "thumb": "https://i.ytimg.com/vi/bqyegEQk1Kw/mqdefault.jpg", "dur": "1:01:21"}, {"id": "MUDRw8zZATk", "title": "AZTEC | Deep Ancient Aztec Meditation Music for Spiritual Healing | Ambient Mayan Background Music", "thumb": "https://i.ytimg.com/vi/MUDRw8zZATk/mqdefault.jpg", "dur": "1:08:33"}, {"id": "irEzw1NPnXE", "title": "ANKH | Mystical Ancient Egypt Music for Deep Meditation & Spiritual Awakening | Ambient Soundscape", "thumb": "https://i.ytimg.com/vi/irEzw1NPnXE/mqdefault.jpg", "dur": "1:02:59"}, {"id": "3ciMHwo1ApA", "title": "OM | Deep Ambient Meditation Music | Third Eye Awakening & Shadow Integration | Hindu Inspired Music", "thumb": "https://i.ytimg.com/vi/3ciMHwo1ApA/mqdefault.jpg", "dur": "1:01:19"}, {"id": "ndPtBbSNK8o", "title": "ZULU | Deep African Meditation Music | Spiritual African Background Music | African Ancestral Music", "thumb": "https://i.ytimg.com/vi/ndPtBbSNK8o/mqdefault.jpg", "dur": "1:01:13"}, {"id": "RAptLwItXhY", "title": "ZEN | Deep Samurai Meditation Music | Japanese Background Music | Beautiful, Melodic, Ambient Music", "thumb": "https://i.ytimg.com/vi/RAptLwItXhY/mqdefault.jpg", "dur": "1:03:40"}, {"id": "ucANdQ6qVHk", "title": "Deep Persian & Turkish Meditation Music | Beautiful Ambient Background Music | Middle Eastern Music", "thumb": "https://i.ytimg.com/vi/ucANdQ6qVHk/mqdefault.jpg", "dur": "57:25"}, {"id": "UCcvaAYlcbI", "title": "TUHU | Deep African Meditation Music | Beautiful & Relaxing Background Music | West African Inspired", "thumb": "https://i.ytimg.com/vi/UCcvaAYlcbI/mqdefault.jpg", "dur": "1:03:49"}, {"id": "6wTGa62a9uU", "title": "HELEN OF TROY | Deep Ancient Greek Background Music | Ethereal & Relaxing | Beautiful Lyre Harp", "thumb": "https://i.ytimg.com/vi/6wTGa62a9uU/mqdefault.jpg", "dur": "55:02"}, {"id": "V-fZx0unEEc", "title": "KAZE | Relaxing Japanese Meditation Music | Beautiful Ambient Background Music | Japanese Zen Music", "thumb": "https://i.ytimg.com/vi/V-fZx0unEEc/mqdefault.jpg", "dur": "59:29"}, {"id": "lXcfXPcNdJE", "title": "MUSAFIR | Ancient Arabic Meditation Music | Deep Ambient Middle Eastern Background Music", "thumb": "https://i.ytimg.com/vi/lXcfXPcNdJE/mqdefault.jpg", "dur": "1:01:32"}, {"id": "QefRHd7qkug", "title": "ANUBIS | Deep Ancient Egyptian Background Music | Rhythmic Egypt Meditation Music | Middle Eastern", "thumb": "https://i.ytimg.com/vi/QefRHd7qkug/mqdefault.jpg", "dur": "1:02:42"}, {"id": "rJCK_yE1htc", "title": "NDIANI | Deep AFRICAN Meditation Music | Ambient African Background Music | Spiritual & Mystical", "thumb": "https://i.ytimg.com/vi/rJCK_yE1htc/mqdefault.jpg", "dur": "1:03:27"}, {"id": "QTr904u7FxE", "title": "Beautiful AFRICAN Meditation Music | Relaxing Ambient Background Music | Mystical & Ethereal Music", "thumb": "https://i.ytimg.com/vi/QTr904u7FxE/mqdefault.jpg", "dur": "2:06:27"}, {"id": "x1acdSFC7vc", "title": "Ambient Desert Meditation Music | Deep Middle Eastern background Music | Relaxing Arabic Music", "thumb": "https://i.ytimg.com/vi/x1acdSFC7vc/mqdefault.jpg", "dur": "2:08:40"}, {"id": "MRgPbQLw1Ro", "title": "MOTHERLAND | Deep & Emotional African Meditation Music | Mystical Ambient Music Inspired By Africa", "thumb": "https://i.ytimg.com/vi/MRgPbQLw1Ro/mqdefault.jpg", "dur": "1:00:01"}, {"id": "geNfhdtgXjk", "title": "VISHNU | Deep Indian Meditation Music | Beautiful Ambient Background Music | Mystical & Ethereal", "thumb": "https://i.ytimg.com/vi/geNfhdtgXjk/mqdefault.jpg", "dur": "59:32"}, {"id": "ani6dgSRz-4", "title": "BUSHIDO | Relaxing Japanese Zen Background Music | Calming Japanese Flute | Ambient Meditation Music", "thumb": "https://i.ytimg.com/vi/ani6dgSRz-4/mqdefault.jpg", "dur": "57:49"}, {"id": "uJgrsiHGWf4", "title": "RUH | Deep Middle Eastern Meditation Music | Relaxing & Ambient Arabic Background Music", "thumb": "https://i.ytimg.com/vi/uJgrsiHGWf4/mqdefault.jpg", "dur": "58:59"}, {"id": "s3FRTHPWGag", "title": "MOYONI | Deep Ambient African Meditation Music | Relaxing Background Music Inspired By Africa", "thumb": "https://i.ytimg.com/vi/s3FRTHPWGag/mqdefault.jpg", "dur": "1:01:01"}, {"id": "jQVXJEF7yww", "title": "UMOYA | Beautiful & Deep South African Background Music | Ambient African Meditation  | Zulu & Xhosa", "thumb": "https://i.ytimg.com/vi/jQVXJEF7yww/mqdefault.jpg", "dur": "57:48"}, {"id": "W7S-9DNXM24", "title": "MER | Beautiful Ancient Egyptian Music | Deep Rhythmic Background Music | Middle Eastern Meditation", "thumb": "https://i.ytimg.com/vi/W7S-9DNXM24/mqdefault.jpg", "dur": "56:25"}, {"id": "vQXfYJuodhg", "title": "SUNSUM | Beautiful African Background Music | Deep Rhythmic African Music | Relaxing African Sounds", "thumb": "https://i.ytimg.com/vi/vQXfYJuodhg/mqdefault.jpg", "dur": "57:03"}, {"id": "kwvS7_bbnL4", "title": "JABALI | Deep African Meditation Music | Beautiful Kenyan Background Music | Calming & Ambient", "thumb": "https://i.ytimg.com/vi/kwvS7_bbnL4/mqdefault.jpg", "dur": "58:20"}, {"id": "q2Q3MxL7TWQ", "title": "OMID | Rhythmic Persian & Turkish Inspired Music | Beautiful Middle Eastern Background Music", "thumb": "https://i.ytimg.com/vi/q2Q3MxL7TWQ/mqdefault.jpg", "dur": "57:01"}, {"id": "zIfkjNXKQYo", "title": "SABR | Deep Ambient Desert Music | Beautiful Middle Eastern Background Music | Ambient Arabic Music", "thumb": "https://i.ytimg.com/vi/zIfkjNXKQYo/mqdefault.jpg", "dur": "57:49"}, {"id": "GmuTnv6muUY", "title": "Ambient South African Meditation Music | Deep & Relaxing African Background Music | Zulu & Xhosa", "thumb": "https://i.ytimg.com/vi/GmuTnv6muUY/mqdefault.jpg", "dur": "1:38:26"}, {"id": "mcggCZOQMHU", "title": "KING SOUND | Ambient Dub Reggae Meditation Music | Deep And Relaxing Jamaican Dub Background Music", "thumb": "https://i.ytimg.com/vi/mcggCZOQMHU/mqdefault.jpg", "dur": "55:10"}, {"id": "pYO3UbfxgpQ", "title": "SAHRA | Deep Ambient Arabic Background Music | Beautiful & Emotional Middle Eastern Meditation Music", "thumb": "https://i.ytimg.com/vi/pYO3UbfxgpQ/mqdefault.jpg", "dur": "1:05:06"}, {"id": "rgRI6_n-0QY", "title": "WETHU | Beautiful South African Background Music | Ambient African Meditation Music | Xhosa & Zulu", "thumb": "https://i.ytimg.com/vi/rgRI6_n-0QY/mqdefault.jpg", "dur": "1:01:54"}, {"id": "TsPD-V7h4AU", "title": "BENZAITEN | Beautiful Ambient Japanese Zen Music | Deep & Ethereal Japanese Meditation Music", "thumb": "https://i.ytimg.com/vi/TsPD-V7h4AU/mqdefault.jpg", "dur": "1:00:13"}, {"id": "V5YpppWfuQc", "title": "MEHR | Beautiful Rhythmic Persian Inspired Music | Deep Ambient Persian Background Music", "thumb": "https://i.ytimg.com/vi/V5YpppWfuQc/mqdefault.jpg", "dur": "54:15"}, {"id": "uHSig3byClI", "title": "AMANDLA | Beautiful Relaxing South African Meditation Music | Deep Ambient African Background Music", "thumb": "https://i.ytimg.com/vi/uHSig3byClI/mqdefault.jpg", "dur": "56:14"}, {"id": "XhmPP7UqR0U", "title": "Ancient Egyptian Background Music Compilation | Ambient & Rhythmic Ancient Egypt | Deep and Mystical", "thumb": "https://i.ytimg.com/vi/XhmPP7UqR0U/mqdefault.jpg", "dur": "1:01:36"}, {"id": "pOe5NpZzIOQ", "title": "UBUNTU | Beautiful Ambient South African Background Music | Deep African Meditation Music", "thumb": "https://i.ytimg.com/vi/pOe5NpZzIOQ/mqdefault.jpg", "dur": "57:41"}, {"id": "TTpOrT44FuE", "title": "AZAD | Beautiful Rhythmic Persian Music | Deep Ancient Persian Background Music", "thumb": "https://i.ytimg.com/vi/TTpOrT44FuE/mqdefault.jpg", "dur": "1:02:21"}, {"id": "9WhTzc5_cUQ", "title": "KHAYA | Beautiful & Deep African Meditation Music | Ambient South African Background Music", "thumb": "https://i.ytimg.com/vi/9WhTzc5_cUQ/mqdefault.jpg", "dur": "57:43"}, {"id": "5oUcZ6cx4H4", "title": "ISIS | Beautiful Rhythmic Egyptian Background Music | Deep & Mystical Ancient Egypt Music", "thumb": "https://i.ytimg.com/vi/5oUcZ6cx4H4/mqdefault.jpg", "dur": "57:56"}, {"id": "Qo6eO50oxHc", "title": "SHIVA | Beautiful Indian Background Music | Deep & Mystical Meditation Music | Ambient Hindu Music", "thumb": "https://i.ytimg.com/vi/Qo6eO50oxHc/mqdefault.jpg", "dur": "57:49"}, {"id": "IY8ZLnKoJTY", "title": "HABITAT | Relaxing Ethereal Background Music | Help With Sleep & Meditation | Remove Stress Anxiety", "thumb": "https://i.ytimg.com/vi/IY8ZLnKoJTY/mqdefault.jpg", "dur": "58:41"}, {"id": "NGbCclMkNKY", "title": "OSIRIS | Deep & Rhythmic Ancient Egyptian Background Music | Mystical Ancient Egypt Music", "thumb": "https://i.ytimg.com/vi/NGbCclMkNKY/mqdefault.jpg", "dur": "1:06:27"}, {"id": "O00n5bg_eHY", "title": "Ambient Arabic Meditation Music | Deep Middle Eastern Background Music | Emotional Arab Music", "thumb": "https://i.ytimg.com/vi/O00n5bg_eHY/mqdefault.jpg", "dur": "1:05:20"}, {"id": "5wxGetnTBaw", "title": "ABNOBA | Ethereal Meditation Music | Ambient Fantasy Background Music | Spiritual Celtic Music", "thumb": "https://i.ytimg.com/vi/5wxGetnTBaw/mqdefault.jpg", "dur": "59:57"}, {"id": "d-asjw9grxM", "title": "Ambient African Meditation Music | Deep African Background Music | Calm & Relaxing Meditation Music", "thumb": "https://i.ytimg.com/vi/d-asjw9grxM/mqdefault.jpg", "dur": "1:05:12"}, {"id": "DyaEQUQxl9o", "title": "MEDITATIONS | Deep Jamaican Dub Meditation Music | Reggae Background Music |  Rastafarian Music", "thumb": "https://i.ytimg.com/vi/DyaEQUQxl9o/mqdefault.jpg", "dur": "1:00:06"}, {"id": "VERK2crnOiM", "title": "DUAT | Beautiful Ancient Egyptian Music | Middle Eastern Background Music | Duduk Ney & Darbuka", "thumb": "https://i.ytimg.com/vi/VERK2crnOiM/mqdefault.jpg", "dur": "1:04:15"}, {"id": "IZ7dtnFGvuI", "title": "TAO | Ambient Chinese Meditation Music | Help With Sleep Music | Remove Anxiety Music", "thumb": "https://i.ytimg.com/vi/IZ7dtnFGvuI/mqdefault.jpg", "dur": "57:44"}, {"id": "LoAIzebO9Pg", "title": "AFRIKA | Beautiful West African Music | Deep Ambient Background Music | Djembe & Balafon Music", "thumb": "https://i.ytimg.com/vi/LoAIzebO9Pg/mqdefault.jpg", "dur": "58:58"}, {"id": "WM6Y8hUivF8", "title": "BALI | Deep Indonesian Meditation Music | Ambient Balinese Gamelan | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/WM6Y8hUivF8/mqdefault.jpg", "dur": "1:00:16"}, {"id": "1rSStqL267c", "title": "PHARAOH | Deep Ancient Egyptian Music | Middle Eastern Background Music | Beautiful Duduk & Darbuka", "thumb": "https://i.ytimg.com/vi/1rSStqL267c/mqdefault.jpg", "dur": "56:11"}, {"id": "Qh_kRjfLYVQ", "title": "JAH | Deep Jamaican Meditation Music | Relaxing Dub Reggae Music | Ambient Background Music", "thumb": "https://i.ytimg.com/vi/Qh_kRjfLYVQ/mqdefault.jpg", "dur": "1:04:53"}, {"id": "J5l-WtTAyyI", "title": "HAYAL | Beautiful Turkish Meditation Music | Ambient Middle Eastern Music | Deep Background Music", "thumb": "https://i.ytimg.com/vi/J5l-WtTAyyI/mqdefault.jpg", "dur": "1:06:04"}, {"id": "5UrNQag4A2Y", "title": "BEYOND | Deep & Relaxing Tibetan Meditation Music | Ambient Background Music | Tibet Singing Bowls", "thumb": "https://i.ytimg.com/vi/5UrNQag4A2Y/mqdefault.jpg", "dur": "1:02:25"}, {"id": "cyMF6rltGzw", "title": "MAKTUB | Deep Arabic Meditation Music | Ambient Middle Eastern Music | Emotional Arabic Singing", "thumb": "https://i.ytimg.com/vi/cyMF6rltGzw/mqdefault.jpg", "dur": "1:04:40"}, {"id": "Dof1CxqY0J0", "title": "Deep & Relaxing Japanese Zen Music | Ambient Meditation Music | Ethereal Background Music", "thumb": "https://i.ytimg.com/vi/Dof1CxqY0J0/mqdefault.jpg", "dur": "2:25:05"}, {"id": "SJjbaWe9P-E", "title": "ANCESTORS | Deep & Spiritual African Meditation Music | Relaxing Ambient Background Music", "thumb": "https://i.ytimg.com/vi/SJjbaWe9P-E/mqdefault.jpg", "dur": "59:58"}, {"id": "y1vntL1aFt0", "title": "CHAKRA | Deep Indian Meditation Music | Remove Negative Energy | Relaxing Ambient Background Music", "thumb": "https://i.ytimg.com/vi/y1vntL1aFt0/mqdefault.jpg", "dur": "1:03:43"}, {"id": "fNsIay7meeo", "title": "SHINTO | Deep Japanese Meditation Music | Ambient Background Music | Relaxing Japanese Zen Music", "thumb": "https://i.ytimg.com/vi/fNsIay7meeo/mqdefault.jpg", "dur": "1:00:35"}, {"id": "lm9W5p9jkpc", "title": "AFRICA | Deep & Emotional African Meditation Music | Relaxing Ambient Background Music", "thumb": "https://i.ytimg.com/vi/lm9W5p9jkpc/mqdefault.jpg", "dur": "57:44"}, {"id": "LGJZMNyJvNs", "title": "PROPHECY | Deep Middle Eastern Meditation Music | Ambient Arabic Background Music | Dark & Emotional", "thumb": "https://i.ytimg.com/vi/LGJZMNyJvNs/mqdefault.jpg", "dur": "57:21"}, {"id": "BWDp12mlF7Q", "title": "AURA | Deep & Beautiful Japanese Zen Music | Healing Mediation Music | Ethereal Background Music", "thumb": "https://i.ytimg.com/vi/BWDp12mlF7Q/mqdefault.jpg", "dur": "1:12:57"}, {"id": "ShMc8-qHe5U", "title": "LEGACY | Deep Native American Meditation Music | Ambient Background Music | Native American Flute", "thumb": "https://i.ytimg.com/vi/ShMc8-qHe5U/mqdefault.jpg", "dur": "1:04:13"}, {"id": "ywXN8eR-IIQ", "title": "BEMANI | Beautiful Persian Background Music | Deep Middle Eastern Music | Darbuka & Kamancheh Music", "thumb": "https://i.ytimg.com/vi/ywXN8eR-IIQ/mqdefault.jpg", "dur": "1:00:31"}, {"id": "ClqulIR6ml8", "title": "AMANI | Deep & Emotional African Meditation Music | Relaxing Ambient Background Music | Campfire", "thumb": "https://i.ytimg.com/vi/ClqulIR6ml8/mqdefault.jpg", "dur": "51:19"}, {"id": "3qm5nIbvhzI", "title": "ODYSSEY | Deep & Emotional Chinese Background Music | Ethereal Meditation Music | Ambient Guzheng", "thumb": "https://i.ytimg.com/vi/3qm5nIbvhzI/mqdefault.jpg", "dur": "59:58"}, {"id": "tWMbtq7qMOQ", "title": "ATMA | Deep & Emotional Indian Meditation Music | Beautiful Indian Sitar Music | Dark & Ambient", "thumb": "https://i.ytimg.com/vi/tWMbtq7qMOQ/mqdefault.jpg", "dur": "1:02:09"}, {"id": "iVEmxUOaywg", "title": "ETERNAL | Deep & Emotional Japanese Zen Music l  Ethereal Meditation Music | Ambient Japanese Flute", "thumb": "https://i.ytimg.com/vi/iVEmxUOaywg/mqdefault.jpg", "dur": "1:06:29"}, {"id": "ca_tnQMeE2I", "title": "SALAM | Relaxing Arabic Meditation Music | Deep & Peaceful | Middle Eastern Background Music", "thumb": "https://i.ytimg.com/vi/ca_tnQMeE2I/mqdefault.jpg", "dur": "53:57"}, {"id": "QqSDIC5Ak90", "title": "SATORI | Deep & Emotional Japanese Zen Music | Ethereal Meditation Music | Ambient Koto Music", "thumb": "https://i.ytimg.com/vi/QqSDIC5Ak90/mqdefault.jpg", "dur": "1:08:17"}, {"id": "v1pFcAz-WSE", "title": "NEY | Deep Arabian Background Music | Arabic Flute Meditation Music | Middle Eastern", "thumb": "https://i.ytimg.com/vi/v1pFcAz-WSE/mqdefault.jpg", "dur": "1:03:49"}, {"id": "hQdxi1ML07w", "title": "REBORN | Cure Your Insomnia | Ambient Healing Background Music | Relaxing Meditative", "thumb": "https://i.ytimg.com/vi/hQdxi1ML07w/mqdefault.jpg", "dur": "54:11"}, {"id": "H13xctzCJ2w", "title": "SAMA | Deep Arabic Meditation Music | Beautiful & Emotional | Middle Eastern Background", "thumb": "https://i.ytimg.com/vi/H13xctzCJ2w/mqdefault.jpg", "dur": "1:01:27"}, {"id": "-m_RMfupN-0", "title": "Clear Your Mind | Relaxing Meditation Music | Tibetan Singing Bowl | Remove Stress", "thumb": "https://i.ytimg.com/vi/-m_RMfupN-0/mqdefault.jpg", "dur": "2:00:25"}, {"id": "q0jeFn220yc", "title": "Nostalgia [2 HOURS] Relaxing Storm Background Music | Thunder & Rain | Calming Meditative Music", "thumb": "https://i.ytimg.com/vi/q0jeFn220yc/mqdefault.jpg", "dur": "2:00:19"}, {"id": "ThaLSqvuj8c", "title": "PURIFY | Remove Anxiety Music | Calming Meditation Music | Insomnia Cure", "thumb": "https://i.ytimg.com/vi/ThaLSqvuj8c/mqdefault.jpg", "dur": "2:02:05"}, {"id": "QCBLcbcjqCM", "title": "Dune Whispers | Deep Arabian Meditation Music | Middle Eastern Background Music | Emotional Vocal", "thumb": "https://i.ytimg.com/vi/QCBLcbcjqCM/mqdefault.jpg", "dur": "1:59:12"}, {"id": "wXCcxOMsmr0", "title": "Deep Persian Background Music | Arabian & Middle Eastern | Beautiful Oud & Ney | Emotional Vocal", "thumb": "https://i.ytimg.com/vi/wXCcxOMsmr0/mqdefault.jpg", "dur": "2:08:09"}, {"id": "ukS3zdP7FWA", "title": "Deep Ambient Meditation Music | Spirit of the Valley | Relaxing Tibetan Background Music |", "thumb": "https://i.ytimg.com/vi/ukS3zdP7FWA/mqdefault.jpg", "dur": "2:03:52"}, {"id": "IRGBCqSMr_g", "title": "Remove Negative Thoughts | Tibetan Bowl Meditation Music | Relaxing Ambient Background", "thumb": "https://i.ytimg.com/vi/IRGBCqSMr_g/mqdefault.jpg", "dur": "2:04:01"}, {"id": "IP0vlr0lg1Y", "title": "Deep & Mystical Fantasy Music | Beautiful Female Vocal | Enchanting Background Music [2 HOUR]", "thumb": "https://i.ytimg.com/vi/IP0vlr0lg1Y/mqdefault.jpg", "dur": "2:01:48"}, {"id": "B_YG6PrKAlA", "title": "Female Vocal Fantasy Music | Beautiful & Soft Ethereal Singing | Magical Background Music", "thumb": "https://i.ytimg.com/vi/B_YG6PrKAlA/mqdefault.jpg", "dur": "2:04:03"}, {"id": "JaB6T3Y4NYE", "title": "Relaxing Japanese Background Music | Spirit of the Wind | East Asia Meditation | Koto & Bamboo Flute", "thumb": "https://i.ytimg.com/vi/JaB6T3Y4NYE/mqdefault.jpg", "dur": "2:09:48"}, {"id": "R1HYjrRpiUU", "title": "Deep & Spiritual Meditation Music | Remove Negative Energy | Relaxing Singing Bowls", "thumb": "https://i.ytimg.com/vi/R1HYjrRpiUU/mqdefault.jpg", "dur": "2:02:29"}, {"id": "yU-2XKhD59k", "title": "East Asian Background Music | Japanese Koto | Peaceful and Relaxing Meditation | Soothing Rain", "thumb": "https://i.ytimg.com/vi/yU-2XKhD59k/mqdefault.jpg", "dur": "1:59:49"}, {"id": "_Ryy5U5gp2E", "title": "Deep Native American Background Music | Spirit of the Land | Beautiful Stoic Flute Meditation", "thumb": "https://i.ytimg.com/vi/_Ryy5U5gp2E/mqdefault.jpg", "dur": "1:59:10"}, {"id": "mfPXlrVkGOQ", "title": "Heal Your Soul Meditation Music | Tibetan Singing Bowls | Calming Background Music", "thumb": "https://i.ytimg.com/vi/mfPXlrVkGOQ/mqdefault.jpg", "dur": "2:01:19"}, {"id": "KQIKt0vGhFc", "title": "Beautiful & Mystical Background Music | Spirit Of The Mountain | Relaxing Warm Meditation", "thumb": "https://i.ytimg.com/vi/KQIKt0vGhFc/mqdefault.jpg", "dur": "1:56:44"}, {"id": "qUSqwQsW9Jo", "title": "Relaxing Hang Drum Background Music | Peaceful Healing Meditation | Tranquil Asian Flute", "thumb": "https://i.ytimg.com/vi/qUSqwQsW9Jo/mqdefault.jpg", "dur": "1:55:44"}, {"id": "PsNtEVbxyr8", "title": "Deep Arabic Background Music | Spirit of the Desert | Beautiful & Emotional | Dune Desert", "thumb": "https://i.ytimg.com/vi/PsNtEVbxyr8/mqdefault.jpg", "dur": "2:02:40"}, {"id": "CJNRePAAzS8", "title": "Ethereal Background Music | Spirit of the Forest | Beautiful & Relaxing Singing", "thumb": "https://i.ytimg.com/vi/CJNRePAAzS8/mqdefault.jpg", "dur": "2:02:37"}, {"id": "Nr84pzmCPZ4", "title": "Spiritual Indian Meditation Music | Balakrishnan Bamboo Flute  | Relaxing & Soothing", "thumb": "https://i.ytimg.com/vi/Nr84pzmCPZ4/mqdefault.jpg", "dur": "1:04:22"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

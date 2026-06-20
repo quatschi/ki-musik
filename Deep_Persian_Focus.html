@@ -7,6 +7,7 @@
 <!-- categories: Weltmusik, Lounge, Tribal -->
 <!-- channel-id: UCvS5orZAa4pRrg1HuUX2VTw -->
 <!-- channel-url: https://www.youtube.com/@DeepPersianFocus -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">51 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Deep Persian Focus";
+const KANAL = "Deep_Persian_Focus.html";
+const ORIG_CATEGORIES = "Weltmusik, Lounge, Tribal";
 const VIDEOS = [{"id": "ph4uE1XznXI", "title": "Hypnotic Persian Trance | Deep Focus Journey Through Ancient Mystical Sounds", "thumb": "https://i.ytimg.com/vi/ph4uE1XznXI/mqdefault.jpg", "dur": "59:02"}, {"id": "CfSqdIGDBh0", "title": "Deep Persian Ambient Soundscape | Beatless Meditation, Sleep & Deep Focus Journey", "thumb": "https://i.ytimg.com/vi/CfSqdIGDBh0/mqdefault.jpg", "dur": "14:45"}, {"id": "Z8YqGsNKbnc", "title": "This Ambient Journey Feels Like Another World 🧿 Iranian–Afghan Trance Music", "thumb": "https://i.ytimg.com/vi/Z8YqGsNKbnc/mqdefault.jpg", "dur": "1:05:57"}, {"id": "svosK68CoDo", "title": "⚠️ This Iranian–Afghan Ambient Playlist Feels Like a Lucid Dream 🧿", "thumb": "https://i.ytimg.com/vi/svosK68CoDo/mqdefault.jpg", "dur": "1:02:36"}, {"id": "6zI_c6JMk90", "title": "Enter a Floating Trance State 🧿 Mystical Persian Ambient Beyond Reality", "thumb": "https://i.ytimg.com/vi/6zI_c6JMk90/mqdefault.jpg", "dur": "16:29"}, {"id": "5ZsuwlczsTw", "title": "The Quiet Never Ends | Moody Persian Ambient for Work", "thumb": "https://i.ytimg.com/vi/5ZsuwlczsTw/mqdefault.jpg", "dur": "57:28"}, {"id": "51ZeFkZgiQY", "title": "Persian–Afghan Mystical Ambient 🧿 Hypnotic Deep Focus & Lucid Dream Soundscape", "thumb": "https://i.ytimg.com/vi/51ZeFkZgiQY/mqdefault.jpg", "dur": "1:11:21"}, {"id": "tLyWAY_x0Wg", "title": "This Persian–Afghan Ambient Playlist Will Take You to Another Dimension 🧿", "thumb": "https://i.ytimg.com/vi/tLyWAY_x0Wg/mqdefault.jpg", "dur": "14:49"}, {"id": "oU-fESCiy0Q", "title": "WARNING: Deep Subconscious Trance Music for ADHD & Deep Work 🧿", "thumb": "https://i.ytimg.com/vi/oU-fESCiy0Q/mqdefault.jpg", "dur": "58:52"}, {"id": "fxUGs8bU3jw", "title": "Caught in the Flow ⏳ Persian–Afghan Ambient (Endless Focus)", "thumb": "https://i.ytimg.com/vi/fxUGs8bU3jw/mqdefault.jpg", "dur": "54:28"}, {"id": "d1FvUHA4iz8", "title": "Enter a Lucid Trance State 🌙 Persian–Afghan Mystical Ambient for Deep Focus & Dreams", "thumb": "https://i.ytimg.com/vi/d1FvUHA4iz8/mqdefault.jpg", "dur": "55:21"}, {"id": "ix3PeDrT87c", "title": "A Constant Flow You Can’t Leave 🌙 Persian Ambient Trance Music", "thumb": "https://i.ytimg.com/vi/ix3PeDrT87c/mqdefault.jpg", "dur": "1:07:50"}, {"id": "8TdkYRQrXLs", "title": "Mystical Persian–Afghan Deep Focus Music | ADHD Trance Ambient", "thumb": "https://i.ytimg.com/vi/8TdkYRQrXLs/mqdefault.jpg", "dur": "1:01:27"}, {"id": "cv3hqcmUM3U", "title": "Enter a Trance-Like Focus State 🧿 Persian–Afghan Mystical Ambient for Deep Work", "thumb": "https://i.ytimg.com/vi/cv3hqcmUM3U/mqdefault.jpg", "dur": "1:10:32"}, {"id": "LdGhQaBCbcE", "title": "Persian Trance 🌙 Mystical Middle Eastern Deep Trance Mix", "thumb": "https://i.ytimg.com/vi/LdGhQaBCbcE/mqdefault.jpg", "dur": "1:10:21"}, {"id": "zDvRHuN2rTo", "title": "It Starts Slow… Then You’re Locked In ⏳ Persian Ambient Trance Music", "thumb": "https://i.ytimg.com/vi/zDvRHuN2rTo/mqdefault.jpg", "dur": "1:17:34"}, {"id": "QMT44r46vWM", "title": "You Didn't Plan to Stay This Long… | Persian Deep Trance for Focus & Time Loss", "thumb": "https://i.ytimg.com/vi/QMT44r46vWM/mqdefault.jpg", "dur": "59:53"}, {"id": "PI3-kJXap2w", "title": "Your Brain Can't Escape This Loop 🧠 8-Hour Hypnotic Focus", "thumb": "https://i.ytimg.com/vi/PI3-kJXap2w/mqdefault.jpg", "dur": "58:01"}, {"id": "0SL2eZrjZ9M", "title": "Middle Eastern Deep House | Ethnic Percussion Night Drive", "thumb": "https://i.ytimg.com/vi/0SL2eZrjZ9M/mqdefault.jpg", "dur": "58:16"}, {"id": "pnP6z-a_T2o", "title": "Tropical Persian Melodic Techno Mix | Ambient DJ Performance", "thumb": "https://i.ytimg.com/vi/pnP6z-a_T2o/mqdefault.jpg", "dur": "54:05"}, {"id": "XS5gH_0Lqz8", "title": "Your Focus Is Broken… Until Now | Persian-Afghan Ambient for ADHD & Productivity", "thumb": "https://i.ytimg.com/vi/XS5gH_0Lqz8/mqdefault.jpg", "dur": "1:08:00"}, {"id": "KPtS2asqoLI", "title": "Hypnotic Persian Bass Trance | Deep House Melodic Techno for Relaxation", "thumb": "https://i.ytimg.com/vi/KPtS2asqoLI/mqdefault.jpg", "dur": "57:05"}, {"id": "5eWjeLH1AT8", "title": "Your Mind Drifts While Staying Locked In | Ultra Minimal Persian Soundscape", "thumb": "https://i.ytimg.com/vi/5eWjeLH1AT8/mqdefault.jpg", "dur": "56:02"}, {"id": "tnyGbcd-bhw", "title": "Ambient That Doesn't Feel Like Music | Pure Flow State", "thumb": "https://i.ytimg.com/vi/tnyGbcd-bhw/mqdefault.jpg", "dur": "58:40"}, {"id": "EyFeRAikdWU", "title": "Slip Into Focus Without Trying | ADHD Deep Work Music", "thumb": "https://i.ytimg.com/vi/EyFeRAikdWU/mqdefault.jpg", "dur": "1:07:28"}, {"id": "VihZSYzA1uE", "title": "You Don't Hear This… You Enter It ⏳ Persian Ambient Trance", "thumb": "https://i.ytimg.com/vi/VihZSYzA1uE/mqdefault.jpg", "dur": "1:01:25"}, {"id": "OWjrYf41KNw", "title": "Stay Focused Without Interruption 🧿 Persian–Afghan Soundscape", "thumb": "https://i.ytimg.com/vi/OWjrYf41KNw/mqdefault.jpg", "dur": "58:14"}, {"id": "yl9il7ZjlkA", "title": "You Didn’t Notice It Start… | Persian Ambient Deep Focus Music", "thumb": "https://i.ytimg.com/vi/yl9il7ZjlkA/mqdefault.jpg", "dur": "1:00:35"}, {"id": "giWPmppOej0", "title": "Deep Concentration Ambient | Persian Music That Pulls You Into Flow State", "thumb": "https://i.ytimg.com/vi/giWPmppOej0/mqdefault.jpg", "dur": "1:38:54"}, {"id": "4Vu5-hCQeKE", "title": "You’ll Forget Everything Around You… Persian Hypnotic Ambient | Deep Focus Music", "thumb": "https://i.ytimg.com/vi/4Vu5-hCQeKE/mqdefault.jpg", "dur": "52:08"}, {"id": "GFZ7iXAMuAQ", "title": "Time Disappears Here ⏳ Persian Deep Focus Ambient Playlist (No Distractions)", "thumb": "https://i.ytimg.com/vi/GFZ7iXAMuAQ/mqdefault.jpg", "dur": "53:03"}, {"id": "MIGN1QUz8Yc", "title": "This Rhythm Pulls You In… | Persian Deep Trance with Hypnotic Bass Flow", "thumb": "https://i.ytimg.com/vi/MIGN1QUz8Yc/mqdefault.jpg", "dur": "57:18"}, {"id": "8HnVJK0c08U", "title": "The Rhythm You Don't Notice | Persian Meditation Music", "thumb": "https://i.ytimg.com/vi/8HnVJK0c08U/mqdefault.jpg", "dur": "56:54"}, {"id": "RVfjPf26bfA", "title": "You Won’t Realize You’re Still Listening… | Persian Deep Trance for Focus & Mind Control", "thumb": "https://i.ytimg.com/vi/RVfjPf26bfA/mqdefault.jpg", "dur": "50:19"}, {"id": "lCvRP8FhJlI", "title": "Your Mind Will Disappear Into This | Persian Deep Trance", "thumb": "https://i.ytimg.com/vi/lCvRP8FhJlI/mqdefault.jpg", "dur": "1:10:50"}, {"id": "MUL6oMW-9QE", "title": "You Won’t Notice Time Passing… | Persian Hypnotic Ambient for Deep Focus & Trance State", "thumb": "https://i.ytimg.com/vi/MUL6oMW-9QE/mqdefault.jpg", "dur": "53:23"}, {"id": "slCmO1fqDkg", "title": "You Won’t Notice Time Passing… 🧠 Persian Deep Focus Ambient", "thumb": "https://i.ytimg.com/vi/slCmO1fqDkg/mqdefault.jpg", "dur": "46:12"}, {"id": "w2So64FydJ4", "title": "Hypnotic Duduk Trance That Makes Time Disappear", "thumb": "https://i.ytimg.com/vi/w2So64FydJ4/mqdefault.jpg", "dur": "1:03:08"}, {"id": "hnb5cr-GFpo", "title": "Persian Modern Ambient 🌙 Deep Focus & Study Music | Hypnotic Duduk Soundscape", "thumb": "https://i.ytimg.com/vi/hnb5cr-GFpo/mqdefault.jpg", "dur": "40:59"}, {"id": "1Dv1BcUmCBY", "title": "Persian Deep Focus Music 🌙 Hypnotic Duduk Ambient for Study & Work (Ultra Calm & Trance Flow)", "thumb": "https://i.ytimg.com/vi/1Dv1BcUmCBY/mqdefault.jpg", "dur": "1:06:25"}, {"id": "y3dnelJwpzs", "title": "Persian Ambient Music for Deep Focus 🌙 Duduk & Tombak Study Music", "thumb": "https://i.ytimg.com/vi/y3dnelJwpzs/mqdefault.jpg", "dur": "35:24"}, {"id": "ReVpXvheStk", "title": "1 Hour Deep Focus Persian Ambient | Ancient Duduk & Ney (No Strings)", "thumb": "https://i.ytimg.com/vi/ReVpXvheStk/mqdefault.jpg", "dur": "1:06:19"}, {"id": "HMd6DBV-XTM", "title": "Ancient Persian Ambient – The Duduk Sound That Quietly Puts Your Mind Into Focus", "thumb": "https://i.ytimg.com/vi/HMd6DBV-XTM/mqdefault.jpg", "dur": "29:30"}, {"id": "gAz2bOtp45c", "title": "Ancient Persian Drum & Ney Instrumental – Slow Deep Focus Music", "thumb": "https://i.ytimg.com/vi/gAz2bOtp45c/mqdefault.jpg", "dur": "20:47"}, {"id": "8cjW0pSwdDY", "title": "This Persian Instrumental Will Put You Into a Trance – Deep Focus & Ancient Calm", "thumb": "https://i.ytimg.com/vi/8cjW0pSwdDY/mqdefault.jpg", "dur": "15:17"}, {"id": "CnyyrqHkf5k", "title": "This Persian Instrumental Will Quiet Your Mind – Authentic Study Music", "thumb": "https://i.ytimg.com/vi/CnyyrqHkf5k/mqdefault.jpg", "dur": "46:05"}, {"id": "xYJgAq999eU", "title": "This Persian Wind Music Will Quiet Your Mind – Deep Focus Instrumental", "thumb": "https://i.ytimg.com/vi/xYJgAq999eU/mqdefault.jpg", "dur": "21:49"}, {"id": "dXuAS_2DiL0", "title": "Slow Persian Instrumental for Deep Focus & Study – Calm Rhythmic Flow", "thumb": "https://i.ytimg.com/vi/dXuAS_2DiL0/mqdefault.jpg", "dur": "21:07"}, {"id": "-nOUz093MQo", "title": "Modern Persian Instrumental – Deep Bass & Rhythmic Focus Music", "thumb": "https://i.ytimg.com/vi/-nOUz093MQo/mqdefault.jpg", "dur": "12:08"}, {"id": "nfoPqHyWLn0", "title": "Persian Wind & Deep Bass Music – Intense Focus & Deep Work", "thumb": "https://i.ytimg.com/vi/nfoPqHyWLn0/mqdefault.jpg", "dur": "59:25"}, {"id": "0CKEScWzr4U", "title": "Persian Focus Music – Deep Work, Brain Flow & Hypnotic Wind Instrumental", "thumb": "https://i.ytimg.com/vi/0CKEScWzr4U/mqdefault.jpg", "dur": "17:55"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UC7MIQP60h2Irdo2u1EVhu5g -->
 <!-- channel-url: https://www.youtube.com/@musicforevent -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">38 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Music For Event";
+const KANAL = "Music_For_Event.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "C4Z2r_M9i_g", "title": "Dark Symphony of Legends", "thumb": "https://i.ytimg.com/vi/C4Z2r_M9i_g/mqdefault.jpg", "dur": "24:13"}, {"id": "pI9XSFANblA", "title": "Jazz Fusion Overdrive", "thumb": "https://i.ytimg.com/vi/pI9XSFANblA/mqdefault.jpg", "dur": "33:53"}, {"id": "XHai9Fn-sEw", "title": "Urban Jazz Motion", "thumb": "https://i.ytimg.com/vi/XHai9Fn-sEw/mqdefault.jpg", "dur": "32:51"}, {"id": "4uCSMnArFvs", "title": "Fading Signals & Broken Frequencies", "thumb": "https://i.ytimg.com/vi/4uCSMnArFvs/mqdefault.jpg", "dur": "26:20"}, {"id": "nDuejh0-TPE", "title": "Electric Siam EDM Nights", "thumb": "https://i.ytimg.com/vi/nDuejh0-TPE/mqdefault.jpg", "dur": "27:34"}, {"id": "AACDr4Uajqg", "title": "Siam Jazz Fusion Boulevard", "thumb": "https://i.ytimg.com/vi/AACDr4Uajqg/mqdefault.jpg", "dur": "33:02"}, {"id": "ocCpLq4dWew", "title": "Little Dreams Playground", "thumb": "https://i.ytimg.com/vi/ocCpLq4dWew/mqdefault.jpg", "dur": "11:31"}, {"id": "2dzzCAI1QP8", "title": "Golden Era Swing Jazz", "thumb": "https://i.ytimg.com/vi/2dzzCAI1QP8/mqdefault.jpg", "dur": "25:21"}, {"id": "3tZlhqc7n8A", "title": "Ocean Lights Latin Jazz", "thumb": "https://i.ytimg.com/vi/3tZlhqc7n8A/mqdefault.jpg", "dur": "31:48"}, {"id": "1WbIjt90LT8", "title": "Titanium Bass Havoc", "thumb": "https://i.ytimg.com/vi/1WbIjt90LT8/mqdefault.jpg", "dur": "25:05"}, {"id": "KfCUpK4yH5g", "title": "Cosmic Jazz Funk Syndicate", "thumb": "https://i.ytimg.com/vi/KfCUpK4yH5g/mqdefault.jpg", "dur": "33:09"}, {"id": "yDFZ41bN9tc", "title": "Golden Breeze Bossa", "thumb": "https://i.ytimg.com/vi/yDFZ41bN9tc/mqdefault.jpg", "dur": "19:22"}, {"id": "mQtFgOVufU8", "title": "Tropical Escape Routes", "thumb": "https://i.ytimg.com/vi/mQtFgOVufU8/mqdefault.jpg", "dur": "25:47"}, {"id": "laDi9zHEsbk", "title": "Reggae Paradise Motion", "thumb": "https://i.ytimg.com/vi/laDi9zHEsbk/mqdefault.jpg", "dur": "23:41"}, {"id": "slSo09nYmw4", "title": "Elegant Dixieland Jazz", "thumb": "https://i.ytimg.com/vi/slSo09nYmw4/mqdefault.jpg", "dur": "22:09"}, {"id": "g415gZ5pbK4", "title": "Whispers of Forever", "thumb": "https://i.ytimg.com/vi/g415gZ5pbK4/mqdefault.jpg", "dur": "28:23"}, {"id": "kk758s__7Mc", "title": "Luna del Fuego", "thumb": "https://i.ytimg.com/vi/kk758s__7Mc/mqdefault.jpg", "dur": "14:08"}, {"id": "9SEycMN4zeE", "title": "อีสานสะเทือนฟลอร์", "thumb": "https://i.ytimg.com/vi/9SEycMN4zeE/mqdefault.jpg", "dur": "21:03"}, {"id": "hsrQosPsUzY", "title": "NEON HORIZON PROTOCOL", "thumb": "https://i.ytimg.com/vi/hsrQosPsUzY/mqdefault.jpg", "dur": "32:52"}, {"id": "8Tt1i6K7Nc0", "title": "Echoes Beyond Goodbye", "thumb": "https://i.ytimg.com/vi/8Tt1i6K7Nc0/mqdefault.jpg", "dur": "28:13"}, {"id": "ze5V0OvA1Yg", "title": "Jazz Fusion Pulse", "thumb": "https://i.ytimg.com/vi/ze5V0OvA1Yg/mqdefault.jpg", "dur": "33:14"}, {"id": "-0TMQNVDwxM", "title": "Shadowfall: Age of War", "thumb": "https://i.ytimg.com/vi/-0TMQNVDwxM/mqdefault.jpg", "dur": "24:49"}, {"id": "k9bIq-skmKc", "title": "Velour Serenity: Timeless Lobby Ambience", "thumb": "https://i.ytimg.com/vi/k9bIq-skmKc/mqdefault.jpg", "dur": "28:17"}, {"id": "ammrLijAuNg", "title": "MIDNIGHT CIRCUITSA Deep House Instrumental Experience", "thumb": "https://i.ytimg.com/vi/ammrLijAuNg/mqdefault.jpg", "dur": "37:06"}, {"id": "L_2A-jmWR2c", "title": "BASS DOMINION: A Dubstep Instrumental Journey", "thumb": "https://i.ytimg.com/vi/L_2A-jmWR2c/mqdefault.jpg", "dur": "27:46"}, {"id": "KZ0M98M1xso", "title": "Echoes of the Wind Valley", "thumb": "https://i.ytimg.com/vi/KZ0M98M1xso/mqdefault.jpg", "dur": "26:05"}, {"id": "BPyVsJBjhmc", "title": "Pulse of the Night: A Modern House Experience", "thumb": "https://i.ytimg.com/vi/BPyVsJBjhmc/mqdefault.jpg", "dur": "30:55"}, {"id": "jIB6TlQ_dcg", "title": "Velvet Evenings: A Smooth Jazz Experience", "thumb": "https://i.ytimg.com/vi/jIB6TlQ_dcg/mqdefault.jpg", "dur": "33:07"}, {"id": "oyfitfhQCfc", "title": "Genesis of Dominion: The Grand Opening Saga", "thumb": "https://i.ytimg.com/vi/oyfitfhQCfc/mqdefault.jpg", "dur": "26:43"}, {"id": "oVngz2s3RLQ", "title": "Rhythm Ascension: From Warm-Up to Peak", "thumb": "https://i.ytimg.com/vi/oVngz2s3RLQ/mqdefault.jpg", "dur": "23:54"}, {"id": "QeZLjEDPkbE", "title": "Velvet Flow: The R&B Event Experience", "thumb": "https://i.ytimg.com/vi/QeZLjEDPkbE/mqdefault.jpg", "dur": "25:22"}, {"id": "nYH7cp_kRQw", "title": "NEON ASCENT: The EDM Event Journey", "thumb": "https://i.ytimg.com/vi/nYH7cp_kRQw/mqdefault.jpg", "dur": "29:55"}, {"id": "q9VJvlOz4dA", "title": "Midnight Pulse: Deep House Experience", "thumb": "https://i.ytimg.com/vi/q9VJvlOz4dA/mqdefault.jpg", "dur": "31:58"}, {"id": "7FBDgRceZBQ", "title": "Rising Voltage: The Rock Event Experience", "thumb": "https://i.ytimg.com/vi/7FBDgRceZBQ/mqdefault.jpg", "dur": "24:39"}, {"id": "dfEB6-4sOxE", "title": "Adrenaline Flow: From Warm-Up to Burnout", "thumb": "https://i.ytimg.com/vi/dfEB6-4sOxE/mqdefault.jpg", "dur": "22:59"}, {"id": "h-ymWs8JOjU", "title": "The Innovation Continuum", "thumb": "https://i.ytimg.com/vi/h-ymWs8JOjU/mqdefault.jpg", "dur": "25:34"}, {"id": "1cB6DByghGk", "title": "Neon Meridian: The Event Odyssey", "thumb": "https://i.ytimg.com/vi/1cB6DByghGk/mqdefault.jpg", "dur": "31:03"}, {"id": "dMW_-nxPRHY", "title": "A Taste Of Jazz", "thumb": "https://i.ytimg.com/vi/dMW_-nxPRHY/mqdefault.jpg", "dur": "26:05"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

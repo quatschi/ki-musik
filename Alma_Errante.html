@@ -7,6 +7,7 @@
 <!-- categories: Weltmusik -->
 <!-- channel-id: UClEDyXkhibZOJF7hS5CkK0w -->
 <!-- channel-url: https://www.youtube.com/@AlmaErrante-c7z -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">32 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Alma Errante";
+const KANAL = "Alma_Errante.html";
+const ORIG_CATEGORIES = "Weltmusik";
 const VIDEOS = [{"id": "QQVyRJlQv8k", "title": "Bolero en la Vieja Habana", "thumb": "https://i.ytimg.com/vi/QQVyRJlQv8k/mqdefault.jpg", "dur": "1:27:01"}, {"id": "rjfE4YTlpck", "title": "Bolero en la Vieja Habana", "thumb": "https://i.ytimg.com/vi/rjfE4YTlpck/mqdefault.jpg", "dur": "1:12:44"}, {"id": "BE4zk_jQqMw", "title": "Cuando La Habana Suspira – Sombras, Lluvia y Recuerdos", "thumb": "https://i.ytimg.com/vi/BE4zk_jQqMw/mqdefault.jpg", "dur": "1:18:29"}, {"id": "-jRbT5jKw0w", "title": "Susurros de La Habana – Bolero en la Madrugada", "thumb": "https://i.ytimg.com/vi/-jRbT5jKw0w/mqdefault.jpg", "dur": "1:33:42"}, {"id": "thU6D6-8hwk", "title": "Bolero en la Madrugada – Noches de La Habana", "thumb": "https://i.ytimg.com/vi/thU6D6-8hwk/mqdefault.jpg", "dur": "1:17:05"}, {"id": "JjsbdjBLqsE", "title": "Noches de La Habana – Sombras y Nostalgia", "thumb": "https://i.ytimg.com/vi/JjsbdjBLqsE/mqdefault.jpg", "dur": "1:07:18"}, {"id": "0YOwQtiLydo", "title": "Hasta la Vejez – Amor para Siempre", "thumb": "https://i.ytimg.com/vi/0YOwQtiLydo/mqdefault.jpg", "dur": "1:36:04"}, {"id": "KuMhx8elws8", "title": "Como en una Película Vieja | Retro Cuban Bolero", "thumb": "https://i.ytimg.com/vi/KuMhx8elws8/mqdefault.jpg", "dur": "1:22:44"}, {"id": "nlrUTXGVjCk", "title": "Susurros de La Habana – Bolero Bajo la Luna", "thumb": "https://i.ytimg.com/vi/nlrUTXGVjCk/mqdefault.jpg", "dur": "1:06:30"}, {"id": "ICYEvL0TA3k", "title": "Cuando La Habana Suspira – Sombras, Lluvia y Recuerdos", "thumb": "https://i.ytimg.com/vi/ICYEvL0TA3k/mqdefault.jpg", "dur": "1:18:29"}, {"id": "NcuikxapcSQ", "title": "Hasta la Vejez – Amor para Siempre", "thumb": "https://i.ytimg.com/vi/NcuikxapcSQ/mqdefault.jpg", "dur": "1:33:42"}, {"id": "b8rPJ3Vs71Q", "title": "Susurros de La Habana – Bolero en la Madrugada", "thumb": "https://i.ytimg.com/vi/b8rPJ3Vs71Q/mqdefault.jpg", "dur": "1:15:37"}, {"id": "NCkUwDgLWXU", "title": "La Habana en la Madrugada – Bolero y Nostalgia", "thumb": "https://i.ytimg.com/vi/NCkUwDgLWXU/mqdefault.jpg", "dur": "1:27:01"}, {"id": "0VOl_sq-5L0", "title": "Madrugada en La Habana – Café y Bolero", "thumb": "https://i.ytimg.com/vi/0VOl_sq-5L0/mqdefault.jpg", "dur": "1:12:44"}, {"id": "a4OwZdXD6hI", "title": "Bolero en la Vieja Habana", "thumb": "https://i.ytimg.com/vi/a4OwZdXD6hI/mqdefault.jpg", "dur": "1:06:27"}, {"id": "kLECOPPhQFA", "title": "Susurros de La Habana – Bolero Bajo la Luna", "thumb": "https://i.ytimg.com/vi/kLECOPPhQFA/mqdefault.jpg", "dur": "1:14:08"}, {"id": "TWKg1yK_Q9M", "title": "Susurros de La Habana – Bolero Bajo la Luna", "thumb": "https://i.ytimg.com/vi/TWKg1yK_Q9M/mqdefault.jpg", "dur": "1:07:11"}, {"id": "qTnQ7B3Dr1o", "title": "Madrugada en La Habana – Café y Bolero", "thumb": "https://i.ytimg.com/vi/qTnQ7B3Dr1o/mqdefault.jpg", "dur": "1:12:08"}, {"id": "H13bez8nyiw", "title": "Como en una Película Vieja | Retro Cuban Bolero", "thumb": "https://i.ytimg.com/vi/H13bez8nyiw/mqdefault.jpg", "dur": "1:21:57"}, {"id": "m9d_n4JeMo0", "title": "Bolero en la Madrugada – Noches de La Habana", "thumb": "https://i.ytimg.com/vi/m9d_n4JeMo0/mqdefault.jpg", "dur": "1:17:30"}, {"id": "A2O9l6GUMqw", "title": "La Habana en la Madrugada – Bolero y Nostalgia", "thumb": "https://i.ytimg.com/vi/A2O9l6GUMqw/mqdefault.jpg", "dur": "1:22:43"}, {"id": "swdbuasAZTA", "title": "Bolero de Amor en la Madrugada – La Habana", "thumb": "https://i.ytimg.com/vi/swdbuasAZTA/mqdefault.jpg", "dur": "1:26:01"}, {"id": "qktdoAY2Azk", "title": "Susurros de La Habana – Bolero en la Madrugada", "thumb": "https://i.ytimg.com/vi/qktdoAY2Azk/mqdefault.jpg", "dur": "1:09:41"}, {"id": "Uj_LP8M-9Gg", "title": "Como en una Película Vieja | Retro Cuban Bolero", "thumb": "https://i.ytimg.com/vi/Uj_LP8M-9Gg/mqdefault.jpg", "dur": "1:25:18"}, {"id": "b5DWmxvIZoY", "title": "Susurros de La Habana – Bolero en la Madrugada", "thumb": "https://i.ytimg.com/vi/b5DWmxvIZoY/mqdefault.jpg", "dur": "1:36:44"}, {"id": "LksyUQL-kps", "title": "Noches de La Habana – Susurros y Bolero", "thumb": "https://i.ytimg.com/vi/LksyUQL-kps/mqdefault.jpg", "dur": "1:11:53"}, {"id": "ravL7rLhsNA", "title": "La Habana Suspira – Bolero de Medianoche", "thumb": "https://i.ytimg.com/vi/ravL7rLhsNA/mqdefault.jpg", "dur": "1:44:40"}, {"id": "bn6i1Dx6R88", "title": "Entre Café y Bolero en la Madrugada – Noches de La Habana", "thumb": "https://i.ytimg.com/vi/bn6i1Dx6R88/mqdefault.jpg", "dur": "1:13:55"}, {"id": "rI4QS1aMk1E", "title": "La Habana Suspira – Bolero de Medianoche", "thumb": "https://i.ytimg.com/vi/rI4QS1aMk1E/mqdefault.jpg", "dur": "1:15:09"}, {"id": "-FcFf1GSjBk", "title": "Susurros de La Habana – Bolero Bajo la Luna", "thumb": "https://i.ytimg.com/vi/-FcFf1GSjBk/mqdefault.jpg", "dur": "1:04:17"}, {"id": "gnlzLqvBcJc", "title": "Madrugada en La Habana – Café y Bolero", "thumb": "https://i.ytimg.com/vi/gnlzLqvBcJc/mqdefault.jpg", "dur": "1:23:50"}, {"id": "RpdhrxQPYgo", "title": "Bolero en la Madrugada – Noches de La Habana", "thumb": "https://i.ytimg.com/vi/RpdhrxQPYgo/mqdefault.jpg", "dur": "1:04:31"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

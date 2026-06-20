@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCN-zmdY90SAyUnAjYQVe-5Q -->
 <!-- channel-url: https://www.youtube.com/@velvetneedlesociety -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">29 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Velvet Needle Society";
+const KANAL = "Velvet_Needle_Society.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "FmgIM8z80pg", "title": "Lost 1950s Jazz… | [Series Name] (Vintage Jazz Vinyl)", "thumb": "https://i.ytimg.com/vi/FmgIM8z80pg/mqdefault.jpg", "dur": "1:32:04"}, {"id": "Rc2ouzrOepY", "title": "Lost 1950s Jazz… | After The Last Dance |  The Moonlight Club Sessions 1952 | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/Rc2ouzrOepY/mqdefault.jpg", "dur": "1:47:25"}, {"id": "r8HTiaSWv0U", "title": "Lost 1950s Jazz… | Blue Velvet Nights | The Blue Room Recordings 1952 | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/r8HTiaSWv0U/mqdefault.jpg", "dur": "1:46:49"}, {"id": "HGC9hphp3oA", "title": "Lost 1950s Jazz… | Midnight Confession | 1952 The Velvet Room Sessions | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/HGC9hphp3oA/mqdefault.jpg", "dur": "1:47:43"}, {"id": "hbDIRuB3-c0", "title": "Lost 1950s Jazz… | Summertime | 1952 Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/hbDIRuB3-c0/mqdefault.jpg", "dur": "1:41:40"}, {"id": "U05WOXAttrY", "title": "Lost 1950s Jazz… | Mr. Romeo | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/U05WOXAttrY/mqdefault.jpg", "dur": "1:15:07"}, {"id": "Ttq_B2W0aFo", "title": "Lost 1950s Jazz… | Purple Love | Vintage Jazz Vinyl | Evelyn Hart.", "thumb": "https://i.ytimg.com/vi/Ttq_B2W0aFo/mqdefault.jpg", "dur": "1:40:02"}, {"id": "Xml3l5V4vI4", "title": "Lost 1950s Jazz… | All Of Us | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/Xml3l5V4vI4/mqdefault.jpg", "dur": "1:32:53"}, {"id": "3Y9Qj-mJ880", "title": "Lost 1950s Jazz… | Babylon Yayo | 1952 Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/3Y9Qj-mJ880/mqdefault.jpg", "dur": "1:38:35"}, {"id": "ERWsbrcVlcI", "title": "Lost 1950s Jazz… | Fever (1958) | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/ERWsbrcVlcI/mqdefault.jpg", "dur": "1:34:04"}, {"id": "t4WOq6zmVDE", "title": "Lost 1950s Jazz… | Lady In Satin (1957) | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/t4WOq6zmVDE/mqdefault.jpg", "dur": "1:46:33"}, {"id": "iSRtjaNY1IA", "title": "Lost 1950s Jazz… | Cry Me A River (1952) | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/iSRtjaNY1IA/mqdefault.jpg", "dur": "1:41:44"}, {"id": "yUZQp8aF-nQ", "title": "Lost 1950s Jazz… | Lullaby Of Birdland | {1954} Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/yUZQp8aF-nQ/mqdefault.jpg", "dur": "1:44:48"}, {"id": "cDNO-wGnSw8", "title": "Lost 1950s Soul Jazz… | Road To Midnight | The Lost Jazz Vinyl Session | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/cDNO-wGnSw8/mqdefault.jpg", "dur": "1:46:48"}, {"id": "zbeVU7j2Ni4", "title": "Lost 1950s Jazz… | Mrs SINNER | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/zbeVU7j2Ni4/mqdefault.jpg", "dur": "1:49:08"}, {"id": "A3KAADLdqrY", "title": "Lost 1950s Jazz… | Peace & Chaos | Midnight Session Recordings | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/A3KAADLdqrY/mqdefault.jpg", "dur": "1:37:45"}, {"id": "RJ746t4fYhQ", "title": "Lost 1950s Jazz… | Velvet After Midnight | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/RJ746t4fYhQ/mqdefault.jpg", "dur": "1:35:12"}, {"id": "dtaXYvYvpm0", "title": "Lost 1950s Jazz… | The Things We Never Recorded | Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/dtaXYvYvpm0/mqdefault.jpg", "dur": "1:33:29"}, {"id": "WnR4wRaZGSg", "title": "Lost 1940s Jazz… | Whiskey Didn't Lie | Vintage Jazz Vinyl | Evelyn Hart.", "thumb": "https://i.ytimg.com/vi/WnR4wRaZGSg/mqdefault.jpg", "dur": "1:50:31"}, {"id": "Ui40i1Josv8", "title": "Lost 1950s Jazz… | Where The Music Stops (Vintage Jazz Vinyl) | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/Ui40i1Josv8/mqdefault.jpg", "dur": "1:40:00"}, {"id": "AQ2QxAGXC0Q", "title": "Lost 1950s Jazz… | the Silence Between Us | 1953  Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/AQ2QxAGXC0Q/mqdefault.jpg", "dur": "1:31:31"}, {"id": "FbqeLD3vVWg", "title": "Lost 1950s Jazz... | Black Velvet  |1953 Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/FbqeLD3vVWg/mqdefault.jpg", "dur": "1:39:16"}, {"id": "B9plbdCTPGs", "title": "They say she recorded this album in one night…and never performed these songs again | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/B9plbdCTPGs/mqdefault.jpg", "dur": "1:49:24"}, {"id": "hJOWe_zzfOM", "title": "Lost 1950s Jazz | Whispers After Midnight (Vintage Jazz Vinyl) | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/hJOWe_zzfOM/mqdefault.jpg", "dur": "1:57:20"}, {"id": "AdUco5QExxc", "title": "Lost 1950s Jazz… | the Silence Between Songs | 1952  Vintage Jazz Vinyl | Evelyn Hart", "thumb": "https://i.ytimg.com/vi/AdUco5QExxc/mqdefault.jpg", "dur": "1:42:04"}, {"id": "sF_-apMkBzs", "title": "Lost 1950s Jazz | The Lost 1950s Soul Sessions – Vol. 01 (Needle Velvet Society) | Evelyn Hart.", "thumb": "https://i.ytimg.com/vi/sF_-apMkBzs/mqdefault.jpg", "dur": "2:07:16"}, {"id": "O55_1eTATs0", "title": "Lost 1950s Jazz… | Evelyn Hart (Velvet Needle Society) - All That Jazz Vinyl", "thumb": "https://i.ytimg.com/vi/O55_1eTATs0/mqdefault.jpg", "dur": "1:35:09"}, {"id": "se4IYrtbJYI", "title": "Lost 1970s Jazz (Velvet Needle society) | Golden Era Vintage Jazz - The Other Side of Midnight", "thumb": "https://i.ytimg.com/vi/se4IYrtbJYI/mqdefault.jpg", "dur": "1:51:09"}, {"id": "4kxSOcodoZQ", "title": "Lost Jazz 1970s - Golden Era Night Vibes | Vintage Jazz Vinyl - Velvet Needle Society - Get Happy", "thumb": "https://i.ytimg.com/vi/4kxSOcodoZQ/mqdefault.jpg", "dur": "1:23:25"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

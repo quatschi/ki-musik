@@ -7,6 +7,7 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCxohSTIBRIOOfxAEvRqwWsg -->
 <!-- channel-url: https://www.youtube.com/@moyo_afro-soul -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">36 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "MOYO";
+const KANAL = "MOYO.html";
+const ORIG_CATEGORIES = "Lounge";
 const VIDEOS = [{"id": "sXP_YqLBDs0", "title": "Oh My Soul – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/sXP_YqLBDs0/mqdefault.jpg", "dur": "5:24"}, {"id": "0DnlbwIaFkU", "title": "My Soul in The Rain", "thumb": "https://i.ytimg.com/vi/0DnlbwIaFkU/mqdefault.jpg", "dur": "0:20"}, {"id": "2oGNAmygor4", "title": "My Soul in The Rain – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/2oGNAmygor4/mqdefault.jpg", "dur": "3:49"}, {"id": "wCi9usHvoJw", "title": "Wide Water", "thumb": "https://i.ytimg.com/vi/wCi9usHvoJw/mqdefault.jpg", "dur": "0:17"}, {"id": "S322UI7lF4s", "title": "Wide Water – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/S322UI7lF4s/mqdefault.jpg", "dur": "4:38"}, {"id": "t1LmC8eDRH4", "title": "AMOUR", "thumb": "https://i.ytimg.com/vi/t1LmC8eDRH4/mqdefault.jpg", "dur": "0:20"}, {"id": "ntL371XtfjI", "title": "SO CLOSE TO LOVE", "thumb": "https://i.ytimg.com/vi/ntL371XtfjI/mqdefault.jpg", "dur": "0:17"}, {"id": "KWs5q15KsAM", "title": "SO CLOSE TO LOVE – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/KWs5q15KsAM/mqdefault.jpg", "dur": "4:05"}, {"id": "BtwL8epZLNQ", "title": "MOYO –AMOUR – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/BtwL8epZLNQ/mqdefault.jpg", "dur": "5:16"}, {"id": "qoUJfom9_6w", "title": "Boundless Heart", "thumb": "https://i.ytimg.com/vi/qoUJfom9_6w/mqdefault.jpg", "dur": "0:17"}, {"id": "pFnbA40uNUs", "title": "How Your Soul Sings", "thumb": "https://i.ytimg.com/vi/pFnbA40uNUs/mqdefault.jpg", "dur": "0:31"}, {"id": "zvnMMomLs9Y", "title": "MOYO — Boundless Heart  – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/zvnMMomLs9Y/mqdefault.jpg", "dur": "3:47"}, {"id": "NcLcEgkbLrY", "title": "Say My Name Again", "thumb": "https://i.ytimg.com/vi/NcLcEgkbLrY/mqdefault.jpg", "dur": "0:24"}, {"id": "wKzapDcS2fc", "title": "MOYO – How Your Soul Sings – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/wKzapDcS2fc/mqdefault.jpg", "dur": "5:24"}, {"id": "g4u6DygUR5s", "title": "Say My Name Again — MOYO | Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/g4u6DygUR5s/mqdefault.jpg", "dur": "4:58"}, {"id": "DVAv7wDXJfI", "title": "MOYO –My House is Open", "thumb": "https://i.ytimg.com/vi/DVAv7wDXJfI/mqdefault.jpg", "dur": "0:29"}, {"id": "u09zv1r2RK8", "title": "MOYO — Tempus Fugit – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/u09zv1r2RK8/mqdefault.jpg", "dur": "3:57"}, {"id": "CDfe2MxTt_Y", "title": "MOYO — REMAIN (Organic House / Afro Soul)", "thumb": "https://i.ytimg.com/vi/CDfe2MxTt_Y/mqdefault.jpg", "dur": "5:37"}, {"id": "DAQdwITfKX4", "title": "Hope with Feathers", "thumb": "https://i.ytimg.com/vi/DAQdwITfKX4/mqdefault.jpg", "dur": "0:21"}, {"id": "ULkULMuNg_k", "title": "DON'T TURN AROUND", "thumb": "https://i.ytimg.com/vi/ULkULMuNg_k/mqdefault.jpg", "dur": "0:31"}, {"id": "PrNkuNCvh_o", "title": "OH MY FIRE", "thumb": "https://i.ytimg.com/vi/PrNkuNCvh_o/mqdefault.jpg", "dur": "0:16"}, {"id": "ohniyG_yvvU", "title": "MOYO –My House is Open – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/ohniyG_yvvU/mqdefault.jpg", "dur": "4:58"}, {"id": "rb7TeBsGxtY", "title": "Couldn’t Protect You from Myself - Deep Afro Soul | Emotional Male Vocal", "thumb": "https://i.ytimg.com/vi/rb7TeBsGxtY/mqdefault.jpg", "dur": "3:35"}, {"id": "ooCrofXpECg", "title": "MOYO AFRICA", "thumb": "https://i.ytimg.com/vi/ooCrofXpECg/mqdefault.jpg", "dur": "0:45"}, {"id": "Cc4kkfRyukw", "title": "MOYO AFRICA – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/Cc4kkfRyukw/mqdefault.jpg", "dur": "5:29"}, {"id": "yIl11wApnXA", "title": "HOPE WITH FEATHERS – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/yIl11wApnXA/mqdefault.jpg", "dur": "5:18"}, {"id": "AoBeNEyFqZw", "title": "DON’T TURN AROUND", "thumb": "https://i.ytimg.com/vi/AoBeNEyFqZw/mqdefault.jpg", "dur": "0:25"}, {"id": "5H14yQhORDE", "title": "DON’T TURN AROUND – Deep Afro Soul | Emotional Cinematic Song", "thumb": "https://i.ytimg.com/vi/5H14yQhORDE/mqdefault.jpg", "dur": "3:59"}, {"id": "xR9LrbpF12g", "title": "MAMA JUST LIVE", "thumb": "https://i.ytimg.com/vi/xR9LrbpF12g/mqdefault.jpg", "dur": "0:21"}, {"id": "qDtOICcv044", "title": "This is not a song. This is a feeling. | Oh My Fire 🔥", "thumb": "https://i.ytimg.com/vi/qDtOICcv044/mqdefault.jpg", "dur": "0:12"}, {"id": "qbUdEkAJFc8", "title": "Mama Just Live – Afro Soul Cinematic Song | Deep Emotional Male Vocal", "thumb": "https://i.ytimg.com/vi/qbUdEkAJFc8/mqdefault.jpg", "dur": "5:19"}, {"id": "TtzElOhegmw", "title": "Oh My Fire – Afro Soul Cinematic Song | Tribal Nylon Guitar | Deep Emotional Female Vocal", "thumb": "https://i.ytimg.com/vi/TtzElOhegmw/mqdefault.jpg", "dur": "5:47"}, {"id": "09eiJUJ9lr4", "title": "MOYO — Meditative Afro Soul | Relaxing Cinematic Song", "thumb": "https://i.ytimg.com/vi/09eiJUJ9lr4/mqdefault.jpg", "dur": "3:39"}, {"id": "0vtjzovHre4", "title": "Where I Breathe — Afro Soul | MOYO", "thumb": "https://i.ytimg.com/vi/0vtjzovHre4/mqdefault.jpg", "dur": "2:35"}, {"id": "rMD9AnYt60M", "title": "Where I Breathe — Afro Soul | MOYO", "thumb": "https://i.ytimg.com/vi/rMD9AnYt60M/mqdefault.jpg", "dur": "0:17"}, {"id": "oCBeO8Et75o", "title": "MOYA — Afro Soul", "thumb": "https://i.ytimg.com/vi/oCBeO8Et75o/mqdefault.jpg", "dur": "0:09"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

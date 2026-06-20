@@ -7,6 +7,7 @@
 <!-- categories: Blues -->
 <!-- channel-id: UCV5g7kHK1HBV2yu91Kd2pkw -->
 <!-- channel-url: https://youtube.com/@soul-in-blues -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">62 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "SOUL IN BLUES";
+const KANAL = "SOUL_IN_BLUES.html";
+const ORIG_CATEGORIES = "Blues";
 const VIDEOS = [{"id": "bSVt1L0DNcc", "title": "Deeply Emotional Blues Guitar 45 - Slow Blues | The Road Doesn't Miss You. I Do. 🎸", "thumb": "https://i.ytimg.com/vi/bSVt1L0DNcc/mqdefault.jpg", "dur": "1:41:05"}, {"id": "nCLROcQaZmU", "title": "Deeply Emotional Blues Guitar 44 - Slow Texas blues instrumental | The Last Light on an Empty Road", "thumb": "https://i.ytimg.com/vi/nCLROcQaZmU/mqdefault.jpg", "dur": "1:37:39"}, {"id": "Nq_GDeGCt3k", "title": "Deeply Emotional Blues Guitar 43 | The Midnight Cry of a Lonely Stratocaster", "thumb": "https://i.ytimg.com/vi/Nq_GDeGCt3k/mqdefault.jpg", "dur": "1:28:17"}, {"id": "RbT6ap0rpcY", "title": "Deeply Emotional Blues Guitar 42 | Three in the Morning and I'm Still Playing Your Song", "thumb": "https://i.ytimg.com/vi/RbT6ap0rpcY/mqdefault.jpg", "dur": "1:25:41"}, {"id": "DsH0cXe7VFE", "title": "Deeply Emotional Blues Guitar 41 | Where the Night Forgets Your Name", "thumb": "https://i.ytimg.com/vi/DsH0cXe7VFE/mqdefault.jpg", "dur": "1:21:05"}, {"id": "wXqBTMjJrHE", "title": "Deeply Emotional Blues Guitar 40 | Old Memories in a Dusty Blues Club", "thumb": "https://i.ytimg.com/vi/wXqBTMjJrHE/mqdefault.jpg", "dur": "1:31:16"}, {"id": "iOtEE5Dhq0k", "title": "Deeply Emotional Blues Guitar 39 | At 3 AM, the Guitar Remembers Everything", "thumb": "https://i.ytimg.com/vi/iOtEE5Dhq0k/mqdefault.jpg", "dur": "1:33:06"}, {"id": "-fIGmJPhGWI", "title": "Deeply Emotional Blues Guitar 38 | One Lonely Note in a Smoky Midnight", "thumb": "https://i.ytimg.com/vi/-fIGmJPhGWI/mqdefault.jpg", "dur": "1:32:16"}, {"id": "JSNULRhkBek", "title": "Deeply Emotional Blues Guitar 37 | Deep Blues Guitar for Lonely Nights", "thumb": "https://i.ytimg.com/vi/JSNULRhkBek/mqdefault.jpg", "dur": "1:59:38"}, {"id": "3FgS44gOgCY", "title": "Deep Emotional Blues Guitar 36 | A Conversation with My Own Shadow", "thumb": "https://i.ytimg.com/vi/3FgS44gOgCY/mqdefault.jpg", "dur": "1:42:06"}, {"id": "U7m_m9rpAz8", "title": "Deeply Emotional Blues Guitar 35 - Slow Blues | The Night That Never Learned to Heal", "thumb": "https://i.ytimg.com/vi/U7m_m9rpAz8/mqdefault.jpg", "dur": "1:36:19"}, {"id": "b-vuW5ItjDU", "title": "Deeply Emotional Blues Guitar 34 | Late Night Blues for a Broken Heart", "thumb": "https://i.ytimg.com/vi/b-vuW5ItjDU/mqdefault.jpg", "dur": "1:22:54"}, {"id": "Ib2tpwgOLLw", "title": "Deeply Emotional Blues Guitar 33 – Slow Blues | A Lonely Night That Never Ends", "thumb": "https://i.ytimg.com/vi/Ib2tpwgOLLw/mqdefault.jpg", "dur": "1:48:12"}, {"id": "51bYoGKkBnU", "title": "Deeply Emotional Blues Guitar 32 - Slow Blues | Lost Alone in the Dark With My Memories", "thumb": "https://i.ytimg.com/vi/51bYoGKkBnU/mqdefault.jpg", "dur": "1:30:17"}, {"id": "vhL_Ngpruwg", "title": "Deeply Emotional Blues Guitar 31 - Slow Blues | A Night Where Goodbye Still Lingers", "thumb": "https://i.ytimg.com/vi/vhL_Ngpruwg/mqdefault.jpg", "dur": "1:38:20"}, {"id": "l80TsbgaaxU", "title": "Deeply Emotional Blues Guitar 30 - Slow Blues | Unspoken Feelings in the Late Night", "thumb": "https://i.ytimg.com/vi/l80TsbgaaxU/mqdefault.jpg", "dur": "1:47:17"}, {"id": "eeLFoKe_rLg", "title": "Deeply Emotional Blues Guitar 29 - Slow Blues | Smoke Seeping Through the Night", "thumb": "https://i.ytimg.com/vi/eeLFoKe_rLg/mqdefault.jpg", "dur": "1:34:31"}, {"id": "tM4uSEQz6b0", "title": "Deeply Emotional Blues Guitar 28 - Slow Blues | Lonely Blues in the Midnight Smoke", "thumb": "https://i.ytimg.com/vi/tM4uSEQz6b0/mqdefault.jpg", "dur": "1:48:15"}, {"id": "UqDWE4kGsbo", "title": "Slow Texas Blues Guitar(Instrumental) | Midnight Blues for a Broken Soul", "thumb": "https://i.ytimg.com/vi/UqDWE4kGsbo/mqdefault.jpg", "dur": "1:34:23"}, {"id": "zVSLl6TR3Hw", "title": "Deeply Emotional Blues Guitar 27 - Slow Blues | Midnight Whiskey Blues", "thumb": "https://i.ytimg.com/vi/zVSLl6TR3Hw/mqdefault.jpg", "dur": "1:18:28"}, {"id": "OO3xlsRoSVE", "title": "Deeply Emotional Blues Guitar 26 - Slow Blues | The Fading Glow of a Warm Vacuum Tube at 3 AM", "thumb": "https://i.ytimg.com/vi/OO3xlsRoSVE/mqdefault.jpg", "dur": "1:39:12"}, {"id": "MzP0d4MKunU", "title": "Raw & Soulful (Vol 2) | Gritty &  Soul Mix Texas Blues(Instrumental)", "thumb": "https://i.ytimg.com/vi/MzP0d4MKunU/mqdefault.jpg", "dur": "1:29:02"}, {"id": "GTjjteUUj7g", "title": "Deeply Emotional Blues Guitar 25 | A Breath of Blues at the Edge of Darkness", "thumb": "https://i.ytimg.com/vi/GTjjteUUj7g/mqdefault.jpg", "dur": "1:31:00"}, {"id": "ZnOtUGXcxM4", "title": "Raw & Soulful | Gritty &  Soul Mix Texas Blues(Instrumental)", "thumb": "https://i.ytimg.com/vi/ZnOtUGXcxM4/mqdefault.jpg", "dur": "1:33:34"}, {"id": "dkhv3pdWfOQ", "title": "Deeply Emotional Blues Guitar 24 | Smoke Rings Rising Into the Lonesome Night", "thumb": "https://i.ytimg.com/vi/dkhv3pdWfOQ/mqdefault.jpg", "dur": "1:42:37"}, {"id": "vD7mHvh5Eqs", "title": "Deeply Emotional Blues Guitar 23 | Shadows of Yesterday Still Linger Here", "thumb": "https://i.ytimg.com/vi/vD7mHvh5Eqs/mqdefault.jpg", "dur": "1:16:10"}, {"id": "lesY-fn7HPA", "title": "Deeply Emotional Blues Guitar 22 | When the Night Whispers", "thumb": "https://i.ytimg.com/vi/lesY-fn7HPA/mqdefault.jpg", "dur": "1:27:27"}, {"id": "Tc7UdJ7NZOc", "title": "Deeply Emotional Blues Guitar 21 | Midnight Blues, The Guitar's Breath", "thumb": "https://i.ytimg.com/vi/Tc7UdJ7NZOc/mqdefault.jpg", "dur": "1:35:05"}, {"id": "w4V6_3OV2Gc", "title": "Deeply Emotional Blues Guitar 20 | Moonlight Blues For Lonely Souls", "thumb": "https://i.ytimg.com/vi/w4V6_3OV2Gc/mqdefault.jpg", "dur": "1:16:43"}, {"id": "fmik9XQAicA", "title": "Deeply Emotional Blues Guitar 19 | Bleeding Strings in the Dark", "thumb": "https://i.ytimg.com/vi/fmik9XQAicA/mqdefault.jpg", "dur": "1:44:06"}, {"id": "6tL2nghucG0", "title": "Deeply Emotional Blues Guitar 18 | Blues Echoes in a Silent Alley", "thumb": "https://i.ytimg.com/vi/6tL2nghucG0/mqdefault.jpg", "dur": "1:20:09"}, {"id": "YHdzQMokbaI", "title": "Deeply Emotional Blues Guitar 17 | Where the Pain Sleeps", "thumb": "https://i.ytimg.com/vi/YHdzQMokbaI/mqdefault.jpg", "dur": "1:21:58"}, {"id": "znIFNu70lZI", "title": "Texas blues rock | A Groove for Your Night (Instrumental)", "thumb": "https://i.ytimg.com/vi/znIFNu70lZI/mqdefault.jpg", "dur": "1:02:34"}, {"id": "55Eqe5pfOto", "title": "Deeply Emotional Blues Guitar 16 | A Quiet Cry of the Soul", "thumb": "https://i.ytimg.com/vi/55Eqe5pfOto/mqdefault.jpg", "dur": "1:11:57"}, {"id": "Ojb78eJD56c", "title": "🐉 Soul of the Dragon | Blues Rock Instrumental", "thumb": "https://i.ytimg.com/vi/Ojb78eJD56c/mqdefault.jpg", "dur": "48:14"}, {"id": "Lj2imyGwtYM", "title": "Emotional Blues Songs 4", "thumb": "https://i.ytimg.com/vi/Lj2imyGwtYM/mqdefault.jpg", "dur": "22:13"}, {"id": "sbw6uKoWW7Q", "title": "Deeply Emotional Blues Guitar 15 | A Guitar’s Lonely Heart", "thumb": "https://i.ytimg.com/vi/sbw6uKoWW7Q/mqdefault.jpg", "dur": "1:20:50"}, {"id": "Etjrc1Zeg-g", "title": "Emotional Blues Songs 3", "thumb": "https://i.ytimg.com/vi/Etjrc1Zeg-g/mqdefault.jpg", "dur": "23:23"}, {"id": "1nRmieBBTls", "title": "Deeply Emotional Blues Guitar 14 | Midnight Confession", "thumb": "https://i.ytimg.com/vi/1nRmieBBTls/mqdefault.jpg", "dur": "1:18:50"}, {"id": "rqMIdubjeV4", "title": "Emotional Blues Songs 2", "thumb": "https://i.ytimg.com/vi/rqMIdubjeV4/mqdefault.jpg", "dur": "24:48"}, {"id": "kUCr6SPcqQI", "title": "Deeply Emotional Blues Vol. 13 | The Last Blues of a Broken Heart", "thumb": "https://i.ytimg.com/vi/kUCr6SPcqQI/mqdefault.jpg", "dur": "1:04:36"}, {"id": "Fz4wzafMnG0", "title": "Emotional Blues Songs", "thumb": "https://i.ytimg.com/vi/Fz4wzafMnG0/mqdefault.jpg", "dur": "27:03"}, {"id": "TexHoOr4BIA", "title": "Deeply Emotional Blues Vol.12 | A Wailing Blues-Rock Journey (Instrumental)", "thumb": "https://i.ytimg.com/vi/TexHoOr4BIA/mqdefault.jpg", "dur": "1:04:01"}, {"id": "pybWG5Eiiro", "title": "Deeply Emotional Blues Vol.11 | Echoes of Heartbreak (Instrumental)", "thumb": "https://i.ytimg.com/vi/pybWG5Eiiro/mqdefault.jpg", "dur": "1:08:13"}, {"id": "paPCdqjrbKs", "title": "Deeply Emotional Blues Vol. 10 | Midnight Blues for a Lonely Heart  (Instrumental)", "thumb": "https://i.ytimg.com/vi/paPCdqjrbKs/mqdefault.jpg", "dur": "1:03:07"}, {"id": "myWAx4ZUqOg", "title": "Deeply Emotional Blues Vol. 9 | Echoes of a Broken Soul (Instrumental)", "thumb": "https://i.ytimg.com/vi/myWAx4ZUqOg/mqdefault.jpg", "dur": "1:05:27"}, {"id": "uI-wxKhVvLc", "title": "Deeply Emotional Blues Vol. 8 | Alone in the Night, Guitar's Tears Fall (Instrumental)", "thumb": "https://i.ytimg.com/vi/uI-wxKhVvLc/mqdefault.jpg", "dur": "1:19:06"}, {"id": "fXrWrr7GNxk", "title": "Deeply Emotional Blues Guitar Vol. 7 | Tears Flow from the Guitar in the Silence of the Night", "thumb": "https://i.ytimg.com/vi/fXrWrr7GNxk/mqdefault.jpg", "dur": "1:23:38"}, {"id": "rjWtC3bnqkM", "title": "Deeply Emotional Blues Guitar Vol. 6 | Midnight Blues Journey (Instrumental)", "thumb": "https://i.ytimg.com/vi/rjWtC3bnqkM/mqdefault.jpg", "dur": "1:03:20"}, {"id": "bzeZFx4L_g4", "title": "Deeply Emotional Blues Guitar Vol. 5 | Soul of the Wailing Guitar (Instrumental)", "thumb": "https://i.ytimg.com/vi/bzeZFx4L_g4/mqdefault.jpg", "dur": "1:22:41"}, {"id": "RZc5HaKRRos", "title": "Deeply Emotional Blues Guitar Vol. 4  |  Smooth & Gentle Blues Guitar Instrumental", "thumb": "https://i.ytimg.com/vi/RZc5HaKRRos/mqdefault.jpg", "dur": "1:16:58"}, {"id": "EhDCuNq1iGQ", "title": "Deeply Emotional Blues Guitar Vol. 3  |  Smooth & Gentle Blues Guitar Instrumental", "thumb": "https://i.ytimg.com/vi/EhDCuNq1iGQ/mqdefault.jpg", "dur": "1:28:27"}, {"id": "OG45cZXLqSY", "title": "Deeply Emotional Blues Guitar Vol. 2  |  Smooth & Gentle Blues Guitar Instrumental", "thumb": "https://i.ytimg.com/vi/OG45cZXLqSY/mqdefault.jpg", "dur": "2:53:53"}, {"id": "0FJKjyVoEqQ", "title": "Deeply Emotional Blues Vol. 1  |  Smooth & Gentle Blues Guitar Instrumental", "thumb": "https://i.ytimg.com/vi/0FJKjyVoEqQ/mqdefault.jpg", "dur": "1:58:22"}, {"id": "zHEg4lTBrWc", "title": "The Arena Rock Anthems That Moved My Soul", "thumb": "https://i.ytimg.com/vi/zHEg4lTBrWc/mqdefault.jpg", "dur": "1:35:13"}, {"id": "QprM0iGzZQo", "title": "Modern Blues Rock Guitar Instrumental | Urban Vibes", "thumb": "https://i.ytimg.com/vi/QprM0iGzZQo/mqdefault.jpg", "dur": "42:08"}, {"id": "UogUM_e-d3w", "title": "✨Instrumental Blues Rock🌟High-Energy Blues Guitar✨", "thumb": "https://i.ytimg.com/vi/UogUM_e-d3w/mqdefault.jpg", "dur": "1:40:05"}, {"id": "2wubulo8zlM", "title": "✨Ultimate Blues Rock Collection 3🌟 Electric Thunder✨", "thumb": "https://i.ytimg.com/vi/2wubulo8zlM/mqdefault.jpg", "dur": "1:20:18"}, {"id": "HOu2LJ2aeCQ", "title": "✨Ultimate Blues Rock Collection 2🌟Thunder Ridge - Where Lightning Meets the Soul✨", "thumb": "https://i.ytimg.com/vi/HOu2LJ2aeCQ/mqdefault.jpg", "dur": "1:27:26"}, {"id": "ykmgk8fDNNA", "title": "✨Instrumental blues rock - Emotional Blues✨", "thumb": "https://i.ytimg.com/vi/ykmgk8fDNNA/mqdefault.jpg", "dur": "1:20:28"}, {"id": "t6PcvhvwIik", "title": "✨Ultimate Blues Rock Collection 1🌟Roads & Redemption:Full Throttle Edition✨", "thumb": "https://i.ytimg.com/vi/t6PcvhvwIik/mqdefault.jpg", "dur": "1:22:02"}, {"id": "MemvF6HPLYw", "title": "✨Texas Blues Collection - 10 Soulful Tracks✨", "thumb": "https://i.ytimg.com/vi/MemvF6HPLYw/mqdefault.jpg", "dur": "1:10:49"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

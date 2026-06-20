@@ -7,6 +7,7 @@
 <!-- categories: Blues -->
 <!-- channel-id: UClYJ8YEyaE-gWJrvycdLeAw -->
 <!-- channel-url: https://youtube.com/@deeptoneblues -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">59 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Deep Tone Blues";
+const KANAL = "Deep_Tone_Blues.html";
+const ORIG_CATEGORIES = "Blues";
 const VIDEOS = [{"id": "GE4tcR8S6sc", "title": "Deep Calm Blues Guitar for Long Quiet Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/GE4tcR8S6sc/mqdefault.jpg", "dur": "1:32:28"}, {"id": "wMpfIGAwg_c", "title": "Still Night Blues Guitar Instrumental for Peaceful Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/wMpfIGAwg_c/mqdefault.jpg", "dur": "1:31:12"}, {"id": "7yE3ASv-zqA", "title": "Soft Electric Blues Guitar for Deep Relaxing Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/7yE3ASv-zqA/mqdefault.jpg", "dur": "1:33:20"}, {"id": "ULVAS8NYbew", "title": "Shadowy Blues Guitar for Emotional Night Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ULVAS8NYbew/mqdefault.jpg", "dur": "1:33:49"}, {"id": "fj_jnzVw6qE", "title": "Smooth Blues Guitar Instrumental for Late Evening Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fj_jnzVw6qE/mqdefault.jpg", "dur": "1:31:36"}, {"id": "xBStEVIBt-k", "title": "Nocturnal Blues Guitar Instrumental for Calm and Focused Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/xBStEVIBt-k/mqdefault.jpg", "dur": "1:32:35"}, {"id": "vXzb1iIIEjc", "title": "Slow Burning Blues Guitar for Deep Night Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vXzb1iIIEjc/mqdefault.jpg", "dur": "1:32:32"}, {"id": "9NRqjS58nxA", "title": "Dim Light Blues Guitar for Quiet Relaxation and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9NRqjS58nxA/mqdefault.jpg", "dur": "1:30:50"}, {"id": "wAVAfkwmX7c", "title": "Echoing Blues Guitar Instrumental for Midnight Calm and Space | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/wAVAfkwmX7c/mqdefault.jpg", "dur": "1:32:52"}, {"id": "E3H9AcZQkf8", "title": "Gentle Slow Blues Guitar for Evening Wind Down Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/E3H9AcZQkf8/mqdefault.jpg", "dur": "1:30:19"}, {"id": "9bHMmDsG5q0", "title": "Low Light Blues Guitar Instrumental for Deep Focus Sessions | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9bHMmDsG5q0/mqdefault.jpg", "dur": "1:31:49"}, {"id": "3ZV9_EHQv60", "title": "Moody Late Blues Guitar for Night Time Escape and Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/3ZV9_EHQv60/mqdefault.jpg", "dur": "1:30:30"}, {"id": "vraUDW0d_9M", "title": "Subtle Blues Guitar Instrumental for Calm Evening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vraUDW0d_9M/mqdefault.jpg", "dur": "1:33:54"}, {"id": "8qVUVUzT8Xc", "title": "Deep Nightfall Blues Guitar for Relaxed and Quiet Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/8qVUVUzT8Xc/mqdefault.jpg", "dur": "1:30:14"}, {"id": "ie6-181WVn4", "title": "Soft Slow Blues Guitar for Peaceful Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ie6-181WVn4/mqdefault.jpg", "dur": "1:32:34"}, {"id": "r-cHfeAMLFo", "title": "Lonely Night Blues Guitar Instrumental for Emotional Release | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/r-cHfeAMLFo/mqdefault.jpg", "dur": "1:32:23"}, {"id": "_YSbhpKgFgg", "title": "Dark Tone Blues Guitar for Late Night Relaxation and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/_YSbhpKgFgg/mqdefault.jpg", "dur": "1:30:52"}, {"id": "NYgLbjQJnns", "title": "Heavy Mood Blues Guitar Instrumental for Silent Midnight Hours | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/NYgLbjQJnns/mqdefault.jpg", "dur": "1:30:22"}, {"id": "sKqy6z0wS4M", "title": "Nightfall Slow Blues Guitar for Deep Calm and Gentle Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/sKqy6z0wS4M/mqdefault.jpg", "dur": "1:34:48"}, {"id": "zfpo324Ibfo", "title": "Intimate Blues Guitar Instrumental for Late Night Listening and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/zfpo324Ibfo/mqdefault.jpg", "dur": "1:31:10"}, {"id": "vwEImW6JzqY", "title": "Slow Vintage Blues Guitar for Warm Night Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vwEImW6JzqY/mqdefault.jpg", "dur": "1:33:02"}, {"id": "SshUI4k633Q", "title": "Calm Blues Guitar Instrumental for Evening Relaxation and Peace | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/SshUI4k633Q/mqdefault.jpg", "dur": "1:34:55"}, {"id": "zF-yEQOS5Go", "title": "Late Night Slow Blues Guitar for Stress Relief and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/zF-yEQOS5Go/mqdefault.jpg", "dur": "1:30:44"}, {"id": "fzr_K21ka9Y", "title": "Warm Electric Blues Guitar for Late Night Calm and Study | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fzr_K21ka9Y/mqdefault.jpg", "dur": "1:32:29"}, {"id": "fzsuYIHH0Tw", "title": "Deep Soulful Blues Guitar for Relaxation and Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/fzsuYIHH0Tw/mqdefault.jpg", "dur": "1:31:13"}, {"id": "cmCdncj143k", "title": "Emotional Blues Guitar Instrumental for Silent Night Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/cmCdncj143k/mqdefault.jpg", "dur": "1:34:00"}, {"id": "TpL7dc17nfI", "title": "Slow Blues Guitar Instrumental for Relaxing After Hours Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TpL7dc17nfI/mqdefault.jpg", "dur": "1:33:46"}, {"id": "LpFBnYqoIcw", "title": "Melancholic Blues Guitar for Quiet Nights and Gentle Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/LpFBnYqoIcw/mqdefault.jpg", "dur": "1:33:09"}, {"id": "rLayXE9UjNQ", "title": "Deep Night Blues Guitar Instrumental for Calm Background Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/rLayXE9UjNQ/mqdefault.jpg", "dur": "1:32:59"}, {"id": "_qldoLAMY7Q", "title": "Expressive Slow Blues Guitar for Late Night Solitude and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/_qldoLAMY7Q/mqdefault.jpg", "dur": "1:32:57"}, {"id": "rgPH9nL7E1I", "title": "Moody Blues Guitar Instrumental for Dark Night Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/rgPH9nL7E1I/mqdefault.jpg", "dur": "1:30:04"}, {"id": "aqs9nZp9QyY", "title": "Slow Deep Blues Guitar for Night Drive and Emotional Escape | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/aqs9nZp9QyY/mqdefault.jpg", "dur": "1:30:20"}, {"id": "GbXVl_hvuWE", "title": "Midnight Blues Guitar Instrumental for Calm and Introspective Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/GbXVl_hvuWE/mqdefault.jpg", "dur": "1:30:11"}, {"id": "9Adbf1yDPak", "title": "Soulful Blues Guitar Instrumental for Deep Thought and Night Vibes | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/9Adbf1yDPak/mqdefault.jpg", "dur": "1:36:30"}, {"id": "tohCbAj6Ecg", "title": "Warm Slow Blues Guitar for Relaxing Evenings and Peaceful Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/tohCbAj6Ecg/mqdefault.jpg", "dur": "1:36:21"}, {"id": "I96ozEcpoto", "title": "Smoky Blues Guitar Instrumental for Late Night Chill and Ambient Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/I96ozEcpoto/mqdefault.jpg", "dur": "1:33:23"}, {"id": "LyySCZU8cwg", "title": "Deep Blues Guitar Instrumental for Night Time Relaxation and Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/LyySCZU8cwg/mqdefault.jpg", "dur": "1:32:00"}, {"id": "TvZSIVGVJdk", "title": "Slow Emotional Blues Guitar for Midnight Reflection and Calm Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TvZSIVGVJdk/mqdefault.jpg", "dur": "1:32:08"}, {"id": "N8kJ5unkdLk", "title": "Late Night Blues Guitar Instrumental for Deep Relaxation and Quiet Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/N8kJ5unkdLk/mqdefault.jpg", "dur": "1:31:36"}, {"id": "s4WOtzPUoK8", "title": "After Hours Slow Blues Guitar for Smoky Night Vibes | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/s4WOtzPUoK8/mqdefault.jpg", "dur": "1:30:44"}, {"id": "ubI9oZT9rIw", "title": "Deep Blues Guitar Instrumental for Nocturnal Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/ubI9oZT9rIw/mqdefault.jpg", "dur": "1:32:12"}, {"id": "hcUCt7ZXgnQ", "title": "Slow Emotional Blues Guitar for Silent Night Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/hcUCt7ZXgnQ/mqdefault.jpg", "dur": "1:32:57"}, {"id": "RMdXBd08YFQ", "title": "Late Night Electric Blues Guitar for Calm Background Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/RMdXBd08YFQ/mqdefault.jpg", "dur": "1:31:46"}, {"id": "EixIBOfIbAg", "title": "Warm Vintage Blues Guitar for Relaxing Evening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/EixIBOfIbAg/mqdefault.jpg", "dur": "1:36:45"}, {"id": "vrPH9Gb1-ck", "title": "Moody Slow Blues Guitar Instrumental for Dark Cozy Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/vrPH9Gb1-ck/mqdefault.jpg", "dur": "1:33:24"}, {"id": "TTWFif_UXUk", "title": "Deep and Soulful Blues Guitar for Night Time Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/TTWFif_UXUk/mqdefault.jpg", "dur": "1:31:41"}, {"id": "bTIfIK4JteE", "title": "Intimate Slow Blues Guitar Instrumental for Late Night Listening | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/bTIfIK4JteE/mqdefault.jpg", "dur": "1:31:15"}, {"id": "VgH60ALUSKk", "title": "Slow Blues Guitar Instrumental for Rainy Night Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/VgH60ALUSKk/mqdefault.jpg", "dur": "1:30:06"}, {"id": "WW3snY6jrEI", "title": "Deep Emotional Blues Guitar for Midnight Solitude | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/WW3snY6jrEI/mqdefault.jpg", "dur": "1:34:19"}, {"id": "UL6EpZeqtYQ", "title": "Late Night Blues Guitar Instrumental for Study and Deep Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/UL6EpZeqtYQ/mqdefault.jpg", "dur": "1:32:53"}, {"id": "jat93z31tFI", "title": "Expressive Electric Blues Guitar for Quiet Evening Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/jat93z31tFI/mqdefault.jpg", "dur": "1:30:10"}, {"id": "VkA72CDz9zk", "title": "Melancholic Blues Guitar Instrumental for After Hours Relaxation | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/VkA72CDz9zk/mqdefault.jpg", "dur": "1:34:30"}, {"id": "PlL2Ej--rAI", "title": "Soulful Slow Blues Guitar Instrumental for Calm and Introspective Nights | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/PlL2Ej--rAI/mqdefault.jpg", "dur": "1:31:48"}, {"id": "desHukwN4MY", "title": "Warm Electric Blues Guitar for Relaxing Night Ambience | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/desHukwN4MY/mqdefault.jpg", "dur": "1:32:34"}, {"id": "uSx3tjMNlI8", "title": "Smoky Slow Blues Guitar Instrumental for Late Night Mood | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/uSx3tjMNlI8/mqdefault.jpg", "dur": "1:31:37"}, {"id": "6a27Fmshvz0", "title": "Peaceful Blues Guitar Instrumental for Midnight Listening Atmosphere | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/6a27Fmshvz0/mqdefault.jpg", "dur": "1:32:59"}, {"id": "HBmDpReAeMU", "title": "Emotional Slow Blues Guitar for Late Night Relaxation and Reflection | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/HBmDpReAeMU/mqdefault.jpg", "dur": "1:30:13"}, {"id": "nUS775qf6Q8", "title": "Slow Deep Blues Guitar Instrumental for Night Drive and Quiet Moments | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/nUS775qf6Q8/mqdefault.jpg", "dur": "1:31:44"}, {"id": "yGG7e2rVIkw", "title": "Late Night Slow Blues Guitar Instrumental for Relaxing and Deep Focus | Deep Tone Blues", "thumb": "https://i.ytimg.com/vi/yGG7e2rVIkw/mqdefault.jpg", "dur": "1:30:50"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

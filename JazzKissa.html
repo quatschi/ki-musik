@@ -7,6 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCeEotqKoEoMLq1m0bATeLwg -->
 <!-- channel-url: https://www.youtube.com/@warmjazzkissa -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">51 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "JazzKissa";
+const KANAL = "JazzKissa.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
 const VIDEOS = [{"id": "UAAJriTHbUQ", "title": "Pop Blues Jazz Lounge 🎸 Cozy & Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/UAAJriTHbUQ/mqdefault.jpg", "dur": "1:13:03"}, {"id": "7hnH7mIHTWE", "title": "Late Night Acoustic Jazz 🌙 Smooth Instrumental Vibes 🌙 Slow Down and Enjoy the Little Things 🌿", "thumb": "https://i.ytimg.com/vi/7hnH7mIHTWE/mqdefault.jpg", "dur": "1:13:28"}, {"id": "fZdt_s53BMQ", "title": "Late Night Pop Blues Jazz 🌙 Smooth & Emotional Instrumental", "thumb": "https://i.ytimg.com/vi/fZdt_s53BMQ/mqdefault.jpg", "dur": "1:15:24"}, {"id": "h_0HA8qwkpo", "title": "90s Soulful Jazz Instrumental 🎷 Calm & Cozy Vibes 🎷 Old Memories, Soft Jazz, Quiet Nights 🌙", "thumb": "https://i.ytimg.com/vi/h_0HA8qwkpo/mqdefault.jpg", "dur": "1:05:13"}, {"id": "wFglEarRyhk", "title": "Smooth Chill Groove 🎶 Funky Jazz Instrumental for Relax 🎧 Cool, Calm, and Effortlessly Smooth 🔥", "thumb": "https://i.ytimg.com/vi/wFglEarRyhk/mqdefault.jpg", "dur": "1:19:06"}, {"id": "LO8w34jBZqM", "title": "Soft Acoustic Jazz 🌿 Just Relax and Let the Jazz Play 🎷Soft Guitar, Warm Jazz, Peaceful Mind 💭", "thumb": "https://i.ytimg.com/vi/LO8w34jBZqM/mqdefault.jpg", "dur": "1:07:44"}, {"id": "Vhn1_gREjXk", "title": "Relaxing Pop Blues Jazz 🎷When You Miss Something You Can’t Explain 🎶", "thumb": "https://i.ytimg.com/vi/Vhn1_gREjXk/mqdefault.jpg", "dur": "1:10:12"}, {"id": "QzumU57fqek", "title": "Modern Pop Funk Jazz 🎧 This Feels Like Driving Through the City at Night 🌆🎶", "thumb": "https://i.ytimg.com/vi/QzumU57fqek/mqdefault.jpg", "dur": "1:18:10"}, {"id": "TDMuoMhJfg4", "title": "Relaxation Acoustic Jazz Lounge ☕ A Cozy Lounge Where Everything Feels Calm 🎷", "thumb": "https://i.ytimg.com/vi/TDMuoMhJfg4/mqdefault.jpg", "dur": "1:11:45"}, {"id": "6WQ9klTsl-A", "title": "90s R&B Jazz Lounge 🎷 Cozy & Calm Instrumental Vibes / This Feels Like the 90s Again 💭", "thumb": "https://i.ytimg.com/vi/6WQ9klTsl-A/mqdefault.jpg", "dur": "1:08:47"}, {"id": "_tiCzqsikXo", "title": "Smooth Acoustic Jazz 🎶 Calm Background Music / The Kind of Music That Feels Like Home 🎸", "thumb": "https://i.ytimg.com/vi/_tiCzqsikXo/mqdefault.jpg", "dur": "1:16:17"}, {"id": "5poGfHgzl58", "title": "Smooth Chill Groove Jazz | Cozy Evening Music for Relax & Focus  | Vol.2", "thumb": "https://i.ytimg.com/vi/5poGfHgzl58/mqdefault.jpg", "dur": "1:11:51"}, {"id": "LBkjV_zdrwM", "title": "Lo-fi Jazz Lounge 🎸 Cozy & Relaxing Instrumental |  Vol.2", "thumb": "https://i.ytimg.com/vi/LBkjV_zdrwM/mqdefault.jpg", "dur": "1:21:52"}, {"id": "PA7JibiMMXA", "title": "Bossa Nova Jazz 90s R&B ☀️ Calm & Soulful Instrumental  / Vol. 2  / Soft Beats, Old Memories 🌙🎷", "thumb": "https://i.ytimg.com/vi/PA7JibiMMXA/mqdefault.jpg", "dur": "1:21:10"}, {"id": "sZM0sIRj9xw", "title": "90s R&B Jazz Lounge 🎷 Cozy & Calm Instrumental Vibes,  Back When Everything Felt Slower 💿", "thumb": "https://i.ytimg.com/vi/sZM0sIRj9xw/mqdefault.jpg", "dur": "1:13:38"}, {"id": "bYSkQlxbEr0", "title": "Smooth Chill Groove Jazz | Cozy Evening Music for Relax & Focus", "thumb": "https://i.ytimg.com/vi/bYSkQlxbEr0/mqdefault.jpg", "dur": "1:21:09"}, {"id": "rH-V7peWHdw", "title": "Groovy Acid Jazz 🎧 Smooth & Energetic Instrumental", "thumb": "https://i.ytimg.com/vi/rH-V7peWHdw/mqdefault.jpg", "dur": "1:22:09"}, {"id": "ZSn5fZv72XM", "title": "Lo-fi Jazz Lounge 🎸 Cozy & Relaxing Instrumental / Vol.1", "thumb": "https://i.ytimg.com/vi/ZSn5fZv72XM/mqdefault.jpg", "dur": "1:15:56"}, {"id": "WrPdtJ3dmTs", "title": "Bossa Nova Jazz 90s R&B ☀️ Calm & Soulful Instrumental", "thumb": "https://i.ytimg.com/vi/WrPdtJ3dmTs/mqdefault.jpg", "dur": "1:21:54"}, {"id": "RvdAFiAU1pM", "title": "Relaxing Cafe Jazz ☕ Smooth Background Music, Warm Coffee, Soft Jazz, No Worries🌿", "thumb": "https://i.ytimg.com/vi/RvdAFiAU1pM/mqdefault.jpg", "dur": "1:23:40"}, {"id": "DrlwC3ziGq8", "title": "Just Coffee, Soft Jazz, and Your Thoughts ☕💭", "thumb": "https://i.ytimg.com/vi/DrlwC3ziGq8/mqdefault.jpg", "dur": "1:43:26"}, {"id": "w3jJx2FEhDw", "title": "Nothing but Calm 🎶 Gentle Jazz for Your Peaceful Moments", "thumb": "https://i.ytimg.com/vi/w3jJx2FEhDw/mqdefault.jpg", "dur": "1:14:36"}, {"id": "SHfmigRQheg", "title": "Groove Fusion Jazz Lounge 🎷 Smooth Funky Background Music", "thumb": "https://i.ytimg.com/vi/SHfmigRQheg/mqdefault.jpg", "dur": "1:28:18"}, {"id": "z3HKtWcjVEg", "title": "80s Instrumental Jazz 📼 Smooth Retro Jazz", "thumb": "https://i.ytimg.com/vi/z3HKtWcjVEg/mqdefault.jpg", "dur": "1:13:41"}, {"id": "y47MeJyDtwc", "title": "Late Night Fussion Jazz ✨ Calm, Warm & Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/y47MeJyDtwc/mqdefault.jpg", "dur": "1:47:24"}, {"id": "lToBwkJ7xs0", "title": "April Spring Jazz 🌸 Fresh & Relaxing Jazz for a Beautiful Day", "thumb": "https://i.ytimg.com/vi/lToBwkJ7xs0/mqdefault.jpg", "dur": "1:45:22"}, {"id": "ieEQYhJmBvw", "title": "Love & Jazz Nights 🌙 Soft Music for Romantic Mood", "thumb": "https://i.ytimg.com/vi/ieEQYhJmBvw/mqdefault.jpg", "dur": "1:53:51"}, {"id": "kBUwWQ-oPog", "title": "Jazz Nights in Osaka 🌆 Smooth Music for Relax & Unwind", "thumb": "https://i.ytimg.com/vi/kBUwWQ-oPog/mqdefault.jpg", "dur": "1:08:58"}, {"id": "XtSj6F2G-3I", "title": "Morning Jazz Lounge ☕ Smooth Instrumental for Daily Routine", "thumb": "https://i.ytimg.com/vi/XtSj6F2G-3I/mqdefault.jpg", "dur": "1:09:32"}, {"id": "86SCob6hDQI", "title": "Midnight Soul Jazz 🌙 Soft Groove for Late Night Relaxing", "thumb": "https://i.ytimg.com/vi/86SCob6hDQI/mqdefault.jpg", "dur": "1:26:15"}, {"id": "XpkmB3aa-Y4", "title": "Last Night Soul Jazz 🌙 Smooth & Relaxing Night Vibes", "thumb": "https://i.ytimg.com/vi/XpkmB3aa-Y4/mqdefault.jpg", "dur": "1:11:13"}, {"id": "nu5BGfhJdfk", "title": "Cozy Evening Jazz 🎷 Soft Background Music for Relaxation", "thumb": "https://i.ytimg.com/vi/nu5BGfhJdfk/mqdefault.jpg", "dur": "1:05:14"}, {"id": "ecWEeBZj9h8", "title": "Relaxing Jazz Study Music 📚 Calm Instrumental for Focus & Concentration", "thumb": "https://i.ytimg.com/vi/ecWEeBZj9h8/mqdefault.jpg", "dur": "1:26:46"}, {"id": "DACJWLtvZi8", "title": "Neo Soul Jazz Vibes 🎷 Smooth & Chill Music for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/DACJWLtvZi8/mqdefault.jpg", "dur": "1:51:57"}, {"id": "rUXjlie5-WI", "title": "Smooth Jazz Evening Lounge ☕ Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/rUXjlie5-WI/mqdefault.jpg", "dur": "1:29:08"}, {"id": "yLC3uW5KUEc", "title": "Chill Pop Jazz Vibes 🎷 Relaxing Music for Work, Study & Coffee Time", "thumb": "https://i.ytimg.com/vi/yLC3uW5KUEc/mqdefault.jpg", "dur": "1:25:10"}, {"id": "VC-4xVqwwHw", "title": "Midnight Jazz for Sleep 🌙 Smooth Jazz Music for Relaxation", "thumb": "https://i.ytimg.com/vi/VC-4xVqwwHw/mqdefault.jpg", "dur": "1:38:07"}, {"id": "Y9gbvNjgDko", "title": "Soft Jazz Evening 🌙 Relaxing Jazz Music for Night, Study & Chill", "thumb": "https://i.ytimg.com/vi/Y9gbvNjgDko/mqdefault.jpg", "dur": "1:31:22"}, {"id": "QG76c2TWlF8", "title": "Soothing Jazz Music Background Music | The atmosphere of a jazz home | Quiet Spark Session", "thumb": "https://i.ytimg.com/vi/QG76c2TWlF8/mqdefault.jpg", "dur": "1:25:57"}, {"id": "-gRn5oklikY", "title": "Soothing Morning Air Jazz Background Music | The atmosphere of a jazz music.", "thumb": "https://i.ytimg.com/vi/-gRn5oklikY/mqdefault.jpg", "dur": "1:49:01"}, {"id": "4iodJZtOcsc", "title": "Soothing Morning Jazz Background Music | The atmosphere of a jazz music.", "thumb": "https://i.ytimg.com/vi/4iodJZtOcsc/mqdefault.jpg", "dur": "1:31:01"}, {"id": "hOax7Dlpadk", "title": "Soothing Jazz Instrumentals | A quiet room is perfect for concentrating.", "thumb": "https://i.ytimg.com/vi/hOax7Dlpadk/mqdefault.jpg", "dur": "1:34:48"}, {"id": "TcyZtgZjlsw", "title": "Soothing Morning Jazz Background Music | The atmosphere of a jazz cafe in a quiet corner of town.", "thumb": "https://i.ytimg.com/vi/TcyZtgZjlsw/mqdefault.jpg", "dur": "1:56:54"}, {"id": "ikTz6UV8qJM", "title": "Soothing Night Jazz Background Music | The atmosphere of a jazz cafe in a quiet corner.", "thumb": "https://i.ytimg.com/vi/ikTz6UV8qJM/mqdefault.jpg", "dur": "1:04:16"}, {"id": "xkIkPCU1u8w", "title": "Soothing Jazz Background Music | The atmosphere of a jazz cafe in a quiet corner of town.", "thumb": "https://i.ytimg.com/vi/xkIkPCU1u8w/mqdefault.jpg", "dur": "1:24:54"}, {"id": "56r-lPpNMdQ", "title": "Jazz Kissa atmosphere of jazz kissa for Relaxation / Reading or Studying / Lounge coffee bar", "thumb": "https://i.ytimg.com/vi/56r-lPpNMdQ/mqdefault.jpg", "dur": "1:09:16"}, {"id": "sx8N_nIvfi0", "title": "Jazz Kissa / Atmosphere of jazz music for Relaxation / Reading or studying /lounge coffee bar", "thumb": "https://i.ytimg.com/vi/sx8N_nIvfi0/mqdefault.jpg", "dur": "1:16:46"}, {"id": "BlErv5gRuvY", "title": "Jazz Kissa Music In Kyoto /Relaxation/Reading/Studying/Working", "thumb": "https://i.ytimg.com/vi/BlErv5gRuvY/mqdefault.jpg", "dur": "1:09:58"}, {"id": "O0wzk2vcOPE", "title": "Jazz Kissa Music In Tokyo /Relaxation/Reading/Study", "thumb": "https://i.ytimg.com/vi/O0wzk2vcOPE/mqdefault.jpg", "dur": "1:14:54"}, {"id": "oo777KL4Vnc", "title": "Smooth Jazz Elegant Jazz Piano Music Calm Background Music for Relaxing in the Office While Reading", "thumb": "https://i.ytimg.com/vi/oo777KL4Vnc/mqdefault.jpg", "dur": "1:22:10"}, {"id": "Bk6BDj5Lt5Q", "title": "Night Jazz - Warm Jazz - Melody Jazz Music / RelaxingEtherealPiano / InstrumentalJazz / Study", "thumb": "https://i.ytimg.com/vi/Bk6BDj5Lt5Q/mqdefault.jpg", "dur": "1:13:40"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

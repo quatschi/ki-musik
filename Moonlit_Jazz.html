@@ -7,6 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCeU-rFMOzx3DDa8CfTSVE9Q -->
 <!-- channel-url: https://www.youtube.com/@moonlit_jazz_jazz -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">60 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Moonlit Jazz";
+const KANAL = "Moonlit_Jazz.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
 const VIDEOS = [{"id": "d0HEOwVHZ-M", "title": "Spin the Record | Vintage Noir Jazz for Late Nights & Slow Hours", "thumb": "https://i.ytimg.com/vi/d0HEOwVHZ-M/mqdefault.jpg", "dur": "1:02:38"}, {"id": "_1ogMza3Mbw", "title": "Past Midnight | Vintage Noir Jazz for Lost Hours and Quiet Reflection", "thumb": "https://i.ytimg.com/vi/_1ogMza3Mbw/mqdefault.jpg", "dur": "1:07:19"}, {"id": "KTIcyIw-_No", "title": "Float the Night | Vintage Noir Jazz for Poolside Reflection and Lost Time", "thumb": "https://i.ytimg.com/vi/KTIcyIw-_No/mqdefault.jpg", "dur": "1:05:27"}, {"id": "6Q77iZTdoUM", "title": "Stay Awhile | Vintage Noir Jazz for Late Night Relaxation and Lost Hours", "thumb": "https://i.ytimg.com/vi/6Q77iZTdoUM/mqdefault.jpg", "dur": "1:06:02"}, {"id": "oRCrervOG50", "title": "Just Thinking | Vintage Noir Jazz for Quiet Thoughts, Slow Drinks and Stillness", "thumb": "https://i.ytimg.com/vi/oRCrervOG50/mqdefault.jpg", "dur": "1:00:02"}, {"id": "skv2LFy5epc", "title": "Drop the Rush | Vintage Noir Jazz for Slow Drinks and After-Hours Calm", "thumb": "https://i.ytimg.com/vi/skv2LFy5epc/mqdefault.jpg", "dur": "1:00:01"}, {"id": "hOZVDPTCfBM", "title": "The Velvet Room | Vintage Noir Jazz for Reflection, Smoke and Quiet Nights", "thumb": "https://i.ytimg.com/vi/hOZVDPTCfBM/mqdefault.jpg", "dur": "1:00:02"}, {"id": "-ky7796nch0", "title": "Fireplace Noir | Vintage Noir Jazz for Reflection and Midnight Unwinding", "thumb": "https://i.ytimg.com/vi/-ky7796nch0/mqdefault.jpg", "dur": "1:01:32"}, {"id": "hdypbDd7740", "title": "Enter the Quiet | Vintage Noir Jazz for Reading, Focus and Deep Thinking", "thumb": "https://i.ytimg.com/vi/hdypbDd7740/mqdefault.jpg", "dur": "1:00:02"}, {"id": "sO96idVJwJQ", "title": "Sip the Night | Vintage Noir Jazz for Reading, Focus and Deep Thinking | 1 Hour", "thumb": "https://i.ytimg.com/vi/sO96idVJwJQ/mqdefault.jpg", "dur": "1:00:02"}, {"id": "KF7li_Nw5M4", "title": "Moonlit Piano | Vintage Noir Jazz for Slow Thinking, Night Reading and Whiskey Hours", "thumb": "https://i.ytimg.com/vi/KF7li_Nw5M4/mqdefault.jpg", "dur": "2:02:03"}, {"id": "SLyMjWY_r78", "title": "Velvet Stillness | Vintage Noir Jazz for Sinking Into the Night", "thumb": "https://i.ytimg.com/vi/SLyMjWY_r78/mqdefault.jpg", "dur": "1:00:01"}, {"id": "7m3gXd5xqpg", "title": "Golden Lounge | Vintage Noir Jazz for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/7m3gXd5xqpg/mqdefault.jpg", "dur": "1:01:11"}, {"id": "h9sv0Ukbs1Y", "title": "Sip the Shadows | Vintage Noir Jazz for Quiet Night Relaxation", "thumb": "https://i.ytimg.com/vi/h9sv0Ukbs1Y/mqdefault.jpg", "dur": "1:00:01"}, {"id": "d237smeApaw", "title": "Savor the Melody | Vintage Noir Jazz to Calm Your Mind", "thumb": "https://i.ytimg.com/vi/d237smeApaw/mqdefault.jpg", "dur": "1:00:01"}, {"id": "4SXXf5iRhtc", "title": "Lean into Moonlight | Vintage Noir Jazz for Quiet Late Night Focus and Deep Thinking", "thumb": "https://i.ytimg.com/vi/4SXXf5iRhtc/mqdefault.jpg", "dur": "2:00:01"}, {"id": "453GnnoNKeQ", "title": "Stay with Shadows | Vintage Noir Jazz for Quiet Late Night Focus", "thumb": "https://i.ytimg.com/vi/453GnnoNKeQ/mqdefault.jpg", "dur": "2:00:01"}, {"id": "ZJgKA4Y9Ors", "title": "Light the Shadows | Vintage Noir Jazz for Candlelit Late Nights", "thumb": "https://i.ytimg.com/vi/ZJgKA4Y9Ors/mqdefault.jpg", "dur": "2:00:01"}, {"id": "S4eeTRfkujw", "title": "Sink in Velvet | Vintage Noir Jazz to Relax and Rest Your Day", "thumb": "https://i.ytimg.com/vi/S4eeTRfkujw/mqdefault.jpg", "dur": "1:06:01"}, {"id": "vaTjDlRWta4", "title": "Read the Moon | Vintage Noir Jazz for Reading, Thinking & Unwinding", "thumb": "https://i.ytimg.com/vi/vaTjDlRWta4/mqdefault.jpg", "dur": "1:00:01"}, {"id": "FwvC-TWw-sM", "title": "Touch the Smoke | Vintage Noir Jazz to Calm Your Mind", "thumb": "https://i.ytimg.com/vi/FwvC-TWw-sM/mqdefault.jpg", "dur": "1:00:01"}, {"id": "fPaYPdGyqKY", "title": "Follow the Smoke | Vintage Noir Jazz for a Quiet Late Night", "thumb": "https://i.ytimg.com/vi/fPaYPdGyqKY/mqdefault.jpg", "dur": "1:00:01"}, {"id": "l-qcsZPLXOQ", "title": "Follow the Notes | Vintage Noir Jazz to Relax and Mute the World", "thumb": "https://i.ytimg.com/vi/l-qcsZPLXOQ/mqdefault.jpg", "dur": "2:00:01"}, {"id": "8PsdfokYG1E", "title": "End the Noise | Instrumental Noir Jazz Bar to Unwind After a Long Day", "thumb": "https://i.ytimg.com/vi/8PsdfokYG1E/mqdefault.jpg", "dur": "2:02:00"}, {"id": "gQdG8ldjTSM", "title": "Hush the world | Instrumental Noir Jazz Bar for Late Nights & Still Hours", "thumb": "https://i.ytimg.com/vi/gQdG8ldjTSM/mqdefault.jpg", "dur": "2:01:33"}, {"id": "kAt9DdNeRqA", "title": "The Sexiest Jazz You’ll Ever Hear | COME CLOSER | Sultry Female Vocals - 1940s", "thumb": "https://i.ytimg.com/vi/kAt9DdNeRqA/mqdefault.jpg", "dur": "31:53"}, {"id": "_e7ch65t_cE", "title": "1940s Classic Jazz Moments – Vintage Swing & Smooth Retro Vibes", "thumb": "https://i.ytimg.com/vi/_e7ch65t_cE/mqdefault.jpg", "dur": "1:00:50"}, {"id": "Pz6wj1vkg-k", "title": "The Sexiest Jazz You’ll Ever Experience | A Taste of HELL | Sultry Female Vocals - 1940s", "thumb": "https://i.ytimg.com/vi/Pz6wj1vkg-k/mqdefault.jpg", "dur": "30:53"}, {"id": "Dl2sikFVEvc", "title": "1940's Vintage Jazz Classics – Retro Swing & Jazz Bar", "thumb": "https://i.ytimg.com/vi/Dl2sikFVEvc/mqdefault.jpg", "dur": "1:03:52"}, {"id": "c4-gLBqKvys", "title": "Midnight Jazz in Manhattan - 1940's Vintage Classic Vibes", "thumb": "https://i.ytimg.com/vi/c4-gLBqKvys/mqdefault.jpg", "dur": "1:00:47"}, {"id": "2jIwTF5tMJs", "title": "Midnight in New York – 1940's Retro Classic Jazz", "thumb": "https://i.ytimg.com/vi/2jIwTF5tMJs/mqdefault.jpg", "dur": "30:11"}, {"id": "YoCLJR-cJlQ", "title": "Midnight JAZZ in New York – 1940's Retro JAZZ", "thumb": "https://i.ytimg.com/vi/YoCLJR-cJlQ/mqdefault.jpg", "dur": "1:00:29"}, {"id": "3XsQxr0hrjQ", "title": "Midnight JAZZ in New York - 1940's Vintage Classic Vibes", "thumb": "https://i.ytimg.com/vi/3XsQxr0hrjQ/mqdefault.jpg", "dur": "1:01:38"}, {"id": "cYRYrJBm6TY", "title": "1940's Vintage Jazz Club 🎷 Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/cYRYrJBm6TY/mqdefault.jpg", "dur": "1:01:30"}, {"id": "f4GeC-RLfUI", "title": "Nostalgic 1940's Autumn - Classic 1940's Jazz", "thumb": "https://i.ytimg.com/vi/f4GeC-RLfUI/mqdefault.jpg", "dur": "1:00:01"}, {"id": "_j82eY2Qn74", "title": "Nostalgic 1940's Autumn - Vintage Jazz Playlist", "thumb": "https://i.ytimg.com/vi/_j82eY2Qn74/mqdefault.jpg", "dur": "1:00:38"}, {"id": "iLvVDfz6z78", "title": "Her Red Lips — 1940’s Jazz After Dark", "thumb": "https://i.ytimg.com/vi/iLvVDfz6z78/mqdefault.jpg", "dur": "1:00:59"}, {"id": "bFgPprAVUd0", "title": "Retro Jazz in New York – 1940's Jazz", "thumb": "https://i.ytimg.com/vi/bFgPprAVUd0/mqdefault.jpg", "dur": "2:18:55"}, {"id": "XES8ZF38kfw", "title": "Old Jazz Music 1940's - Vintage Vibes Playlist", "thumb": "https://i.ytimg.com/vi/XES8ZF38kfw/mqdefault.jpg", "dur": "3:10:29"}, {"id": "8VC8Jkkiqk8", "title": "Slow Nights in Manhattan Bar - 1940's Jazz", "thumb": "https://i.ytimg.com/vi/8VC8Jkkiqk8/mqdefault.jpg", "dur": "2:23:04"}, {"id": "JTekwAeJQYA", "title": "1940's Nostalgic Jazz – Vintage Retro Jazz Classics", "thumb": "https://i.ytimg.com/vi/JTekwAeJQYA/mqdefault.jpg", "dur": "1:00:37"}, {"id": "LLvSwPJilPI", "title": "1940's Nostalgic Jazz ~ Vintage Music", "thumb": "https://i.ytimg.com/vi/LLvSwPJilPI/mqdefault.jpg", "dur": "1:36:42"}, {"id": "B4Do4b1iaK4", "title": "First Kiss in Manhattan — 1940's Retro Jazz", "thumb": "https://i.ytimg.com/vi/B4Do4b1iaK4/mqdefault.jpg", "dur": "1:33:09"}, {"id": "zeR3j-XKsb8", "title": "1940's Vintage Jazz Club. Nostalgic Retro Jazz", "thumb": "https://i.ytimg.com/vi/zeR3j-XKsb8/mqdefault.jpg", "dur": "1:30:52"}, {"id": "c6GGPnVi5xI", "title": "Midnight in New York – 1940's Retro Jazz", "thumb": "https://i.ytimg.com/vi/c6GGPnVi5xI/mqdefault.jpg", "dur": "1:00:39"}, {"id": "GfUH_jV_ZLg", "title": "1940s Vintage Jazz – Retro Swing & Jazz Bar Nostalgia", "thumb": "https://i.ytimg.com/vi/GfUH_jV_ZLg/mqdefault.jpg", "dur": "1:06:17"}, {"id": "1Y1ThXOMkTQ", "title": "1930’s Jazz Classics Playlist | Vintage Retro Jazz", "thumb": "https://i.ytimg.com/vi/1Y1ThXOMkTQ/mqdefault.jpg", "dur": "56:50"}, {"id": "uGQQ70hR17I", "title": "1940's Retro Jazz Classics 🎷 - Timeless Swing & Jazz Vintage Playlist", "thumb": "https://i.ytimg.com/vi/uGQQ70hR17I/mqdefault.jpg", "dur": "1:08:39"}, {"id": "rP1t4rUpgf0", "title": "1940s Retro Jazz 🎷 – Vintage Swing Bar Vibes", "thumb": "https://i.ytimg.com/vi/rP1t4rUpgf0/mqdefault.jpg", "dur": "56:41"}, {"id": "ZaKbER6pOTk", "title": "Romantic Jazz Swing - 1940's Vintage Classic Vibes", "thumb": "https://i.ytimg.com/vi/ZaKbER6pOTk/mqdefault.jpg", "dur": "1:07:07"}, {"id": "3ule-b9e6wo", "title": "1940's Retro Jazz - Old Swing & Jazz Vintage Music Playlist", "thumb": "https://i.ytimg.com/vi/3ule-b9e6wo/mqdefault.jpg", "dur": "59:55"}, {"id": "QnmfszfdOkI", "title": "1940's Retro Jazz - Vintage Jazz Playlist", "thumb": "https://i.ytimg.com/vi/QnmfszfdOkI/mqdefault.jpg", "dur": "1:00:25"}, {"id": "86u8lMulwL4", "title": "1940's Vintage Jazz - Jazz Classics", "thumb": "https://i.ytimg.com/vi/86u8lMulwL4/mqdefault.jpg", "dur": "1:21:23"}, {"id": "ojYPRu03yWo", "title": "Midnight Jazz in Manhattan - 1930's Vintage Classic Vibes", "thumb": "https://i.ytimg.com/vi/ojYPRu03yWo/mqdefault.jpg", "dur": "1:05:51"}, {"id": "YfVMuvndbxw", "title": "Jazz Retro Music - 1940's Jazz Classics", "thumb": "https://i.ytimg.com/vi/YfVMuvndbxw/mqdefault.jpg", "dur": "1:09:08"}, {"id": "EF_e-QLwLSA", "title": "1940's Retro Jazz - Vintage Jazz", "thumb": "https://i.ytimg.com/vi/EF_e-QLwLSA/mqdefault.jpg", "dur": "1:11:53"}, {"id": "VksF3oZeWRc", "title": "Retro Jazz Swing - 1940's Vintage Classic Vibes", "thumb": "https://i.ytimg.com/vi/VksF3oZeWRc/mqdefault.jpg", "dur": "1:08:01"}, {"id": "U6McFJAynkA", "title": "1940's Retro Jazz - Vintage Jazz Vibes", "thumb": "https://i.ytimg.com/vi/U6McFJAynkA/mqdefault.jpg", "dur": "1:01:16"}, {"id": "FDvJT-1CExM", "title": "1940's Jazz Bar - Vintage Classics", "thumb": "https://i.ytimg.com/vi/FDvJT-1CExM/mqdefault.jpg", "dur": "1:10:39"}, {"id": "wvhCjgbm8y0", "title": "1940's Retro Jazz - Nostalgic Mood", "thumb": "https://i.ytimg.com/vi/wvhCjgbm8y0/mqdefault.jpg", "dur": "1:01:21"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

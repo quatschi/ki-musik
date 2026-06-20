@@ -7,6 +7,7 @@
 <!-- categories: Lounge, Jazz -->
 <!-- channel-id: UCuBqBC6zzr5oKdSzztTQwyw -->
 <!-- channel-url: https://www.youtube.com/@midnightbirdsjazzband -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">49 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Midnight Birds Jazz Band";
+const KANAL = "Midnight_Birds_Jazz_Band.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
 const VIDEOS = [{"id": "qNGSmhhYDFo", "title": "Deep Focus — #49 AMSTERDAM Minimal Techno Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/qNGSmhhYDFo/mqdefault.jpg", "dur": "2:09:39"}, {"id": "AqPvLufHij4", "title": "Deep Focus — #48 TUNISIA Jazz Noir | Midnight Birds Jazz Night", "thumb": "https://i.ytimg.com/vi/AqPvLufHij4/mqdefault.jpg", "dur": "1:03:17"}, {"id": "2ECXdtXaWw0", "title": "Deep Focus — #47 IQUITOS Amazonian Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/2ECXdtXaWw0/mqdefault.jpg", "dur": "59:38"}, {"id": "rd2_KQJZZkg", "title": "Deep Focus — #46 KANSAS CITY Riverfront Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/rd2_KQJZZkg/mqdefault.jpg", "dur": "1:04:04"}, {"id": "W6urFXhrQuM", "title": "Deep Focus Jazz – #45 Armenia Ararat Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/W6urFXhrQuM/mqdefault.jpg", "dur": "1:06:38"}, {"id": "-Nboq125Sd0", "title": "Deep Focus – #44 Shanghai Tea Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/-Nboq125Sd0/mqdefault.jpg", "dur": "1:00:24"}, {"id": "cYnNNiucrFk", "title": "Deep Focus – #43 Havana Night Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/cYnNNiucrFk/mqdefault.jpg", "dur": "59:08"}, {"id": "Qxq-qhxv7jo", "title": "Deep Focus – #42 Roma Aeterna Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/Qxq-qhxv7jo/mqdefault.jpg", "dur": "1:14:10"}, {"id": "-BR8wjtgViI", "title": "Deep Focus – #41 Cape Verde Morna Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/-BR8wjtgViI/mqdefault.jpg", "dur": "1:03:16"}, {"id": "v6j-4a5Kqfw", "title": "Deep Focus – #40 Milonga Jazz from Uruguay | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/v6j-4a5Kqfw/mqdefault.jpg", "dur": "1:04:31"}, {"id": "DfxajLijvoM", "title": "Deep Focus – #39 Philadelphia After-Dark Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/DfxajLijvoM/mqdefault.jpg", "dur": "1:24:03"}, {"id": "oMgDlIRLUog", "title": "Deep Focus Flow – #38 Balearic Jazz Deep House | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/oMgDlIRLUog/mqdefault.jpg", "dur": "1:18:48"}, {"id": "MNQYkquojk8", "title": "Late Night Study – #37 Soft Psychedelic Jazz London Accent | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/MNQYkquojk8/mqdefault.jpg", "dur": "1:26:32"}, {"id": "QzJTf5fFBvA", "title": "Deep Focus – #36 Montmartre Bohème Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/QzJTf5fFBvA/mqdefault.jpg", "dur": "1:08:09"}, {"id": "LT1TYbvf3PA", "title": "Deep Focus – #35 Dark California Cinema Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/LT1TYbvf3PA/mqdefault.jpg", "dur": "1:28:49"}, {"id": "1RUbr5lJJN4", "title": "Deep Focus — #34 Hawaii Aloha Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/1RUbr5lJJN4/mqdefault.jpg", "dur": "1:04:15"}, {"id": "6vqbWvpGVn8", "title": "Deep Focus — #33 Machu Picchu Inca Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/6vqbWvpGVn8/mqdefault.jpg", "dur": "1:32:01"}, {"id": "E3Rc2aFD360", "title": "Atmospheric Jazz — #32 Montreal Snow Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/E3Rc2aFD360/mqdefault.jpg", "dur": "1:38:37"}, {"id": "nZxHOj-2MA4", "title": "Deep Focus — #31 Casablanca Atlantic Jazz | Midnight Bird Jazz Band", "thumb": "https://i.ytimg.com/vi/nZxHOj-2MA4/mqdefault.jpg", "dur": "1:26:43"}, {"id": "E5LDMqJx8Cw", "title": "Deep Focus — #30 Berlin Techno Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/E5LDMqJx8Cw/mqdefault.jpg", "dur": "1:51:23"}, {"id": "lLFyMfRcWKI", "title": "Deep Focus — #29 Italian Opera Jazz from Milan | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/lLFyMfRcWKI/mqdefault.jpg", "dur": "1:28:00"}, {"id": "Y3TyRHEyWGc", "title": "Hyperfocus Jazz — #28 Azerbaijan Mugam Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/Y3TyRHEyWGc/mqdefault.jpg", "dur": "1:25:12"}, {"id": "0QdDwuitiZI", "title": "Deep Focus — #27 Accra to Kumasi Jazz Flow | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/0QdDwuitiZI/mqdefault.jpg", "dur": "1:25:25"}, {"id": "lhzcIMUMOOI", "title": "Deep Focus — #26 Prague Gothic Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/lhzcIMUMOOI/mqdefault.jpg", "dur": "1:22:57"}, {"id": "ub8rhRzgsAo", "title": "Deep Focus — #25 Beirut Mediterranean Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/ub8rhRzgsAo/mqdefault.jpg", "dur": "1:24:31"}, {"id": "mVspmhiSdq8", "title": "Deep Focus - #24 Moscow Doomer Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/mVspmhiSdq8/mqdefault.jpg", "dur": "1:22:15"}, {"id": "0mY-wKUlgwM", "title": "After Hours Work – #23 Modern Post-Bop + New York Hip Hop Accent | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/0mY-wKUlgwM/mqdefault.jpg", "dur": "1:06:24"}, {"id": "27qz0lRDpOc", "title": "Deep Focus — #22 Greenland Inuit Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/27qz0lRDpOc/mqdefault.jpg", "dur": "1:18:23"}, {"id": "3VlvXyBPoEI", "title": "Deep Focus – #21 Modal Jazz + Tibetan Himalayan Accent | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/3VlvXyBPoEI/mqdefault.jpg", "dur": "1:31:17"}, {"id": "FVIv7TaKdfU", "title": "Deep Focus — #20 Budapest Danube Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/FVIv7TaKdfU/mqdefault.jpg", "dur": "1:10:38"}, {"id": "hXDVR-AebEY", "title": "Night Jazz – #19 Colombian Vallenato & Cumbia Fusion | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/hXDVR-AebEY/mqdefault.jpg", "dur": "1:07:54"}, {"id": "SsS7zClKTTw", "title": "Deep Focus - #18 Mumbai Jazz Journey | Midnight Bids Jazz Band", "thumb": "https://i.ytimg.com/vi/SsS7zClKTTw/mqdefault.jpg", "dur": "1:19:16"}, {"id": "lp-JrxvMYM8", "title": "Deep Focus - #17 Thessaloniki Night Jazz | Midnight Bids Jazz Band", "thumb": "https://i.ytimg.com/vi/lp-JrxvMYM8/mqdefault.jpg", "dur": "1:13:39"}, {"id": "e2YHp_H2Yww", "title": "Deep Focus – #16 Mexican Night Jazz | Midnight Bids Jazz Band", "thumb": "https://i.ytimg.com/vi/e2YHp_H2Yww/mqdefault.jpg", "dur": "59:18"}, {"id": "R5QGB6rSLgY", "title": "Deep Focus – #15 Balkan Jazz Fusion | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/R5QGB6rSLgY/mqdefault.jpg", "dur": "1:06:23"}, {"id": "_BQewTLlWDQ", "title": "Elegant Background — Tokyo Night Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/_BQewTLlWDQ/mqdefault.jpg", "dur": "1:19:44"}, {"id": "d-YmYYvWEOM", "title": "Atmospheric Jazz - Naples Jazz Journey | Midnight Bids Jazz Band", "thumb": "https://i.ytimg.com/vi/d-YmYYvWEOM/mqdefault.jpg", "dur": "1:18:49"}, {"id": "rq-yxj4n0MA", "title": "Work Flow — Cairo Desert Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/rq-yxj4n0MA/mqdefault.jpg", "dur": "1:25:50"}, {"id": "Zb7tVtuuXjY", "title": "Deep Focus – #11 Buenos Aires Tango Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/Zb7tVtuuXjY/mqdefault.jpg", "dur": "1:07:43"}, {"id": "MRa_GhayDO0", "title": "Deep Relaxing — #10 Jamaican Jazz Journey | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/MRa_GhayDO0/mqdefault.jpg", "dur": "1:11:14"}, {"id": "vIALsCoY2S8", "title": "Deep Focus – #9 Sevilla Flamenco Jazz Fusion | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/vIALsCoY2S8/mqdefault.jpg", "dur": "1:30:28"}, {"id": "LTNkUJ78VVw", "title": "Deep Focus — #8 Guajira Fusion Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/LTNkUJ78VVw/mqdefault.jpg", "dur": "58:11"}, {"id": "lf0AT44toRs", "title": "Memphis Night Jazz – Blues Fusion for Deep Focus", "thumb": "https://i.ytimg.com/vi/lf0AT44toRs/mqdefault.jpg", "dur": "1:15:35"}, {"id": "orBEwK5SnBE", "title": "Intense Focus — Rio Night Jazz | Midnight Birds Jazz Bands", "thumb": "https://i.ytimg.com/vi/orBEwK5SnBE/mqdefault.jpg", "dur": "55:31"}, {"id": "paWk6o3bOJk", "title": "Deep Focus – #5 Lisboa Cool Jazz Fado | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/paWk6o3bOJk/mqdefault.jpg", "dur": "59:25"}, {"id": "dvo_VlWhaKE", "title": "Deep Focus – #4  Istanbul Bosphorus Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/dvo_VlWhaKE/mqdefault.jpg", "dur": "1:36:37"}, {"id": "LnQDvjtmA_w", "title": "Deep Focus – #3 Japanese Ambient Jazz Kyoto | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/LnQDvjtmA_w/mqdefault.jpg", "dur": "1:22:01"}, {"id": "E4pt7KBXAbQ", "title": "Deep Focus – #2 Chicago Cool Swing Cabaret | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/E4pt7KBXAbQ/mqdefault.jpg", "dur": "1:06:04"}, {"id": "QvAASDf-g5E", "title": "Concentration & Relaxation – #1 Parisian Noir Jazz | Midnight Birds Jazz Band", "thumb": "https://i.ytimg.com/vi/QvAASDf-g5E/mqdefault.jpg", "dur": "1:06:31"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

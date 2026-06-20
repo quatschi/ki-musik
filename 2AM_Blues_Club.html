@@ -7,6 +7,7 @@
 <!-- categories: Blues -->
 <!-- channel-id: UCanpZScDYs5ivtQA6XmWNyg -->
 <!-- channel-url: https://youtube.com/@2ambluesclub -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">39 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "2AM Blues Club";
+const KANAL = "2AM_Blues_Club.html";
+const ORIG_CATEGORIES = "Blues";
 const VIDEOS = [{"id": "vUkXj3eQayM", "title": "Whiskey & Thunder Blues – Relaxing Rainy Night Jazz Lounge", "thumb": "https://i.ytimg.com/vi/vUkXj3eQayM/mqdefault.jpg", "dur": "1:01:55"}, {"id": "-ZJbYRKtwpk", "title": "Midnight Rain Cafe – Relaxing Blues & Cozy Jazz Lounge", "thumb": "https://i.ytimg.com/vi/-ZJbYRKtwpk/mqdefault.jpg", "dur": "1:02:19"}, {"id": "zWg7JkXHDiY", "title": "Smoky Rain Blues – Relaxing Jazz Lounge for Rainy Nights", "thumb": "https://i.ytimg.com/vi/zWg7JkXHDiY/mqdefault.jpg", "dur": "1:02:54"}, {"id": "utkcEr4Wdio", "title": "Lonely Lounge Blues – Relaxing Rainy Night Jazz & Blues", "thumb": "https://i.ytimg.com/vi/utkcEr4Wdio/mqdefault.jpg", "dur": "1:02:12"}, {"id": "Lj8Twf8NBaU", "title": "Midnight Cigar Blues – Smooth Rainy Jazz & Relaxing Blues", "thumb": "https://i.ytimg.com/vi/Lj8Twf8NBaU/mqdefault.jpg", "dur": "1:00:53"}, {"id": "c90sWJxJfzE", "title": "Rainy Whiskey Nights – Smooth Blues & Cozy Jazz Lounge", "thumb": "https://i.ytimg.com/vi/c90sWJxJfzE/mqdefault.jpg", "dur": "1:00:35"}, {"id": "9uXFxrzp-oA", "title": "After Hours Blues – Relaxing Rainy Night Jazz & Blues", "thumb": "https://i.ytimg.com/vi/9uXFxrzp-oA/mqdefault.jpg", "dur": "1:02:31"}, {"id": "o0CEUxMdO50", "title": "Blue Smoke Midnight – Relaxing Blues & Rainy Jazz Lounge", "thumb": "https://i.ytimg.com/vi/o0CEUxMdO50/mqdefault.jpg", "dur": "1:02:48"}, {"id": "nHnAzTaX0HE", "title": "Rainy Jazz Alley – Midnight Blues & Relaxing Noir Jazz", "thumb": "https://i.ytimg.com/vi/nHnAzTaX0HE/mqdefault.jpg", "dur": "1:02:23"}, {"id": "DZC59dpL1SQ", "title": "Midnight Whiskey Blues – Relaxing Rainy Jazz & Blues Lounge", "thumb": "https://i.ytimg.com/vi/DZC59dpL1SQ/mqdefault.jpg", "dur": "1:02:08"}, {"id": "ckPVXocvo9U", "title": "Lonely Highway Blues – Deep Night Blues for Relax & Focus", "thumb": "https://i.ytimg.com/vi/ckPVXocvo9U/mqdefault.jpg", "dur": "1:01:29"}, {"id": "zYlTaeDzcHI", "title": "Smoke & Rain Blues – Relaxing Noir Blues for Late Night Focus", "thumb": "https://i.ytimg.com/vi/zYlTaeDzcHI/mqdefault.jpg", "dur": "1:01:07"}, {"id": "6Pr2jI0AgHY", "title": "Midnight Train Blues – Relaxing Rainy Night Blues for Deep Focus & Calm", "thumb": "https://i.ytimg.com/vi/6Pr2jI0AgHY/mqdefault.jpg", "dur": "1:00:21"}, {"id": "UaS2uPFdzHI", "title": "Lonely Rain Café – Relaxing Blues Music for Rainy Nights & Deep Focus", "thumb": "https://i.ytimg.com/vi/UaS2uPFdzHI/mqdefault.jpg", "dur": "1:01:30"}, {"id": "Ic58B1kbRQQ", "title": "Blue Smoke Blues – Relaxing Rainy Night Jazz & Emotional Blues", "thumb": "https://i.ytimg.com/vi/Ic58B1kbRQQ/mqdefault.jpg", "dur": "1:02:41"}, {"id": "7sPMvSQyW1c", "title": "Rainy Jazz Blues – Smooth Blues Music for Relaxing Rainy Nights", "thumb": "https://i.ytimg.com/vi/7sPMvSQyW1c/mqdefault.jpg", "dur": "1:00:07"}, {"id": "1_eSNDCEF_k", "title": "Midnight City Blues – Relaxing Rain Blues for Late Night Focus and Calm", "thumb": "https://i.ytimg.com/vi/1_eSNDCEF_k/mqdefault.jpg", "dur": "1:02:07"}, {"id": "Rzv6v154ah4", "title": "Rainy Night Blues – Relaxing Blues Music for Calm Nights and Deep Focus", "thumb": "https://i.ytimg.com/vi/Rzv6v154ah4/mqdefault.jpg", "dur": "1:06:23"}, {"id": "4VHOx3QylJg", "title": "Lonely Night Blues – Deep Emotional Blues for Rainy Nights and Relaxation", "thumb": "https://i.ytimg.com/vi/4VHOx3QylJg/mqdefault.jpg", "dur": "1:05:34"}, {"id": "gMvzt9oj4sI", "title": "Rain Focus Blues – Relaxing Blues Music for Studying, Working and Calm Nights", "thumb": "https://i.ytimg.com/vi/gMvzt9oj4sI/mqdefault.jpg", "dur": "1:02:50"}, {"id": "kMrkjE4nIpc", "title": "Deep Sleep Blues – Relaxing Slow Blues for Sleeping, Stress Relief and Calm Nights", "thumb": "https://i.ytimg.com/vi/kMrkjE4nIpc/mqdefault.jpg", "dur": "1:00:05"}, {"id": "PhEHGufKkI0", "title": "Night Lounge Blues – Smooth Jazzy Blues for Relaxation, Focus and Late Night Vibes", "thumb": "https://i.ytimg.com/vi/PhEHGufKkI0/mqdefault.jpg", "dur": "59:44"}, {"id": "4XPqrQwmYfc", "title": "Sad Blues Night – Deep Emotional Blues Music for Relaxation and Reflection", "thumb": "https://i.ytimg.com/vi/4XPqrQwmYfc/mqdefault.jpg", "dur": "59:44"}, {"id": "gHZ83ZK-otQ", "title": "Night Chill Blues – Smooth Blues Music for Relaxing, Studying and Late Night Vibes", "thumb": "https://i.ytimg.com/vi/gHZ83ZK-otQ/mqdefault.jpg", "dur": "1:00:00"}, {"id": "2jLmfAcMMeY", "title": "Midnight Rain Blues – Relaxing Slow Blues for Sleep, Calm and Late Night Vibes", "thumb": "https://i.ytimg.com/vi/2jLmfAcMMeY/mqdefault.jpg", "dur": "59:53"}, {"id": "tBfwb7PpEUw", "title": "Deep Focus Blues – Slow Blues Music for Studying, Working and Concentration", "thumb": "https://i.ytimg.com/vi/tBfwb7PpEUw/mqdefault.jpg", "dur": "1:00:07"}, {"id": "dzfM_9HgR8M", "title": "Lonely Night Blues – Emotional Slow Blues for Deep Reflection and Relaxation", "thumb": "https://i.ytimg.com/vi/dzfM_9HgR8M/mqdefault.jpg", "dur": "58:32"}, {"id": "2dtCBKB5zQw", "title": "Night Blues – Relaxing Slow Blues for Deep Sleep and Calm Nights", "thumb": "https://i.ytimg.com/vi/2dtCBKB5zQw/mqdefault.jpg", "dur": "1:02:12"}, {"id": "43J-E15B7U0", "title": "Rainy Night Blues – Relaxing Blues Music with Rain for Sleep and Stress Relief", "thumb": "https://i.ytimg.com/vi/43J-E15B7U0/mqdefault.jpg", "dur": "1:03:20"}, {"id": "OyXTArG56js", "title": "Deep Focus Blues – Concentration Music for Work, Study and Productivity", "thumb": "https://i.ytimg.com/vi/OyXTArG56js/mqdefault.jpg", "dur": "58:11"}, {"id": "1rMWA7uxSPY", "title": "Evening Blues – Relaxing Blues Music for Stress Relief, Sunset and Calm Nights", "thumb": "https://i.ytimg.com/vi/1rMWA7uxSPY/mqdefault.jpg", "dur": "55:52"}, {"id": "lww_26U33uE", "title": "Study Blues – Deep Focus Blues Music for Working, Studying and Concentration", "thumb": "https://i.ytimg.com/vi/lww_26U33uE/mqdefault.jpg", "dur": "1:00:19"}, {"id": "in1tPoJuR84", "title": "Midnight Blues – Emotional Slow Blues for Late Night Reflection and Relaxation", "thumb": "https://i.ytimg.com/vi/in1tPoJuR84/mqdefault.jpg", "dur": "1:00:27"}, {"id": "7YvZ4W0c5xc", "title": "Rainy Night Blues – Slow Blues Music for Relaxing, Sleeping and Stress Relief", "thumb": "https://i.ytimg.com/vi/7YvZ4W0c5xc/mqdefault.jpg", "dur": "1:00:04"}, {"id": "RT3Tlcaw72k", "title": "Deep Focus Blues – Slow Chicago Blues for Studying, Working and Concentration", "thumb": "https://i.ytimg.com/vi/RT3Tlcaw72k/mqdefault.jpg", "dur": "57:09"}, {"id": "61uoBoOBz6o", "title": "Rainy Night Blues – Slow Chicago Blues & Jazz for Relaxation and Deep Sleep", "thumb": "https://i.ytimg.com/vi/61uoBoOBz6o/mqdefault.jpg", "dur": "1:01:44"}, {"id": "a6MumA9sj1c", "title": "Lonely Night Blues – Slow Jazz & Blues for Deep Reflection and Emotional Relaxation", "thumb": "https://i.ytimg.com/vi/a6MumA9sj1c/mqdefault.jpg", "dur": "1:02:15"}, {"id": "s08vKr2RBLU", "title": "Midnight Blues – Rainy Night Jazz & Slow Blues for Deep Relaxation, Study & Sleep", "thumb": "https://i.ytimg.com/vi/s08vKr2RBLU/mqdefault.jpg", "dur": "1:00:11"}, {"id": "Yltml_XH76A", "title": "Deep Focus Blues – Smooth Jazz & Slow Blues for Studying, Work & Concentration", "thumb": "https://i.ytimg.com/vi/Yltml_XH76A/mqdefault.jpg", "dur": "1:03:00"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <!-- categories: Smooth Jazz, Soul, R&B -->
 <!-- channel-id: UC7gu1mcUVPhrxJispwgSXmA -->
 <!-- channel-url: https://youtube.com/@jazzysoul-music -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">119 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Jazzy Soul Music";
+const KANAL = "Jazzy_Soul_Music.html";
+const ORIG_CATEGORIES = "Smooth Jazz, Soul, R&B";
 const VIDEOS = [{"id": "6Ob0Gu3a5sc", "title": "Relaxing Jazz & Soul | For When You Need a Little Room", "thumb": "https://i.ytimg.com/vi/6Ob0Gu3a5sc/mqdefault.jpg", "dur": "3:02:46"}, {"id": "i0HNlZ4uDsc", "title": "Relaxing Jazz R&B Instrumentals – Smooth Saxophone for Work, Study, Focus", "thumb": "https://i.ytimg.com/vi/i0HNlZ4uDsc/mqdefault.jpg", "dur": "3:03:32"}, {"id": "-IW5Gswxd5g", "title": "Relaxing Jazz Instrumentals – Chill & Smooth Saxophone for Work, Study, Focus", "thumb": "https://i.ytimg.com/vi/-IW5Gswxd5g/mqdefault.jpg", "dur": "3:00:50"}, {"id": "D43XfqR8xSo", "title": "Smooth Jazz & R&B 90s – A Soft Spring Breeze Filling Quiet Moments to Unwind", "thumb": "https://i.ytimg.com/vi/D43XfqR8xSo/mqdefault.jpg", "dur": "2:03:41"}, {"id": "uGGiPkdxYjE", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/uGGiPkdxYjE/mqdefault.jpg", "dur": "3:01:40"}, {"id": "SzvXXVsVnK8", "title": "Smooth Jazz & Relaxing R&B Instrumentals｜Cozy Cafe Vibes", "thumb": "https://i.ytimg.com/vi/SzvXXVsVnK8/mqdefault.jpg", "dur": "2:58:26"}, {"id": "ZBg5hoMqHEM", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes to Keep You Company", "thumb": "https://i.ytimg.com/vi/ZBg5hoMqHEM/mqdefault.jpg", "dur": "3:00:36"}, {"id": "adIIMly8CgY", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes to Gently Hold You", "thumb": "https://i.ytimg.com/vi/adIIMly8CgY/mqdefault.jpg", "dur": "3:00:31"}, {"id": "Y2o-NOKBpPI", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Peaceful Spring Days", "thumb": "https://i.ytimg.com/vi/Y2o-NOKBpPI/mqdefault.jpg", "dur": "3:01:35"}, {"id": "16XtLsvfAL0", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for a Slow Reset", "thumb": "https://i.ytimg.com/vi/16XtLsvfAL0/mqdefault.jpg", "dur": "3:01:59"}, {"id": "a9T4OszpWEk", "title": "Smooth Jazz & Lounge | Soft Morning Flow – Gentle Groove Instrumentals", "thumb": "https://i.ytimg.com/vi/a9T4OszpWEk/mqdefault.jpg", "dur": "3:00:06"}, {"id": "dJvfndPVZEw", "title": "Smooth Jazz & R&B Flow – Chill Grooves for Peaceful Days", "thumb": "https://i.ytimg.com/vi/dJvfndPVZEw/mqdefault.jpg", "dur": "3:00:01"}, {"id": "ZiTtSUvpH4c", "title": "Jazzy Mood — Just Relax | Smooth Jazz & Soul Instrumentals • Slow / Cozy / Focus Vibes", "thumb": "https://i.ytimg.com/vi/ZiTtSUvpH4c/mqdefault.jpg", "dur": "3:01:03"}, {"id": "xhYuhTM9wuI", "title": "Relaxing Jazz Instrumentals | Smooth Vibes for Cozy Days – Guitar & Saxophone", "thumb": "https://i.ytimg.com/vi/xhYuhTM9wuI/mqdefault.jpg", "dur": "3:02:37"}, {"id": "kUUhqZxqVn0", "title": "Smooth Jazz Instrumentals – Relaxing & Soulful Morning Vibes in Warm Light", "thumb": "https://i.ytimg.com/vi/kUUhqZxqVn0/mqdefault.jpg", "dur": "3:00:54"}, {"id": "RTO2dqIFT9Q", "title": "Relaxing Jazz Instrumentals | Smooth Saxophone Chill Grooves for Peaceful Days", "thumb": "https://i.ytimg.com/vi/RTO2dqIFT9Q/mqdefault.jpg", "dur": "3:01:33"}, {"id": "P6glDItGMG0", "title": "Smooth Jazz & Soul R&B | Weekend Alone with Slow Breaths", "thumb": "https://i.ytimg.com/vi/P6glDItGMG0/mqdefault.jpg", "dur": "3:00:29"}, {"id": "h0N3oB5d8ms", "title": "Smooth Jazz & Soul R&B | A Place to Flow Your Mind", "thumb": "https://i.ytimg.com/vi/h0N3oB5d8ms/mqdefault.jpg", "dur": "3:00:03"}, {"id": "r9DFHA5yZ_A", "title": "Smooth Jazz & R&B 90s – Calm Your Mind – Vintage Instrumentals with Soul", "thumb": "https://i.ytimg.com/vi/r9DFHA5yZ_A/mqdefault.jpg", "dur": "3:00:53"}, {"id": "P8YGr1rMzBk", "title": "Relaxing Jazz 90s Instrumentals - Smooth mood for quiet days, with soothing guitars & saxophone", "thumb": "https://i.ytimg.com/vi/P8YGr1rMzBk/mqdefault.jpg", "dur": "3:00:11"}, {"id": "wTXeh68rmHE", "title": "Jazz & Relaxing｜Cozy Instrumental Vibes in a Warm Amber Glow", "thumb": "https://i.ytimg.com/vi/wTXeh68rmHE/mqdefault.jpg", "dur": "3:00:15"}, {"id": "EpRYnk8ZkpQ", "title": "Jazz & Relaxing｜Cozy Instrumental Vibes for Slow Cafe Ambience", "thumb": "https://i.ytimg.com/vi/EpRYnk8ZkpQ/mqdefault.jpg", "dur": "3:00:05"}, {"id": "vFPVhZSQm2Q", "title": "Jazz & R&B Relaxing｜Cozy Instrumental Vibes for Time to Care for Yourself", "thumb": "https://i.ytimg.com/vi/vFPVhZSQm2Q/mqdefault.jpg", "dur": "3:00:31"}, {"id": "VfFQrklPYxw", "title": "Jazz & Relaxing｜Cozy Instrumental Vibes for Quiet Winter Moods with Soothing Sax", "thumb": "https://i.ytimg.com/vi/VfFQrklPYxw/mqdefault.jpg", "dur": "3:01:16"}, {"id": "ed2G3F5vJDE", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for All-Day Chill", "thumb": "https://i.ytimg.com/vi/ed2G3F5vJDE/mqdefault.jpg", "dur": "3:00:24"}, {"id": "g5dovc2gew8", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes to Slow Down", "thumb": "https://i.ytimg.com/vi/g5dovc2gew8/mqdefault.jpg", "dur": "3:01:30"}, {"id": "0WDafAdzDgI", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Smooth Days", "thumb": "https://i.ytimg.com/vi/0WDafAdzDgI/mqdefault.jpg", "dur": "3:00:48"}, {"id": "uKQY_tuoBf8", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Slow Living", "thumb": "https://i.ytimg.com/vi/uKQY_tuoBf8/mqdefault.jpg", "dur": "3:01:41"}, {"id": "FSqHfmOS5rc", "title": "Smooth Jazz & Relaxing ｜ Cozy Instrumental Vibes for Focused Productivity at Work", "thumb": "https://i.ytimg.com/vi/FSqHfmOS5rc/mqdefault.jpg", "dur": "3:00:22"}, {"id": "adUyyGmSrnE", "title": "Smooth Jazz & Relaxing ｜ Cozy Instrumental Vibes for Work & Unwind", "thumb": "https://i.ytimg.com/vi/adUyyGmSrnE/mqdefault.jpg", "dur": "3:00:18"}, {"id": "Gm6xYhe0wWM", "title": "Smooth Jazz & R&B｜Cozy Instrumental Vibes for Gentle Flow", "thumb": "https://i.ytimg.com/vi/Gm6xYhe0wWM/mqdefault.jpg", "dur": "3:00:10"}, {"id": "iY1nGW2rxNY", "title": "Smooth Jazz & R&B Flow｜Cozy Instrumentals for an Easy Day", "thumb": "https://i.ytimg.com/vi/iY1nGW2rxNY/mqdefault.jpg", "dur": "3:00:16"}, {"id": "p_S0WYmdmzM", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Smooth Flow", "thumb": "https://i.ytimg.com/vi/p_S0WYmdmzM/mqdefault.jpg", "dur": "3:00:21"}, {"id": "7bnCPsZCuh8", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for a Gentle Reset", "thumb": "https://i.ytimg.com/vi/7bnCPsZCuh8/mqdefault.jpg", "dur": "3:00:42"}, {"id": "ftOMcHjRqxE", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/ftOMcHjRqxE/mqdefault.jpg", "dur": "3:00:16"}, {"id": "wasL73AsqI8", "title": "Smooth Jazz & Relaxing｜Cozy Instrumental Vibes for Slow Days", "thumb": "https://i.ytimg.com/vi/wasL73AsqI8/mqdefault.jpg", "dur": "2:59:40"}, {"id": "3UxvfNtsdmI", "title": "Soul Flow Vibes | Relaxing Smooth Jazz & R&B Saxophone Instrumentals", "thumb": "https://i.ytimg.com/vi/3UxvfNtsdmI/mqdefault.jpg", "dur": "3:00:05"}, {"id": "8kkoRc9zuMU", "title": "Soul Unwind Vibes | Smooth Jazz & R&B Saxophone Instrumentals", "thumb": "https://i.ytimg.com/vi/8kkoRc9zuMU/mqdefault.jpg", "dur": "3:00:05"}, {"id": "YuxGXoLXZ6E", "title": "Soulful Calm Vibes | Peaceful Smooth Jazz & R&B Saxophone Instrumentals", "thumb": "https://i.ytimg.com/vi/YuxGXoLXZ6E/mqdefault.jpg", "dur": "3:00:04"}, {"id": "PSQqAgtCUsc", "title": "Soulful Chill Vibes | Smooth Jazz & Saxophone Instrumental Flow", "thumb": "https://i.ytimg.com/vi/PSQqAgtCUsc/mqdefault.jpg", "dur": "3:00:36"}, {"id": "u2cxsK53h2Y", "title": "Smooth Soul Flow | Relaxing Saxophone Jazz & R&B Instrumentals", "thumb": "https://i.ytimg.com/vi/u2cxsK53h2Y/mqdefault.jpg", "dur": "3:00:36"}, {"id": "QJCWBh0W5_Q", "title": "Smooth Jazz & Soul | Relaxing Saxophone Jazz – Soft Chill Instrumental Grooves", "thumb": "https://i.ytimg.com/vi/QJCWBh0W5_Q/mqdefault.jpg", "dur": "3:01:05"}, {"id": "vXTGW9bSdkI", "title": "Relaxing Jazz Instrumental Mix – Chill & Smooth Jazz for Work, Study, Focus", "thumb": "https://i.ytimg.com/vi/vXTGW9bSdkI/mqdefault.jpg", "dur": "3:00:20"}, {"id": "gCLksh8XXPY", "title": "Smooth Jazz & Soul Instrumental Music – Relaxing Soul Vibes", "thumb": "https://i.ytimg.com/vi/gCLksh8XXPY/mqdefault.jpg", "dur": "3:01:39"}, {"id": "MdhvOV4Ao_k", "title": "Jazz & Soul | Smooth R&B Instrumental Flow – Work, Study & Relaxing Cafe Vibes", "thumb": "https://i.ytimg.com/vi/MdhvOV4Ao_k/mqdefault.jpg", "dur": "3:00:07"}, {"id": "XcEd4yToNCA", "title": "Smooth Jazz & Soul | Relaxing Saxophone Jazz – Chill Cafe Instrumental Music", "thumb": "https://i.ytimg.com/vi/XcEd4yToNCA/mqdefault.jpg", "dur": "3:01:00"}, {"id": "30OyxCaY4Ts", "title": "Relaxing Jazz Music | Smooth Jazz & Soul – Chill Out Saxophone Instrumental Music", "thumb": "https://i.ytimg.com/vi/30OyxCaY4Ts/mqdefault.jpg", "dur": "3:00:42"}, {"id": "Ml8bgQTsATI", "title": "Smooth Jazz & Soul | Relaxing Saxophone winter Jazz – Chill Out Instrumental Music", "thumb": "https://i.ytimg.com/vi/Ml8bgQTsATI/mqdefault.jpg", "dur": "3:00:15"}, {"id": "GefArL1kxys", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/GefArL1kxys/mqdefault.jpg", "dur": "3:00:17"}, {"id": "i29ndmAqpII", "title": "Smooth Jazz & Soul | Relaxing Jazz Saxophone Music – Chill Music  for Work & Focus", "thumb": "https://i.ytimg.com/vi/i29ndmAqpII/mqdefault.jpg", "dur": "3:00:40"}, {"id": "OUsh_RraRHs", "title": "Smooth Jazz & Soul | Relaxing Saxophone Jazz  – Chill Out Vibes", "thumb": "https://i.ytimg.com/vi/OUsh_RraRHs/mqdefault.jpg", "dur": "3:02:03"}, {"id": "iKTWc-WHgpM", "title": "Smooth Jazz Relaxing Instrumentals | Feel-Good Saxophone Grooves to Lift Your Spirits", "thumb": "https://i.ytimg.com/vi/iKTWc-WHgpM/mqdefault.jpg", "dur": "3:00:02"}, {"id": "pVH6XhUnKqA", "title": "Smooth Jazz & Relaxing Instrumentals – Easy Grooves for a Peaceful Mind", "thumb": "https://i.ytimg.com/vi/pVH6XhUnKqA/mqdefault.jpg", "dur": "3:00:32"}, {"id": "Ywczbn59XGI", "title": "Smooth Jazz & Soul | Feel-Good Grooves – Relaxing Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/Ywczbn59XGI/mqdefault.jpg", "dur": "3:00:23"}, {"id": "mcnqgXy6qoQ", "title": "Smooth Jazz & Soul | Relaxing Saxophone Chill Instrumental for Cafe", "thumb": "https://i.ytimg.com/vi/mcnqgXy6qoQ/mqdefault.jpg", "dur": "3:00:31"}, {"id": "haVzU3zP8W8", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/haVzU3zP8W8/mqdefault.jpg", "dur": "3:01:16"}, {"id": "0zjVBEwquhs", "title": "Smooth Jazz R&B | Relaxing Instrumental – Smooth Positive Vibes", "thumb": "https://i.ytimg.com/vi/0zjVBEwquhs/mqdefault.jpg", "dur": "3:00:46"}, {"id": "-3VJVJ1RjpY", "title": "Smooth Jazz R&B | Feel-Good Grooves to Lift Your Spirits", "thumb": "https://i.ytimg.com/vi/-3VJVJ1RjpY/mqdefault.jpg", "dur": "3:00:01"}, {"id": "H-macRm2Y8s", "title": "Smooth Jazz R&B | Relaxing Instrumental –  Feel-Good Soulful Flow", "thumb": "https://i.ytimg.com/vi/H-macRm2Y8s/mqdefault.jpg", "dur": "3:00:24"}, {"id": "yGyKToIbRFY", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/yGyKToIbRFY/mqdefault.jpg", "dur": "3:01:55"}, {"id": "mqQdnLIoKxk", "title": "Smooth Jazz & Soul | Relaxing Instrumentals – Chill Tunes to Unwind", "thumb": "https://i.ytimg.com/vi/mqQdnLIoKxk/mqdefault.jpg", "dur": "3:01:28"}, {"id": "tgiIMi8hsUk", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/tgiIMi8hsUk/mqdefault.jpg", "dur": "3:00:20"}, {"id": "AMDPwrA_RLc", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Best Mix to Unwind Your Mind & Soul", "thumb": "https://i.ytimg.com/vi/AMDPwrA_RLc/mqdefault.jpg", "dur": "3:01:48"}, {"id": "8d50PO4ECMw", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Feel-Good Grooves for Focus", "thumb": "https://i.ytimg.com/vi/8d50PO4ECMw/mqdefault.jpg", "dur": "3:00:10"}, {"id": "52Wob-KFyq4", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Positive Morning Vibes for Work", "thumb": "https://i.ytimg.com/vi/52Wob-KFyq4/mqdefault.jpg", "dur": "3:00:21"}, {"id": "ifXACvkjhOg", "title": "Smooth Jazz & Soul | Chill Instrumental Music for Work, Focus & Relaxing", "thumb": "https://i.ytimg.com/vi/ifXACvkjhOg/mqdefault.jpg", "dur": "3:00:27"}, {"id": "-faWY1F4sAs", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Music for Work & Focus", "thumb": "https://i.ytimg.com/vi/-faWY1F4sAs/mqdefault.jpg", "dur": "3:00:10"}, {"id": "4q9xVmQLvjE", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Chill Vibes for Deep Focus", "thumb": "https://i.ytimg.com/vi/4q9xVmQLvjE/mqdefault.jpg", "dur": "3:00:18"}, {"id": "WjZ6qgAHRS8", "title": "Smooth Jazz & Soul | Feel-Good Grooves – Relaxing Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/WjZ6qgAHRS8/mqdefault.jpg", "dur": "3:01:15"}, {"id": "ZDF4EysPo44", "title": "Smooth Jazz & Soul | Relaxing Instrumental – Work Chill Music for Focus", "thumb": "https://i.ytimg.com/vi/ZDF4EysPo44/mqdefault.jpg", "dur": "3:01:30"}, {"id": "BYchxwVbQ-Q", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Mix to Unwind Your Soul", "thumb": "https://i.ytimg.com/vi/BYchxwVbQ-Q/mqdefault.jpg", "dur": "3:00:22"}, {"id": "FxstKXfChQw", "title": "Smooth Jazz R&B | Timeless Soulful Grooves with a Smooth Touch", "thumb": "https://i.ytimg.com/vi/FxstKXfChQw/mqdefault.jpg", "dur": "3:00:10"}, {"id": "Rm8sePJp9Tc", "title": "Smooth Jazz R&B | Feel-Good Grooves to Lift Your Spirits", "thumb": "https://i.ytimg.com/vi/Rm8sePJp9Tc/mqdefault.jpg", "dur": "3:00:06"}, {"id": "qRLBKU5T22g", "title": "Smooth Jazz & Soul | Relaxing Instrumentals – Chill Tunes to Unwind", "thumb": "https://i.ytimg.com/vi/qRLBKU5T22g/mqdefault.jpg", "dur": "3:00:49"}, {"id": "FIfP8s5zgfc", "title": "Smooth Jazz & Soul | Relaxing & Soulful Saxophone Chill Vibes", "thumb": "https://i.ytimg.com/vi/FIfP8s5zgfc/mqdefault.jpg", "dur": "3:01:38"}, {"id": "R2_ZAMO7dcw", "title": "Smooth Jazz R&B | Feel-Good Soulful Flow for Relaxing", "thumb": "https://i.ytimg.com/vi/R2_ZAMO7dcw/mqdefault.jpg", "dur": "3:01:22"}, {"id": "6BP_SY0UPmI", "title": "Smooth Jazz & Soul | Relaxing Saxophone Chill Instrumental for Cafe", "thumb": "https://i.ytimg.com/vi/6BP_SY0UPmI/mqdefault.jpg", "dur": "3:01:03"}, {"id": "rdo9gadRb9M", "title": "Smooth Jazz & Soul | Relaxing Saxophone Chill Cafe Instrumental Music", "thumb": "https://i.ytimg.com/vi/rdo9gadRb9M/mqdefault.jpg", "dur": "3:00:12"}, {"id": "ovdYj9BPigc", "title": "Smooth Jazz & Soul |  Relaxing Saxophone Music for Chill Cafe Vibes", "thumb": "https://i.ytimg.com/vi/ovdYj9BPigc/mqdefault.jpg", "dur": "3:01:04"}, {"id": "5K-ctPVVecQ", "title": "Smooth Jazz & Soul | Relaxing Saxophone Chill Instrumental for Cafe", "thumb": "https://i.ytimg.com/vi/5K-ctPVVecQ/mqdefault.jpg", "dur": "3:01:12"}, {"id": "uSprKkxDNRc", "title": "Smooth Jazz & Soul | Morning Chill Jazz Beats for Work & Relax", "thumb": "https://i.ytimg.com/vi/uSprKkxDNRc/mqdefault.jpg", "dur": "3:01:39"}, {"id": "0XJr0b0kTfA", "title": "Smooth Jazz & Soulful R&B Instrumental – Chill Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/0XJr0b0kTfA/mqdefault.jpg", "dur": "3:00:09"}, {"id": "CvcEdRLJZtw", "title": "Jazz & Soul  R&B | Chill Background Music for  Work • Relax • Study • Focus 🎷", "thumb": "https://i.ytimg.com/vi/CvcEdRLJZtw/mqdefault.jpg", "dur": "2:00:12"}, {"id": "sHMNNKN0hbs", "title": "Smooth Jazz & Soul  | Perfect Grooves for Work • Relax • Study • Focus 🎷", "thumb": "https://i.ytimg.com/vi/sHMNNKN0hbs/mqdefault.jpg", "dur": "2:00:10"}, {"id": "smHLJH8uekw", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Perfect Background for Work & Forcus 📘", "thumb": "https://i.ytimg.com/vi/smHLJH8uekw/mqdefault.jpg", "dur": "2:00:08"}, {"id": "61LCRExBSmo", "title": "Smooth Jazz & Soul – Relaxing | Perfect Background for Work & Relaxation", "thumb": "https://i.ytimg.com/vi/61LCRExBSmo/mqdefault.jpg", "dur": "2:00:15"}, {"id": "oN_Xbtw6hVM", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Chill Grooves for Relaxation ☕️", "thumb": "https://i.ytimg.com/vi/oN_Xbtw6hVM/mqdefault.jpg", "dur": "2:00:12"}, {"id": "n8UwbAhF39E", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Chill Background Music ☕️", "thumb": "https://i.ytimg.com/vi/n8UwbAhF39E/mqdefault.jpg", "dur": "2:00:35"}, {"id": "SzWI8ZaIflI", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Chill Background Music ☕️", "thumb": "https://i.ytimg.com/vi/SzWI8ZaIflI/mqdefault.jpg", "dur": "2:02:01"}, {"id": "nx1LOEdZV5c", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Classy & Chill Beat ✨", "thumb": "https://i.ytimg.com/vi/nx1LOEdZV5c/mqdefault.jpg", "dur": "2:00:06"}, {"id": "KtP3tzjLFxY", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Chill Background Music", "thumb": "https://i.ytimg.com/vi/KtP3tzjLFxY/mqdefault.jpg", "dur": "2:00:11"}, {"id": "oyG3N3_4yws", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Laid-Back Vibes for Your Me Time 🕰️", "thumb": "https://i.ytimg.com/vi/oyG3N3_4yws/mqdefault.jpg", "dur": "2:00:03"}, {"id": "ro6O-RhskT0", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental | Unwind With Me Today 🍷", "thumb": "https://i.ytimg.com/vi/ro6O-RhskT0/mqdefault.jpg", "dur": "2:00:01"}, {"id": "hqTaFz6rTrY", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental Music | Chill Background Music", "thumb": "https://i.ytimg.com/vi/hqTaFz6rTrY/mqdefault.jpg", "dur": "2:00:44"}, {"id": "Km5Txr0ku0I", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental Music | Mellow Mix to Unwind Your Mind & Soul", "thumb": "https://i.ytimg.com/vi/Km5Txr0ku0I/mqdefault.jpg", "dur": "2:00:05"}, {"id": "x8Vbpnptfwo", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental Music | Work • Relax • Study • Focus", "thumb": "https://i.ytimg.com/vi/x8Vbpnptfwo/mqdefault.jpg", "dur": "2:00:20"}, {"id": "8ck5XOtsihQ", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental Music | Chill Background Music", "thumb": "https://i.ytimg.com/vi/8ck5XOtsihQ/mqdefault.jpg", "dur": "2:00:04"}, {"id": "nRv9ylhthGE", "title": "Smooth Jazz & Soul R&B – Relaxing Instrumental Music | Mellow Saxophone Grooves", "thumb": "https://i.ytimg.com/vi/nRv9ylhthGE/mqdefault.jpg", "dur": "2:02:44"}, {"id": "y16pdLlI9SU", "title": "Smooth Jazz & Soulful R&B – Instrumental Music | Mellow Beats for Relaxing, Work & Focus", "thumb": "https://i.ytimg.com/vi/y16pdLlI9SU/mqdefault.jpg", "dur": "2:01:03"}, {"id": "jR53RsgUCPM", "title": "Smooth Jazz & Soul R&B –  Mellow Instrumental Grooves for Relaxing & Chilling Cozy Cafe Ambience", "thumb": "https://i.ytimg.com/vi/jR53RsgUCPM/mqdefault.jpg", "dur": "2:00:40"}, {"id": "cN8Z77EbNfI", "title": "Smooth Jazz & Soulful R&B Instrumental Music – Mellow Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/cN8Z77EbNfI/mqdefault.jpg", "dur": "2:00:30"}, {"id": "umVdexxXUEc", "title": "Smooth Jazz & Soulful R&B – Relaxing Instrumental | Smooth Jazz Saxophone Music for Cafe Vibes", "thumb": "https://i.ytimg.com/vi/umVdexxXUEc/mqdefault.jpg", "dur": "2:01:03"}, {"id": "hAGI8HpbeSw", "title": "Smooth Jazz & Soulful R&B – Relaxing Instrumental | Mellow Grooves for Work • Relax • Study • Focus", "thumb": "https://i.ytimg.com/vi/hAGI8HpbeSw/mqdefault.jpg", "dur": "2:00:12"}, {"id": "9U32ug2uBME", "title": "Smooth Jazz & Soulful R&B Instrumental – Mellow Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/9U32ug2uBME/mqdefault.jpg", "dur": "2:00:01"}, {"id": "-soaDFMY_cQ", "title": "Smooth Jazz & Soulful R&B – Instrumental Music | Mellow Mix to Unwind Your Mind & Soul", "thumb": "https://i.ytimg.com/vi/-soaDFMY_cQ/mqdefault.jpg", "dur": "2:01:43"}, {"id": "rIMF4V2w5go", "title": "Smooth Jazz & Soulful R&B – Instrumental Music | Soft Beats for Relaxing, Work & Focus", "thumb": "https://i.ytimg.com/vi/rIMF4V2w5go/mqdefault.jpg", "dur": "2:02:16"}, {"id": "hTsvspUx1Co", "title": "Smooth Jazz & Soulful R&B – Instrumental | Sultry Sax & Jazzy Grooves for Work, Focus & Study", "thumb": "https://i.ytimg.com/vi/hTsvspUx1Co/mqdefault.jpg", "dur": "2:01:54"}, {"id": "_rHWVZU4Wuw", "title": "Smooth Jazz & Soulful R&B – Mellow Instrumental Mix to Unwind Your Soul", "thumb": "https://i.ytimg.com/vi/_rHWVZU4Wuw/mqdefault.jpg", "dur": "2:00:19"}, {"id": "pDZnOacFZ6c", "title": "Smooth Jazz & Soulful R&B – Relaxing Instrumental Mix | Ballad-Inspired Background Music", "thumb": "https://i.ytimg.com/vi/pDZnOacFZ6c/mqdefault.jpg", "dur": "2:00:37"}, {"id": "OIZQWtsfkPA", "title": "Smooth Jazz & Soulful R&B – Instrumental Music | Soft Beats for Relaxing, Work & Focus", "thumb": "https://i.ytimg.com/vi/OIZQWtsfkPA/mqdefault.jpg", "dur": "2:01:29"}, {"id": "E-9fnj8R9rc", "title": "Smooth Jazz & Soulful R&B – Instrumental Music | Mellow Grooves for Work • Relax • Study • Focus", "thumb": "https://i.ytimg.com/vi/E-9fnj8R9rc/mqdefault.jpg", "dur": "2:00:20"}, {"id": "3_Cieql4a4Q", "title": "R&B Soul  – Smooth Jazz Instrumental, Mellow Vibes ｜ Work • Relax • Study • Focus", "thumb": "https://i.ytimg.com/vi/3_Cieql4a4Q/mqdefault.jpg", "dur": "2:03:45"}, {"id": "1WvNztCLhCk", "title": "Soulful Slow Beat – Jazzy R&B Instrumental for Chill & Relaxing Moments", "thumb": "https://i.ytimg.com/vi/1WvNztCLhCk/mqdefault.jpg", "dur": "2:02:51"}, {"id": "4vPv3Nv7UxI", "title": "R&B Soul  – Smooth Jazz Instrumental, Mellow Grooves ｜Work• Relax • Study • Focus", "thumb": "https://i.ytimg.com/vi/4vPv3Nv7UxI/mqdefault.jpg", "dur": "1:00:08"}, {"id": "lVx0YJLlNbk", "title": "Smooth Jazz & R&B Soul — Instrumental Music｜Perfect Vibes for Relaxing Moments", "thumb": "https://i.ytimg.com/vi/lVx0YJLlNbk/mqdefault.jpg", "dur": "1:03:54"}, {"id": "ENFebzr2N-E", "title": "Jazz & Soul R&B ー Smooth Instrumental ｜Jazzy Grooves for Work, Focus & Study", "thumb": "https://i.ytimg.com/vi/ENFebzr2N-E/mqdefault.jpg", "dur": "2:08:42"}, {"id": "URkqlzWa-oM", "title": "Smooth Jazz & Soulful R&B ｜Jazzy Instrumental for Work, Focus & Study,  Relaxing", "thumb": "https://i.ytimg.com/vi/URkqlzWa-oM/mqdefault.jpg", "dur": "2:04:15"}, {"id": "P_lr0bousoo", "title": "Smooth Jazz & Soulful R&B Instrumental – Evening Soul Vibes - Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/P_lr0bousoo/mqdefault.jpg", "dur": "2:01:59"}, {"id": "dE-RxHJHpMY", "title": "Smooth Jazz & Soulful R&B Instrumental – Chill Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/dE-RxHJHpMY/mqdefault.jpg", "dur": "2:08:10"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <!-- categories: Jazz, Smooth Jazz, Lounge -->
 <!-- channel-id: UCgJCCZpPBf6x_6poWmHTCkw -->
 <!-- channel-url: https://youtube.com/@saxophonevintageclub -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">44 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Saxophone Vintage Club";
+const KANAL = "Saxophone_Vintage_Club.html";
+const ORIG_CATEGORIES = "Jazz, Smooth Jazz, Lounge";
 const VIDEOS = [{"id": "_RXYF3kEQBc", "title": "Smoky Noir Jazz Music - Dark Ambience & Rain Outside Windows", "thumb": "https://i.ytimg.com/vi/_RXYF3kEQBc/mqdefault.jpg", "dur": "2:03:13"}, {"id": "nHyrhQUiW0g", "title": "Smoky Alley Noir Jazz ~ Late Night Detective Vibes", "thumb": "https://i.ytimg.com/vi/nHyrhQUiW0g/mqdefault.jpg", "dur": "2:03:45"}, {"id": "nslYTqWragw", "title": "Smoky Jazz & Club Nights - Classic Speakeasy Mood | Relaxing Upright Bass Vibes", "thumb": "https://i.ytimg.com/vi/nslYTqWragw/mqdefault.jpg", "dur": "2:01:01"}, {"id": "_8SkrLWci1A", "title": "Midnight Detective Lounge - Smoky Saxophone Noir | Vintage Bar Atmosphere", "thumb": "https://i.ytimg.com/vi/_8SkrLWci1A/mqdefault.jpg", "dur": "2:03:31"}, {"id": "nBJnNQTfjmo", "title": "Noir Jazz Music ~ Late Night Detective Saxophone | Smoky Club Ambience", "thumb": "https://i.ytimg.com/vi/nBJnNQTfjmo/mqdefault.jpg", "dur": "2:07:13"}, {"id": "gOQGLySpvFc", "title": "Smoky Jazz Club Music - Late Night Detective Jazz 🎷", "thumb": "https://i.ytimg.com/vi/gOQGLySpvFc/mqdefault.jpg", "dur": "2:02:59"}, {"id": "evghbsieYvg", "title": "Noir Jazz Music - Smoky Jazz Club Music | Detective Jazz Melodies", "thumb": "https://i.ytimg.com/vi/evghbsieYvg/mqdefault.jpg", "dur": "2:01:23"}, {"id": "g7m4wpBujxo", "title": "Inside the Creative Journey of Saxophone Vintage Club | Behind the Camera Moments", "thumb": "https://i.ytimg.com/vi/g7m4wpBujxo/mqdefault.jpg", "dur": "8:34"}, {"id": "f1ssiwYlNUU", "title": "Vintage Jazz Ambience - Old Town Shadows | Soothing Piano & Trumpet for Uplifting Work", "thumb": "https://i.ytimg.com/vi/f1ssiwYlNUU/mqdefault.jpg", "dur": "2:06:53"}, {"id": "nG85z13JrcA", "title": "Midnight Alley Saxophone - Dark Jazz Ambience | Smooth Noir Jazz Music", "thumb": "https://i.ytimg.com/vi/nG85z13JrcA/mqdefault.jpg", "dur": "2:02:39"}, {"id": "ko0njhE-4vc", "title": "Smoky Jazz Club Music - Vintage Saxophone Noir Jazz | Dark Late Night Ambience", "thumb": "https://i.ytimg.com/vi/ko0njhE-4vc/mqdefault.jpg", "dur": "2:01:11"}, {"id": "fBG2vngYGUQ", "title": "Detective Jazz Music | Vintage 1950s Club Sound", "thumb": "https://i.ytimg.com/vi/fBG2vngYGUQ/mqdefault.jpg", "dur": "2:00:16"}, {"id": "u01Ba32KZho", "title": "Smoky Jazz Club Music | Noir Jazz Ambience ~ Late Night Detective Soundtrack", "thumb": "https://i.ytimg.com/vi/u01Ba32KZho/mqdefault.jpg", "dur": "2:04:07"}, {"id": "Gf1NTaZxzcg", "title": "Noir Jazz Saxophone Serenade | Vintage Club Ambience & Smoky Night", "thumb": "https://i.ytimg.com/vi/Gf1NTaZxzcg/mqdefault.jpg", "dur": "2:06:22"}, {"id": "Cr8u2vI8-sA", "title": "Vintage Jazz Ambience - Old Town Shadows | Soothing Piano and Trumpet for Uplifting Work", "thumb": "https://i.ytimg.com/vi/Cr8u2vI8-sA/mqdefault.jpg", "dur": "2:01:09"}, {"id": "64IpY3cnsKo", "title": "Shadowy Strata Saxophone Noir Jazz ~ Candlelight Club Mood", "thumb": "https://i.ytimg.com/vi/64IpY3cnsKo/mqdefault.jpg", "dur": "2:02:22"}, {"id": "YUIkoM9rkMo", "title": "Midnight Detective Saxophone Serenade - Smoky Jazz Club Vibes | Vintage Bar Atmosphere", "thumb": "https://i.ytimg.com/vi/YUIkoM9rkMo/mqdefault.jpg", "dur": "2:06:26"}, {"id": "CYi1a3d4hHg", "title": "Noir Jazz Saxophone Serenade | Smoky Vintage Club Night", "thumb": "https://i.ytimg.com/vi/CYi1a3d4hHg/mqdefault.jpg", "dur": "2:05:16"}, {"id": "s_vRz0H3UxI", "title": "Smoky Noir Jazz Piano Bar ~ Late Night Ambience", "thumb": "https://i.ytimg.com/vi/s_vRz0H3UxI/mqdefault.jpg", "dur": "2:07:12"}, {"id": "VyJbCBFyRxw", "title": "Smoky Noir Jazz - Vintage Saxophone Music | Dark Jazz Ambience", "thumb": "https://i.ytimg.com/vi/VyJbCBFyRxw/mqdefault.jpg", "dur": "2:08:41"}, {"id": "CWbZK4PFwG8", "title": "Smoky Jazz Club Music - Vintage Saxophone Jazz & Dark Ambience", "thumb": "https://i.ytimg.com/vi/CWbZK4PFwG8/mqdefault.jpg", "dur": "2:03:07"}, {"id": "V95T-Ai-964", "title": "Smoky Jazz Club Music - Old Town Shadows | Noir Jazz Music", "thumb": "https://i.ytimg.com/vi/V95T-Ai-964/mqdefault.jpg", "dur": "2:05:53"}, {"id": "GgE2-DShMH0", "title": "Classic Noir Jazz Saxophone | Rainy Night Detective Music", "thumb": "https://i.ytimg.com/vi/GgE2-DShMH0/mqdefault.jpg", "dur": "2:07:06"}, {"id": "iOeHrsizk-Y", "title": "Noir Jazz Night | Smoky Vintage Club Vibes ~ Dark Trumpet & Piano Lounge", "thumb": "https://i.ytimg.com/vi/iOeHrsizk-Y/mqdefault.jpg", "dur": "2:07:46"}, {"id": "-6u4IM72odA", "title": "Noir Jazz Music | Smoky Club Scene & Vintage Saxophone", "thumb": "https://i.ytimg.com/vi/-6u4IM72odA/mqdefault.jpg", "dur": "2:07:26"}, {"id": "0xsBFyWoP9o", "title": "Smoky Jazz Club Music - Late Night Jazz Music | Noir Jazz Vibes", "thumb": "https://i.ytimg.com/vi/0xsBFyWoP9o/mqdefault.jpg", "dur": "2:03:28"}, {"id": "FUnQKimAgKY", "title": "Noir Jazz Music - Smoky Jazz Club Music | Vintage Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/FUnQKimAgKY/mqdefault.jpg", "dur": "2:04:49"}, {"id": "OE4Nn8_uj9w", "title": "1950s Noir Jazz - Smoky Club Scene & Saxophone Noir Jazz", "thumb": "https://i.ytimg.com/vi/OE4Nn8_uj9w/mqdefault.jpg", "dur": "2:02:42"}, {"id": "A6I0yPJm1iY", "title": "Detective Jazz Music - Saxophone Noir Jazz & Rain", "thumb": "https://i.ytimg.com/vi/A6I0yPJm1iY/mqdefault.jpg", "dur": "2:03:21"}, {"id": "L-68ZzPtz8M", "title": "Smoky Jazz Club Music - Dark Noir Ambience | Saxophone Vintage Club", "thumb": "https://i.ytimg.com/vi/L-68ZzPtz8M/mqdefault.jpg", "dur": "2:03:07"}, {"id": "Aulc7lhBGOg", "title": "Noir Jazz Music - Smoky Jazz Club Music | Relaxing Late Night", "thumb": "https://i.ytimg.com/vi/Aulc7lhBGOg/mqdefault.jpg", "dur": "2:08:09"}, {"id": "yEi-4Qmwk64", "title": "Smoky Jazz Club Music - Dark Noir Jazz Ambience | Smooth Night Lounge", "thumb": "https://i.ytimg.com/vi/yEi-4Qmwk64/mqdefault.jpg", "dur": "2:06:10"}, {"id": "5ZfhJQThjc8", "title": "Vintage Jazz Bar Ambience - Old Town Shadows | Late Night Piano and Trumpet", "thumb": "https://i.ytimg.com/vi/5ZfhJQThjc8/mqdefault.jpg", "dur": "2:02:41"}, {"id": "E9nmrgy5u4w", "title": "Smoky Jazz & Club Nights - Classic Speakeasy Mood | Relaxing Upright Bass Vibes", "thumb": "https://i.ytimg.com/vi/E9nmrgy5u4w/mqdefault.jpg", "dur": "2:03:42"}, {"id": "s1IfsMvNj1U", "title": "Detective Jazz Solos | 1950s Vintage Bar Ambience", "thumb": "https://i.ytimg.com/vi/s1IfsMvNj1U/mqdefault.jpg", "dur": "2:03:38"}, {"id": "wpZnulN11LY", "title": "Noir Jazz Night - Smoky Vintage Club Vibes | Dark Trumpet and Piano Lounge Mood", "thumb": "https://i.ytimg.com/vi/wpZnulN11LY/mqdefault.jpg", "dur": "2:03:38"}, {"id": "pN5x9DuUBOY", "title": "Saxophone Noir Jazz - Smoky Club Scene | 1950s Detective Jazz Music", "thumb": "https://i.ytimg.com/vi/pN5x9DuUBOY/mqdefault.jpg", "dur": "2:06:59"}, {"id": "HM-VjE3bUIc", "title": "Detective Jazz Music | Dark Smoky Club Ambience", "thumb": "https://i.ytimg.com/vi/HM-VjE3bUIc/mqdefault.jpg", "dur": "2:02:58"}, {"id": "HjiYUh4ZwmY", "title": "Smoky Noir Jazz Club Ambience ~ Late Night Moody Trumpet Vibes", "thumb": "https://i.ytimg.com/vi/HjiYUh4ZwmY/mqdefault.jpg", "dur": "2:04:40"}, {"id": "oHqMe9KWmdQ", "title": "Dark Speakeasy Evenings | Classic Piano Trio | Relaxing Late Night Bar Mood", "thumb": "https://i.ytimg.com/vi/oHqMe9KWmdQ/mqdefault.jpg", "dur": "2:01:20"}, {"id": "lAY8KI8TsUQ", "title": "Smoky Jazz Club Music - Late Night Detective Tales | Noir Jazz Ambience", "thumb": "https://i.ytimg.com/vi/lAY8KI8TsUQ/mqdefault.jpg", "dur": "2:05:24"}, {"id": "9Ea8n-skL64", "title": "Dark Noir Jazz & Smoky Club Nights - Relaxing Upright Bass", "thumb": "https://i.ytimg.com/vi/9Ea8n-skL64/mqdefault.jpg", "dur": "2:02:25"}, {"id": "2uKSdbrtfew", "title": "Midnight Detective Lounge - Smoky Jazz Club Music ~ Vintage Bar", "thumb": "https://i.ytimg.com/vi/2uKSdbrtfew/mqdefault.jpg", "dur": "2:05:53"}, {"id": "8iRv_Di1Nv8", "title": "Noir Jazz Night | Smoky Vintage Club Vibes & Dark Trumpet Piano Lounge", "thumb": "https://i.ytimg.com/vi/8iRv_Di1Nv8/mqdefault.jpg", "dur": "2:05:37"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

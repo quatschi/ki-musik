@@ -7,6 +7,7 @@
 <!-- categories: Lounge, Soul -->
 <!-- channel-id:  -->
 <!-- channel-url: https://www.youtube.com/@soulvintagelab -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">30 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Soul Vintage Lab";
+const KANAL = "Soul_Vintage_Lab.html";
+const ORIG_CATEGORIES = "Lounge, Soul";
 const VIDEOS = [{"id": "TAxpfqgso1c", "title": "Classic Vintage Soul Funk 🌙 Warm Groove for Late Nights", "thumb": "https://i.ytimg.com/vi/TAxpfqgso1c/mqdefault.jpg", "dur": "1:11:54"}, {"id": "tqcC_Y1XuRI", "title": "Retro Soul Funk Mix 🎷 Classic Groove for Relax & Focus", "thumb": "https://i.ytimg.com/vi/tqcC_Y1XuRI/mqdefault.jpg", "dur": "1:11:41"}, {"id": "nDqcn0i_9Oo", "title": "Vintage Soul Funk Lounge 🌙 Smooth Analog Groove & Chill", "thumb": "https://i.ytimg.com/vi/nDqcn0i_9Oo/mqdefault.jpg", "dur": "1:00:12"}, {"id": "j56k75tAv8k", "title": "Timeless Vintage Soul Funk 🎧 Elegant Groove & Lounge Vibes", "thumb": "https://i.ytimg.com/vi/j56k75tAv8k/mqdefault.jpg", "dur": "1:01:20"}, {"id": "EOsHlzyrBfs", "title": "Classic Soul Funk Groove 🎷 Midnight Vibes That Stay With You", "thumb": "https://i.ytimg.com/vi/EOsHlzyrBfs/mqdefault.jpg", "dur": "59:33"}, {"id": "OjvyMdYLTO0", "title": "Vintage Soul Funk 🔥 Late Night Groove You Won’t Skip", "thumb": "https://i.ytimg.com/vi/OjvyMdYLTO0/mqdefault.jpg", "dur": "1:10:35"}, {"id": "052DMGkkckk", "title": "Funky Vintage Nights 🌙 Soul Groove That Keeps You Hooked", "thumb": "https://i.ytimg.com/vi/052DMGkkckk/mqdefault.jpg", "dur": "1:01:26"}, {"id": "bL9-vf3wjz0", "title": "Vintage Soul Funk Mix 🎧 Groove So Smooth It’s Addictive", "thumb": "https://i.ytimg.com/vi/bL9-vf3wjz0/mqdefault.jpg", "dur": "1:09:35"}, {"id": "FYaXb5egMVI", "title": "Old School Soul Funk 🔥 Warm Analog Groove That Feels Alive", "thumb": "https://i.ytimg.com/vi/FYaXb5egMVI/mqdefault.jpg", "dur": "1:08:27"}, {"id": "sMRGyOe6q5Y", "title": "Deep Vintage Soul Funk 🌙 Midnight Lounge You’ll Get Lost In", "thumb": "https://i.ytimg.com/vi/sMRGyOe6q5Y/mqdefault.jpg", "dur": "1:00:05"}, {"id": "FDcktEtigUQ", "title": "Smooth Vintage Soul Funk 🔥 Timeless Groove You’ll Replay All Night", "thumb": "https://i.ytimg.com/vi/FDcktEtigUQ/mqdefault.jpg", "dur": "1:01:05"}, {"id": "fHrtoN1nUgU", "title": "Vintage Soul Funk Groove 🎷 Analog Vibes for Late Nights", "thumb": "https://i.ytimg.com/vi/fHrtoN1nUgU/mqdefault.jpg", "dur": "1:12:07"}, {"id": "eP78Iw-00wg", "title": "Addictive Vintage Soul Funk 🔥 Classic Groove You Can’t Stop Playing", "thumb": "https://i.ytimg.com/vi/eP78Iw-00wg/mqdefault.jpg", "dur": "1:10:29"}, {"id": "DUT3wRImBU8", "title": "Old School Soul Funk Groove 🎧 Deep Rare Groove You’ve Been Looking For", "thumb": "https://i.ytimg.com/vi/DUT3wRImBU8/mqdefault.jpg", "dur": "1:09:40"}, {"id": "HrJLJvFR9Wo", "title": "Don’t Skip This Groove… Trust Me 🎧 Ultimate Old School Soul Funk Groove 🎧", "thumb": "https://i.ytimg.com/vi/HrJLJvFR9Wo/mqdefault.jpg", "dur": "1:10:36"}, {"id": "15I-JP17ppU", "title": "A Groove You Can’t Let Go Of…🔥 Old School Groove & Deep Soul Vibes", "thumb": "https://i.ytimg.com/vi/15I-JP17ppU/mqdefault.jpg", "dur": "1:10:25"}, {"id": "pzkNCQpv2aQ", "title": "⚡Vintage Soul Funk That Just Feels Right 🎧 Ultra Dry, Tight & Hypnotic", "thumb": "https://i.ytimg.com/vi/pzkNCQpv2aQ/mqdefault.jpg", "dur": "1:11:02"}, {"id": "ix8ZktJSPJI", "title": "🔥 Vintage Soul Funk Playlist 2026   Deep Groove ✨ chill vibes", "thumb": "https://i.ytimg.com/vi/ix8ZktJSPJI/mqdefault.jpg", "dur": "59:17"}, {"id": "cVyphwe8anY", "title": "🔥 Vintage 70s Soul Funk Groove   Raw, Deep & Ultra Dry Vibes 🎧 relaxing music", "thumb": "https://i.ytimg.com/vi/cVyphwe8anY/mqdefault.jpg", "dur": "1:00:50"}, {"id": "uJKhxOzVwkA", "title": "🌃 Late Night Soul Streets   Vintage Soul Funk 🚗 night drive vibes", "thumb": "https://i.ytimg.com/vi/uJKhxOzVwkA/mqdefault.jpg", "dur": "1:02:43"}, {"id": "nDduo0aXAcE", "title": "🚀 Ultimate Vintage Soul Funk Mix 2026 🔥 Deep Rare Groove & Old School 70s Funk Vibes", "thumb": "https://i.ytimg.com/vi/nDduo0aXAcE/mqdefault.jpg", "dur": "58:54"}, {"id": "Of_rBxxrV1c", "title": "Old School Soul Funk That Still Hits Hard", "thumb": "https://i.ytimg.com/vi/Of_rBxxrV1c/mqdefault.jpg", "dur": "1:11:10"}, {"id": "DtsNRt0nko4", "title": "Ultimate Rare Soul Funk Mix | Deep Pocket Groove", "thumb": "https://i.ytimg.com/vi/DtsNRt0nko4/mqdefault.jpg", "dur": "1:10:33"}, {"id": "GYf_DD84bGk", "title": "⚡Vintage Soul Funk That Just Feels Right | Ultra-Dry, Tight & Hypnotic", "thumb": "https://i.ytimg.com/vi/GYf_DD84bGk/mqdefault.jpg", "dur": "1:02:41"}, {"id": "gD_WIeMRwGQ", "title": "Vintage Soul Funk Mix 2026 🔥 Rare Groove, Deep Funk & Old School 70s Soul", "thumb": "https://i.ytimg.com/vi/gD_WIeMRwGQ/mqdefault.jpg", "dur": "1:10:34"}, {"id": "UKmBXSKWSMI", "title": "🔥 Vintage 70s Soul Funk Groove You’ve Been Waiting For | Raw, Deep & Ultra-Dry Vibes", "thumb": "https://i.ytimg.com/vi/UKmBXSKWSMI/mqdefault.jpg", "dur": "1:11:56"}, {"id": "qJ-_g03BYh4", "title": "Locks You in the Groove 🎧 Vintage Soul Funk Vibes", "thumb": "https://i.ytimg.com/vi/qJ-_g03BYh4/mqdefault.jpg", "dur": "59:53"}, {"id": "Z6nAhsLGXbc", "title": "Raw 70s Soul Funk 🎧 Deep Rhythm & Clean Vibes", "thumb": "https://i.ytimg.com/vi/Z6nAhsLGXbc/mqdefault.jpg", "dur": "1:09:45"}, {"id": "27c3kunm7Ps", "title": "🌃Late Night Rhythm from the Old Soul Streets | Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/27c3kunm7Ps/mqdefault.jpg", "dur": "1:09:54"}, {"id": "13Zz7EQaOX0", "title": "🔥 Vintage Soul Funk Playlist 2026 | Deep Groove & Retro Funk Vibes", "thumb": "https://i.ytimg.com/vi/13Zz7EQaOX0/mqdefault.jpg", "dur": "1:08:59"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>

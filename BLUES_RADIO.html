@@ -7,6 +7,7 @@
 <!-- categories: Blues -->
 <!-- channel-id: UCVSOeXfmRLwzlG3hRh_rTtg -->
 <!-- channel-url: https://youtube.com/@bluesradio888 -->
+<!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -30,6 +31,8 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -47,6 +50,20 @@
   .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
   .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
   .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
 </style>
 </head>
 <body>
@@ -71,6 +88,22 @@
       <div class="channel-count">53 Videos</div>
     </div>
   </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
   <div class="grid" id="grid"></div>
 
   <div class="save-bar">
@@ -83,10 +116,14 @@
 const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
 const CHANNEL = "BLUES RADIO";
+const KANAL = "BLUES_RADIO.html";
+const ORIG_CATEGORIES = "Blues";
 const VIDEOS = [{"id": "2eu4pFOsvFI", "title": "Whiskey Blues Music - The \"Intoxicating\" Blues Songs That Make You Forget Your Worries", "thumb": "https://i.ytimg.com/vi/2eu4pFOsvFI/mqdefault.jpg", "dur": "2:21:38"}, {"id": "8mgZ14wrF64", "title": "The King Of Blues: Excellent Collections of Vintage Blues Songs !Timeless Blues Classics #bluesmusic", "thumb": "https://i.ytimg.com/vi/8mgZ14wrF64/mqdefault.jpg", "dur": "2:04:35"}, {"id": "hA8OBSAyt44", "title": "Best Blues EVER | 5 Hours of Deep Soul Blues Stories for Late Nights, Whiskey & Broken Hearts", "thumb": "https://i.ytimg.com/vi/hA8OBSAyt44/mqdefault.jpg", "dur": "2:38:37"}, {"id": "t97rQTwZHMc", "title": "Blues Legends of the 20th Century – Timeless Hits by B.B. King & Muddy Waters", "thumb": "https://i.ytimg.com/vi/t97rQTwZHMc/mqdefault.jpg", "dur": "2:34:33"}, {"id": "g4WS_dBEUuc", "title": "Blue Suit Blues: Timeless Slow Blues for Whiskey Lovers - Best Whiskey Blues Songs of All Time", "thumb": "https://i.ytimg.com/vi/g4WS_dBEUuc/mqdefault.jpg", "dur": "1:50:29"}, {"id": "h-suBs3upmg", "title": "The Most Underrated Blues Tracks: Are These Lost Tapes Actually Masterpieces?", "thumb": "https://i.ytimg.com/vi/h-suBs3upmg/mqdefault.jpg", "dur": "2:22:34"}, {"id": "804yysvPyhg", "title": "\"Whiskey & Blues: The Finest Selection of Relaxing Guitar Melodies\"B.B. King, Eric & Muddy Waters", "thumb": "https://i.ytimg.com/vi/804yysvPyhg/mqdefault.jpg", "dur": "2:23:57"}, {"id": "2akWTZNX-jg", "title": "Slow Blues to Heal: Excellent Collections of Vintage Blues Songs !#bluesmusic #music", "thumb": "https://i.ytimg.com/vi/2akWTZNX-jg/mqdefault.jpg", "dur": "2:26:33"}, {"id": "qQ6U7wEn1Rg", "title": "WHISKEY BLUES MUSIC [ FULL PLAYLIST ] Great Blues Songs for true blues fans #bluesmusic", "thumb": "https://i.ytimg.com/vi/qQ6U7wEn1Rg/mqdefault.jpg", "dur": "1:55:11"}, {"id": "mr6FncgIHsg", "title": "The King Of Blues : Excellent Collections of Vintage Blues Songs !", "thumb": "https://i.ytimg.com/vi/mr6FncgIHsg/mqdefault.jpg", "dur": "2:44:37"}, {"id": "LX8jMTcYyds", "title": "The Ultimate Guitar Duel B B  King vs Eric Clapton🍂 Slow Blues for Late Night Relaxing & Calm Vibes", "thumb": "https://i.ytimg.com/vi/LX8jMTcYyds/mqdefault.jpg", "dur": "2:26:49"}, {"id": "F7HV7ZIkgdM", "title": "WHISKEY BLUES MUSIC - THE KING OF BLUES - Blues Music Playlist - Best Blues Songs of All Time #blues", "thumb": "https://i.ytimg.com/vi/F7HV7ZIkgdM/mqdefault.jpg", "dur": "2:05:31"}, {"id": "pBu_oJDOtWo", "title": "Midnight Whiskey Blues – Deep Soulful Guitar for Quiet Moments | B.B. King, Eric Clapton Mix\"", "thumb": "https://i.ytimg.com/vi/pBu_oJDOtWo/mqdefault.jpg", "dur": "2:14:05"}, {"id": "jggBBTCdWi4", "title": "Best Whiskey Blues Music | BEST HITS | Buddy Guy, B B king , Eric Clapton, Etta james🎧King Of Blues", "thumb": "https://i.ytimg.com/vi/jggBBTCdWi4/mqdefault.jpg", "dur": "2:15:17"}, {"id": "dy51xg-HaKE", "title": "The Greatest Slow Blues Legends – B.B. King, Eric Clapton, Muddy Waters [Full Tracklist]", "thumb": "https://i.ytimg.com/vi/dy51xg-HaKE/mqdefault.jpg", "dur": "2:16:23"}, {"id": "A22tUyGPJog", "title": "Midnight Blues for Men Who Stay Silent – Deep Guitar Melodies for Quiet Moments", "thumb": "https://i.ytimg.com/vi/A22tUyGPJog/mqdefault.jpg", "dur": "2:15:49"}, {"id": "Nk_L-0oP0TI", "title": "Whiskey Blues for Late Nights – Soulful Melodies to Heal Your Heart & Soul", "thumb": "https://i.ytimg.com/vi/Nk_L-0oP0TI/mqdefault.jpg", "dur": "1:58:56"}, {"id": "BpvYw21vbGA", "title": "The King Of Blues -BEST OLD SCHOOL BLUES MUSIC ALL TIME - Beautiful Relaxing Blues Songs [Album 2]", "thumb": "https://i.ytimg.com/vi/BpvYw21vbGA/mqdefault.jpg", "dur": "2:33:35"}, {"id": "tlqLzx2a6pc", "title": "Whiskey Blues Music - Best Old School Blues Songs Of All Time (B.B. King, Eric Clapton Mix)", "thumb": "https://i.ytimg.com/vi/tlqLzx2a6pc/mqdefault.jpg", "dur": "2:06:38"}, {"id": "mK7w4lxa-IY", "title": "Whiskey Blues Music | Best Songs Of Music: B.B. King, Eric Clapton, Muddy Waters, Buddy Guy  & more", "thumb": "https://i.ytimg.com/vi/mK7w4lxa-IY/mqdefault.jpg", "dur": "2:14:55"}, {"id": "CgZyEuzF35w", "title": "TOP 100 Greatest Blues Songs Of All Time: Whiskey Blues | Best of Slow Blues/Rock", "thumb": "https://i.ytimg.com/vi/CgZyEuzF35w/mqdefault.jpg", "dur": "2:02:39"}, {"id": "mrtgPDwLu78", "title": "GREATEST HITS B.B. King, Muddy Waters, John Lee Hooker || BEST OLD SCHOOL BLUES MUSIC ALL TIME", "thumb": "https://i.ytimg.com/vi/mrtgPDwLu78/mqdefault.jpg", "dur": "2:11:10"}, {"id": "gWro0fpZfgA", "title": "Music for Men Who Stay Silent 🎸GREATEST HITS  Eric Clapton, B.B. King, Muddy Waters & more", "thumb": "https://i.ytimg.com/vi/gWro0fpZfgA/mqdefault.jpg", "dur": "2:26:21"}, {"id": "ynV66e4ofOI", "title": "A Soulful Tribute Like Never Before! Eric Clapton, B.B. King, Muddy Waters & more🎸GREATEST HITS", "thumb": "https://i.ytimg.com/vi/ynV66e4ofOI/mqdefault.jpg", "dur": "2:32:36"}, {"id": "lPWpJGIEoIs", "title": "The Best Slow Blues Collection 🎸 Heartbreak, Pride, Whiskey Burn and Vintage Soul Vocals", "thumb": "https://i.ytimg.com/vi/lPWpJGIEoIs/mqdefault.jpg", "dur": "2:33:51"}, {"id": "K6uX_mz18rU", "title": "Blues & Whiskey 🥃 Whiskey blues music 🎸 Whisky Blues - Best of Slow Blues/Rock _ Best of Slow Blues", "thumb": "https://i.ytimg.com/vi/K6uX_mz18rU/mqdefault.jpg", "dur": "2:25:04"}, {"id": "3PeelCcq-_8", "title": "Most Legendary And Famous Blues Artists of All Time : Eric Clapton, B.B. King, Muddy, Ray Charles", "thumb": "https://i.ytimg.com/vi/3PeelCcq-_8/mqdefault.jpg", "dur": "2:05:20"}, {"id": "J1p3hIcpvUY", "title": "Greatest Whiskey Blues Hits of All Time | The Best of Whiskey Blues & Classic Rock", "thumb": "https://i.ytimg.com/vi/J1p3hIcpvUY/mqdefault.jpg", "dur": "1:33:51"}, {"id": "RUMn9V8ggfk", "title": "The Definitive Old School Blues Playlist : B.B. King, Muddy Waters, J.L. Hooker & More || #soul", "thumb": "https://i.ytimg.com/vi/RUMn9V8ggfk/mqdefault.jpg", "dur": "1:01:48"}, {"id": "7IZcLGgYBRA", "title": "WHISKEY BLUES 🎼🎸 Eric Clapton, B.B. King, Muddy Waters, Buddy Guy & more 🎸Blues & Rock GREATEST HITS", "thumb": "https://i.ytimg.com/vi/7IZcLGgYBRA/mqdefault.jpg", "dur": "2:22:15"}, {"id": "Frhqhg8JQNw", "title": "Best Blues Music 2025 ~ Unforgettable Slow Rock Music Hits 🎶 [ BEST SONGS 2025 ]", "thumb": "https://i.ytimg.com/vi/Frhqhg8JQNw/mqdefault.jpg", "dur": "2:41:48"}, {"id": "VbfdxU1RAsA", "title": "Slow Blues Compilations : Gary Moore, Eric Clapton, B.B. King, Muddy Waters, Buddy Guy & more (all)", "thumb": "https://i.ytimg.com/vi/VbfdxU1RAsA/mqdefault.jpg", "dur": "2:37:20"}, {"id": "otRfpTStncg", "title": "WHISKEY BLUES ~ Eric Clapton, B.B. King, Muddy Waters, Buddy Guy & more 🎸 GREATEST HITS #soul", "thumb": "https://i.ytimg.com/vi/otRfpTStncg/mqdefault.jpg", "dur": "2:28:16"}, {"id": "-RvKZoCdcNo", "title": "The 100 Greatest Blues Songs of All Time : B.B. King, Eric Clapton, Muddy Waters, Buddy Guy & more", "thumb": "https://i.ytimg.com/vi/-RvKZoCdcNo/mqdefault.jpg", "dur": "2:13:28"}, {"id": "IQfY0FMAkeE", "title": "WHISKEY BLUES ~ Eric Clapton, B.B. King, Muddy Waters, Buddy Guy & more 🎸 GREATEST HITS #soul", "thumb": "https://i.ytimg.com/vi/IQfY0FMAkeE/mqdefault.jpg", "dur": "2:05:12"}, {"id": "e_n6GX9Lyo8", "title": "THE BEST OF WHISKEY BLUES ~ Eric Clapton, B.B. King, Muddy Waters, Buddy Guy & more 🎸 GREATEST HITS", "thumb": "https://i.ytimg.com/vi/e_n6GX9Lyo8/mqdefault.jpg", "dur": "2:19:00"}, {"id": "PmrbZsmZSPM", "title": "Whiskey Blues Music🎸BEST OLD SCHOOL BLUES MUSIC ALL TIME🎤(B.B. King, Muddy Waters, John Lee Hooker)", "thumb": "https://i.ytimg.com/vi/PmrbZsmZSPM/mqdefault.jpg", "dur": "2:12:47"}, {"id": "e7sYbKEO3to", "title": "WHISKEY BLUES MUSIC - THE GREATEST BLUES", "thumb": "https://i.ytimg.com/vi/e7sYbKEO3to/mqdefault.jpg", "dur": "2:06:33"}, {"id": "r5Z4tLnIsmg", "title": "Relaxing Whiskey Blues Music | Best of Slow Blues ( album )", "thumb": "https://i.ytimg.com/vi/r5Z4tLnIsmg/mqdefault.jpg", "dur": "2:46:15"}, {"id": "eFSWtxGNbWw", "title": "Relaxing Whiskey Blues Music | Best of Slow Blues", "thumb": "https://i.ytimg.com/vi/eFSWtxGNbWw/mqdefault.jpg", "dur": "2:23:19"}, {"id": "NbFRCmIDibA", "title": "THE BEST OF WHISKEY BLUES 🎼Classic Blues Ballads – Real Music for Strong Men 🎶@BLUES RADIO", "thumb": "https://i.ytimg.com/vi/NbFRCmIDibA/mqdefault.jpg", "dur": "1:25:04"}, {"id": "EvrTAzVAWiA", "title": "Whiskey Blues Music | B.B. King, Muddy Waters, John Lee Hooker | The Best Of Relaxing Whiskey BLues", "thumb": "https://i.ytimg.com/vi/EvrTAzVAWiA/mqdefault.jpg", "dur": "1:17:24"}, {"id": "4JA5OlAG8c0", "title": "Relaxing Whiskey Blues Music 🎸Legendary Electric Guitar Blues 🎸 Slow Blues & Rock Immortals (album)", "thumb": "https://i.ytimg.com/vi/4JA5OlAG8c0/mqdefault.jpg", "dur": "1:30:30"}, {"id": "zVxSVwZE1ps", "title": "WHISKEY BLUES MUSIC | Best Classic Blues Non-stop Playlist /BEST OLD SCHOOL BLUES MUSIC ALL TIME #hd", "thumb": "https://i.ytimg.com/vi/zVxSVwZE1ps/mqdefault.jpg", "dur": "1:45:09"}, {"id": "cHtAyqnHsvE", "title": "Ultimate Whiskey Blues Playlist | Slow Blues & Rock Legends | Best Blues Music #relaxingblues", "thumb": "https://i.ytimg.com/vi/cHtAyqnHsvE/mqdefault.jpg", "dur": "1:52:29"}, {"id": "VLKSpYyywPg", "title": "THE BEST OF WHISKEY BLUES - Best Blues Music - B.B. King, Muddy Waters, John Lee Hooker", "thumb": "https://i.ytimg.com/vi/VLKSpYyywPg/mqdefault.jpg", "dur": "2:00:10"}, {"id": "m0JsVmfaeuc", "title": "THE BEST OF WHISKEY BLUES || OLD SCHOOL BLUES MUSIC || NONSTOP CLASSIC BLUES SONGS [  VERSION 3 ]", "thumb": "https://i.ytimg.com/vi/m0JsVmfaeuc/mqdefault.jpg", "dur": "1:47:54"}, {"id": "e7R7dGGWs8Q", "title": "VINTAGE BLUES MUSIC - Excellent Collections of Vintage Blues Songs Forever- Best Blues Mix #blues", "thumb": "https://i.ytimg.com/vi/e7R7dGGWs8Q/mqdefault.jpg", "dur": "1:53:39"}, {"id": "W4SRzgbpHko", "title": "WHISKEY BLUES MUSIC - Top Old Beautiful Blues Songs - Best Relaxing Blues Songs All Time📃PLAYLISt 15", "thumb": "https://i.ytimg.com/vi/W4SRzgbpHko/mqdefault.jpg", "dur": "1:53:17"}, {"id": "1d8lneoinxs", "title": "Whiskey Blues Music | Best Songs : B.B. King, Eric Clapton, Muddy Waters, Buddy Guy📃Background Music", "thumb": "https://i.ytimg.com/vi/1d8lneoinxs/mqdefault.jpg", "dur": "1:35:35"}, {"id": "KBAzRzhWm7w", "title": "WHISKEY BLUES MUSIC - Best Of Slow Blues/Rock | The Best Blues Song Of All Time #relaxingblues", "thumb": "https://i.ytimg.com/vi/KBAzRzhWm7w/mqdefault.jpg", "dur": "47:43"}, {"id": "73FNb3Fqil0", "title": "Best Old School Blues Music All Time 🎻Legends Classic Blues - THE KING OF BLUES", "thumb": "https://i.ytimg.com/vi/73FNb3Fqil0/mqdefault.jpg", "dur": "7:34"}, {"id": "dRA19AKYOfs", "title": "Whiskey Blues Music -BEST OLD SCHOOL BLUES MUSIC ALL TIME -Beautiful Relaxing Blues Songs #jazzblues", "thumb": "https://i.ytimg.com/vi/dRA19AKYOfs/mqdefault.jpg", "dur": "1:34:06"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, changed = false;
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -113,7 +150,73 @@ window.addEventListener('load', () => {
 
 async function init() {
   await loadRatings();
+  await loadKanalMeta();
   renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(atob(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(atob(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(currentMeta, null, 2))));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
 async function loadRatings() {
@@ -138,7 +241,9 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -159,7 +264,6 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
-  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -212,6 +316,8 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
+
+init();
 </script>
 </body>
 </html>
