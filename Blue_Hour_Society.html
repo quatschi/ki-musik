@@ -7,7 +7,6 @@
 <!-- categories: Jazz, Soul -->
 <!-- channel-id: UCUgoIwcGENYEghovD0ANyYg -->
 <!-- channel-url: https://youtube.com/@bluehoursociety-h3q -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Blue Hour Society";
-const KANAL = "Blue_Hour_Society.html";
 const VIDEOS = [{"id": "p_e3Txo99r4", "title": "60s - 70s Soul Legends | Songs Inspired by Sam Cooke, Donny Hathaway & Ben E. King", "thumb": "https://i.ytimg.com/vi/p_e3Txo99r4/mqdefault.jpg", "dur": "43:27"}, {"id": "iVLYLeRWk3U", "title": "70s Midnight Soul | Warm Vintage Grooves & Timeless Late Night Love Songs", "thumb": "https://i.ytimg.com/vi/iVLYLeRWk3U/mqdefault.jpg", "dur": "38:21"}, {"id": "7ys0IbshfBU", "title": "60s Soul Legends | Classic Soul Inspired by Marvin Gaye, Sam Cooke & Curtis Mayfield", "thumb": "https://i.ytimg.com/vi/7ys0IbshfBU/mqdefault.jpg", "dur": "40:56"}, {"id": "gfzMdaPYmjk", "title": "Golden Era of Soul 70s | Timeless Grooves Inspired by Donny Hathaway, Curtis Mayfield & Ben E. King", "thumb": "https://i.ytimg.com/vi/gfzMdaPYmjk/mqdefault.jpg", "dur": "35:59"}, {"id": "6kFfyY-esZI", "title": "60s Midnight Soul | Songs Inspired by Marvin Gaye, Al Green, Sam Cooke & Donny Hathaway", "thumb": "https://i.ytimg.com/vi/6kFfyY-esZI/mqdefault.jpg", "dur": "45:18"}, {"id": "Snea6bgnd2s", "title": "60s Soul Legends | Songs Inspired by Marvin Gaye, Al Green, Sam Cooke & Donny Hathaway", "thumb": "https://i.ytimg.com/vi/Snea6bgnd2s/mqdefault.jpg", "dur": "42:14"}, {"id": "xeZD65kBo1w", "title": "Late Night Soul Memories | Otis Redding, Sam Cooke & Ben E. King Greatest Love Songs", "thumb": "https://i.ytimg.com/vi/xeZD65kBo1w/mqdefault.jpg", "dur": "37:40"}, {"id": "yHGdIQHQnw0", "title": "70s Soul Legends | Songs Inspired by Marvin Gaye, Curtis Mayfield, Al Green & Donny Hathaway", "thumb": "https://i.ytimg.com/vi/yHGdIQHQnw0/mqdefault.jpg", "dur": "44:54"}, {"id": "d4s5PkAMGKY", "title": "Warm Rhodes & Midnight Soul | 70s Donny Hathaway Vibes", "thumb": "https://i.ytimg.com/vi/d4s5PkAMGKY/mqdefault.jpg", "dur": "46:51"}, {"id": "xQR8VFZ8WRc", "title": "Forgotten 70s Midnight Soul | Marvin Gaye Style Groove", "thumb": "https://i.ytimg.com/vi/xQR8VFZ8WRc/mqdefault.jpg", "dur": "29:53"}, {"id": "K66TyP7sN2c", "title": "Lost 1972 Chicago Soul Groove | Curtis Mayfield Inspired", "thumb": "https://i.ytimg.com/vi/K66TyP7sN2c/mqdefault.jpg", "dur": "44:14"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

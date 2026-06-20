@@ -7,7 +7,6 @@
 <!-- categories: Blues, Rock -->
 <!-- channel-id: UCq2ElphEoZjIuFSMp4YDZcA -->
 <!-- channel-url: https://www.youtube.com/@oldsoulreverie -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Old Soul Reverie";
-const KANAL = "Old_Soul_Reverie.html";
 const VIDEOS = [{"id": "IyQZ_FF5xbU", "title": "Retro Jazz Blues Soul Crossover Duet 🍀| 2026 Broken Vinyl - Eric Clapton × Amy Winehouse", "thumb": "https://i.ytimg.com/vi/IyQZ_FF5xbU/mqdefault.jpg", "dur": "1:04:39"}, {"id": "t2qzCHhwLwc", "title": "Dusty Moonlight 🍀| Retro Jazz Blues Soul Crossover Duet - Eric Clapton × Amy Winehouse 2026", "thumb": "https://i.ytimg.com/vi/t2qzCHhwLwc/mqdefault.jpg", "dur": "1:06:38"}, {"id": "79COVaioiY4", "title": "2026 Blue Confession - Amy Winehouse × Eric Clapton 🍀| Retro Jazz Blues Soul Crossover Duet", "thumb": "https://i.ytimg.com/vi/79COVaioiY4/mqdefault.jpg", "dur": "1:05:01"}, {"id": "0UXT0tZDjcI", "title": "Retro Jazz Blues Soul Crossover Duet - Vintage Serenade 🍀| Amy Winehouse × Eric Clapton 2026", "thumb": "https://i.ytimg.com/vi/0UXT0tZDjcI/mqdefault.jpg", "dur": "1:06:00"}, {"id": "n056zDy7BRs", "title": "Eric Clapton × Amy Winehouse 🍀| Whiskey Harmony - Retro Jazz Blues Soul Crossover Duet 2026", "thumb": "https://i.ytimg.com/vi/n056zDy7BRs/mqdefault.jpg", "dur": "1:06:49"}, {"id": "_5nyNG6aDQE", "title": "2026 - Golden Cigarettes 🍀| Amy Winehouse × Eric Clapton Retro Jazz Blues Soul Crossover Duet", "thumb": "https://i.ytimg.com/vi/_5nyNG6aDQE/mqdefault.jpg", "dur": "1:05:06"}, {"id": "vTWTE5LgriY", "title": "2026 Retro Jazz Blues Soul Crossover Duet 🍀| Smoky Reverie - Amy Winehouse × Eric Clapton", "thumb": "https://i.ytimg.com/vi/vTWTE5LgriY/mqdefault.jpg", "dur": "1:06:12"}, {"id": "rXhkdBoico8", "title": "Retro Jazz Blues Soul Crossover Duet 🍀| Amy Winehouse × Eric Clapton - Midnight Honey 2026", "thumb": "https://i.ytimg.com/vi/rXhkdBoico8/mqdefault.jpg", "dur": "1:07:26"}, {"id": "5d-msmdkAKU", "title": "Velvet Bourbon - Amy Winehouse × Eric Clapton 🍀| Retro Jazz Blues Soul Crossover Duet 2026", "thumb": "https://i.ytimg.com/vi/5d-msmdkAKU/mqdefault.jpg", "dur": "1:06:21"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

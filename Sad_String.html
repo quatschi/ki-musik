@@ -7,7 +7,6 @@
 <!-- categories: Blues -->
 <!-- channel-id: UCR_MJALKXSdMTJm33gK3huA -->
 <!-- channel-url: https://youtube.com/@sadstring-93 -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Sad String";
-const KANAL = "Sad_String.html";
 const VIDEOS = [{"id": "nbvNJV38zVA", "title": "Sad String 11 - Vintage Jazz Guitar & Whiskey Mood | Relaxing Blues Bar Ambience", "thumb": "https://i.ytimg.com/vi/nbvNJV38zVA/mqdefault.jpg", "dur": "13:30"}, {"id": "tQLC3A1gLNs", "title": "Rainy Night Blues Bedroom Ambience | Cozy Jazz Blues Sleep Music, Relaxing Rain Sounds & City Lights", "thumb": "https://i.ytimg.com/vi/tQLC3A1gLNs/mqdefault.jpg", "dur": "17:22"}, {"id": "H0yTkY6TNgk", "title": "Sad String Blues 🎸 | Vintage Archtop Guitar, Whiskey & Midnight Blues Bar Ambience", "thumb": "https://i.ytimg.com/vi/H0yTkY6TNgk/mqdefault.jpg", "dur": "15:46"}, {"id": "IOSV3IkFmA4", "title": "Sad String 10 - Whiskey, Regret & Midnight Memories | Relaxing Vintage Blues Guitar", "thumb": "https://i.ytimg.com/vi/IOSV3IkFmA4/mqdefault.jpg", "dur": "18:56"}, {"id": "AVprMizW2B8", "title": "Sad String 9 - Deep Emotional Guitar Blues for Lonely Nights | Vintage Whiskey Bar Ambience", "thumb": "https://i.ytimg.com/vi/AVprMizW2B8/mqdefault.jpg", "dur": "52:15"}, {"id": "kZ45Upj6wDk", "title": "Sad String 8 - Blues Instrumental | Deep Blues Guitar for Lonely Nights & Whiskey Mood", "thumb": "https://i.ytimg.com/vi/kZ45Upj6wDk/mqdefault.jpg", "dur": "24:13"}, {"id": "3jdPW0P2PvE", "title": "Sad String 7 - Midnight Whiskey & Vintage Guitar | Relaxing Slow Blues Mood", "thumb": "https://i.ytimg.com/vi/3jdPW0P2PvE/mqdefault.jpg", "dur": "1:02:40"}, {"id": "y_lESg_DP_0", "title": "Sad String 6 - Whiskey, Smoke & Midnight Memories | Deep Soulful Blues", "thumb": "https://i.ytimg.com/vi/y_lESg_DP_0/mqdefault.jpg", "dur": "35:36"}, {"id": "6CpLQ4WCbLA", "title": "Sad String 5 - Deep Soulful Blues Guitar & Whiskey Bar Ambience | Vintage Blues Mood", "thumb": "https://i.ytimg.com/vi/6CpLQ4WCbLA/mqdefault.jpg", "dur": "31:11"}, {"id": "oG8s1fbqIgc", "title": "Sad Sring 4 - Deep Emotional Blues for Lonely Nights & Soulful Reflection", "thumb": "https://i.ytimg.com/vi/oG8s1fbqIgc/mqdefault.jpg", "dur": "27:01"}, {"id": "TUMYrtaHAsc", "title": "Sad String 3 - Midnight Jazz Guitar for Lonely Souls | Relaxing Vintage Blues 🎸", "thumb": "https://i.ytimg.com/vi/TUMYrtaHAsc/mqdefault.jpg", "dur": "21:05"}, {"id": "anoTmIVYv4M", "title": "Sad String 2 - Midnight Vinyl Blues | Cozy Jazz Lounge Ambience with Vintage Whiskey & Fireplace 🎷🔥", "thumb": "https://i.ytimg.com/vi/anoTmIVYv4M/mqdefault.jpg", "dur": "20:14"}, {"id": "5GYOlTDdJ8A", "title": "Sad String 1 - Smoky Jazz Guitar Nights by the Fireplace", "thumb": "https://i.ytimg.com/vi/5GYOlTDdJ8A/mqdefault.jpg", "dur": "15:44"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

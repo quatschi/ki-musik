@@ -7,7 +7,6 @@
 <!-- categories: Soul, Funk, Lounge -->
 <!-- channel-id: UCHOuAZp4mvnqXezNVGAjvIQ -->
 <!-- channel-url: https://www.youtube.com/@SoulFunkStyle-f7i -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "SoulFunk Style";
-const KANAL = "SoulFunk_Style.html";
 const VIDEOS = [{"id": "n2zKJ_-ApHA", "title": "Funky Midnight Sessions 📻 Retro Soul Grooves for Night Drive", "thumb": "https://i.ytimg.com/vi/n2zKJ_-ApHA/mqdefault.jpg", "dur": "1:29:11"}, {"id": "eKc7qpCX47Q", "title": "Soul Funk Groove Lounge ✨ Timeless Funky Beats & Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/eKc7qpCX47Q/mqdefault.jpg", "dur": "1:37:14"}, {"id": "1HJ7MlpiKb8", "title": "Vintage Soul Funk 🎶 Smooth Soul Music for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/1HJ7MlpiKb8/mqdefault.jpg", "dur": "1:37:28"}, {"id": "pixWpaI_zas", "title": "Soul Funk Groove 🌙 Soulful Grooves & Retro Atmosphere", "thumb": "https://i.ytimg.com/vi/pixWpaI_zas/mqdefault.jpg", "dur": "1:36:25"}, {"id": "vjMm-mcIB-c", "title": "Groovy Soul Cafe ☕ Vintage Funk Music & Chill Lounge Vibes", "thumb": "https://i.ytimg.com/vi/vjMm-mcIB-c/mqdefault.jpg", "dur": "1:36:25"}, {"id": "XwcQ1BeTpNM", "title": "Retro Funk Lounge 🕺 Soulful Grooves & Stylish Vintage Atmosphere", "thumb": "https://i.ytimg.com/vi/XwcQ1BeTpNM/mqdefault.jpg", "dur": "1:25:53"}, {"id": "iHhle1h3eoI", "title": "Smooth Funky Evenings ✨ Vintage Soul Music for Relax & Study", "thumb": "https://i.ytimg.com/vi/iHhle1h3eoI/mqdefault.jpg", "dur": "1:25:39"}, {"id": "8OS4DAY19Ig", "title": "Classic Soul Funk Radio 📻 Timeless Grooves & Relaxing Lounge Beats", "thumb": "https://i.ytimg.com/vi/8OS4DAY19Ig/mqdefault.jpg", "dur": "1:24:27"}, {"id": "a6StvTq6cjw", "title": "Vintage Soul Funk Groove | Smooth Groovy Music for Night City Vibes", "thumb": "https://i.ytimg.com/vi/a6StvTq6cjw/mqdefault.jpg", "dur": "1:25:36"}, {"id": "Wz6S4En0d0U", "title": "Soul Funky Sessions 🎧 Retro Soul Grooves & Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/Wz6S4En0d0U/mqdefault.jpg", "dur": "1:26:05"}, {"id": "qdkHGRAsZx4", "title": "Soulful Funk Cafe ☕ Groovy Retro Music for Coffee & Chill Time", "thumb": "https://i.ytimg.com/vi/qdkHGRAsZx4/mqdefault.jpg", "dur": "1:26:02"}, {"id": "0TchKX4lct0", "title": "Vintage Soul Lounge ✨ Smooth Funky Grooves & Timeless Rhythm", "thumb": "https://i.ytimg.com/vi/0TchKX4lct0/mqdefault.jpg", "dur": "1:25:06"}, {"id": "fGDqPQWXHMw", "title": "Retro Soul Funk Radio 🎶 Chill Groovy Beats for Relaxing Evenings", "thumb": "https://i.ytimg.com/vi/fGDqPQWXHMw/mqdefault.jpg", "dur": "1:25:57"}, {"id": "A3H6fK0mpp0", "title": "Soul Funk Groove ☕ Smooth Retro Grooves & Vintage Lounge Vibes", "thumb": "https://i.ytimg.com/vi/A3H6fK0mpp0/mqdefault.jpg", "dur": "1:24:42"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

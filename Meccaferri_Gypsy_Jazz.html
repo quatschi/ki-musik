@@ -7,7 +7,6 @@
 <!-- categories: Jazz, Weltmusik -->
 <!-- channel-id: UCLX_0ckPDAWLEwMTDZQo17w -->
 <!-- channel-url: https://youtube.com/@meccaferrigypsyjazz -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Meccaferri Gypsy Jazz";
-const KANAL = "Meccaferri_Gypsy_Jazz.html";
 const VIDEOS = [{"id": "2ee0lSe-Njw", "title": "Django Reinhardt & Stephane Grappelli – The Legacy of Gypsy Jazz Manouche", "thumb": "https://i.ytimg.com/vi/2ee0lSe-Njw/mqdefault.jpg", "dur": "2:45:17"}, {"id": "M8qWlXVqnzs", "title": "Gypsy Jazz Classics | Django Reinhardt & The Hot Club of France – 3 Hours of Timeless Swing", "thumb": "https://i.ytimg.com/vi/M8qWlXVqnzs/mqdefault.jpg", "dur": "3:13:43"}, {"id": "RFL87TV64Qs", "title": "Slow Klezmer Manouche Swing | Traditional Jewish Melodies Meet Parisian Gypsy Jazz", "thumb": "https://i.ytimg.com/vi/RFL87TV64Qs/mqdefault.jpg", "dur": "4:47:40"}, {"id": "LxC3QVPqztg", "title": "Klezmer Manouche Swing | Traditional Jewish Melodies Meet Parisian Gypsy Jazz", "thumb": "https://i.ytimg.com/vi/LxC3QVPqztg/mqdefault.jpg", "dur": "3:51:05"}, {"id": "YgMjWZ7cUzI", "title": "Timeless Slow Gypsy Swing Instrumentals", "thumb": "https://i.ytimg.com/vi/YgMjWZ7cUzI/mqdefault.jpg", "dur": "3:08:09"}, {"id": "vmeLCq7PgjE", "title": "Django Reinhardt Inspired – Classic 1930s Parisian Gypsy Jazz", "thumb": "https://i.ytimg.com/vi/vmeLCq7PgjE/mqdefault.jpg", "dur": "3:09:21"}, {"id": "PmH7GgAhwos", "title": "Stochelo Rosenberg Inspired – Gypsy Swing Groove", "thumb": "https://i.ytimg.com/vi/PmH7GgAhwos/mqdefault.jpg", "dur": "3:02:35"}, {"id": "u9T8T1qBI7U", "title": "Django Reinhardt Inspired – Classic Gypsy Swing Jazz", "thumb": "https://i.ytimg.com/vi/u9T8T1qBI7U/mqdefault.jpg", "dur": "4:43:51"}, {"id": "7kH8ZVD9UF4", "title": "Best of Gypsy Swing Jazz", "thumb": "https://i.ytimg.com/vi/7kH8ZVD9UF4/mqdefault.jpg", "dur": "3:31:08"}, {"id": "DTjZ2rtEgt0", "title": "1930s Gypsy Jazz Manouche – Classic Django Style Swing", "thumb": "https://i.ytimg.com/vi/DTjZ2rtEgt0/mqdefault.jpg", "dur": "3:04:07"}, {"id": "GmgcUwN5g0U", "title": "1930s Gypsy Jazz Manouche – Timeless Tunes and Rhythm", "thumb": "https://i.ytimg.com/vi/GmgcUwN5g0U/mqdefault.jpg", "dur": "2:41:51"}, {"id": "3J5Vm88Oo8s", "title": "1940s Gypsy Trio – Swings Trio Instrumental", "thumb": "https://i.ytimg.com/vi/3J5Vm88Oo8s/mqdefault.jpg", "dur": "1:17:42"}, {"id": "-gmh7zIjJIQ", "title": "1940s Gypsy Jazz – Paris Gypsy jazz swing Session", "thumb": "https://i.ytimg.com/vi/-gmh7zIjJIQ/mqdefault.jpg", "dur": "1:03:53"}, {"id": "EOeWF4ptR48", "title": "1930s Gypsy Jazz – Paris Café Street", "thumb": "https://i.ytimg.com/vi/EOeWF4ptR48/mqdefault.jpg", "dur": "53:46"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

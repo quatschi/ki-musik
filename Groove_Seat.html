@@ -7,7 +7,6 @@
 <!-- categories: Jazz -->
 <!-- channel-id: UCIIskP4DtXNQANWYEAFhbbw -->
 <!-- channel-url: https://youtube.com/@grooveseat-b2n -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Groove Seat";
-const KANAL = "Groove_Seat.html";
 const VIDEOS = [{"id": "lhn1e-uCa90", "title": "Relaxing Reggae Ambience || Sunny Beach Lounge Ambience || Afternoon Reggae Music to Unwind & Chill", "thumb": "https://i.ytimg.com/vi/lhn1e-uCa90/mqdefault.jpg", "dur": "2:00:58"}, {"id": "NJ9KBupEwVY", "title": "Sun-Faded Close (Reggae Groove) | Relaxing Island Vibes for Chill, Focus & Good Energy", "thumb": "https://i.ytimg.com/vi/NJ9KBupEwVY/mqdefault.jpg", "dur": "3:44"}, {"id": "PNDjGc5n2Fk", "title": "Afrobeat Vibes | Feel Good African Rhythms for Dance, Energy & Good Mood | Relax Music for Stress", "thumb": "https://i.ytimg.com/vi/PNDjGc5n2Fk/mqdefault.jpg", "dur": "3:21"}, {"id": "DHPS20H17J8", "title": "Relaxing Reggae Music || Afternoon Reggae Vibes || Summer Vibes || Sunset Beach Bar Ambience", "thumb": "https://i.ytimg.com/vi/DHPS20H17J8/mqdefault.jpg", "dur": "1:47:48"}, {"id": "JsnRzwpkmps", "title": "1950s Late Night Jazz Café || 3 Hours of Soothing Piano & Soft Bass for Deep Sleep, Study & Focus", "thumb": "https://i.ytimg.com/vi/JsnRzwpkmps/mqdefault.jpg", "dur": "3:01:43"}, {"id": "uPiGRw9mVJQ", "title": "Instant Baby Sleep || 5 Hours of Relaxing Music for Babies || Deep Sleep Lullaby for Babies", "thumb": "https://i.ytimg.com/vi/uPiGRw9mVJQ/mqdefault.jpg", "dur": "5:30:41"}, {"id": "fb6SJLz8qig", "title": "Deep Sleep Music for Babies | Instant Sleep for Babies | 1 Hour of Lullaby Melodies for Bedtime", "thumb": "https://i.ytimg.com/vi/fb6SJLz8qig/mqdefault.jpg", "dur": "1:04:37"}, {"id": "gv1vmC6YQEE", "title": "Late Night Coffee and Smooth Jazz || 2 Hours of Mellow Saxophone Relax Music for Stress", "thumb": "https://i.ytimg.com/vi/gv1vmC6YQEE/mqdefault.jpg", "dur": "2:04:52"}, {"id": "QhyxwJBP9og", "title": "8-Hour Relax Music for Stress | Deep Sleep Ambient for an Overactive Mind (No Distractions)", "thumb": "https://i.ytimg.com/vi/QhyxwJBP9og/mqdefault.jpg", "dur": "8:08:57"}, {"id": "bZdY7Vpa5z8", "title": "Whitenoise at Busy Bus Terminal Ambience #1| Interesting Ambient Sounds|Unedited.", "thumb": "https://i.ytimg.com/vi/bZdY7Vpa5z8/mqdefault.jpg", "dur": "12:11"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

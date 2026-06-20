@@ -7,7 +7,6 @@
 <!-- categories: Latin, Latin Jazz -->
 <!-- channel-id: UCcv_6sK55eUuhTz_rlv7kzA -->
 <!-- channel-url: https://youtube.com/@midnightlatinblues -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Midnight Latin Blues";
-const KANAL = "Midnight_Latin_Blues.html";
 const VIDEOS = [{"id": "1dOR1YaRLkY", "title": "Santana | Echoes of the Last Highway : Soul Blues Under Crimson Moonlight", "thumb": "https://i.ytimg.com/vi/1dOR1YaRLkY/mqdefault.jpg", "dur": "1:40:37"}, {"id": "wyLxoOu8LEU", "title": "Santana & Johnny Winter | Dusty Roads & Southern Soul Blues", "thumb": "https://i.ytimg.com/vi/wyLxoOu8LEU/mqdefault.jpg", "dur": "1:50:54"}, {"id": "dAhB0LZdU4o", "title": "Santana | Latin Soul Blues for Quiet Midnight Hours", "thumb": "https://i.ytimg.com/vi/dAhB0LZdU4o/mqdefault.jpg", "dur": "1:43:36"}, {"id": "aobakwdri18", "title": "Santana & Rory Gallagher | Highway Blues & Rust Belt Dreams (1974–1981)", "thumb": "https://i.ytimg.com/vi/aobakwdri18/mqdefault.jpg", "dur": "1:52:14"}, {"id": "i_O_haVYv7o", "title": "Santana & Eric Clapton Style Blues 🌙 Slow Latin Rock & Soulful Midnight Guitar", "thumb": "https://i.ytimg.com/vi/i_O_haVYv7o/mqdefault.jpg", "dur": "1:45:32"}, {"id": "I34LtuAwwzM", "title": "Gary Moore Meets Mark Knopfler | Late Night Soul Blues Session", "thumb": "https://i.ytimg.com/vi/I34LtuAwwzM/mqdefault.jpg", "dur": "1:37:57"}, {"id": "cAWvMVVGK3w", "title": "Santana & El Chicano | Vintage Latin Soul Groove Nights", "thumb": "https://i.ytimg.com/vi/cAWvMVVGK3w/mqdefault.jpg", "dur": "1:37:54"}, {"id": "HwI2chfixk4", "title": "B.B. King Meets Eric Clapton | Midnight Latin Soul Blues Highway", "thumb": "https://i.ytimg.com/vi/HwI2chfixk4/mqdefault.jpg", "dur": "1:42:26"}, {"id": "RD234GD2kOQ", "title": "Santana & Aretha Franklin – Velvet Fire & Latin Soul Blues 🔥 | Midnight Groove Legends", "thumb": "https://i.ytimg.com/vi/RD234GD2kOQ/mqdefault.jpg", "dur": "2:06:27"}, {"id": "r2wHKCjRWHM", "title": "Velvet Whiskey Blues | Santana & Eric Clapton Midnight Sessions", "thumb": "https://i.ytimg.com/vi/r2wHKCjRWHM/mqdefault.jpg", "dur": "1:48:05"}, {"id": "1wnFAmh30HI", "title": "Slow Burning Blues | Santana Meets Stevie Ray Vaughan After Midnight", "thumb": "https://i.ytimg.com/vi/1wnFAmh30HI/mqdefault.jpg", "dur": "1:52:04"}, {"id": "oB5r98gtdBA", "title": "Psychedelic Midnight Blues | Santana & Jimi Hendrix Cosmic Jam", "thumb": "https://i.ytimg.com/vi/oB5r98gtdBA/mqdefault.jpg", "dur": "1:47:07"}, {"id": "nGVHjP3MOKQ", "title": "Midnight Fire & Lonely Strings | Santana x Gary Moore Blues Sessions", "thumb": "https://i.ytimg.com/vi/nGVHjP3MOKQ/mqdefault.jpg", "dur": "1:47:43"}, {"id": "r1RtUNENGLM", "title": "Santana | Golden Sky Ritual & Slow Latin Blues", "thumb": "https://i.ytimg.com/vi/r1RtUNENGLM/mqdefault.jpg", "dur": "1:38:42"}, {"id": "4KDlugaBD14", "title": "Santana Meets B.B. King | Lost Blues & Latin Soul Sessions", "thumb": "https://i.ytimg.com/vi/4KDlugaBD14/mqdefault.jpg", "dur": "1:51:19"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

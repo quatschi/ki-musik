@@ -7,7 +7,6 @@
 <!-- categories: Lounge -->
 <!-- channel-id: UCDDro0b2Ay2AHvWbCABfz0A -->
 <!-- channel-url: https://www.youtube.com/@ambermusicplaylist -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "Amber";
-const KANAL = "Amber.html";
 const VIDEOS = [{"id": "B2_m9oHy070", "title": "Timeless Soul & Rare Funk Fusion | 3 Hours of Immersive Retro Grooves", "dur": "3:28:33"}, {"id": "5OIwyySBRA8", "title": "Soul & Deep Funk Essentials | 3 Hours of Immersive Retro Grooves", "dur": "3:22:13"}, {"id": "BgE9HFePAmA", "title": "Timeless Soul & Deep Funk: 3 Hours of Immersive Retro Grooves", "dur": "3:22:09"}, {"id": "BA3OBPTOYQ4", "title": "3 Hours of Timeless Soul & Deep Funk Fusion • Immersive Vintage Grooves", "dur": "3:16:51"}, {"id": "ZXV2Z3xcg5U", "title": "Midnight Velvet Soul & Deep Funk Mix | 3 Hours of Rare Grooves for Focus & Late Night Vibes", "dur": "3:22:51"}, {"id": "9NcHu-BiA7I", "title": "Timeless Soul & Deep Funk Fusion | 3 Hours of Non-Stop Vintage Grooves", "dur": "3:14:05"}, {"id": "On4tN3pWdDY", "title": "Velvet Soul Melodies | 3 Hours of Smooth Retro Funk & Deep Groove Fusion", "dur": "3:21:44"}, {"id": "smz5Nzpg2kU", "title": "3 Hours of Retro Soul & Deep Funk • Smooth Vintage Grooves for Focus, Study & Relax", "dur": "3:22:32"}, {"id": "2ktOBQ5VMWs", "title": "24/7 Retro Soul & Deep Funk Radio • Timeless Grooves for Focus, Study & Chill 🎷", "dur": ""}, {"id": "ksKIuuL6mz4", "title": "Smooth Soul Essentials | 3 Hours of Retro Funk & Deep Groove Fusion", "dur": "3:25:11"}, {"id": "Zwg5U6Cgx1k", "title": "Classic Soul & Rare Funk Fusion | 3 Hours of Pure Timeless Grooves", "dur": "3:28:15"}, {"id": "uVxx_4wPxfU", "title": "Soul & Funk Infinity | 3 Hours of Deep Retro Grooves & Timeless Vibes", "dur": "3:05:11"}, {"id": "14s9WgTUwLA", "title": "Retro Soul & Deep Funk Mix | 3 Hours of Soulful Grooves & Vintage Vibes", "dur": "3:16:28"}, {"id": "DSb1PjolyZg", "title": "Deep Soul & Funk Revival | 3 Hours of Non-Stop Retro Grooves & Smooth Vibes", "dur": "3:20:00"}, {"id": "8aP0JTaVzfs", "title": "Golden Era Soul | 3 Hours of Deep Funk & Retro Classics for Pure Relaxation", "dur": "3:13:50"}, {"id": "1s-Fd7OXY6g", "title": "Timeless Soul Classics | 3 Hours of Deep Retro Funk & Soulful Grooves", "dur": "3:14:39"}, {"id": "uI2mnTC_HDA", "title": "Vintage Vibes Only | 3 Hours of Deep Soul & Rare Funk for Maximum Focus", "dur": "3:16:14"}, {"id": "h08pxb05Rs4", "title": "Essential Soul & Smooth Funk Mix | 3 Hours of Deep Retro Grooves for Focus & Chill", "dur": "3:09:57"}, {"id": "SNHSGGmBoGw", "title": "Retro Soul & Deep Funk Mix | 3 Hours of Non-Stop Grooves for Focus & Relax", "dur": "3:09:18"}, {"id": "Yay5WeQ-5AE", "title": "Pure Soul & Funk Essentials | 3-Hour Immersive Music Experience", "dur": "3:08:04"}, {"id": "xkdgQwkZPoQ", "title": "The Ultimate 3-Hour Funky & Soul Journey: Pure Grooves for Your Day", "dur": "3:18:50"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

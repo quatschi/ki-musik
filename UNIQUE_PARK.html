@@ -7,7 +7,6 @@
 <!-- categories: Jazz, Smooth Jazz, Funk -->
 <!-- channel-id: UCJUPXrLz3vbZ3rXYkeregMg -->
 <!-- channel-url: https://www.youtube.com/@uniqepark_jazzfunk -->
-<!-- created: 2026-06-18 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
@@ -31,8 +30,6 @@
   .star:hover, .star.active { color: #f0c040; }
   .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
-  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
   .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
   .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
@@ -87,10 +84,9 @@ const GITHUB_USER = 'quatschi';
 const GITHUB_REPO = 'ki-musik';
 const GITHUB_FILE = 'noten.json';
 const CHANNEL = "UNIQUE PARK";
-const KANAL = "UNIQUE_PARK.html";
 const VIDEOS = [{"id": "JJ-Oc-Y0B2I", "title": "Midnight Express | Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/JJ-Oc-Y0B2I/mqdefault.jpg", "dur": "1:08:27"}, {"id": "icGqtAns9ho", "title": "City Pulse: Jazz Funk Drive | Polished Brass Section | Focus & Work Playlist", "thumb": "https://i.ytimg.com/vi/icGqtAns9ho/mqdefault.jpg", "dur": "1:03:58"}, {"id": "zvy019DfNl8", "title": "Endless Highway | Jazz Funk & Acid Groove | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/zvy019DfNl8/mqdefault.jpg", "dur": "1:11:32"}, {"id": "soNzwmEsazs", "title": "After Work Drive | Jazz Funk & Acid Groove | Drive & Daily Music | Playlist", "thumb": "https://i.ytimg.com/vi/soNzwmEsazs/mqdefault.jpg", "dur": "1:08:27"}, {"id": "1NtomGScwoQ", "title": "Groovy Travel Drive | Jazz Funk | Urban Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/1NtomGScwoQ/mqdefault.jpg", "dur": "1:07:40"}, {"id": "XF4Fy-XkDEs", "title": "Sunset Road l Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/XF4Fy-XkDEs/mqdefault.jpg", "dur": "1:03:11"}, {"id": "33g0GQBr95g", "title": "Windy City  | Tight Rhythm Jazz Funk | Drive & Work Music l Playlist", "thumb": "https://i.ytimg.com/vi/33g0GQBr95g/mqdefault.jpg", "dur": "31:37"}, {"id": "eQJEiWpYnW4", "title": "Riding the Waves l Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/eQJEiWpYnW4/mqdefault.jpg", "dur": "1:11:52"}, {"id": "3_ndhLhFT_s", "title": "Streets Begin to Breathe l Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/3_ndhLhFT_s/mqdefault.jpg", "dur": "1:17:26"}, {"id": "pRNtmuCaDLU", "title": "Late Night Ride | Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/pRNtmuCaDLU/mqdefault.jpg", "dur": "49:49"}, {"id": "x2GQqD_wYHE", "title": "Midnight City Drive | Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/x2GQqD_wYHE/mqdefault.jpg", "dur": "1:21:41"}, {"id": "cb81J0Qbt1k", "title": "Neon Nights | Tight Rhythm Jazz Funk | Drive & Work Music | Playlist", "thumb": "https://i.ytimg.com/vi/cb81J0Qbt1k/mqdefault.jpg", "dur": "51:20"}, {"id": "muQZPj0hr0E", "title": "Funk Groove Drive | Tight Rhythm Jazz Funk | Drive & Work Play | Playlist", "thumb": "https://i.ytimg.com/vi/muQZPj0hr0E/mqdefault.jpg", "dur": "1:30:34"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
-let ratings = {}, meta = {}, changed = false;
+let ratings = {}, changed = false;
 
 function saveToken() {
   const t = document.getElementById('token-input').value.trim();
@@ -142,9 +138,7 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'video-card';
     const cur = ratings[v.id] || 0;
-    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
     card.innerHTML = `
-      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
       <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
         ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
         <div class="video-info">
@@ -165,6 +159,7 @@ function renderGrid() {
 
 function setRating(id, val) {
   ratings[id] = val;
+  // Meta-Daten für Best-Of mitspeichern
   const v = VIDEOS.find(v => v.id === id);
   if (val >= 4 && v) {
     meta[id] = { title: v.title, channel: CHANNEL };
@@ -217,8 +212,6 @@ async function saveRatings() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>
