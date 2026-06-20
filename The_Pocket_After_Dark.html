@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pocket After Dark</title>
+<!-- categories: Funk, Soul, Lounge -->
+<!-- channel-id: UCCbSON7DMIup3Bidx2-vjTQ -->
+<!-- channel-url: https://www.youtube.com/@The_Pocket_After_Dark -->
+<!-- created: 2026-06-21 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=The_Pocket_After_Dark.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/siU9UFo27tSZ1em9EKpXMK9rW3rY7EREpt5geiAI-D1Q2e31fupDizihX0IRp4DWEioNQGe4HQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">The Pocket After Dark</div>
+      <div class="channel-count">33 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "The Pocket After Dark";
+const KANAL = "The_Pocket_After_Dark.html";
+const ORIG_CATEGORIES = "Funk, Soul, Lounge";
+const VIDEOS = [{"id": "-9EMyYbd-dU", "title": "City Groove Affair | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/-9EMyYbd-dU/mqdefault.jpg", "dur": "1:34:13"}, {"id": "8AhelBS_XVk", "title": "Honey Eclipse | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/8AhelBS_XVk/mqdefault.jpg", "dur": "1:34:17"}, {"id": "U1-s_-o9Q_c", "title": "Brass Horizon | Funk & Soul Playlist | Late Night Vocal Horn Grooves", "thumb": "https://i.ytimg.com/vi/U1-s_-o9Q_c/mqdefault.jpg", "dur": "1:38:15"}, {"id": "OIq5djsAtv8", "title": "Satin Groove | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/OIq5djsAtv8/mqdefault.jpg", "dur": "1:38:10"}, {"id": "-pL0PXlZo1o", "title": "Smoky Rendezvous | Funk & Soul Playlist | Late Night Vocal Duet Grooves", "thumb": "https://i.ytimg.com/vi/-pL0PXlZo1o/mqdefault.jpg", "dur": "1:33:29"}, {"id": "xlLwUOoJKP4", "title": "Velvet Midnight | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/xlLwUOoJKP4/mqdefault.jpg", "dur": "1:34:55"}, {"id": "wwhdOQth8Vg", "title": "Afterglow Beats | Funk & Soul Playlist | Late Night Vocal Saxophone Grooves", "thumb": "https://i.ytimg.com/vi/wwhdOQth8Vg/mqdefault.jpg", "dur": "1:36:53"}, {"id": "GbCL3nP67Qs", "title": "Midnight Sway | Funk & Soul Playlist | Late Night Vocal Saxophone Grooves", "thumb": "https://i.ytimg.com/vi/GbCL3nP67Qs/mqdefault.jpg", "dur": "1:42:48"}, {"id": "cIEabnAQWjY", "title": "Velvet Groove | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/cIEabnAQWjY/mqdefault.jpg", "dur": "1:34:06"}, {"id": "SEJkMarV8gw", "title": "Deep Pocket | Funk & Soul Playlist | Late Night Vocal Rhodes Grooves", "thumb": "https://i.ytimg.com/vi/SEJkMarV8gw/mqdefault.jpg", "dur": "1:37:43"}, {"id": "eRDJmIdDOmQ", "title": "Smoky Groove | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/eRDJmIdDOmQ/mqdefault.jpg", "dur": "1:40:43"}, {"id": "26fpUuJoeTQ", "title": "Midnight Riffs | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/26fpUuJoeTQ/mqdefault.jpg", "dur": "1:36:19"}, {"id": "EiUz6g1y-Mg", "title": "Retro Groove | Funk & Soul Playlist | Late Night Vocal Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/EiUz6g1y-Mg/mqdefault.jpg", "dur": "1:35:03"}, {"id": "YNKW3C0Ao4s", "title": "Midnight Strut | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/YNKW3C0Ao4s/mqdefault.jpg", "dur": "1:33:49"}, {"id": "HcRrsoDHZ54", "title": "Golden Pocket | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/HcRrsoDHZ54/mqdefault.jpg", "dur": "1:36:55"}, {"id": "KSSgM2PmmcI", "title": "Midnight Soul | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/KSSgM2PmmcI/mqdefault.jpg", "dur": "1:36:36"}, {"id": "Et8AFyNZrKE", "title": "Deep Pocket | Late Night Vocal Soul Funk Playlist | Funk & Soul Grooves", "thumb": "https://i.ytimg.com/vi/Et8AFyNZrKE/mqdefault.jpg", "dur": "1:16:18"}, {"id": "GrX_sr9Ijuc", "title": "Two Shadows | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/GrX_sr9Ijuc/mqdefault.jpg", "dur": "1:28:55"}, {"id": "v3RBZ9caRwI", "title": "After Midnight | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/v3RBZ9caRwI/mqdefault.jpg", "dur": "1:53:46"}, {"id": "QmyS2gznBdY", "title": "Conga Night | Late Night Vocal Soul Funk for Work, Drive & After Hours", "thumb": "https://i.ytimg.com/vi/QmyS2gznBdY/mqdefault.jpg", "dur": "1:39:28"}, {"id": "R2dvDRvIS-o", "title": "Gold Tooth Signal | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/R2dvDRvIS-o/mqdefault.jpg", "dur": "1:27:52"}, {"id": "dB9rGLdjk0g", "title": "Rainy Groove | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/dB9rGLdjk0g/mqdefault.jpg", "dur": "2:11:43"}, {"id": "9Pu1FW6u_jg", "title": "Backstage Heat | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/9Pu1FW6u_jg/mqdefault.jpg", "dur": "2:30:24"}, {"id": "-I3A1NUAYFY", "title": "Soul Funk Motel Nights | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/-I3A1NUAYFY/mqdefault.jpg", "dur": "1:24:57"}, {"id": "bOzE_VO_e20", "title": "Blue Wall Fever | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/bOzE_VO_e20/mqdefault.jpg", "dur": "1:46:20"}, {"id": "rxuVneZ7qyw", "title": "Diner Groove | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/rxuVneZ7qyw/mqdefault.jpg", "dur": "1:55:07"}, {"id": "wiy7N4Mp764", "title": "After Hours | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/wiy7N4Mp764/mqdefault.jpg", "dur": "1:48:51"}, {"id": "qjC_PcPDOH8", "title": "Midnight Line | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/qjC_PcPDOH8/mqdefault.jpg", "dur": "1:50:11"}, {"id": "KHwptIS0nbo", "title": "Red Light Lean | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/KHwptIS0nbo/mqdefault.jpg", "dur": "1:50:23"}, {"id": "AOvuKYbXjTA", "title": "City Floor Heat | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/AOvuKYbXjTA/mqdefault.jpg", "dur": "1:52:42"}, {"id": "0MO5U6QOPWQ", "title": "Keep It Low Tonight | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/0MO5U6QOPWQ/mqdefault.jpg", "dur": "1:50:39"}, {"id": "e2rBvZ7PG50", "title": "Back Room After Dark | Late Night Vocal Soul Funk Playlist | Deep Pocket Grooves", "thumb": "https://i.ytimg.com/vi/e2rBvZ7PG50/mqdefault.jpg", "dur": "1:52:21"}, {"id": "C3ggdwp4rfU", "title": "No Rush Vocals | Late Night Soul Funk Playlist | Deep Pocket Grooves After Dark", "thumb": "https://i.ytimg.com/vi/C3ggdwp4rfU/mqdefault.jpg", "dur": "1:53:38"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
