@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JazzBrown</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UC5JqV8zNkB9IxXb6Tc2sEcA -->
+<!-- channel-url: https://youtube.com/@jazzbrown09 -->
+<!-- created: 2026-06-21 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=JazzBrown.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/2TiW8SolRVdnEDwA3XNVY56tF5L_DqZPLMapL_GWdk6_zfIfDxuDXTzTiYlwLjdwPeLQUrMpPQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">JazzBrown</div>
+      <div class="channel-count">70 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "JazzBrown";
+const KANAL = "JazzBrown.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "PAIFZSePkIM", "title": "[Playlist] 오늘도, 좋아하는 카페에서 재즈", "thumb": "https://i.ytimg.com/vi/PAIFZSePkIM/mqdefault.jpg", "dur": "1:27:13"}, {"id": "FSMrEFm_lP0", "title": "[Playlist] 카페에 앉아 있는 기분으로 듣는 Jazz", "thumb": "https://i.ytimg.com/vi/FSMrEFm_lP0/mqdefault.jpg", "dur": "1:20:00"}, {"id": "4eRVyQUoMLg", "title": "[Playlist] 나만의 속도로 흐르는 시간 | Jazz Playlist", "thumb": "https://i.ytimg.com/vi/4eRVyQUoMLg/mqdefault.jpg", "dur": "1:15:11"}, {"id": "z4fX3KAlaJI", "title": "[Playlist] 아이스커피 한 잔이 더 맛있어지는 Jazz", "thumb": "https://i.ytimg.com/vi/z4fX3KAlaJI/mqdefault.jpg", "dur": "1:20:59"}, {"id": "CtasI0DmKMo", "title": "[Playlist] 오늘은 여유를 느껴봐 | 커피를 내리고, 재즈를 틀어두고", "thumb": "https://i.ytimg.com/vi/CtasI0DmKMo/mqdefault.jpg", "dur": "1:20:59"}, {"id": "ShLnhjByJUE", "title": "[Playlist] 커피가 나오기 전, 가장 여유로운 시간 | Cafe Jazz", "thumb": "https://i.ytimg.com/vi/ShLnhjByJUE/mqdefault.jpg", "dur": "1:23:08"}, {"id": "IYqyLYGc4OM", "title": "[Playlist] 인생은 너무 쓰니까, 재즈를 섞어 ☕ | Coffee Jazz", "thumb": "https://i.ytimg.com/vi/IYqyLYGc4OM/mqdefault.jpg", "dur": "1:21:00"}, {"id": "_SKXSUwy6Fs", "title": "[Playlist] 창밖의 수평선을 오래 바라보게 되는 재즈", "thumb": "https://i.ytimg.com/vi/_SKXSUwy6Fs/mqdefault.jpg", "dur": "1:14:59"}, {"id": "fDk1BeVbz_4", "title": "[Playlist] 오늘은 일본 카페에 앉아 있는 기분으로", "thumb": "https://i.ytimg.com/vi/fDk1BeVbz_4/mqdefault.jpg", "dur": "1:10:30"}, {"id": "or9Kv5QLJco", "title": "[Playlist] 하루를 터치하는 잔잔한 재즈", "thumb": "https://i.ytimg.com/vi/or9Kv5QLJco/mqdefault.jpg", "dur": "1:12:49"}, {"id": "bayigDcwNsc", "title": "[Playlist] 읽다 멈춘 페이지처럼, 재즈", "thumb": "https://i.ytimg.com/vi/bayigDcwNsc/mqdefault.jpg", "dur": "1:20:35"}, {"id": "Ww1ficnWwZQ", "title": "[Playlist] 텅 빈 테이블에 앉아, 잠시 눈을 감고 듣는 재즈", "thumb": "https://i.ytimg.com/vi/Ww1ficnWwZQ/mqdefault.jpg", "dur": "1:12:46"}, {"id": "wq18FxjvJyw", "title": "[Playlist] 비가 내리면, 잊고 있던 장면들이 돌아온다 | Instrumental Jazz", "thumb": "https://i.ytimg.com/vi/wq18FxjvJyw/mqdefault.jpg", "dur": "1:06:22"}, {"id": "t3MHR9_4pSc", "title": "[Playlist] 오늘의 문장을 적는 시간, 그리고 재즈", "thumb": "https://i.ytimg.com/vi/t3MHR9_4pSc/mqdefault.jpg", "dur": "1:24:03"}, {"id": "BUd5pGDJkI4", "title": "[Playlist] 드립커피처럼 천천히 스며드는 재즈", "thumb": "https://i.ytimg.com/vi/BUd5pGDJkI4/mqdefault.jpg", "dur": "1:22:06"}, {"id": "WGqEgv3fPQE", "title": "[Playlist] 회색빛 오후, 커피와 책 그리고 재즈", "thumb": "https://i.ytimg.com/vi/WGqEgv3fPQE/mqdefault.jpg", "dur": "1:23:43"}, {"id": "LJQmPe3j-5M", "title": "[Playlist] 혼자만의 테이블, 그리고 재즈", "thumb": "https://i.ytimg.com/vi/LJQmPe3j-5M/mqdefault.jpg", "dur": "1:23:43"}, {"id": "5H2CURqSBTM", "title": "[Playlist] 따뜻한 우드 테이블, 차가운 커피 그리고 재즈", "thumb": "https://i.ytimg.com/vi/5H2CURqSBTM/mqdefault.jpg", "dur": "1:26:34"}, {"id": "wsFUu5cpziU", "title": "[Playlist] 에스프레소가 떨어지는 순간, 재즈도 시작됐다", "thumb": "https://i.ytimg.com/vi/wsFUu5cpziU/mqdefault.jpg", "dur": "1:15:11"}, {"id": "9HPo5sPLEfo", "title": "[Playlist] 지금 이 감성, 딱 이 순간에만 있는 재즈", "thumb": "https://i.ytimg.com/vi/9HPo5sPLEfo/mqdefault.jpg", "dur": "1:33:53"}, {"id": "5vxam1NlNIM", "title": "[Playlist] 오늘은 북카페에 왔어, 재즈도 함께", "thumb": "https://i.ytimg.com/vi/5vxam1NlNIM/mqdefault.jpg", "dur": "1:33:53"}, {"id": "WFKa2C0MBgQ", "title": "[Playlist] 네가 올 것 같아서, 재즈를 틀어놨어", "thumb": "https://i.ytimg.com/vi/WFKa2C0MBgQ/mqdefault.jpg", "dur": "1:33:53"}, {"id": "5KgAXro2e2c", "title": "[Playlist] 달달함 부족한 오늘, 카페에서 재즈 한잔", "thumb": "https://i.ytimg.com/vi/5KgAXro2e2c/mqdefault.jpg", "dur": "1:33:35"}, {"id": "Cd8qqF2DxUU", "title": "[Playlist] 혼자 카페 가는 날 듣는 재즈, Just Stay Here", "thumb": "https://i.ytimg.com/vi/Cd8qqF2DxUU/mqdefault.jpg", "dur": "1:33:35"}, {"id": "hIymZ5OAyAY", "title": "[Playlist] 공부하다 멍해지는 순간, 듣기 좋은 재즈", "thumb": "https://i.ytimg.com/vi/hIymZ5OAyAY/mqdefault.jpg", "dur": "1:22:23"}, {"id": "t4I8rShmkGc", "title": "[Playlist] 한 페이지의 여백처럼, 재즈는 조용히 번진다", "thumb": "https://i.ytimg.com/vi/t4I8rShmkGc/mqdefault.jpg", "dur": "1:28:05"}, {"id": "uVFKh40pHP0", "title": "[Playlist] 조용한 방, 깊어지는 집중 | Lo-Fi Jazz", "thumb": "https://i.ytimg.com/vi/uVFKh40pHP0/mqdefault.jpg", "dur": "1:28:04"}, {"id": "-rnzwlyRZ1A", "title": "[Playlist] 커피 한 잔, 조용한 집중 | Lo-Fi Noir Jazz", "thumb": "https://i.ytimg.com/vi/-rnzwlyRZ1A/mqdefault.jpg", "dur": "1:22:34"}, {"id": "3Ra9IFf6xAE", "title": "[Playlist] 파리 카페에 꽃이 쏟아진 날, 재즈를 틀었습니다", "thumb": "https://i.ytimg.com/vi/3Ra9IFf6xAE/mqdefault.jpg", "dur": "1:24:13"}, {"id": "ou6-v10pYgE", "title": "[Playlist] 화양연화, 그 시절의 올드 재즈", "thumb": "https://i.ytimg.com/vi/ou6-v10pYgE/mqdefault.jpg", "dur": "1:29:32"}, {"id": "CpY5VwwqMpo", "title": "[Playlist] 잠시 머물고 싶은 재즈 | A Jazz You’ll Stay With for a While", "thumb": "https://i.ytimg.com/vi/CpY5VwwqMpo/mqdefault.jpg", "dur": "1:06:42"}, {"id": "V55iO00eO_U", "title": "이건 음악이 아니라 공간이다 | 카페 재즈 Study Jazz", "thumb": "https://i.ytimg.com/vi/V55iO00eO_U/mqdefault.jpg", "dur": "1:03:42"}, {"id": "jDLO750YIDI", "title": "커피가 가장 맛있는 시간, 카페 모던 재즈 | The Perfect Coffee Moment, Modern Café Jazz", "thumb": "https://i.ytimg.com/vi/jDLO750YIDI/mqdefault.jpg", "dur": "1:16:32"}, {"id": "b3Dmwg3HgxI", "title": "[Playlist] 여행처럼 흐르는 감성재즈", "thumb": "https://i.ytimg.com/vi/b3Dmwg3HgxI/mqdefault.jpg", "dur": "1:15:41"}, {"id": "wesX277Kifs", "title": "[Playlist} 호수를 바라보는 동안 겨울은 조용히 물러난다", "thumb": "https://i.ytimg.com/vi/wesX277Kifs/mqdefault.jpg", "dur": "1:05:59"}, {"id": "v_q1YrRI2gM", "title": "공간이 편안해지는 순간, 재즈와 함께", "thumb": "https://i.ytimg.com/vi/v_q1YrRI2gM/mqdefault.jpg", "dur": "1:28:24"}, {"id": "JEzuTslkgh0", "title": "겨울비 속 브루클린, 재즈가 흐르는 저녁", "thumb": "https://i.ytimg.com/vi/JEzuTslkgh0/mqdefault.jpg", "dur": "1:18:15"}, {"id": "k3nxF7eRHlM", "title": "[Playlist] 교토에서 하루를 내려놓는 방법, 재즈가 남아 있는 시간", "thumb": "https://i.ytimg.com/vi/k3nxF7eRHlM/mqdefault.jpg", "dur": "1:20:30"}, {"id": "ExjWF3xlj4w", "title": "[Playlist] 눈 내리는 도시, 창가에서 재즈를 듣는다", "thumb": "https://i.ytimg.com/vi/ExjWF3xlj4w/mqdefault.jpg", "dur": "1:15:54"}, {"id": "8cMtgNxAQUA", "title": "[Playlist] 고요한 방, Quiet Room Jazz | 독서·집중·휴식을 위한 미니멀 재즈 플레이리스트", "thumb": "https://i.ytimg.com/vi/8cMtgNxAQUA/mqdefault.jpg", "dur": "1:25:45"}, {"id": "Ol0suZfel3I", "title": "[Playlist] 눈 오는 날, 머물고 싶은 재즈", "thumb": "https://i.ytimg.com/vi/Ol0suZfel3I/mqdefault.jpg", "dur": "2:06:52"}, {"id": "_SCnhbr1HHU", "title": "[Playlist] 새해의 파리, 에펠탑 아래 재즈", "thumb": "https://i.ytimg.com/vi/_SCnhbr1HHU/mqdefault.jpg", "dur": "1:50:16"}, {"id": "pvgIaG3PYDI", "title": "[Playlist] 한 해의 끝, 조용한 재즈로 마무리 | Year End Jazz☕", "thumb": "https://i.ytimg.com/vi/pvgIaG3PYDI/mqdefault.jpg", "dur": "1:20:07"}, {"id": "xvyAdbbjkDU", "title": "[Playlist] 읽는 동안, 재즈는 배경이 된다", "thumb": "https://i.ytimg.com/vi/xvyAdbbjkDU/mqdefault.jpg", "dur": "1:10:49"}, {"id": "BOrK0NXO5Fk", "title": "[Playlist] 아침은 커피와 재즈면 충분해", "thumb": "https://i.ytimg.com/vi/BOrK0NXO5Fk/mqdefault.jpg", "dur": "1:16:47"}, {"id": "uOgLNBvDAfs", "title": "[Playlist] 조용한 창밖, 눈과 나뭇가지 그리고 재즈", "thumb": "https://i.ytimg.com/vi/uOgLNBvDAfs/mqdefault.jpg", "dur": "53:15"}, {"id": "K7lGSiTvBco", "title": "겨울 숲 어딘가, 재즈가 흐른다 [playlist]", "thumb": "https://i.ytimg.com/vi/K7lGSiTvBco/mqdefault.jpg", "dur": "59:26"}, {"id": "loPXsmD7EEY", "title": "뉴욕 겨울거리 걷는 듯한 크리스마스 재즈 [playlist]", "thumb": "https://i.ytimg.com/vi/loPXsmD7EEY/mqdefault.jpg", "dur": "1:08:10"}, {"id": "JT6ptFhN4t8", "title": "다시 만난 추억, 편안한 코지재즈", "thumb": "https://i.ytimg.com/vi/JT6ptFhN4t8/mqdefault.jpg", "dur": "1:05:47"}, {"id": "5fvW9sodAGM", "title": "캐롤재즈 속에, 화이트 크리스마스의 추억이 흐른다", "thumb": "https://i.ytimg.com/vi/5fvW9sodAGM/mqdefault.jpg", "dur": "55:02"}, {"id": "DSM2IcvBK9I", "title": "조용한 겨울, 마음의 투영이 머무는 곳", "thumb": "https://i.ytimg.com/vi/DSM2IcvBK9I/mqdefault.jpg", "dur": "1:06:08"}, {"id": "HxPHzZ0dOsg", "title": "[Playlist] 파리 골목 끝에서 흐르는 재즈", "thumb": "https://i.ytimg.com/vi/HxPHzZ0dOsg/mqdefault.jpg", "dur": "1:09:07"}, {"id": "khnLlmYLtNU", "title": "여행의 기억, 재즈발라드로 다시 불러오는 순간들", "thumb": "https://i.ytimg.com/vi/khnLlmYLtNU/mqdefault.jpg", "dur": "54:04"}, {"id": "1GzhjnuxczE", "title": "뉴욕 거리의 크리스마스 재즈 스토리", "thumb": "https://i.ytimg.com/vi/1GzhjnuxczE/mqdefault.jpg", "dur": "54:58"}, {"id": "kuT_6gun7po", "title": "[Playlist] 숲속의 공기와 함께 듣는 재즈", "thumb": "https://i.ytimg.com/vi/kuT_6gun7po/mqdefault.jpg", "dur": "1:07:10"}, {"id": "8s5RZ6REW0Y", "title": "불빛 아래 머무는 재즈, 겨울의 숨", "thumb": "https://i.ytimg.com/vi/8s5RZ6REW0Y/mqdefault.jpg", "dur": "1:05:14"}, {"id": "F9G8inRp55E", "title": "크리스마스의 고요, 백조처럼 흘러가는 잔잔한 재즈", "thumb": "https://i.ytimg.com/vi/F9G8inRp55E/mqdefault.jpg", "dur": "1:05:11"}, {"id": "CU93m5Khzs4", "title": "눈 속의 재즈, 고요만 남다", "thumb": "https://i.ytimg.com/vi/CU93m5Khzs4/mqdefault.jpg", "dur": "1:13:27"}, {"id": "oKXdSjKujx4", "title": "뉴욕의 겨울밤, 빈티지 재즈로 물드는 크리스마스", "thumb": "https://i.ytimg.com/vi/oKXdSjKujx4/mqdefault.jpg", "dur": "1:05:06"}, {"id": "44VQUZZ04W4", "title": "낙엽 사이로, 재즈는 느리게 스민다", "thumb": "https://i.ytimg.com/vi/44VQUZZ04W4/mqdefault.jpg", "dur": "1:14:39"}, {"id": "GQp5uhWFneI", "title": "눈 내리는 창가, 재즈는 조용히 마음을 감싼다", "thumb": "https://i.ytimg.com/vi/GQp5uhWFneI/mqdefault.jpg", "dur": "1:06:42"}, {"id": "4s6C7BeBoNU", "title": "달콤하게 녹아드는 재즈의 아침", "thumb": "https://i.ytimg.com/vi/4s6C7BeBoNU/mqdefault.jpg", "dur": "1:18:31"}, {"id": "hlcKQ_hVJe4", "title": "겨울이 다가올 때, 재즈는 더 따뜻해진다.", "thumb": "https://i.ytimg.com/vi/hlcKQ_hVJe4/mqdefault.jpg", "dur": "1:05:27"}, {"id": "jScgICmT30Y", "title": "Brown Color Jazz Mix – 따뜻한 브라운톤 재즈 믹스", "thumb": "https://i.ytimg.com/vi/jScgICmT30Y/mqdefault.jpg", "dur": "1:01:11"}, {"id": "FB4b8c5Pezk", "title": "Love Notes in Winter Jazz", "thumb": "https://i.ytimg.com/vi/FB4b8c5Pezk/mqdefault.jpg", "dur": "1:07:00"}, {"id": "Q2NT0sXoPWc", "title": "[playlist] 하얀겨울 재즈", "thumb": "https://i.ytimg.com/vi/Q2NT0sXoPWc/mqdefault.jpg", "dur": "59:12"}, {"id": "3Xf-IYULYNw", "title": "[playlist] 흐린날 재즈", "thumb": "https://i.ytimg.com/vi/3Xf-IYULYNw/mqdefault.jpg", "dur": "54:45"}, {"id": "NmVK_dmenjU", "title": "[playlist] 담백한 오후의 커피 향처럼 - Coffee & Bossa jazz", "thumb": "https://i.ytimg.com/vi/NmVK_dmenjU/mqdefault.jpg", "dur": "1:45:10"}, {"id": "R_gIQK1fqj8", "title": "[playlist] Cafe Bossa Nova Jazz - 카페 보사노바 재즈", "thumb": "https://i.ytimg.com/vi/R_gIQK1fqj8/mqdefault.jpg", "dur": "1:06:16"}, {"id": "RoNNqnv56Ho", "title": "Autumn Cafe Jazz – 커피 향처럼 스며드는 가을 재즈", "thumb": "https://i.ytimg.com/vi/RoNNqnv56Ho/mqdefault.jpg", "dur": "57:33"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

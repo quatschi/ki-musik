@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoomSlick</title>
+<!-- categories: Funk, Jazz, Lounge -->
+<!-- channel-id: UCEHqnglYQ-OpN5bm6m0G77g -->
+<!-- channel-url: https://youtube.com/@boomslick -->
+<!-- created: 2026-06-21 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=BoomSlick.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/3Fm8LvD4dbk75mx1_CRgXgF2Xeo7DyP6aJt5PDtQjs4agboIMWdi0KFgxAPaxDvocfW0HH6ouw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">BoomSlick</div>
+      <div class="channel-count">124 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "BoomSlick";
+const KANAL = "BoomSlick.html";
+const ORIG_CATEGORIES = "Funk, Jazz, Lounge";
+const VIDEOS = [{"id": "aYHcH51H0k0", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 23 | Instrumental Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/aYHcH51H0k0/mqdefault.jpg", "dur": "2:30:08"}, {"id": "MuH6xRVCzTI", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Waiting for | ep 22 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/MuH6xRVCzTI/mqdefault.jpg", "dur": "3:17:57"}, {"id": "R9LRJgzeT3k", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 21 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/R9LRJgzeT3k/mqdefault.jpg", "dur": "1:41:41"}, {"id": "9tOoT1u-frk", "title": "🔥 Soul-Funk Vintage que Estabas Esperando | ep.2 | Playlist de Soul Funk Minimalista", "thumb": "https://i.ytimg.com/vi/9tOoT1u-frk/mqdefault.jpg", "dur": "1:52:51"}, {"id": "b1qgIkzCuXw", "title": "Soul Funk: Neo-Soul & 70s Minimal Funk Playlist | Hypnotic Deep Cuts for Soul Connoisseurs", "thumb": "https://i.ytimg.com/vi/b1qgIkzCuXw/mqdefault.jpg", "dur": "2:46:22"}, {"id": "_sjOY59ArK8", "title": "Latin Minimal Soul Funk Playlist | Deep Grooves for Relaxation & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/_sjOY59ArK8/mqdefault.jpg", "dur": "1:34:53"}, {"id": "fncgg35GNkM", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 21 | Instrumental Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/fncgg35GNkM/mqdefault.jpg", "dur": "2:56:15"}, {"id": "7m7ZweFCfpk", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 20 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/7m7ZweFCfpk/mqdefault.jpg", "dur": "3:18:24"}, {"id": "X_khjN6cM3E", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 19 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/X_khjN6cM3E/mqdefault.jpg", "dur": "3:31:37"}, {"id": "pxrXAG2wT7g", "title": "Japanese Minimal Soul Funk Playlist | Deep Grooves for Relaxation & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/pxrXAG2wT7g/mqdefault.jpg", "dur": "1:57:21"}, {"id": "dF8tJxAsf9g", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep 18 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/dF8tJxAsf9g/mqdefault.jpg", "dur": "3:46:31"}, {"id": "RhUIpT8lm1I", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep17 | Soul Funk Playlist | 2025 Essential", "thumb": "https://i.ytimg.com/vi/RhUIpT8lm1I/mqdefault.jpg", "dur": "2:03:29"}, {"id": "25zM9mHcmvo", "title": "Instant Mood Booster | ep7 | Instrumental Jazzy Soul Funk Groove | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/25zM9mHcmvo/mqdefault.jpg", "dur": "2:47:11"}, {"id": "rdyCg2lfA6M", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep16 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/rdyCg2lfA6M/mqdefault.jpg", "dur": "2:55:13"}, {"id": "ORDsw3GYPq8", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep15 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/ORDsw3GYPq8/mqdefault.jpg", "dur": "3:08:36"}, {"id": "8pXCHo0jGao", "title": "Soul Funk: Neo-Soul Funk Playlist | EP 5 | Sophisticated Deep Cuts for Soul Connoisseurs", "thumb": "https://i.ytimg.com/vi/8pXCHo0jGao/mqdefault.jpg", "dur": "3:06:27"}, {"id": "Nn4SpymrmeA", "title": "Soul Funk: Neo-Soul Funk Playlist | EP 4 | Sophisticated Deep Cuts for Soul Connoisseurs", "thumb": "https://i.ytimg.com/vi/Nn4SpymrmeA/mqdefault.jpg", "dur": "3:23:41"}, {"id": "JeooSth_JCY", "title": "Deep Pocket Instrumentals | 70s Funk Background for Daily Life | Instrumental Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/JeooSth_JCY/mqdefault.jpg", "dur": "3:16:57"}, {"id": "6mW45BSn6Ls", "title": "| ep14 | Irresistible MINIMAL SOUL FUNK Playlist 🙅🏽‍♂️You Can't Go Elsewhere", "thumb": "https://i.ytimg.com/vi/6mW45BSn6Ls/mqdefault.jpg", "dur": "2:44:33"}, {"id": "KGW4S6pDKec", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Looking for | ep13 | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/KGW4S6pDKec/mqdefault.jpg", "dur": "3:00:34"}, {"id": "ysHXd8p1BCk", "title": "Classic Soul Funk Grooves for Grown Folks | BoomSlick Playlist", "thumb": "https://i.ytimg.com/vi/ysHXd8p1BCk/mqdefault.jpg", "dur": "2:47:29"}, {"id": "q7-fB9NZEX0", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Wanting for | ep12 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/q7-fB9NZEX0/mqdefault.jpg", "dur": "3:00:49"}, {"id": "-StbD9O_PFM", "title": "Afro-Soul Funk Playlist | ep02 | 70s Vintage Grooves You've Been Looking For", "thumb": "https://i.ytimg.com/vi/-StbD9O_PFM/mqdefault.jpg", "dur": "2:06:40"}, {"id": "wAsdWXEY47w", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Wanting for | ep11 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/wAsdWXEY47w/mqdefault.jpg", "dur": "3:01:59"}, {"id": "gfPlWZ9mmxY", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Wanting for | ep10 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/gfPlWZ9mmxY/mqdefault.jpg", "dur": "3:07:11"}, {"id": "VdchyWPXWm8", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep9 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/VdchyWPXWm8/mqdefault.jpg", "dur": "3:01:39"}, {"id": "T32A1ohP_1w", "title": "Japanese Minimal Soul Funk Playlist | Deep Grooves for Relaxation & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/T32A1ohP_1w/mqdefault.jpg", "dur": "3:18:00"}, {"id": "1gVzXFeNMFM", "title": "🎄Funky Soul Pre-Christmas 2025 - Vintage Soul Funk Holiday Playlist", "thumb": "https://i.ytimg.com/vi/1gVzXFeNMFM/mqdefault.jpg", "dur": "2:50:28"}, {"id": "F2e4HrXKy18", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep8 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/F2e4HrXKy18/mqdefault.jpg", "dur": "2:59:30"}, {"id": "9zKyAaFVUpw", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep7 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/9zKyAaFVUpw/mqdefault.jpg", "dur": "3:15:06"}, {"id": "e_pFQ_CiwwU", "title": "Instant Mood Booster | ep6 | Jazzy Soul Funk Groove You've been Waiting for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/e_pFQ_CiwwU/mqdefault.jpg", "dur": "2:41:59"}, {"id": "3d4A9FcG0Dk", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep7 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/3d4A9FcG0Dk/mqdefault.jpg", "dur": "2:17:50"}, {"id": "jPxhyDjDTXY", "title": "Still Here, Still Breathing: Neo Soul Funk for the Modern Soul | Introspective Hip Hop 2025", "thumb": "https://i.ytimg.com/vi/jPxhyDjDTXY/mqdefault.jpg", "dur": "3:04:05"}, {"id": "-2EdlJGOuas", "title": "🎃 Spooky Soul Funk & Haunted Grooves | The Ultimate Halloween Playlist 👻", "thumb": "https://i.ytimg.com/vi/-2EdlJGOuas/mqdefault.jpg", "dur": "3:41:43"}, {"id": "V-RoGF17CIk", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep6 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/V-RoGF17CIk/mqdefault.jpg", "dur": "2:59:29"}, {"id": "y87axR8yP8U", "title": "Instant Mood Booster | ep5 | Jazzy Soul Funk Groove You've been Searching for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/y87axR8yP8U/mqdefault.jpg", "dur": "2:55:42"}, {"id": "fHG0OnvMqBo", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep5 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/fHG0OnvMqBo/mqdefault.jpg", "dur": "2:55:42"}, {"id": "v-l5eWxrvto", "title": "Miami Soul Funk style Groove that Makes Your Body Move | Miami Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/v-l5eWxrvto/mqdefault.jpg", "dur": "2:21:47"}, {"id": "rJWtEPhvMPk", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | ep5 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/rJWtEPhvMPk/mqdefault.jpg", "dur": "3:21:53"}, {"id": "Vzz2oyMbeRM", "title": "Italian Soul Funk - Napoli to Mediterranean | 1970s Groove Collection", "thumb": "https://i.ytimg.com/vi/Vzz2oyMbeRM/mqdefault.jpg", "dur": "3:00:24"}, {"id": "wG79wA-YCp4", "title": "🔥 Vintage French Soul-Funk Grooves You’ve been Waiting for | ep5 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/wG79wA-YCp4/mqdefault.jpg", "dur": "3:16:42"}, {"id": "cOhE1MydZj0", "title": "Minimal Afro-Soul Funk Playlist | 70s Vintage Grooves You've Been Looking For", "thumb": "https://i.ytimg.com/vi/cOhE1MydZj0/mqdefault.jpg", "dur": "3:21:30"}, {"id": "T2pmF8ZSbDE", "title": "Japanese Minimal Soul Funk Playlist | Deep Grooves for Relaxation & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/T2pmF8ZSbDE/mqdefault.jpg", "dur": "4:10:44"}, {"id": "1xTOspAtd5Y", "title": "Latin Soul Funk Mix | 70s Inspired Grooves | Barrio Stories", "thumb": "https://i.ytimg.com/vi/1xTOspAtd5Y/mqdefault.jpg", "dur": "3:51:29"}, {"id": "IEpgfQ5Lc0Q", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Waiting for | ep4 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/IEpgfQ5Lc0Q/mqdefault.jpg", "dur": "3:00:41"}, {"id": "4g73pnJqoPU", "title": "✨Built on 'The One': James Brown DNA Collection | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/4g73pnJqoPU/mqdefault.jpg", "dur": "2:56:11"}, {"id": "z79IcHDoa0Q", "title": "Soul Funk: Neo-Soul Funk Playlist | EP 2 | Sophisticated Deep Cuts for Soul Connoisseurs", "thumb": "https://i.ytimg.com/vi/z79IcHDoa0Q/mqdefault.jpg", "dur": "2:59:41"}, {"id": "RChOxNpZY0M", "title": "Soul Funk: Neo-Soul & 70s Minimal Funk Playlist | Hypnotic Deep Cuts for Soul Connoisseurs", "thumb": "https://i.ytimg.com/vi/RChOxNpZY0M/mqdefault.jpg", "dur": "3:17:23"}, {"id": "XfSMFSbKGms", "title": "Vintage Soul Funk Explosion Mix | Bass & Horns That Hit Different | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/XfSMFSbKGms/mqdefault.jpg", "dur": "1:53:51"}, {"id": "2ZRpbtV7ulc", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Waiting for | ep3 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/2ZRpbtV7ulc/mqdefault.jpg", "dur": "2:38:40"}, {"id": "dwGHDapq-NU", "title": "Instant Mood Booster | ep4 | Jazzy Soul Funk Groove You've been Searching for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/dwGHDapq-NU/mqdefault.jpg", "dur": "2:57:02"}, {"id": "e-7wASVQE8Y", "title": "The Vibe You've Been Searching For | Hypnotic Bass & Soulful Vintage Funk Playlist", "thumb": "https://i.ytimg.com/vi/e-7wASVQE8Y/mqdefault.jpg", "dur": "3:07:22"}, {"id": "ACnUAlkHtWs", "title": "Locked In: A Playlist of Hypnotic Bass & Soulful Vocals | Deep & Minimal Soul Funk", "thumb": "https://i.ytimg.com/vi/ACnUAlkHtWs/mqdefault.jpg", "dur": "3:03:28"}, {"id": "6a2Ac-XrQto", "title": "Dedicated Time for Yourself : Hypnotic Grooves to Get Lost In | Deep & Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/6a2Ac-XrQto/mqdefault.jpg", "dur": "2:38:46"}, {"id": "nbs6jaUaPlI", "title": "The Funk Locomotive: An Unstoppable Groove That Runs on Soul V2 I Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/nbs6jaUaPlI/mqdefault.jpg", "dur": "3:19:06"}, {"id": "ClhbL02c0pI", "title": "All Aboard the Soul Train: A Non-Stop Journey into Funk & Groove I Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/ClhbL02c0pI/mqdefault.jpg", "dur": "3:08:12"}, {"id": "dBF7KNMFsXA", "title": "The Funk Locomotive: Riding the Rails of Soul & Funky Groove I Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/dBF7KNMFsXA/mqdefault.jpg", "dur": "3:13:55"}, {"id": "XF7jxNpvT84", "title": "Instant Mood Booster : Jazzy Soul Funk Groove You've been Searching for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/XF7jxNpvT84/mqdefault.jpg", "dur": "3:10:09"}, {"id": "aNp3klT-4D8", "title": "🔥 Slow Groove for a Fast World | Mellow Soul & Funk Therapy", "thumb": "https://i.ytimg.com/vi/aNp3klT-4D8/mqdefault.jpg", "dur": "2:53:38"}, {"id": "cZtdRsLAi10", "title": "For Every Soul & Funk Lover | An Eclectic Mix of Tempos and Moods | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/cZtdRsLAi10/mqdefault.jpg", "dur": "3:02:10"}, {"id": "xCXL-CptbxQ", "title": "Instant Mood Booster : Jazzy Soul Funk Groove You've been Waiting for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/xCXL-CptbxQ/mqdefault.jpg", "dur": "2:55:10"}, {"id": "u8Ulg32P3-o", "title": "Greasy & Funky: The Official Soundtrack for a Soulful Mood | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/u8Ulg32P3-o/mqdefault.jpg", "dur": "2:03:21"}, {"id": "Q3RuxDMYRZ8", "title": "Molasses in Your Soul: A Sticky Soul Funk Groove for Those Tired of Polished Pop", "thumb": "https://i.ytimg.com/vi/Q3RuxDMYRZ8/mqdefault.jpg", "dur": "2:53:09"}, {"id": "0QGelKDgcvM", "title": "🔥 Vintage Soul-Funk Grooves You’ve been Searching for | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/0QGelKDgcvM/mqdefault.jpg", "dur": "2:44:01"}, {"id": "6FCpcN9yoWg", "title": "🔥 Vintage Soul-Funk Grooves You’ve Never Heard Before | ep1 | Minimal Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/6FCpcN9yoWg/mqdefault.jpg", "dur": "3:08:09"}, {"id": "3srvc4XZUSE", "title": "Instant Mood Booster : Groovy & Jazzy Soul Funk You've been Searching for | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/3srvc4XZUSE/mqdefault.jpg", "dur": "2:23:19"}, {"id": "FXMP4d-9kto", "title": "Mid tempo Soul Funk Collection that Makes Your Body Move | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/FXMP4d-9kto/mqdefault.jpg", "dur": "2:59:46"}, {"id": "n6pW_5Im1hc", "title": "Lost in the Groove: Retro Love & 70’s Funk Vibes All Night | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/n6pW_5Im1hc/mqdefault.jpg", "dur": "1:25:38"}, {"id": "RdD_R5zJuCM", "title": "| PLAYLIST | The Most Loved Grooves on the Channel : Soul Funk Essentials", "thumb": "https://i.ytimg.com/vi/RdD_R5zJuCM/mqdefault.jpg", "dur": "2:15:35"}, {"id": "lDdSKVaiODA", "title": "The Art of the Smooth Hustle: A Smooth Ride on a Deep Groove Funk | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/lDdSKVaiODA/mqdefault.jpg", "dur": "2:18:38"}, {"id": "OWd8MUqmrNo", "title": "128 BPM ::⚡Uplifting + Heart-pounding Funky Rhythms | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/OWd8MUqmrNo/mqdefault.jpg", "dur": "1:59:50"}, {"id": "v85WcWPI-lA", "title": "Caught in Your Groove – Smooth 70’s Soul Funk Vibes l Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/v85WcWPI-lA/mqdefault.jpg", "dur": "1:57:17"}, {"id": "qKPwLkSuNWg", "title": "Ultimate Funk Groove – Soul That Moves You | Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/qKPwLkSuNWg/mqdefault.jpg", "dur": "2:05:27"}, {"id": "btnaJ1NS37U", "title": "Primal Rhythm Department: A Soul Funk Playlist for Your Body & Soul", "thumb": "https://i.ytimg.com/vi/btnaJ1NS37U/mqdefault.jpg", "dur": "2:31:09"}, {"id": "WBk610arofg", "title": "Your Prescription for a Chilled-Out Vibe: A Relaxing Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/WBk610arofg/mqdefault.jpg", "dur": "1:56:36"}, {"id": "Dw3P4-H9PQI", "title": "The Queens of the Groove: A Powerful Female Vocal I Uptempo Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/Dw3P4-H9PQI/mqdefault.jpg", "dur": "2:31:38"}, {"id": "eNS_i21_iSo", "title": "The Funk Locomotive: An Unstoppable Groove That Runs on Soul I Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/eNS_i21_iSo/mqdefault.jpg", "dur": "1:45:31"}, {"id": "pqa8qnJhIsU", "title": "Head of Jazz, Heart of Soul Funk I Upbeat Jazzy Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/pqa8qnJhIsU/mqdefault.jpg", "dur": "2:38:07"}, {"id": "OgWB57C1uOA", "title": "Electric Soul, Kinetic Groove: A Playlist to Power Your Universe I SoulFunk Playlist", "thumb": "https://i.ytimg.com/vi/OgWB57C1uOA/mqdefault.jpg", "dur": "2:02:00"}, {"id": "bSG7OcAHdkw", "title": "This is a Stick-Up!: A Hostage Situation of Groove & Soul ㅣ Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/bSG7OcAHdkw/mqdefault.jpg", "dur": "1:03:17"}, {"id": "0k5mbpTD250", "title": "Sink Into the Groove: A Collection of Effortless Soul ㅣ Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/0k5mbpTD250/mqdefault.jpg", "dur": "2:04:15"}, {"id": "hafpOHWJ2ko", "title": "Find Your Soul's Frequency: A Collection of  Groove Funk ㅣ Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/hafpOHWJ2ko/mqdefault.jpg", "dur": "2:02:58"}, {"id": "KL02uwKP_Zc", "title": "128 BPM: Dopamine Drip l Aderenaline Psychedelic funk", "thumb": "https://i.ytimg.com/vi/KL02uwKP_Zc/mqdefault.jpg", "dur": "1:00:48"}, {"id": "iaZ8X1Gk-pk", "title": "Adrenaline Psychedelic Funk | A Playlist for Losing Your Mind", "thumb": "https://i.ytimg.com/vi/iaZ8X1Gk-pk/mqdefault.jpg", "dur": "1:10:35"}, {"id": "awjXpmlH_JA", "title": "Your Daily Dose of Joy: A Uplifting Soulful Disco Playlist", "thumb": "https://i.ytimg.com/vi/awjXpmlH_JA/mqdefault.jpg", "dur": "1:01:11"}, {"id": "C2PCV-gfbGk", "title": "Baroque Opulence, Disco Decadence | A Rococo Disco Playlist", "thumb": "https://i.ytimg.com/vi/C2PCV-gfbGk/mqdefault.jpg", "dur": "1:30:21"}, {"id": "y_HN_FqMwqw", "title": "Cozy Morning Funk: The Perfect Brew for Your Soul | Deep Groove Funk Playlist", "thumb": "https://i.ytimg.com/vi/y_HN_FqMwqw/mqdefault.jpg", "dur": "51:10"}, {"id": "OQpzT8BKZy0", "title": "🎵 Summer Soul Rescue: Funky Beats That Beat the Heat ㅣ Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/OQpzT8BKZy0/mqdefault.jpg", "dur": "38:14"}, {"id": "i0Q7_zCyH9k", "title": "Cool on the Surface, Funky Underneath | A Sophisticated Funk Playlist", "thumb": "https://i.ytimg.com/vi/i0Q7_zCyH9k/mqdefault.jpg", "dur": "1:01:40"}, {"id": "H12cxhEHMLU", "title": "ADRENALINE FUNK: The Ultimate Workout & Gym Motivation Playlist", "thumb": "https://i.ytimg.com/vi/H12cxhEHMLU/mqdefault.jpg", "dur": "1:01:31"}, {"id": "54lTaZ8WC68", "title": "Just a Funk Playlist Engineered for Instant Addiction I Modern Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/54lTaZ8WC68/mqdefault.jpg", "dur": "1:00:00"}, {"id": "Q0QcIhNROW0", "title": "Smooth Soul Funk Playlist | Feel-Good Music for Every Mood", "thumb": "https://i.ytimg.com/vi/Q0QcIhNROW0/mqdefault.jpg", "dur": "1:19:08"}, {"id": "_zxa7vvTKLk", "title": "🌆 Urban Soul Flow | The Heartbeat of Memphis in Your Speakers |  Memphis Soul Playlist", "thumb": "https://i.ytimg.com/vi/_zxa7vvTKLk/mqdefault.jpg", "dur": "1:00:16"}, {"id": "Kwyykog9n3g", "title": "Let Your Soul Breathe: A Collection of Deep Groove Funk ㅣ Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/Kwyykog9n3g/mqdefault.jpg", "dur": "1:00:40"}, {"id": "rnMqnsWvutA", "title": "For a Soul That's Been Through Some Things | Bluesy Funk Playlist", "thumb": "https://i.ytimg.com/vi/rnMqnsWvutA/mqdefault.jpg", "dur": "1:02:23"}, {"id": "BrbMcIXnRGQ", "title": "Automatic Dance Mode: Ultimate Disco Vibes to Lift Your Spirit | Danceable Disco Playlist", "thumb": "https://i.ytimg.com/vi/BrbMcIXnRGQ/mqdefault.jpg", "dur": "41:42"}, {"id": "_1W-ceWmI9Q", "title": "l Playlist l Miami Bass Forever: An Original Tribute to the 808 Sound", "thumb": "https://i.ytimg.com/vi/_1W-ceWmI9Q/mqdefault.jpg", "dur": "1:08:39"}, {"id": "MMJkWhaFZoo", "title": "The Groove That Never Sleeps:  Synth Disco Playlist", "thumb": "https://i.ytimg.com/vi/MMJkWhaFZoo/mqdefault.jpg", "dur": "53:12"}, {"id": "Gb7GmfZ8Xcs", "title": "Instant Mood Booster to Make Your Weekend Shine : Raw Energy Funk Playlist", "thumb": "https://i.ytimg.com/vi/Gb7GmfZ8Xcs/mqdefault.jpg", "dur": "1:02:51"}, {"id": "wWzu2r8sX7M", "title": "A Synth-Pop Based Disco Playlist for Late Night Cruising", "thumb": "https://i.ytimg.com/vi/wWzu2r8sX7M/mqdefault.jpg", "dur": "42:28"}, {"id": "SL4ut0D2HSA", "title": "Instant Mood Booster: Funky Grooves That Make You Move I Danceable Funk Playlist", "thumb": "https://i.ytimg.com/vi/SL4ut0D2HSA/mqdefault.jpg", "dur": "1:01:03"}, {"id": "RAZ-8L_o7Ms", "title": "Automatic Dance Mode: Ultimate Disco Vibes to Lift Your Spirit | Danceable Disco Playlist", "thumb": "https://i.ytimg.com/vi/RAZ-8L_o7Ms/mqdefault.jpg", "dur": "1:04:46"}, {"id": "b5azxskV9-I", "title": "Golden Age Soul Meets AI: Timeless Vintage R&B Playlist", "thumb": "https://i.ytimg.com/vi/b5azxskV9-I/mqdefault.jpg", "dur": "58:43"}, {"id": "qRrSY3ez3oo", "title": "Internal Groove: Nu Disco Tracks That Move You Before You Think I Nu-Disco Playlist", "thumb": "https://i.ytimg.com/vi/qRrSY3ez3oo/mqdefault.jpg", "dur": "46:12"}, {"id": "K2HUNVoYHbU", "title": "90s West Coast G-Funk | Smooth Snoop Dogg Inspired Vibe | Hip-Hop Playlist", "thumb": "https://i.ytimg.com/vi/K2HUNVoYHbU/mqdefault.jpg", "dur": "1:02:16"}, {"id": "Hm1IYP1zLEA", "title": "Instant Mood Booster: Funky Grooves That Make You Move I Soul Funk Playlist", "thumb": "https://i.ytimg.com/vi/Hm1IYP1zLEA/mqdefault.jpg", "dur": "1:05:37"}, {"id": "L3SAhcpVgLU", "title": "Funky Weekend Boogie: Funky Disco Beats to Enchant Your Day I Funky Disco Playlist", "thumb": "https://i.ytimg.com/vi/L3SAhcpVgLU/mqdefault.jpg", "dur": "1:24:29"}, {"id": "V0ujGSNjFMw", "title": "Office Hip Hop Super Chill Banger | Rap for Productivity | Chill Hip-Hop Playlist", "thumb": "https://i.ytimg.com/vi/V0ujGSNjFMw/mqdefault.jpg", "dur": "1:20:49"}, {"id": "k4GZqFpg7QM", "title": "Get Your Groove On! 🔥 Best Disco Dance Party Mix l Disco Playlist", "thumb": "https://i.ytimg.com/vi/k4GZqFpg7QM/mqdefault.jpg", "dur": "1:12:28"}, {"id": "EUe3yyUXMA0", "title": "Perfectly Clean & Groovy Disco Playlist for Kicking Back & Vibing", "thumb": "https://i.ytimg.com/vi/EUe3yyUXMA0/mqdefault.jpg", "dur": "1:04:24"}, {"id": "RSfxXRQ4zXk", "title": "Medium-beat Funk Songs for Driving and Working Out l Medium Tempo Funk Playlist", "thumb": "https://i.ytimg.com/vi/RSfxXRQ4zXk/mqdefault.jpg", "dur": "1:20:09"}, {"id": "LeT6y4Ve5XI", "title": "Groove Your Body: Ultimate 70's Disco Workout Playlist | Classic Disco Collection", "thumb": "https://i.ytimg.com/vi/LeT6y4Ve5XI/mqdefault.jpg", "dur": "1:25:08"}, {"id": "OHqn0TYimcM", "title": "Deep soul & blues for Driving : A refined moment", "thumb": "https://i.ytimg.com/vi/OHqn0TYimcM/mqdefault.jpg", "dur": "1:16:27"}, {"id": "b8rvsVd3sH8", "title": "Get Hyped! Must-Listen Songs for High Energy [Funk Pop Mix]", "thumb": "https://i.ytimg.com/vi/b8rvsVd3sH8/mqdefault.jpg", "dur": "1:09:12"}, {"id": "m5p7j-_MxQA", "title": "Live G-Funk Vibes: Smooth West Coast Playlist Stream | 90s Hip-Hop Classics", "thumb": "https://i.ytimg.com/vi/m5p7j-_MxQA/mqdefault.jpg", "dur": "2:40:21"}, {"id": "mVIX0q1SFdU", "title": "Boom Bap Classics: 90s Hip-Hop Playlist | Old School Rap Vibes", "thumb": "https://i.ytimg.com/vi/mVIX0q1SFdU/mqdefault.jpg", "dur": "1:09:25"}, {"id": "nJU9sg76icc", "title": "Groove Live: Funky Disco Party Stream | Work Vibes & Old School Hits", "thumb": "https://i.ytimg.com/vi/nJU9sg76icc/mqdefault.jpg", "dur": "11:54:57"}, {"id": "dK3LZ0jpsYU", "title": "Playlist l 맛있게 말아낸 붐뱁 플레이리스트 | 귀가 허기질 때 들어보세요 l Old School BoomBap Hip-Hop", "thumb": "https://i.ytimg.com/vi/dK3LZ0jpsYU/mqdefault.jpg", "dur": "59:37"}, {"id": "ONGIEKf6Lys", "title": "지친 당신을 달래줄 그루비한 소울풀 펑크 ㅣ No Vocal Groovy Funk Playlist ㅣ 320 kbps", "thumb": "https://i.ytimg.com/vi/ONGIEKf6Lys/mqdefault.jpg", "dur": "1:01:13"}, {"id": "Zazh0aanss0", "title": "Can't Stop at Just One Song! Inner Dance Inducing, Women's Hip-Hop Playlist", "thumb": "https://i.ytimg.com/vi/Zazh0aanss0/mqdefault.jpg", "dur": "1:10:48"}, {"id": "E1Ib46aANvM", "title": "Head Noddin', Foot Tappin' Funky Discoㅣ Funky Disco Playlist", "thumb": "https://i.ytimg.com/vi/E1Ib46aANvM/mqdefault.jpg", "dur": "1:08:03"}, {"id": "rgwyJWxqm_A", "title": "Maximum Intensity | A Drill & Gangsta Rap Playlist", "thumb": "https://i.ytimg.com/vi/rgwyJWxqm_A/mqdefault.jpg", "dur": "1:19:33"}, {"id": "vWAKOv6dvbs", "title": "The Cure for the Common Commute: A Classic Funk Mix (120bpm)", "thumb": "https://i.ytimg.com/vi/vWAKOv6dvbs/mqdefault.jpg", "dur": "49:58"}, {"id": "aMFj3amcUiY", "title": "Retro Disco Playlist: 70s Hits in 320kbps High Quality", "thumb": "https://i.ytimg.com/vi/aMFj3amcUiY/mqdefault.jpg", "dur": "1:04:47"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
