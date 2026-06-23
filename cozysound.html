@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cozysound</title>
+<!-- categories: Jazz, Vintage -->
+<!-- channel-id: UCC3BAoOv7vqOwWCBU_egGvw -->
+<!-- channel-url: https://youtube.com/@cozysound_ch -->
+<!-- created: 2026-06-23 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=cozysound.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/3Byffp9e6A7E825Jcyzfba5yBN_t1Fb1CzjIqFmPoG_NmUFkANB-mH-lmUqvProFEcn3CiKWCw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">cozysound</div>
+      <div class="channel-count">133 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "cozysound";
+const KANAL = "cozysound.html";
+const ORIG_CATEGORIES = "Jazz, Vintage";
+const VIDEOS = [{"id": "yBzn8vnw0xU", "title": "SUNSET COCKTAIL JAZZ | Back to the Golden Hour | 60s Vintage Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/yBzn8vnw0xU/mqdefault.jpg", "dur": "2:22:15"}, {"id": "5OLSF4Xj7w0", "title": "60s Atomic Cocktail Lounge Jazz | THE COZY QUARTET | Relaxing Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/5OLSF4Xj7w0/mqdefault.jpg", "dur": "2:25:00"}, {"id": "KmO2EUbjvzs", "title": "60S ATOMIC LOUNGE JAZZ | SUNSET COCKTAIL LOUNGE", "thumb": "https://i.ytimg.com/vi/KmO2EUbjvzs/mqdefault.jpg", "dur": "2:26:20"}, {"id": "FCqmBIOA25c", "title": "60s Atomic Lounge Jazz | Vintage Cocktail Party Jazz | Smooth Lounge Music", "thumb": "https://i.ytimg.com/vi/FCqmBIOA25c/mqdefault.jpg", "dur": "2:24:38"}, {"id": "pPmDuBhPGmU", "title": "60S ATOMIC LOUNGE JAZZ | LATE NIGHT COCKTAIL HOUR", "thumb": "https://i.ytimg.com/vi/pPmDuBhPGmU/mqdefault.jpg", "dur": "2:24:35"}, {"id": "qLW79mgN2DE", "title": "60S ATOMIC LOUNGE JAZZ | MIDNIGHT LOUNGE SESSION", "thumb": "https://i.ytimg.com/vi/qLW79mgN2DE/mqdefault.jpg", "dur": "2:21:08"}, {"id": "kMmEsDH9KGE", "title": "60's Cocktail Party Lounge Music Classic Cocktail Night | Vintage Jazz Instrumental | Mr.cozy", "thumb": "https://i.ytimg.com/vi/kMmEsDH9KGE/mqdefault.jpg", "dur": "2:44:48"}, {"id": "wYFZmWznyH8", "title": "60's Atomic Cocktail Lounge Music | Retro Space Age Bachelor Pad Vibes", "thumb": "https://i.ytimg.com/vi/wYFZmWznyH8/mqdefault.jpg", "dur": "2:19:01"}, {"id": "iBVH3o8cMgA", "title": "Midnight Lounge Jazz 🥂 Mr.cozy🌙 Relaxing Smooth Jazz for Sleep & Deep Focus", "thumb": "https://i.ytimg.com/vi/iBVH3o8cMgA/mqdefault.jpg", "dur": "2:28:35"}, {"id": "c5CgPIr_w0I", "title": "Sunset Jazz Lounge 🍹 Relaxing Smooth Jazz for Work, Study & Cocktail Party", "thumb": "https://i.ytimg.com/vi/c5CgPIr_w0I/mqdefault.jpg", "dur": "2:25:48"}, {"id": "V0dM5PcxAGk", "title": "Cozy Jazz for Work 🎷 Late Night Café with Mr.Cozy | Smooth Focus Music", "thumb": "https://i.ytimg.com/vi/V0dM5PcxAGk/mqdefault.jpg", "dur": "2:37:13"}, {"id": "u5DhqhmYZ1I", "title": "Midnight Cozy Jazz 🎷 Smooth Saxophone for Sleep & Relaxation", "thumb": "https://i.ytimg.com/vi/u5DhqhmYZ1I/mqdefault.jpg", "dur": "2:36:24"}, {"id": "pVaCr2m81NY", "title": "City Rooftop Jazz 🌙 Cozy Smooth Jazz for Work & Late Night Focus", "thumb": "https://i.ytimg.com/vi/pVaCr2m81NY/mqdefault.jpg", "dur": "2:18:00"}, {"id": "SxMticCAQ50", "title": "Candlelit Jazz Lounge ☕ Cozy Jazz for Study & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/SxMticCAQ50/mqdefault.jpg", "dur": "2:37:13"}, {"id": "n2XycQH_Prs", "title": "Moonlit Jazz Session 🌙 Cozy Jazz Café for Work & Unwinding", "thumb": "https://i.ytimg.com/vi/n2XycQH_Prs/mqdefault.jpg", "dur": "2:31:35"}, {"id": "ajZZU9445tY", "title": "Penthouse Cocktail Party Jazz Relaxing Music 🥂 Elegant Lounge Music for Sophisticated Nights", "thumb": "https://i.ytimg.com/vi/ajZZU9445tY/mqdefault.jpg", "dur": "2:32:49"}, {"id": "UROhHPO14vM", "title": "Misty 60s Lounge Music | Nostalgic Elegance – Sophisticated Evening Vibes", "thumb": "https://i.ytimg.com/vi/UROhHPO14vM/mqdefault.jpg", "dur": "2:28:28"}, {"id": "2v5tRLO85tk", "title": "Jazz Lounge Music for Work | 60s Atomic Cocktail Vibes — A Timeless Night of Pure Elegance", "thumb": "https://i.ytimg.com/vi/2v5tRLO85tk/mqdefault.jpg", "dur": "2:35:25"}, {"id": "ZHAJm8XPGIY", "title": "Night Jazz Lounge | jazz classics 50s 60s 70s for Work, Cocktails & Stylish Evenings", "thumb": "https://i.ytimg.com/vi/ZHAJm8XPGIY/mqdefault.jpg", "dur": "2:07:24"}, {"id": "2_VXRR-dWoo", "title": "🎷 Jazz Street Night | Smooth Jazz & Late Night Vibes | 60s Atomic Lounge Music for Work & Relaxing", "thumb": "https://i.ytimg.com/vi/2_VXRR-dWoo/mqdefault.jpg", "dur": "2:17:33"}, {"id": "IHVAbM13a9s", "title": "Last Train to Manhattan | A 1962 Jazz Lounge Night | Relaxing Jazz Music for Work", "thumb": "https://i.ytimg.com/vi/IHVAbM13a9s/mqdefault.jpg", "dur": "2:22:51"}, {"id": "c4gLTd1Zbgo", "title": "Relaxing Jazz Music for Work | 2+ Hours of Vintage 60s Ballroom Lounge", "thumb": "https://i.ytimg.com/vi/c4gLTd1Zbgo/mqdefault.jpg", "dur": "2:33:32"}, {"id": "6ZI-H6081s8", "title": "The Kind of Jazz That Makes You Feel Like You Own the City | Smooth Jazz for Work", "thumb": "https://i.ytimg.com/vi/6ZI-H6081s8/mqdefault.jpg", "dur": "2:36:04"}, {"id": "2oA6JO0h03o", "title": "A Friday Night in a Manhattan Yellow Cab | 60s Jazz Lounge | Work Music", "thumb": "https://i.ytimg.com/vi/2oA6JO0h03o/mqdefault.jpg", "dur": "2:33:00"}, {"id": "73DQhz_AsP4", "title": "Smooth Jazz for Work | 2+ Hours of Live 60s Lounge Band Music", "thumb": "https://i.ytimg.com/vi/73DQhz_AsP4/mqdefault.jpg", "dur": "2:29:35"}, {"id": "t0NNFE55Rqo", "title": "The Jazz Quartet That Moved Into Your Living Room in 1962 | Chill Jazz for Work", "thumb": "https://i.ytimg.com/vi/t0NNFE55Rqo/mqdefault.jpg", "dur": "2:16:42"}, {"id": "6g9dp65IR2I", "title": "What Would Your Living Room Sound Like in 1962? | Chill Jazz for Work & Evenings", "thumb": "https://i.ytimg.com/vi/6g9dp65IR2I/mqdefault.jpg", "dur": "2:27:29"}, {"id": "A4IHcH8t-Zs", "title": "A Spring Night in the French Quarter | New Orleans Jazz Lounge | Work Music", "thumb": "https://i.ytimg.com/vi/A4IHcH8t-Zs/mqdefault.jpg", "dur": "2:29:27"}, {"id": "bZM0J4gbymo", "title": "Cherry Blossom Martini Nights | 60s Atomic Lounge for Focus & Celebration", "thumb": "https://i.ytimg.com/vi/bZM0J4gbymo/mqdefault.jpg", "dur": "2:23:46"}, {"id": "WtO9X3wHq3I", "title": "60s Atomic Lounge | Upright Bass, Vibraphone & Bongo Jazz Vibes", "thumb": "https://i.ytimg.com/vi/WtO9X3wHq3I/mqdefault.jpg", "dur": "2:51:52"}, {"id": "-Qe9dDW20Tk", "title": "Brownstone Cocktail Party | Warm & Sophisticated 60s Jazz Aesthetic | Lounge & Relax Music", "thumb": "https://i.ytimg.com/vi/-Qe9dDW20Tk/mqdefault.jpg", "dur": "2:00:51"}, {"id": "iY1F6ftcFBA", "title": "Cocktail Hour Jazz | 2+ Hours of Smooth 60s Lounge for Evening Unwinding", "thumb": "https://i.ytimg.com/vi/iY1F6ftcFBA/mqdefault.jpg", "dur": "2:19:17"}, {"id": "Ifcryv4FmsU", "title": "Lounge At 1:00 AM | Sophisticated 1960s Jazz Party | Elegant Midnight BGM", "thumb": "https://i.ytimg.com/vi/Ifcryv4FmsU/mqdefault.jpg", "dur": "2:26:21"}, {"id": "74v7s3KKwvY", "title": "🎭 Masquerade Lounge Jazz | 2+ Hours Glamorous 60s Music for Work, Drinks & Stylish Moments", "thumb": "https://i.ytimg.com/vi/74v7s3KKwvY/mqdefault.jpg", "dur": "1:02:56"}, {"id": "ltoRKsvEW3k", "title": "Champagne Hour Jazz | 2+ Hours of Mid-Century Lounge Classics for Focus & Sophisticated Moments", "thumb": "https://i.ytimg.com/vi/ltoRKsvEW3k/mqdefault.jpg", "dur": "1:04:48"}, {"id": "vcG03FFIDUU", "title": "🎰 Casino Night Lounge Jazz | 2+ Hours Elegant music  for Work, Drinks & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/vcG03FFIDUU/mqdefault.jpg", "dur": "2:27:00"}, {"id": "0hupQs2f3Z0", "title": "Night Cruise 🚢 Vintage Lounge Jazz on the Open Sea | Study, Relax & Sleep BGM", "thumb": "https://i.ytimg.com/vi/0hupQs2f3Z0/mqdefault.jpg", "dur": "2:16:45"}, {"id": "luCyWCpNCls", "title": "Jazz Jam Session | 2-Hour Swinging 60s Atomic Lounge Aesthetic | Deep Work & Study BGM", "thumb": "https://i.ytimg.com/vi/luCyWCpNCls/mqdefault.jpg", "dur": "2:15:08"}, {"id": "gyh3_ovF6-w", "title": "Mid-Century Dance Party | Lively 60s Atomic Lounge Jazz Aesthetic | Retro Swing BGM", "thumb": "https://i.ytimg.com/vi/gyh3_ovF6-w/mqdefault.jpg", "dur": "2:21:48"}, {"id": "Qn8fF9M_IPs", "title": "Rooftop Party Night | Glamorous 60s Cocktail Lounge Jazz Aesthetic | Late Night BGM", "thumb": "https://i.ytimg.com/vi/Qn8fF9M_IPs/mqdefault.jpg", "dur": "2:31:33"}, {"id": "2GtiPgNcZl8", "title": "Moonlight Cocktail Hour | Elegant 60s Rooftop Lounge Jazz Aesthetic | Late Night BGM", "thumb": "https://i.ytimg.com/vi/2GtiPgNcZl8/mqdefault.jpg", "dur": "1:55:17"}, {"id": "J5irF0cYIl4", "title": "Retro Cocktail Hour — Martini Toast | Smooth 60s Lounge Jazz Aesthetic | Party Night BGM", "thumb": "https://i.ytimg.com/vi/J5irF0cYIl4/mqdefault.jpg", "dur": "2:19:27"}, {"id": "0sFLBFZfm_0", "title": "Retro Cocktail Hour — Martini Toast | Smooth 60s Lounge Jazz Aesthetic | BGM", "thumb": "https://i.ytimg.com/vi/0sFLBFZfm_0/mqdefault.jpg", "dur": "2:25:47"}, {"id": "bitGzQcK4w4", "title": "Atomic Cocktail Party — The Vibraphone Shimmer of Manhattan, 1962", "thumb": "https://i.ytimg.com/vi/bitGzQcK4w4/mqdefault.jpg", "dur": "2:34:09"}, {"id": "Lpgp0XRjlbA", "title": "Cocktail Hour Jazz | Atomic 1960s Lounge Music for Unwinding", "thumb": "https://i.ytimg.com/vi/Lpgp0XRjlbA/mqdefault.jpg", "dur": "2:14:43"}, {"id": "ZJaaZ9A6HYQ", "title": "Twilight at the Mod Lounge | 60's Atomic Cocktail Lounge Jazz for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/ZJaaZ9A6HYQ/mqdefault.jpg", "dur": "2:41:29"}, {"id": "Eijtfk3qdss", "title": "Glass in Hand, City at Night | 60's Atomic Cocktail Lounge Jazz for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/Eijtfk3qdss/mqdefault.jpg", "dur": "2:38:53"}, {"id": "_HxZFQCR_-s", "title": "1 AM Moonlight and Home Party | Relaxing Sophisticated Cocktail Jazz | Moonlit Home Party at 1 AM", "thumb": "https://i.ytimg.com/vi/_HxZFQCR_-s/mqdefault.jpg", "dur": "2:10:29"}, {"id": "lXt4KLa0gAo", "title": "Glass in Hand on a Friday Night | 60's Atomic Cocktail Lounge Jazz for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/lXt4KLa0gAo/mqdefault.jpg", "dur": "2:37:13"}, {"id": "RQH_fhw5SL4", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – After the Mid-Century Modern Kitchen Party", "thumb": "https://i.ytimg.com/vi/RQH_fhw5SL4/mqdefault.jpg", "dur": "2:22:35"}, {"id": "HQERU_yJtAo", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Mid-Century Home Party & Cards Night", "thumb": "https://i.ytimg.com/vi/HQERU_yJtAo/mqdefault.jpg", "dur": "2:37:55"}, {"id": "PxQmDJfBc7U", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Playing Records in a Cozy Night Lounge", "thumb": "https://i.ytimg.com/vi/PxQmDJfBc7U/mqdefault.jpg", "dur": "2:42:52"}, {"id": "V0_I3s5s4bI", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Passing Vinyl at a Cocktail Party", "thumb": "https://i.ytimg.com/vi/V0_I3s5s4bI/mqdefault.jpg", "dur": "2:22:45"}, {"id": "oso-pNprfuk", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Mid-Century Home Party Soiree", "thumb": "https://i.ytimg.com/vi/oso-pNprfuk/mqdefault.jpg", "dur": "2:44:25"}, {"id": "tnTjdnUepWM", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Mid-Century Modern Winter Home Party", "thumb": "https://i.ytimg.com/vi/tnTjdnUepWM/mqdefault.jpg", "dur": "2:03:32"}, {"id": "sfz_ETsGi0k", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Warm Toasts in Atomic Lounge", "thumb": "https://i.ytimg.com/vi/sfz_ETsGi0k/mqdefault.jpg", "dur": "2:07:12"}, {"id": "C5JvOcdS3ds", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Retro Fireside Lounge Night", "thumb": "https://i.ytimg.com/vi/C5JvOcdS3ds/mqdefault.jpg", "dur": "2:07:20"}, {"id": "WKIox1ehRJQ", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Midnight Fireside Cocktail Lounge", "thumb": "https://i.ytimg.com/vi/WKIox1ehRJQ/mqdefault.jpg", "dur": "1:03:48"}, {"id": "n-22sFTpHic", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Record Lounge Jazz Evening", "thumb": "https://i.ytimg.com/vi/n-22sFTpHic/mqdefault.jpg", "dur": "2:11:34"}, {"id": "OUaUNjLd3IY", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Vinyl Lounge Cocktail Night", "thumb": "https://i.ytimg.com/vi/OUaUNjLd3IY/mqdefault.jpg", "dur": "2:26:40"}, {"id": "RoN2Z9F7JXc", "title": "Vintage Cocktail Jazz Gathering | Elegant 1960s Atomic Lounge BGM for Home Nights", "thumb": "https://i.ytimg.com/vi/RoN2Z9F7JXc/mqdefault.jpg", "dur": "2:06:36"}, {"id": "4ponFuHKpgQ", "title": "60's Atomic Cocktail Lounge Music | Work, Study, Relax –Italian Evening at the Fireside Lounge", "thumb": "https://i.ytimg.com/vi/4ponFuHKpgQ/mqdefault.jpg", "dur": "2:04:38"}, {"id": "LCUKhMrreOI", "title": "Vintage Cocktail Jazz Ambience | Transform Any Room Into a Sophisticated 1960s Lounge", "thumb": "https://i.ytimg.com/vi/LCUKhMrreOI/mqdefault.jpg", "dur": "2:04:30"}, {"id": "dM_Mmxbovqk", "title": "1960s Cocktail Bar Ambiance | Smooth Brass & Piano for Sophisticated Nights", "thumb": "https://i.ytimg.com/vi/dM_Mmxbovqk/mqdefault.jpg", "dur": "2:25:43"}, {"id": "XSfMfWQks2I", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Retro Cocktail Bar Party Night", "thumb": "https://i.ytimg.com/vi/XSfMfWQks2I/mqdefault.jpg", "dur": "1:47:57"}, {"id": "wkuILTZmwrA", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Moonlit Cocktail Lounge Party", "thumb": "https://i.ytimg.com/vi/wkuILTZmwrA/mqdefault.jpg", "dur": "2:01:51"}, {"id": "nXgvvWUUfHA", "title": "Vintage Cocktail Party Jazz | 1960s Lounge Ambiance, Fireplace & Smooth Vibes", "thumb": "https://i.ytimg.com/vi/nXgvvWUUfHA/mqdefault.jpg", "dur": "2:09:40"}, {"id": "qmf5anyBw0U", "title": "60’s Atomic Cocktail Lounge Music | Work, Study, Relax – Vintage Home Party Jazz Night", "thumb": "https://i.ytimg.com/vi/qmf5anyBw0U/mqdefault.jpg", "dur": "2:07:29"}, {"id": "r6BnS0C4kZk", "title": "60's Atomic Jazz Flow | Sophisticated Lounge Music for Nighttime Sophistication", "thumb": "https://i.ytimg.com/vi/r6BnS0C4kZk/mqdefault.jpg", "dur": "2:01:40"}, {"id": "2fHw-VtgZro", "title": "60's Atomic Cocktail Lounge Music | カクテルパーティージャズ｜洗練された夜を彩るヴィンテージラウンジパーティー", "thumb": "https://i.ytimg.com/vi/2fHw-VtgZro/mqdefault.jpg", "dur": "2:04:23"}, {"id": "cotIcMKBwLw", "title": "60s Atomic Cocktail Jazz | Sophisticated Lounge Music for Evening Gatherings", "thumb": "https://i.ytimg.com/vi/cotIcMKBwLw/mqdefault.jpg", "dur": "2:04:47"}, {"id": "Llz1XXaFUn0", "title": "60's Atomic Lounge BGM | Sophisticated Jazz That Changes Your Entire Evening", "thumb": "https://i.ytimg.com/vi/Llz1XXaFUn0/mqdefault.jpg", "dur": "2:01:50"}, {"id": "lnxHnnfzP5A", "title": "60’s Atomic Cocktail Lounge Music | A Classy Home Party with Midnight Swing", "thumb": "https://i.ytimg.com/vi/lnxHnnfzP5A/mqdefault.jpg", "dur": "2:07:48"}, {"id": "WOVWcEQ86Po", "title": "60’s Atomic Cocktail Lounge Music | Sophisticated Jazz for Home Parties & Cocktail Nights", "thumb": "https://i.ytimg.com/vi/WOVWcEQ86Po/mqdefault.jpg", "dur": "2:04:59"}, {"id": "2kd_PjwSVN8", "title": "Vintage Cocktail Lounge Jazz | Cozy 60's Home Party Night Under Stars", "thumb": "https://i.ytimg.com/vi/2kd_PjwSVN8/mqdefault.jpg", "dur": "2:06:31"}, {"id": "8I2fahxCqoE", "title": "Midnight Lounge Jazz | Sophisticated 60s Bossa Nova for Late Night Unwinding", "thumb": "https://i.ytimg.com/vi/8I2fahxCqoE/mqdefault.jpg", "dur": "1:50:52"}, {"id": "4TuEubaM03k", "title": "60's Atomic Cocktail Lounge Music | Cozy Home Cocktail Party Jazz", "thumb": "https://i.ytimg.com/vi/4TuEubaM03k/mqdefault.jpg", "dur": "2:03:12"}, {"id": "jdOgiqCYNbA", "title": "60's Atomic Cocktail Lounge Music | Elegant Night City Cocktail Party Jazz", "thumb": "https://i.ytimg.com/vi/jdOgiqCYNbA/mqdefault.jpg", "dur": "1:59:37"}, {"id": "q3QPZvWrXjA", "title": "60’s Atomic Cocktail Lounge Music | Weekend Home Cocktail Party Jazz", "thumb": "https://i.ytimg.com/vi/q3QPZvWrXjA/mqdefault.jpg", "dur": "2:03:20"}, {"id": "veiepoavJ4c", "title": "ATOMIC LOUNGE JAZZ MUSIC |High Stakes Lounge Night– Cocktail Party & Casino Jazz", "thumb": "https://i.ytimg.com/vi/veiepoavJ4c/mqdefault.jpg", "dur": "2:07:26"}, {"id": "Vf1j1AIsUHc", "title": "ATOMIC LOUNGE JAZZ MUSIC | Casino Night Lounge – It’s a Cocktail Party & High Stakes Jazz", "thumb": "https://i.ytimg.com/vi/Vf1j1AIsUHc/mqdefault.jpg", "dur": "2:03:58"}, {"id": "LcmFE-un-K4", "title": "ATOMIC LOUNGE JAZZ MUSIC | 60's Atomic Cocktail Lounge Music | Vintage Cocktail Night", "thumb": "https://i.ytimg.com/vi/LcmFE-un-K4/mqdefault.jpg", "dur": "1:59:46"}, {"id": "GDeh8XZKwXw", "title": "ATOMIC LOUNGE JAZZ MUSIC | Manhattan 8PM 🍸 Relaxing Jazz for Work, Study & Evening Drinks", "thumb": "https://i.ytimg.com/vi/GDeh8XZKwXw/mqdefault.jpg", "dur": "2:05:34"}, {"id": "UO4BYeso3eM", "title": "60's ATOMIC LOUNGE JAZZ MUSIC | Quiet Night Jazz – It’s a Mellow Night BGM", "thumb": "https://i.ytimg.com/vi/UO4BYeso3eM/mqdefault.jpg", "dur": "2:28:41"}, {"id": "lpfpX6Yhrjw", "title": "60's Atomic Cocktail Lounge Music | Sophisticated Cocktail Party Jazz (Background Music)", "thumb": "https://i.ytimg.com/vi/lpfpX6Yhrjw/mqdefault.jpg", "dur": "2:01:03"}, {"id": "11hKlPXN608", "title": "60’s Atomic Cocktail Lounge Music  for Late Night Work & Chill Vibes | Skyline After Dark", "thumb": "https://i.ytimg.com/vi/11hKlPXN608/mqdefault.jpg", "dur": "3:02:54"}, {"id": "FiQhCDGY0G4", "title": "60’s Atomic Cocktail Lounge Music  ☕ Ambience for Work & Creative Tasks", "thumb": "https://i.ytimg.com/vi/FiQhCDGY0G4/mqdefault.jpg", "dur": "3:24:50"}, {"id": "VB8buxxei3k", "title": "60’s Atomic Cocktail Lounge Music⭐️Urban Sanctuary Jazz at 2AM | Downtown Dallas Ambiance", "thumb": "https://i.ytimg.com/vi/VB8buxxei3k/mqdefault.jpg", "dur": "2:12:31"}, {"id": "2y4YUalOGaY", "title": "60’s Atomic Cocktail Lounge Music | Midnight Poolside Soiree: Chic & Breezy Swing Jazz", "thumb": "https://i.ytimg.com/vi/2y4YUalOGaY/mqdefault.jpg", "dur": "2:18:31"}, {"id": "B3rUCWwNkGA", "title": "60’s Atomic Cocktail Lounge Music | A Night of Sparkling Cocktails: Upbeat & Joyful Swing", "thumb": "https://i.ytimg.com/vi/B3rUCWwNkGA/mqdefault.jpg", "dur": "2:23:46"}, {"id": "dbO0ACdItLA", "title": "60’s Atomic Cocktail Lounge Music | A Night of Glamorous Cocktails: Upbeat & Heart-Stirring Swing", "thumb": "https://i.ytimg.com/vi/dbO0ACdItLA/mqdefault.jpg", "dur": "1:30:02"}, {"id": "4jcSdp4fuVQ", "title": "60’s Atomic Cocktail Lounge Music | The Moment the Cocktail Party Begins:Sophisticated & Upbeat Swin", "thumb": "https://i.ytimg.com/vi/4jcSdp4fuVQ/mqdefault.jpg", "dur": "1:27:07"}, {"id": "Y-VpDBJEqww", "title": "60’s Atomic Cocktail Lounge Music | When Cocktails Start the Conversation", "thumb": "https://i.ytimg.com/vi/Y-VpDBJEqww/mqdefault.jpg", "dur": "1:34:30"}, {"id": "me5qp-d7nBo", "title": "60’s Atomic Cocktail Lounge Music | When the Band Brings the Party to Life", "thumb": "https://i.ytimg.com/vi/me5qp-d7nBo/mqdefault.jpg", "dur": "1:33:11"}, {"id": "3GKEZynbal4", "title": "60’s Atomic Cocktail Lounge Music | A Lively Cocktail Party Night", "thumb": "https://i.ytimg.com/vi/3GKEZynbal4/mqdefault.jpg", "dur": "1:24:54"}, {"id": "FrUN3ltYH58", "title": "60’s Atomic Cocktail Lounge Music | A Toast to London Nights", "thumb": "https://i.ytimg.com/vi/FrUN3ltYH58/mqdefault.jpg", "dur": "1:29:39"}, {"id": "RN_Bx2fH82w", "title": "60’s Atomic Cocktail Lounge Music | Cocktail Time Under the Streetlights", "thumb": "https://i.ytimg.com/vi/RN_Bx2fH82w/mqdefault.jpg", "dur": "1:22:58"}, {"id": "s6YOpcqs2kg", "title": "60’s Atomic Cocktail Lounge Music | Nighttime Social Lounge & Swing Jazz", "thumb": "https://i.ytimg.com/vi/s6YOpcqs2kg/mqdefault.jpg", "dur": "1:27:03"}, {"id": "NRvBEpvEb-s", "title": "60’s Miami Atomic Jazz Lounge | Cocktail Party in the City", "thumb": "https://i.ytimg.com/vi/NRvBEpvEb-s/mqdefault.jpg", "dur": "1:29:27"}, {"id": "LzhiCBPAWVQ", "title": "60’s Atomic Cocktail Lounge Music｜A Night of Cocktails & Jazz", "thumb": "https://i.ytimg.com/vi/LzhiCBPAWVQ/mqdefault.jpg", "dur": "1:25:09"}, {"id": "GsyPHB89Wo4", "title": "60’s Atomic Cocktail Lounge Music｜It’s an Evening Cocktail Party", "thumb": "https://i.ytimg.com/vi/GsyPHB89Wo4/mqdefault.jpg", "dur": "1:20:02"}, {"id": "ugxaopm84zg", "title": "60’s Atomic Cocktail Lounge Music｜An Evening Cocktail Party", "thumb": "https://i.ytimg.com/vi/ugxaopm84zg/mqdefault.jpg", "dur": "1:28:16"}, {"id": "f3v1QDk-suI", "title": "60’s Atomic Cocktail Lounge Music｜An Evening Cocktail Party", "thumb": "https://i.ytimg.com/vi/f3v1QDk-suI/mqdefault.jpg", "dur": "1:24:30"}, {"id": "Lc31D727yv8", "title": "60’s Atomic Cocktail Lounge Music｜It’s a Cocktail Party", "thumb": "https://i.ytimg.com/vi/Lc31D727yv8/mqdefault.jpg", "dur": "1:21:54"}, {"id": "k3CRiUROdMM", "title": "60’s Atomic Cocktail Lounge Music｜It’s a Walking Jazz Party", "thumb": "https://i.ytimg.com/vi/k3CRiUROdMM/mqdefault.jpg", "dur": "1:21:09"}, {"id": "9XCY3xc2Z88", "title": "60’s Atomic Cocktail Lounge Music｜Neon City Night Out", "thumb": "https://i.ytimg.com/vi/9XCY3xc2Z88/mqdefault.jpg", "dur": "1:22:30"}, {"id": "UBr9FfJD-sg", "title": "60's Atomic Cocktail Lounge Music | A Night Made for Cocktails & Jazz", "thumb": "https://i.ytimg.com/vi/UBr9FfJD-sg/mqdefault.jpg", "dur": "1:01:35"}, {"id": "MJgNX9tsl-Q", "title": "60's Atomic Cocktail Lounge Music | CITY NIGHT OUT", "thumb": "https://i.ytimg.com/vi/MJgNX9tsl-Q/mqdefault.jpg", "dur": "1:11:34"}, {"id": "TSBKvjOwytw", "title": "60's Atomic Cocktail Lounge Music | Midcentury Jazz Hop Party", "thumb": "https://i.ytimg.com/vi/TSBKvjOwytw/mqdefault.jpg", "dur": "1:05:35"}, {"id": "oJ48lBCv23Q", "title": "60's Atomic Cocktail Lounge Music | Walking Jazz Cocktail Party", "thumb": "https://i.ytimg.com/vi/oJ48lBCv23Q/mqdefault.jpg", "dur": "2:09:04"}, {"id": "k7DBt3ZPxlc", "title": "60’s Atomic Cocktail Lounge | It’s a Cocktail Party – Feel-Good Swing Jazz", "thumb": "https://i.ytimg.com/vi/k7DBt3ZPxlc/mqdefault.jpg", "dur": "2:16:06"}, {"id": "NtSMe0hnnJc", "title": "60’s Atomic Cocktail Lounge | It’s a Cocktail Party – Feel-Good Swing Jazz", "thumb": "https://i.ytimg.com/vi/NtSMe0hnnJc/mqdefault.jpg", "dur": "2:26:17"}, {"id": "stS0QiWBiEE", "title": "60’s Atomic Cocktail Lounge | Lounge at 1AM – A Cozy Home Party That Builds", "thumb": "https://i.ytimg.com/vi/stS0QiWBiEE/mqdefault.jpg", "dur": "1:48:41"}, {"id": "ZDIYt3ZDJIk", "title": "60's Atomic Cocktail Lounge Music | Late Night Swing at 1AM 🌙", "thumb": "https://i.ytimg.com/vi/ZDIYt3ZDJIk/mqdefault.jpg", "dur": "1:59:01"}, {"id": "yj-Z0TloR9s", "title": "60's Atomic Cocktail Lounge Music | After Hours Swing at 1AM ☾ Late Night TV Jazz", "thumb": "https://i.ytimg.com/vi/yj-Z0TloR9s/mqdefault.jpg", "dur": "2:02:02"}, {"id": "tzCQiATGxkU", "title": "60's Atomic Cocktail Lounge Music | Swing Jazz Above the City at 1AM", "thumb": "https://i.ytimg.com/vi/tzCQiATGxkU/mqdefault.jpg", "dur": "2:29:37"}, {"id": "ACCv7mXe6zA", "title": "A Swingin’ Home Party Night | Cozy Swing Jazz for Easy Conversations", "thumb": "https://i.ytimg.com/vi/ACCv7mXe6zA/mqdefault.jpg", "dur": "2:04:14"}, {"id": "aWvV4jhSkBQ", "title": "60's Cocktail Lounge at 1AM | After Midnight Jazz Vol.3", "thumb": "https://i.ytimg.com/vi/aWvV4jhSkBQ/mqdefault.jpg", "dur": "2:12:44"}, {"id": "A9Kpllu8UsA", "title": "60's Atomic Cocktail Lounge Music | A Swingin’ Home Party Night", "thumb": "https://i.ytimg.com/vi/A9Kpllu8UsA/mqdefault.jpg", "dur": "2:24:42"}, {"id": "-ZgS8nLpjSw", "title": "60's Cocktail Lounge at 1AM | Swing Jazz Vol.3", "thumb": "https://i.ytimg.com/vi/-ZgS8nLpjSw/mqdefault.jpg", "dur": "2:18:34"}, {"id": "Ac5N-Oincjs", "title": "60's Cocktail Lounge at 11PM | Swing Jazz Vol.3", "thumb": "https://i.ytimg.com/vi/Ac5N-Oincjs/mqdefault.jpg", "dur": "2:06:49"}, {"id": "FpUzh75a4rM", "title": "60's Atomic Cocktail Lounge Music | Lounge at 11PM Swing Jazz Vol.2", "thumb": "https://i.ytimg.com/vi/FpUzh75a4rM/mqdefault.jpg", "dur": "2:15:48"}, {"id": "Ixtnlcp9z2E", "title": "60's Atomic Cocktail Lounge Music | Cocktail Party Swing at 9PM Vol.22025 12 31 2", "thumb": "https://i.ytimg.com/vi/Ixtnlcp9z2E/mqdefault.jpg", "dur": "2:13:40"}, {"id": "Mimje4KcV5Y", "title": "60's Atomic Cocktail Lounge Music | Cocktail Party Swing at 9PM Vol.1", "thumb": "https://i.ytimg.com/vi/Mimje4KcV5Y/mqdefault.jpg", "dur": "2:17:47"}, {"id": "vkyuKtbWLMo", "title": "60's Atomic Cocktail Lounge Music | Late Night Swing at 3AM Vol.1", "thumb": "https://i.ytimg.com/vi/vkyuKtbWLMo/mqdefault.jpg", "dur": "2:06:30"}, {"id": "Q54eUIYt85U", "title": "60’s Atomic Cocktail Lounge 🌃 Luxury Lounge Music & City Lights Ambience (After Hours Swing)", "thumb": "https://i.ytimg.com/vi/Q54eUIYt85U/mqdefault.jpg", "dur": "2:01:06"}, {"id": "urptwQPP-uU", "title": "60's Atomic Cocktail Lounge Music | After Hours Swing at 1AM", "thumb": "https://i.ytimg.com/vi/urptwQPP-uU/mqdefault.jpg", "dur": "2:20:09"}, {"id": "BMqdrX56tOY", "title": "60's Atomic Cocktail Lounge Music | Lounge at 11PM Swing Jazz", "thumb": "https://i.ytimg.com/vi/BMqdrX56tOY/mqdefault.jpg", "dur": "2:03:36"}, {"id": "5qr1CHlmtbQ", "title": "60's Atomic Cocktail Lounge Music | IT’S A Christmas PARTY", "thumb": "https://i.ytimg.com/vi/5qr1CHlmtbQ/mqdefault.jpg", "dur": "2:02:18"}, {"id": "zysyzoHaKcY", "title": "60's Atomic Cocktail Lounge Music| A Classic Cocktail Party Night", "thumb": "https://i.ytimg.com/vi/zysyzoHaKcY/mqdefault.jpg", "dur": "2:12:40"}, {"id": "5Q2Fm4wGy_k", "title": "60s Atomic Cocktail Lounge Jazz | It’s a Swingin’ Night", "thumb": "https://i.ytimg.com/vi/5Q2Fm4wGy_k/mqdefault.jpg", "dur": "1:23:40"}, {"id": "X8bfYhsIPWU", "title": "Atomic Age Holiday Jazz | Sophisticated Vintage Cocktail Evening", "thumb": "https://i.ytimg.com/vi/X8bfYhsIPWU/mqdefault.jpg", "dur": "1:12:18"}, {"id": "k3r0VkYunUI", "title": "60s Atomic Cocktail Lounge Music | After Five Mid-Century Lounge", "thumb": "https://i.ytimg.com/vi/k3r0VkYunUI/mqdefault.jpg", "dur": "1:16:35"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

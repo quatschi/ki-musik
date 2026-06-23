@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nu Velvet Jazz</title>
+<!-- categories: Smooth Jazz, Funk, Lounge -->
+<!-- channel-id: UCzn0fhGkK0ZOT5QCfdUbNig -->
+<!-- channel-url: https://youtube.com/@nuvelvetjazz -->
+<!-- created: 2026-06-23 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Nu_Velvet_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/kTnBqcdEr54TQ7aQhb8q4tHbj2O2rGUHQIgaNPLilt0ofTu8X1QFXBqlIk3FUOSOU-gwd8c4=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Nu Velvet Jazz</div>
+      <div class="channel-count">12 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Nu Velvet Jazz";
+const KANAL = "Nu_Velvet_Jazz.html";
+const ORIG_CATEGORIES = "Smooth Jazz, Funk, Lounge";
+const VIDEOS = [{"id": "iiPpwRrSJ2U", "title": "Nu Acid Jazz Flow 🎧 Soulful Grooves for Work, Study & Deep Focus [Vol.12]", "thumb": "https://i.ytimg.com/vi/iiPpwRrSJ2U/mqdefault.jpg", "dur": "1:37:18"}, {"id": "fIOy19sKGRE", "title": "Acid Jazz & Funk Flow 🎧 Groovy Nu Jazz Rhythms for Work, Study & Deep Focus [Vol.11]", "thumb": "https://i.ytimg.com/vi/fIOy19sKGRE/mqdefault.jpg", "dur": "1:40:22"}, {"id": "ab3cCFdhWNU", "title": "Deep Funk Acid Jazz Flow 🎧 Nu Jazz & Soulful Funk Grooves for Work, Study & Focus [Vol.10]", "thumb": "https://i.ytimg.com/vi/ab3cCFdhWNU/mqdefault.jpg", "dur": "1:43:45"}, {"id": "m7LBlxCGeuE", "title": "Smooth Funk Acid Jazz Flow 🎧 Fresh Nu Jazz Rhythms for Work, Study & Focus [Vol.9]", "thumb": "https://i.ytimg.com/vi/m7LBlxCGeuE/mqdefault.jpg", "dur": "1:34:11"}, {"id": "V9Wf1a72Td8", "title": "Chill Groove Acid Jazz 🎧 Fresh Nu Jazz & Funk for Work, Study & Focus [Vol.8]", "thumb": "https://i.ytimg.com/vi/V9Wf1a72Td8/mqdefault.jpg", "dur": "1:45:35"}, {"id": "YCdLiaj3RIA", "title": "Smooth Chill Acid Jazz Flow 🎧 Cool Nu Jazz & Funk Grooves for Work, Study & Deep Focus [Vol.7]", "thumb": "https://i.ytimg.com/vi/YCdLiaj3RIA/mqdefault.jpg", "dur": "1:44:54"}, {"id": "DmCJIVqoWKE", "title": "Midnight Acid Jazz Flow 🎧 Smooth Nu Jazz & Funk for Deep Work, Study & Focus [Vol.6]", "thumb": "https://i.ytimg.com/vi/DmCJIVqoWKE/mqdefault.jpg", "dur": "1:43:46"}, {"id": "QH7g9hW9Eps", "title": "Nu Acid Jazz Groove Flow 🎧 Soulful Funk Beats for Deep Work, Study & Focus [Vol.5]", "thumb": "https://i.ytimg.com/vi/QH7g9hW9Eps/mqdefault.jpg", "dur": "1:46:10"}, {"id": "1Z91sfus8ok", "title": "Smooth Lounge Chill Acid Jazz Flow 🎷 Deep Nu Chill & Funk for Work, Relax & Late Night [Vol.4]", "thumb": "https://i.ytimg.com/vi/1Z91sfus8ok/mqdefault.jpg", "dur": "1:44:58"}, {"id": "N0NyTnrVsdM", "title": "Best of Acid Jazz Instrumental Vol.3 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/N0NyTnrVsdM/mqdefault.jpg", "dur": "1:43:05"}, {"id": "MF7sXUslVuM", "title": "Soulful Acid Jazz Focus Flow 🎧 Groovy Nu Jazz Beats for Deep Work & Study #2", "thumb": "https://i.ytimg.com/vi/MF7sXUslVuM/mqdefault.jpg", "dur": "1:40:59"}, {"id": "zKeFsvDk6OI", "title": "Best of Acid Jazz, Soulful Funk & Nu Jazz | Nu Chill Acid Jazz [Vol.1]", "thumb": "https://i.ytimg.com/vi/zKeFsvDk6OI/mqdefault.jpg", "dur": "1:47:18"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
