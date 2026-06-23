@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight Blues Flow</title>
+<!-- categories: Blues, Rock -->
+<!-- channel-id: UC6g67C-eQ0v0Gl_iy8gtQww -->
+<!-- channel-url: https://www.youtube.com/@MidnightBluesFlow -->
+<!-- created: 2026-06-23 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Midnight_Blues_Flow.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/tCUgNcX4tv_RVBoOhlT6LexziFEWUOz7omtoeyxGw0gg3QCqiNV0RxHgbFAHOq4oXHT_4TTL7g=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Midnight Blues Flow</div>
+      <div class="channel-count">34 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Midnight Blues Flow";
+const KANAL = "Midnight_Blues_Flow.html";
+const ORIG_CATEGORIES = "Blues, Rock";
+const VIDEOS = [{"id": "qZ47sQ4u9bE", "title": "Slow Blues Instrumental - Relaxing Midnight Blues Guitar for a Smooth Whiskey Night Session", "thumb": "https://i.ytimg.com/vi/qZ47sQ4u9bE/mqdefault.jpg", "dur": "2:09:02"}, {"id": "O9X_iOW385c", "title": "Midnight Whiskey Blues | Slow Instrumental Guitar for Relaxing Nights and Smooth Vibes Only", "thumb": "https://i.ytimg.com/vi/O9X_iOW385c/mqdefault.jpg", "dur": "2:10:34"}, {"id": "d2TXom2QAlg", "title": "Relaxing Slow Blues Guitar Instrumental & Midnight Smooth Blues Music for Whiskey Sessions", "thumb": "https://i.ytimg.com/vi/d2TXom2QAlg/mqdefault.jpg", "dur": "2:08:43"}, {"id": "JinlMasa0pQ", "title": "Smooth Whiskey Blues Instrumental | Slow Electric Guitar Melodies For Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/JinlMasa0pQ/mqdefault.jpg", "dur": "2:08:46"}, {"id": "lxvnbL4CnJk", "title": "Whiskey Blues | Smooth Instrumental Music for Relaxation & Deep Chill Blues Guitar Tones", "thumb": "https://i.ytimg.com/vi/lxvnbL4CnJk/mqdefault.jpg", "dur": "2:02:28"}, {"id": "E_SAEF_BZKo", "title": "Slow Blues Instrumental & Relaxing Whiskey Blues Guitar | Midnight Deep Soulful Melodies", "thumb": "https://i.ytimg.com/vi/E_SAEF_BZKo/mqdefault.jpg", "dur": "2:07:03"}, {"id": "Bj8Vo4VtNTk", "title": "Whiskey Blues Music - Slow Relaxing Blues Guitar Instrumental ~ Deep Midnight Chill Vibes", "thumb": "https://i.ytimg.com/vi/Bj8Vo4VtNTk/mqdefault.jpg", "dur": "2:04:31"}, {"id": "zKh3TzN9S4k", "title": "Slow Relaxing Blues Guitar ~ Midnight Whiskey Blues Music Instrumental for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/zKh3TzN9S4k/mqdefault.jpg", "dur": "2:09:12"}, {"id": "J0nBKTE3phI", "title": "Deep Whiskey Blues ~ Relaxing Slow Blues Guitar Instrumental for a Midnight Chill Session", "thumb": "https://i.ytimg.com/vi/J0nBKTE3phI/mqdefault.jpg", "dur": "2:02:35"}, {"id": "-eegXVJ-z5o", "title": "Whiskey Blues & Slow Instrumental Guitar - Relaxing Midnight Blues for Deep Soulful Sleep", "thumb": "https://i.ytimg.com/vi/-eegXVJ-z5o/mqdefault.jpg", "dur": "2:05:39"}, {"id": "pWGN0U-7saU", "title": "Whiskey Blues Guitar | Relaxing Smooth Instrumental Music for a Chill Midnight Vibe", "thumb": "https://i.ytimg.com/vi/pWGN0U-7saU/mqdefault.jpg", "dur": "2:08:33"}, {"id": "3xriFVYBIQA", "title": "Whiskey Blues Instrumental ~ Deep Soulful Blues Guitar Music & Relaxing Midnight Melodies", "thumb": "https://i.ytimg.com/vi/3xriFVYBIQA/mqdefault.jpg", "dur": "2:08:05"}, {"id": "1byE584uMvY", "title": "Whiskey Blues - Relaxing Blues Music Instrumental - Smooth Blues Guitar for Late Night Mood", "thumb": "https://i.ytimg.com/vi/1byE584uMvY/mqdefault.jpg", "dur": "2:09:34"}, {"id": "ifLzz-0QOJA", "title": "Whiskey Blues Instrumental - Relaxing Slow Blues Guitar Music for Midnight Chill Sessions", "thumb": "https://i.ytimg.com/vi/ifLzz-0QOJA/mqdefault.jpg", "dur": "2:00:23"}, {"id": "hrdFNjR4KkE", "title": "Slow Whiskey Blues - Relaxing Instrumental Blues Guitar for Midnight - Deep Soulful Blues", "thumb": "https://i.ytimg.com/vi/hrdFNjR4KkE/mqdefault.jpg", "dur": "2:09:52"}, {"id": "qN78x_wjYCk", "title": "Slow Blues Music Instrumental ~ Smooth Blues Guitar for Relaxing Midnight Whiskey Moments", "thumb": "https://i.ytimg.com/vi/qN78x_wjYCk/mqdefault.jpg", "dur": "2:06:39"}, {"id": "oluW5IjuJyA", "title": "Whiskey Blues ~ Smooth Instrumental Blues Guitar for Midnight Relaxation & Soulful Vibes", "thumb": "https://i.ytimg.com/vi/oluW5IjuJyA/mqdefault.jpg", "dur": "2:03:02"}, {"id": "_fMbqqH7klw", "title": "Whiskey Blues Instrumental - Smooth Blues Guitar for Relaxing Nights and Deep Soulful Vibes", "thumb": "https://i.ytimg.com/vi/_fMbqqH7klw/mqdefault.jpg", "dur": "2:06:58"}, {"id": "_R9c7Br_oqQ", "title": "Smooth Whiskey Blues - Slow Instrumental Blues Guitar for a Relaxing Night at the Bar & Grill", "thumb": "https://i.ytimg.com/vi/_R9c7Br_oqQ/mqdefault.jpg", "dur": "2:04:18"}, {"id": "mSlqYQoB6FY", "title": "Midnight Whiskey Blues ~ Smooth Instrumental Soulful Guitar Music For A Relaxing Night Mood", "thumb": "https://i.ytimg.com/vi/mSlqYQoB6FY/mqdefault.jpg", "dur": "2:10:41"}, {"id": "4mwmXrRfkWE", "title": "Smooth Whiskey Blues Instrumental - Deep Relaxing Blues Guitar Music for Midnight Sessions", "thumb": "https://i.ytimg.com/vi/4mwmXrRfkWE/mqdefault.jpg", "dur": "2:05:01"}, {"id": "bAxKsOGVpZQ", "title": "Whiskey Blues Instrumental ~ Slow Relaxing Blues Guitar Music for a Smooth Midnight Sessions", "thumb": "https://i.ytimg.com/vi/bAxKsOGVpZQ/mqdefault.jpg", "dur": "2:10:16"}, {"id": "8SY5rK0GD_0", "title": "Slow Whiskey Blues Music Instrumental - Deep Blues Guitar for a Relaxing Midnight Session", "thumb": "https://i.ytimg.com/vi/8SY5rK0GD_0/mqdefault.jpg", "dur": "2:02:29"}, {"id": "kv9sIlr333U", "title": "Whiskey Blues Music Instrumental - Smooth Blues Guitar for Relaxing Midnight Chill & Vibes", "thumb": "https://i.ytimg.com/vi/kv9sIlr333U/mqdefault.jpg", "dur": "2:01:31"}, {"id": "Q7tRJjtX8Ac", "title": "Deep Midnight Blues - Smooth Instrumental Guitar for Relaxing Nights and Whiskey Evenings", "thumb": "https://i.ytimg.com/vi/Q7tRJjtX8Ac/mqdefault.jpg", "dur": "2:07:48"}, {"id": "DXx-hSz-VBw", "title": "Slow Blues Guitar - Relaxing Instrumental Midnight Blues for a Lonely Night with Whiskey", "thumb": "https://i.ytimg.com/vi/DXx-hSz-VBw/mqdefault.jpg", "dur": "2:09:24"}, {"id": "eWRWIyXcWRw", "title": "Midnight Blues Flow | Deep Soulful Instrumental Blues Guitar - Relaxing Whiskey Chill Music", "thumb": "https://i.ytimg.com/vi/eWRWIyXcWRw/mqdefault.jpg", "dur": "2:07:15"}, {"id": "Mjc8cmPaY2k", "title": "Deep Midnight Blues Instrumental ~ Slow Blues Guitar for Relaxing and Chilling All Night", "thumb": "https://i.ytimg.com/vi/Mjc8cmPaY2k/mqdefault.jpg", "dur": "2:01:58"}, {"id": "WUPcXPa6FCw", "title": "Whiskey Blues Instrumental | Smooth Relaxing Deep Blues Guitar Chill", "thumb": "https://i.ytimg.com/vi/WUPcXPa6FCw/mqdefault.jpg", "dur": "2:01:28"}, {"id": "XDrJ8L0EM2E", "title": "Slow Whiskey Blues Music - Relaxing Instrumental Blues Guitar for Midnight Deep Relaxation", "thumb": "https://i.ytimg.com/vi/XDrJ8L0EM2E/mqdefault.jpg", "dur": "2:08:21"}, {"id": "iClm_KW_qvE", "title": "Deep Blues Guitar Night | Relaxing Whiskey Blues | Soulful Instrumental Journey", "thumb": "https://i.ytimg.com/vi/iClm_KW_qvE/mqdefault.jpg", "dur": "2:01:47"}, {"id": "2ul1qWr0UwU", "title": "Midnight Blues ~ Soulful Blues Guitar Instrumental and Relaxing Whiskey Blues for Deep Sleep", "thumb": "https://i.ytimg.com/vi/2ul1qWr0UwU/mqdefault.jpg", "dur": "2:03:34"}, {"id": "-IusxC57c2Y", "title": "Slow Whiskey Blues Music - Deep Instrumental Blues Guitar for a Relaxing Midnight Session", "thumb": "https://i.ytimg.com/vi/-IusxC57c2Y/mqdefault.jpg", "dur": "2:00:56"}, {"id": "N4GcZp538No", "title": "Smooth Blues Instrumental - Slow Blues Guitar ~ Relaxing Midnight Blues & Whiskey Blues", "thumb": "https://i.ytimg.com/vi/N4GcZp538No/mqdefault.jpg", "dur": "2:08:17"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
