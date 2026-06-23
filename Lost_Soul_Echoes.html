@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost Soul Echoes</title>
+<!-- categories: Soul -->
+<!-- channel-id: UCsabpz40VfJAVwXHhywdLZg -->
+<!-- channel-url: https://youtube.com/@lostsoulechoes-s -->
+<!-- created: 2026-06-23 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Lost_Soul_Echoes.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/fCuOlaOvN4UvsX-5JsevJbVsKGsuAOslBdKj23KEQ-O4SVoADhfvda05MbuIIsRdU8aSxtmKbcE=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Lost Soul Echoes</div>
+      <div class="channel-count">42 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Lost Soul Echoes";
+const KANAL = "Lost_Soul_Echoes.html";
+const ORIG_CATEGORIES = "Soul";
+const VIDEOS = [{"id": "pUsaBmRabQ8", "title": "The Whiskey Lantern Sessions | The End Of The Dirt Road 1959 | Ray Charles, B.B. King & Soul Legends", "thumb": "https://i.ytimg.com/vi/pUsaBmRabQ8/mqdefault.jpg", "dur": "1:24:17"}, {"id": "bNCcOavOfQU", "title": "The Late Night Soul Session | A Studio Rendezvous (1963) | B.B. King & Ray Charles", "thumb": "https://i.ytimg.com/vi/bNCcOavOfQU/mqdefault.jpg", "dur": "1:25:35"}, {"id": "5hqFWBr-ihg", "title": "Original Hits & Rhythms | Soul Groove '60s | Sam Cooke, Otis Redding, Wilson Pickett & James Brown", "thumb": "https://i.ytimg.com/vi/5hqFWBr-ihg/mqdefault.jpg", "dur": "1:26:41"}, {"id": "NBclOnt3UDg", "title": "Soul Fire Revue | The Legendary Tapes | Ray Charles, B.B. King & Otis Redding", "thumb": "https://i.ytimg.com/vi/NBclOnt3UDg/mqdefault.jpg", "dur": "1:32:52"}, {"id": "3YpEPpVm0A0", "title": "Soul Classics of the Sixties | Ultimate Collection | Otis Redding, Ray Charles & Al Jackson Jr", "thumb": "https://i.ytimg.com/vi/3YpEPpVm0A0/mqdefault.jpg", "dur": "1:29:13"}, {"id": "R1M_SL-MlgA", "title": "The Sound of Soul  | Live at the Apollo '65 | Ray Charles, B.B. King & Otis Redding", "thumb": "https://i.ytimg.com/vi/R1M_SL-MlgA/mqdefault.jpg", "dur": "1:25:19"}, {"id": "zpSq7b3hfBo", "title": "Golden Age of Soul Giants | R&B Gospel Classics | Ray Charles, Sam Cooke & Otis Redding", "thumb": "https://i.ytimg.com/vi/zpSq7b3hfBo/mqdefault.jpg", "dur": "1:29:57"}, {"id": "252MVsR3JUc", "title": "Soul Summit Revue Live | Stax/Volt Showcase (1967) | Otis Redding, Aretha Franklin & Ray Charles", "thumb": "https://i.ytimg.com/vi/252MVsR3JUc/mqdefault.jpg", "dur": "1:22:36"}, {"id": "wG_xNcFhZ-U", "title": "The Detroit Soul Orchestra | Live at the Apollo (1968) | B.B. King, Ray Charles & Sam Cooke", "thumb": "https://i.ytimg.com/vi/wG_xNcFhZ-U/mqdefault.jpg", "dur": "1:24:24"}, {"id": "vJ-1EAxH4ic", "title": "The Soul Explosion | Detroit Soul Revue (1967) | Otis Redding, Ray Charles, B.B. King & Tom Jones", "thumb": "https://i.ytimg.com/vi/vJ-1EAxH4ic/mqdefault.jpg", "dur": "1:29:13"}, {"id": "tdNbZYcZZ9c", "title": "The Detroit Soul Experience | Golden Era R&B Live | Sam Cooke, Otis Redding, Wilson Pickett & James", "thumb": "https://i.ytimg.com/vi/tdNbZYcZZ9c/mqdefault.jpg", "dur": "1:28:15"}, {"id": "V9gB2g5RQX0", "title": "The Golden Age of Soul | Greatest Hits of 1962 | Sam Cooke, Otis Redding, B.B. King & Ray Charles", "thumb": "https://i.ytimg.com/vi/V9gB2g5RQX0/mqdefault.jpg", "dur": "1:26:55"}, {"id": "Gh4_Ygdzi6o", "title": "The Soul Session ’65 | A Night at the Apollo | Sam Cooke, Otis Redding, B.B. King & Ray Charles", "thumb": "https://i.ytimg.com/vi/Gh4_Ygdzi6o/mqdefault.jpg", "dur": "1:28:51"}, {"id": "WwsTC5qTrgA", "title": "Soul Pioneers | Rare Grooves & Raw Soul Classics | B.B. King, Sam Cooke, Otis & Ray Charles", "thumb": "https://i.ytimg.com/vi/WwsTC5qTrgA/mqdefault.jpg", "dur": "1:26:56"}, {"id": "R47nM840FUQ", "title": "Soul Revue '64 | The Golden Era of Rhythm & Blues | Ray Charles, B.B. King, Sam Cooke & Otis Redding", "thumb": "https://i.ytimg.com/vi/R47nM840FUQ/mqdefault.jpg", "dur": "1:24:23"}, {"id": "dI0xVg_NUPo", "title": "The Motown Revue Live | Hitsville U.S.A. 1965 | Ray Charles, B.B. King, Aretha Franklin & Otis", "thumb": "https://i.ytimg.com/vi/dI0xVg_NUPo/mqdefault.jpg", "dur": "1:27:55"}, {"id": "nujDfJhzkH8", "title": "The Golden Age of Soul | Live at the Apollo 1964 | B.B. King, Ray Charles & Sam Cooke", "thumb": "https://i.ytimg.com/vi/nujDfJhzkH8/mqdefault.jpg", "dur": "1:32:08"}, {"id": "Rcy0ADuC4tY", "title": "The Midnight Soul Revue Tapes | Live in Nashville 1961 | B.B. King, Ray Charles & Tom Jones", "thumb": "https://i.ytimg.com/vi/Rcy0ADuC4tY/mqdefault.jpg", "dur": "1:29:36"}, {"id": "BQuWY5tK_kk", "title": "The Blue Hour Revue | Lost Smokehouse Sessions 1960 | Ray Charles, B.B King, Muddy Waters, Otis", "thumb": "https://i.ytimg.com/vi/BQuWY5tK_kk/mqdefault.jpg", "dur": "1:30:26"}, {"id": "bFJ-Q0teQh4", "title": "The Lost Porch Sessions | Timeless Folk, Soul & Blues from 1958 | Ray Charles, B.B King & Otis", "thumb": "https://i.ytimg.com/vi/bFJ-Q0teQh4/mqdefault.jpg", "dur": "1:27:02"}, {"id": "PIZFHUpWtpg", "title": "The Bourbon Street Brotherhood | Timeless Soul & Blues from 1961 | Ray Charles, B.B King & Otis", "thumb": "https://i.ytimg.com/vi/PIZFHUpWtpg/mqdefault.jpg", "dur": "1:32:19"}, {"id": "-4-q70xmb5Q", "title": "The Blue Hour Revue | Smokehouse Sessions 1960 | Ray Charles, B.B King,  Otis, Muddy Waters", "thumb": "https://i.ytimg.com/vi/-4-q70xmb5Q/mqdefault.jpg", "dur": "1:27:34"}, {"id": "SEgn_ij6jsw", "title": "The Legendary Blues Night  | Ray Charles, B.B. King, Ottis & Aretha Franklin Forgotten '62 Summit", "thumb": "https://i.ytimg.com/vi/SEgn_ij6jsw/mqdefault.jpg", "dur": "1:27:10"}, {"id": "e8Cz6dKQ0Yo", "title": "The Lost Soul Tapes 1962 | Ray Charles, B.B. King & Otis Redding Vintage Blues", "thumb": "https://i.ytimg.com/vi/e8Cz6dKQ0Yo/mqdefault.jpg", "dur": "1:26:30"}, {"id": "E2KOxfuqals", "title": "Soul & Blues Summit | The Midnight Room Tapes | B.B. King, Ray Charles & Otis Redding", "thumb": "https://i.ytimg.com/vi/E2KOxfuqals/mqdefault.jpg", "dur": "1:27:56"}, {"id": "IXktiDak1kg", "title": "The Lost Soul Blues Session | Two steps from the Blues | B.B. King, Ray Charles & Sam Cooke", "thumb": "https://i.ytimg.com/vi/IXktiDak1kg/mqdefault.jpg", "dur": "1:28:21"}, {"id": "XBgjYZwq5_o", "title": "Soul & Blues Summit | The Lost Summit Session 60 | B.B. King, Ray Charles & Otis Redding", "thumb": "https://i.ytimg.com/vi/XBgjYZwq5_o/mqdefault.jpg", "dur": "1:31:44"}, {"id": "J1KopbDvOFc", "title": "The Blue Hour Revue | Smokehouse Revival Sessions(1960) | B.B. King, Ray Charles, Otis Redding", "thumb": "https://i.ytimg.com/vi/J1KopbDvOFc/mqdefault.jpg", "dur": "1:33:31"}, {"id": "44-k0Y9gngs", "title": "The Lost Cross Road Session 1961 | B.B. King, Ray Charles & Otis Redding", "thumb": "https://i.ytimg.com/vi/44-k0Y9gngs/mqdefault.jpg", "dur": "1:35:00"}, {"id": "knYd_JSqLOs", "title": "When the Blues Came Home | Ray Charles, B.B. King & Aretha Franklin Forgotten 1962", "thumb": "https://i.ytimg.com/vi/knYd_JSqLOs/mqdefault.jpg", "dur": "1:32:04"}, {"id": "mwjS7CbVgkU", "title": "Vintage Soul Legends | Forgotten Session ’62 | Ray Charles, B.B. King & Otis Redding", "thumb": "https://i.ytimg.com/vi/mwjS7CbVgkU/mqdefault.jpg", "dur": "1:32:48"}, {"id": "OmUsLVBjDOA", "title": "Weekend’s Moonlight Tonight | Rare Lost Recording ’62 | Ray Charles, B.B. King & Otis", "thumb": "https://i.ytimg.com/vi/OmUsLVBjDOA/mqdefault.jpg", "dur": "1:29:51"}, {"id": "8iIUxQMVPQc", "title": "Soul & Blues Summit | The Long Road To Friday | B.B. King, Ray Charles & Sam Cooke", "thumb": "https://i.ytimg.com/vi/8iIUxQMVPQc/mqdefault.jpg", "dur": "1:25:26"}, {"id": "sRWtc-av2LE", "title": "Tales By Moon (1962) |  Midnight Soul Assembly | B.B. King, Ray Charles & Jimmy Reed", "thumb": "https://i.ytimg.com/vi/sRWtc-av2LE/mqdefault.jpg", "dur": "1:31:44"}, {"id": "3aFthuMoy7Q", "title": "The Lost Session ’62 | The Long Road To Friday | B.B. King, Ray Charles & Sam Cooke", "thumb": "https://i.ytimg.com/vi/3aFthuMoy7Q/mqdefault.jpg", "dur": "1:26:05"}, {"id": "Qoi2AWXMZ9o", "title": "Weekend’s Moonlight Tonight | Vintage Lost Session ’62 | Ray Charles, B.B. King & Otis", "thumb": "https://i.ytimg.com/vi/Qoi2AWXMZ9o/mqdefault.jpg", "dur": "1:23:18"}, {"id": "BWyVMlNzdvo", "title": "Soul & Blues Summit | Forever Begins Tonight | The Lost Session ’62 | B.B. King, Sam Cooke & Aretha", "thumb": "https://i.ytimg.com/vi/BWyVMlNzdvo/mqdefault.jpg", "dur": "1:29:26"}, {"id": "tn8HCqMQKnc", "title": "This 1968 Soul Session Sounded Decades Ahead of Its Time | Vol. 01", "thumb": "https://i.ytimg.com/vi/tn8HCqMQKnc/mqdefault.jpg", "dur": "1:26:27"}, {"id": "eSS0DXBAenE", "title": "This Collaboration Never Happened… But It Sounds Perfect (1962 Soul Session)", "thumb": "https://i.ytimg.com/vi/eSS0DXBAenE/mqdefault.jpg", "dur": "1:29:57"}, {"id": "LnuW2e-ipDk", "title": "They Never Recorded Together… But This Sounds Like History (1962 Soul Session)", "thumb": "https://i.ytimg.com/vi/LnuW2e-ipDk/mqdefault.jpg", "dur": "1:24:44"}, {"id": "imYZBkS8ZiY", "title": "It Was Buried for Decades… Until Now (1962 Soul Session)", "thumb": "https://i.ytimg.com/vi/imYZBkS8ZiY/mqdefault.jpg", "dur": "1:25:59"}, {"id": "2K9pnViUvC4", "title": "They Recorded This in One Night… Then Never Released It (1963 Soul Session)", "thumb": "https://i.ytimg.com/vi/2K9pnViUvC4/mqdefault.jpg", "dur": "1:29:09"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
