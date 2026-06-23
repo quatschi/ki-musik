@@ -163,11 +163,69 @@
   @media (max-width: 500px) {
     .alpha-bar a { font-size: 0.6rem; width: 18px; }
   }
+  .search-wrap {
+    max-width: 700px;
+    margin: 0 auto 20px;
+    position: relative;
+    padding: 0 10px;
+  }
+  .search-input {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-size: 0.95rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: rgba(180,150,255,0.5);
+  }
+  .search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 10px;
+    right: 10px;
+    background: #1a1535;
+    border: 1px solid rgba(180,150,255,0.3);
+    border-radius: 12px;
+    max-height: 420px;
+    overflow-y: auto;
+    z-index: 200;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .search-dropdown.open { display: block; }
+  .search-group-label {
+    font-size: 0.7rem;
+    color: #7a6fa0;
+    padding: 10px 16px 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .search-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+  }
+  .search-result:hover { background: rgba(180,150,255,0.15); }
+  .search-result-icon { font-size: 0.95rem; flex-shrink: 0; opacity: 0.7; }
+  .search-result-text { flex: 1; min-width: 0; }
+  .search-result-title { font-size: 0.88rem; color: #e8e0ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-result-sub { font-size: 0.72rem; color: #7a6fa0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-empty { padding: 16px; text-align: center; color: #7a6fa0; font-size: 0.85rem; }
+  .search-loading { padding: 16px; text-align: center; color: #7a6fa0; font-size: 0.82rem; font-style: italic; }
 </style>
 </head>
 <body>
   <h1>🎵 KI-Musik</h1>
-  <div class="subtitle">398 Kanäle · 23.06.2026 09:10</div>
+  <div class="subtitle">398 Kanäle · 23.06.2026 09:21</div>
   <div style="text-align:center;margin-bottom:24px">
     <a href="neu.html" style="color:#9b8fc0;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:8px;">🕐 Neueste Kanäle</a>
     <a href="radio2.html" id="radio-link" style="color:#9b8fc0;text-decoration:none;font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:8px;">📻 Radio</a>
@@ -176,6 +234,10 @@
   <div class="filters">
     <button class="filter-btn active" onclick="filterCards('Alle')">Alle</button>
     <button class="filter-btn" onclick="filterCards('Blues')">Blues</button><button class="filter-btn" onclick="filterCards('Bossa Nova')">Bossa Nova</button><button class="filter-btn" onclick="filterCards('French')">French</button><button class="filter-btn" onclick="filterCards('Funk')">Funk</button><button class="filter-btn" onclick="filterCards('Jazz')">Jazz</button><button class="filter-btn" onclick="filterCards('Latin')">Latin</button><button class="filter-btn" onclick="filterCards('Latin Jazz')">Latin Jazz</button><button class="filter-btn" onclick="filterCards('Lounge')">Lounge</button><button class="filter-btn" onclick="filterCards('R&B')">R&B</button><button class="filter-btn" onclick="filterCards('Reggae')">Reggae</button><button class="filter-btn" onclick="filterCards('Rock')">Rock</button><button class="filter-btn" onclick="filterCards('Smooth Jazz')">Smooth Jazz</button><button class="filter-btn" onclick="filterCards('Soul')">Soul</button><button class="filter-btn" onclick="filterCards('Tribal')">Tribal</button><button class="filter-btn" onclick="filterCards('Weltmusik')">Weltmusik</button><button class="filter-btn" onclick="filterCards('Klassik')">Klassik</button><button class="filter-btn" onclick="filterCards('Ambient')">Ambient</button><button class="filter-btn" onclick="filterCards('Cinema')">Cinema</button><button class="filter-btn" onclick="filterCards('Morning')">Morning</button><button class="filter-btn" onclick="filterCards('Vintage')">Vintage</button>
+  </div>
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="search-input" placeholder="🔍 Kanäle, Notizen oder Songtitel durchsuchen ..." autocomplete="off">
+    <div class="search-dropdown" id="search-dropdown"></div>
   </div>
   <div class="grid" id="grid">
     
@@ -3409,6 +3471,161 @@
   }
 
   window.addEventListener('DOMContentLoaded', buildAlphaBar);
+
+  // ===== Suchfunktion =====
+  let kanalMetaCache = null;
+  let songIndexCache = null;
+  let songIndexLoading = false;
+
+  async function loadKanalMeta() {
+    if (kanalMetaCache) return kanalMetaCache;
+    try {
+      const r = await fetch('kanal_meta.json');
+      kanalMetaCache = r.ok ? await r.json() : {};
+    } catch(e) { kanalMetaCache = {}; }
+    return kanalMetaCache;
+  }
+
+  async function loadSongIndex() {
+    if (songIndexCache) return songIndexCache;
+    if (songIndexLoading) {
+      while (songIndexLoading) await new Promise(r => setTimeout(r, 100));
+      return songIndexCache;
+    }
+    songIndexLoading = true;
+    try {
+      const r = await fetch('song_index.json');
+      songIndexCache = r.ok ? await r.json() : {};
+    } catch(e) { songIndexCache = {}; }
+    songIndexLoading = false;
+    return songIndexCache;
+  }
+
+  function getChannelCards() {
+    return Array.from(document.querySelectorAll('.card')).map(card => ({
+      file: card.getAttribute('href'),
+      name: card.querySelector('.card-name').textContent.trim(),
+      thumb: card.querySelector('.ch-thumb')?.src || ''
+    }));
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function highlightMatch(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return escapeHtml(text);
+    return escapeHtml(text.slice(0, idx)) + '<mark style="background:rgba(180,150,255,0.4);color:#fff;border-radius:3px;">' + escapeHtml(text.slice(idx, idx + query.length)) + '</mark>' + escapeHtml(text.slice(idx + query.length));
+  }
+
+  const searchInput = document.getElementById('search-input');
+  const searchDropdown = document.getElementById('search-dropdown');
+  let searchDebounce = null;
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    const query = searchInput.value.trim();
+    if (query.length < 2) {
+      searchDropdown.classList.remove('open');
+      searchDropdown.innerHTML = '';
+      return;
+    }
+    searchDebounce = setTimeout(() => runSearch(query), 150);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrap')) {
+      searchDropdown.classList.remove('open');
+    }
+  });
+
+  async function runSearch(query) {
+    const q = query.toLowerCase();
+    const channelCards = getChannelCards();
+    const meta = await loadKanalMeta();
+
+    const channelHits = channelCards.filter(c => c.name.toLowerCase().includes(q));
+
+    const noteHits = [];
+    for (const c of channelCards) {
+      const entry = meta[c.file];
+      if (entry && entry.notizen && entry.notizen.toLowerCase().includes(q) && !c.name.toLowerCase().includes(q)) {
+        noteHits.push({ ...c, notiz: entry.notizen });
+      }
+    }
+
+    renderDropdown(query, channelHits, noteHits, null);
+    searchDropdown.classList.add('open');
+
+    const songIdx = await loadSongIndex();
+    const songHits = [];
+    const channelByFile = {};
+    channelCards.forEach(c => channelByFile[c.file] = c);
+    outer:
+    for (const [file, songs] of Object.entries(songIdx)) {
+      for (const song of songs) {
+        if (song.title && song.title.toLowerCase().includes(q)) {
+          songHits.push({ file, songId: song.id, title: song.title, channelName: (channelByFile[file] ? channelByFile[file].name : file.replace('.html','').replace(/_/g,' ')) });
+          if (songHits.length >= 30) break outer;
+        }
+      }
+    }
+
+    if (searchInput.value.trim() === query) {
+      renderDropdown(query, channelHits, noteHits, songHits);
+    }
+  }
+
+  function renderDropdown(query, channelHits, noteHits, songHits) {
+    let html = '';
+
+    if (channelHits.length === 0 && noteHits.length === 0 && (songHits === null || songHits.length === 0)) {
+      if (songHits === null) {
+        html = '<div class="search-loading">Suche läuft ...</div>';
+      } else {
+        html = '<div class="search-empty">Keine Treffer für "' + escapeHtml(query) + '"</div>';
+      }
+      searchDropdown.innerHTML = html;
+      return;
+    }
+
+    if (channelHits.length > 0) {
+      html += '<div class="search-group-label">Kanäle</div>';
+      channelHits.slice(0, 15).forEach(c => {
+        html += '<a class="search-result" href="' + c.file + '">'
+          + '<span class="search-result-icon">📻</span>'
+          + '<span class="search-result-text"><div class="search-result-title">' + highlightMatch(c.name, query) + '</div></span>'
+          + '</a>';
+      });
+    }
+
+    if (noteHits.length > 0) {
+      html += '<div class="search-group-label">Notizen</div>';
+      noteHits.slice(0, 10).forEach(c => {
+        html += '<a class="search-result" href="' + c.file + '">'
+          + '<span class="search-result-icon">📝</span>'
+          + '<span class="search-result-text"><div class="search-result-title">' + escapeHtml(c.name) + '</div>'
+          + '<div class="search-result-sub">' + highlightMatch(c.notiz, query) + '</div></span>'
+          + '</a>';
+      });
+    }
+
+    if (songHits === null) {
+      html += '<div class="search-loading">Songtitel werden durchsucht ...</div>';
+    } else if (songHits.length > 0) {
+      html += '<div class="search-group-label">Songtitel</div>';
+      songHits.forEach(s => {
+        html += '<a class="search-result" href="' + s.file + '?song=' + encodeURIComponent(s.songId) + '">'
+          + '<span class="search-result-icon">🎵</span>'
+          + '<span class="search-result-text"><div class="search-result-title">' + highlightMatch(s.title, query) + '</div>'
+          + '<div class="search-result-sub">' + escapeHtml(s.channelName) + '</div></span>'
+          + '</a>';
+      });
+    }
+
+    searchDropdown.innerHTML = html;
+  }
 </script>
 </body>
 </html>
