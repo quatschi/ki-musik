@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jazz Haze</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCG0E76vskx-g-yVqaWkVMtQ -->
+<!-- channel-url: https://www.youtube.com/@JazzHazeYT -->
+<!-- created: 2026-06-25 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Jazz_Haze.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/ytc/AIdro_mhsmnYE8s43yKvrOUEuO15ubUhsinTg2sCvnzOqI9_bv10vBFKsBHnJGDP5ESWQFEWmg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Jazz Haze</div>
+      <div class="channel-count">68 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Jazz Haze";
+const KANAL = "Jazz_Haze.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "T3DnANQDf28", "title": "Dark Jazz & Late Night Trip-Hop // Atmospheric Music for Late Drives", "thumb": "https://i.ytimg.com/vi/T3DnANQDf28/mqdefault.jpg", "dur": "1:31:53"}, {"id": "JU3DXDjHdrI", "title": "Dark Jazz & Noir Trip-Hop // Late-Night Music for Lonely Roads", "thumb": "https://i.ytimg.com/vi/JU3DXDjHdrI/mqdefault.jpg", "dur": "1:33:04"}, {"id": "xplTOrSJr7o", "title": "Dark Jazz & Midnight Trip-Hop // Atmospheric Sounds for Night Drives", "thumb": "https://i.ytimg.com/vi/xplTOrSJr7o/mqdefault.jpg", "dur": "1:33:48"}, {"id": "liqSiBn9hIM", "title": "Dark Jazz Beats & Rainy Trip-Hop // Music for Solitary Late Drives", "thumb": "https://i.ytimg.com/vi/liqSiBn9hIM/mqdefault.jpg", "dur": "1:34:40"}, {"id": "FcM5S1j_Odg", "title": "Noir Jazz Club & Trip-Hop Grooves // Music for Midnight City Scenes", "thumb": "https://i.ytimg.com/vi/FcM5S1j_Odg/mqdefault.jpg", "dur": "1:33:24"}, {"id": "FtwEzRxscpU", "title": "Melancholic Jazz & Noir Downtempo // Moody Music for Late Night Roads", "thumb": "https://i.ytimg.com/vi/FtwEzRxscpU/mqdefault.jpg", "dur": "1:31:28"}, {"id": "TzgyTCrhWrk", "title": "Dusty Jazz & Dark Trip-Hop // Music for Midnight City Drives", "thumb": "https://i.ytimg.com/vi/TzgyTCrhWrk/mqdefault.jpg", "dur": "1:31:52"}, {"id": "OiwMED2QdyM", "title": "Midnight Jazz & Dusty Trip-Hop // Music for Empty Streets", "thumb": "https://i.ytimg.com/vi/OiwMED2QdyM/mqdefault.jpg", "dur": "1:36:34"}, {"id": "-qx5E38nSW0", "title": "Noir Lounge & Slow Trip-Hop // Music for After-Hours Driving", "thumb": "https://i.ytimg.com/vi/-qx5E38nSW0/mqdefault.jpg", "dur": "1:35:41"}, {"id": "uq5CwPgxEmU", "title": "Late-Night Jazz & Shadowy Trip-Hop // Music for Driving Through the Dark", "thumb": "https://i.ytimg.com/vi/uq5CwPgxEmU/mqdefault.jpg", "dur": "1:35:28"}, {"id": "dpF9_axsypg", "title": "Noir Jazz & Slow Trip-Hop // Music for Late Night Cruising", "thumb": "https://i.ytimg.com/vi/dpF9_axsypg/mqdefault.jpg", "dur": "1:31:19"}, {"id": "eFoCYGIAUIk", "title": "Midnight Jazz & Noir Beats // Music for Late Urban Nights", "thumb": "https://i.ytimg.com/vi/eFoCYGIAUIk/mqdefault.jpg", "dur": "1:33:05"}, {"id": "pjyjeq6B2DM", "title": "Midnight Noir Jazz & Dusty Beats // Late Night Trip-Hop for Thinking", "thumb": "https://i.ytimg.com/vi/pjyjeq6B2DM/mqdefault.jpg", "dur": "1:30:40"}, {"id": "qWhQl5Q3vj8", "title": "Noir Jazz & Shadow Beats // Late Night Music for Empty Streets", "thumb": "https://i.ytimg.com/vi/qWhQl5Q3vj8/mqdefault.jpg", "dur": "1:34:16"}, {"id": "c-abOOusYE8", "title": "Rainy Night Trip-Hop & Dark Jazz // Music for Lonely Highways", "thumb": "https://i.ytimg.com/vi/c-abOOusYE8/mqdefault.jpg", "dur": "1:33:13"}, {"id": "TPPfSircQZU", "title": "Dark Jazz & Noir Beats // Late Night Sounds for Lonely Streets", "thumb": "https://i.ytimg.com/vi/TPPfSircQZU/mqdefault.jpg", "dur": "1:34:00"}, {"id": "-G4Tx5WtlrQ", "title": "Dark Jazz & Noir Trip-Hop // Atmospheric Music for Late Drives", "thumb": "https://i.ytimg.com/vi/-G4Tx5WtlrQ/mqdefault.jpg", "dur": "1:33:03"}, {"id": "PvZtUDQpfaQ", "title": "Dark Jazz & Late Night Trip-Hop // Cinematic Night Drive Mix", "thumb": "https://i.ytimg.com/vi/PvZtUDQpfaQ/mqdefault.jpg", "dur": "1:30:16"}, {"id": "6_1o635OuIA", "title": "Dark Jazz & Late Night Trip-Hop // Slow Music for Neon Nights", "thumb": "https://i.ytimg.com/vi/6_1o635OuIA/mqdefault.jpg", "dur": "1:31:13"}, {"id": "UEffVJY5klI", "title": "Noir Jazz & Cinematic Trip-Hop // Music for Midnight Driving", "thumb": "https://i.ytimg.com/vi/UEffVJY5klI/mqdefault.jpg", "dur": "1:32:20"}, {"id": "dHqdlLZfvts", "title": "Rainy Night Jazz & Downtempo Beats // Music for Driving Alone", "thumb": "https://i.ytimg.com/vi/dHqdlLZfvts/mqdefault.jpg", "dur": "1:34:27"}, {"id": "pGuvWU_1j-o", "title": "Dark Jazz & Late Night Trip-Hop // Atmospheric Music for Late Drives", "thumb": "https://i.ytimg.com/vi/pGuvWU_1j-o/mqdefault.jpg", "dur": "1:34:14"}, {"id": "Q5j_6ko3gCw", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Long Night Drives", "thumb": "https://i.ytimg.com/vi/Q5j_6ko3gCw/mqdefault.jpg", "dur": "1:34:15"}, {"id": "a-bvR5GIbjQ", "title": "Dark Jazz & Cinematic Trip-Hop // Noir Beats for Late Night Roads", "thumb": "https://i.ytimg.com/vi/a-bvR5GIbjQ/mqdefault.jpg", "dur": "1:33:51"}, {"id": "NdpikbPr8VA", "title": "Dark Jazz & Late Night Trip-Hop // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/NdpikbPr8VA/mqdefault.jpg", "dur": "1:30:04"}, {"id": "iBqwDRsNKDo", "title": "Late Night Trip-Hop & Cinematic Trip-Hop // Night Driving Playlist", "thumb": "https://i.ytimg.com/vi/iBqwDRsNKDo/mqdefault.jpg", "dur": "1:31:10"}, {"id": "i1SdBybIQjs", "title": "Late Night Trip-Hop & Cinematic Trip-Hop // Music for Midnight Driving", "thumb": "https://i.ytimg.com/vi/i1SdBybIQjs/mqdefault.jpg", "dur": "1:34:20"}, {"id": "cCNwyVresjU", "title": "Late Night Trip-Hop & Dark Jazz  // Night Driving Playlist", "thumb": "https://i.ytimg.com/vi/cCNwyVresjU/mqdefault.jpg", "dur": "1:32:29"}, {"id": "ld3OJuAFYhg", "title": "Dark Jazz & Late Night Trip-Hop // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/ld3OJuAFYhg/mqdefault.jpg", "dur": "1:35:20"}, {"id": "iCfa1Ie6vDo", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Long Night Drives", "thumb": "https://i.ytimg.com/vi/iCfa1Ie6vDo/mqdefault.jpg", "dur": "1:33:23"}, {"id": "qTiMFzp_YWs", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Midnight Driving", "thumb": "https://i.ytimg.com/vi/qTiMFzp_YWs/mqdefault.jpg", "dur": "1:34:33"}, {"id": "nXbz4_XZSKk", "title": "Dark Trip-Hop Session // Late Night Trip-Hop // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/nXbz4_XZSKk/mqdefault.jpg", "dur": "1:36:25"}, {"id": "9WxNZERkGx4", "title": "Dark Trip-Hop Session // Late Night Psychedelic // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/9WxNZERkGx4/mqdefault.jpg", "dur": "1:35:32"}, {"id": "V7KgC6DciGI", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Dimly Lit Bars", "thumb": "https://i.ytimg.com/vi/V7KgC6DciGI/mqdefault.jpg", "dur": "1:34:58"}, {"id": "T8W8uJjQIqQ", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Solitary Drinking", "thumb": "https://i.ytimg.com/vi/T8W8uJjQIqQ/mqdefault.jpg", "dur": "1:33:51"}, {"id": "sjz9hj6HxW0", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Sleepless Nights", "thumb": "https://i.ytimg.com/vi/sjz9hj6HxW0/mqdefault.jpg", "dur": "1:33:44"}, {"id": "qh_IBCmialE", "title": "Midnight Noir Jazz & Chill Downtempo // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/qh_IBCmialE/mqdefault.jpg", "dur": "1:35:51"}, {"id": "Uune_MwhMS4", "title": "Dark Trip-Hop Mix // Cinematic Noir Jazz // Music for Late Night Highway Drives", "thumb": "https://i.ytimg.com/vi/Uune_MwhMS4/mqdefault.jpg", "dur": "1:10:41"}, {"id": "rGN77YOxAcU", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/rGN77YOxAcU/mqdefault.jpg", "dur": "1:32:43"}, {"id": "o9tTOyDmJos", "title": "Late Night Trip-Hop // Seductive Noir Jazz // Silk And Shadows", "thumb": "https://i.ytimg.com/vi/o9tTOyDmJos/mqdefault.jpg", "dur": "1:26:46"}, {"id": "T9Opll_DN4k", "title": "Dark Trip-Hop Session // Smoky Noir Jazz // Music for Late Night", "thumb": "https://i.ytimg.com/vi/T9Opll_DN4k/mqdefault.jpg", "dur": "1:33:07"}, {"id": "jSk0sETDNDA", "title": "Dark Jazz Mix & Smoky Lounge Jazz // Blood On The Velvet // For Night Driving", "thumb": "https://i.ytimg.com/vi/jSk0sETDNDA/mqdefault.jpg", "dur": "1:32:01"}, {"id": "S-Q1Bkd53_w", "title": "Dark Jazz & Late night Trip-Hop Mix // Seductive Slow Jazz // Sweet Poison", "thumb": "https://i.ytimg.com/vi/S-Q1Bkd53_w/mqdefault.jpg", "dur": "1:32:23"}, {"id": "S1DjkMxqCmw", "title": "Trip-Hop & Noir Jazz Mix // Seductive Cinematic Downtempo // The Velvet Trap", "thumb": "https://i.ytimg.com/vi/S1DjkMxqCmw/mqdefault.jpg", "dur": "1:35:24"}, {"id": "7HSYHS0JQzI", "title": "Lounge Jazz & Trip-Hop Mix // Late Night Analog Sound // Saint Or Sinner", "thumb": "https://i.ytimg.com/vi/7HSYHS0JQzI/mqdefault.jpg", "dur": "1:33:54"}, {"id": "9KCDr66CxNE", "title": "Trip-Hop & Noir Jazz Mix // Seductive Cinematic Downtempo // The Velvet Trap", "thumb": "https://i.ytimg.com/vi/9KCDr66CxNE/mqdefault.jpg", "dur": "1:32:48"}, {"id": "Gsr3AEKPBPQ", "title": "Late night Trip-Hop Mix // Sensual Late Night Downtempo // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/Gsr3AEKPBPQ/mqdefault.jpg", "dur": "1:35:56"}, {"id": "Qvi6aZyDeNY", "title": "Trip-Hop & Noir Jazz Mix // Dark Cinematic Downtempo // Velvet Alibi", "thumb": "https://i.ytimg.com/vi/Qvi6aZyDeNY/mqdefault.jpg", "dur": "1:30:21"}, {"id": "l3_I6TAwtxM", "title": "Dark Trip-Hop Mix // Hypnotic Cinematic Downtempo // Blood And Brandy", "thumb": "https://i.ytimg.com/vi/l3_I6TAwtxM/mqdefault.jpg", "dur": "1:37:25"}, {"id": "9FJiq4wyHMU", "title": "Cinematic Downtempo Mix // Hypnotic Trip-Hop // Smoke In The Eyes", "thumb": "https://i.ytimg.com/vi/9FJiq4wyHMU/mqdefault.jpg", "dur": "1:34:43"}, {"id": "MhU_shFcT8s", "title": "Noir Jazz Mix // Dark Cinematic Downtempo // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/MhU_shFcT8s/mqdefault.jpg", "dur": "1:32:31"}, {"id": "kmCjKY4Q5Zk", "title": "Lounge Jazz Mix // Slow-Burning Analog Noir // Music for City Walks", "thumb": "https://i.ytimg.com/vi/kmCjKY4Q5Zk/mqdefault.jpg", "dur": "1:35:44"}, {"id": "iX1hVRvx9TA", "title": "Hypnotic Noir Mix // Slow-burning Analog Jazz // Music for Rainy City Windows", "thumb": "https://i.ytimg.com/vi/iX1hVRvx9TA/mqdefault.jpg", "dur": "1:32:52"}, {"id": "oGFVQdq5rug", "title": "Dark Trip-Hop Mix // Cinematic Noir Jazz // Music for Late Night Highway Drives", "thumb": "https://i.ytimg.com/vi/oGFVQdq5rug/mqdefault.jpg", "dur": "1:33:34"}, {"id": "5HhgVF4oeh8", "title": "Noir Jazz Mix // Seductive Lounge Jazz // Music for Late Night Strolls", "thumb": "https://i.ytimg.com/vi/5HhgVF4oeh8/mqdefault.jpg", "dur": "1:30:51"}, {"id": "14PjXLSPkXM", "title": "Cinematic Trip-Hop Mix // Dark Analog & Hypnotic Slow Jazz // Music for Midnight Strangers", "thumb": "https://i.ytimg.com/vi/14PjXLSPkXM/mqdefault.jpg", "dur": "1:33:11"}, {"id": "Odg188LTo4k", "title": "Noir Jazz & Trip-Hop Mix // Seductive Cinematic Downtempo // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/Odg188LTo4k/mqdefault.jpg", "dur": "1:30:37"}, {"id": "aAYv6lF_oCM", "title": "Noir Jazz Mix // Hypnotic Trip-Hop // Blood And Bourbon", "thumb": "https://i.ytimg.com/vi/aAYv6lF_oCM/mqdefault.jpg", "dur": "1:32:15"}, {"id": "0TlWi5U99QY", "title": "Noir Jazz Mix // Dark Sensual Trip-Hop // Shadows And Sin", "thumb": "https://i.ytimg.com/vi/0TlWi5U99QY/mqdefault.jpg", "dur": "1:31:23"}, {"id": "HouJhfHg9mg", "title": "Sensual Lounge Jazz Mix // Slow-Burning Analog Vibes // Midnight Alibi", "thumb": "https://i.ytimg.com/vi/HouJhfHg9mg/mqdefault.jpg", "dur": "1:34:52"}, {"id": "-aet3_8LT5U", "title": "Late Night Drive Mix // Deep Trip-Hop & Neon Vibes // Lost Highway", "thumb": "https://i.ytimg.com/vi/-aet3_8LT5U/mqdefault.jpg", "dur": "1:30:43"}, {"id": "yCxexG_JF-c", "title": "Psychedelic Trip-Hop // Smoky Vocals & Slow Burn // Out of Time", "thumb": "https://i.ytimg.com/vi/yCxexG_JF-c/mqdefault.jpg", "dur": "1:32:35"}, {"id": "J0oBGJzbxls", "title": "Late Night Trip-Hop // Hypnotic Slow Jazz Vibes // Shadow Play", "thumb": "https://i.ytimg.com/vi/J0oBGJzbxls/mqdefault.jpg", "dur": "1:33:05"}, {"id": "yoBU_yW4g6U", "title": "Late Night Slow Jazz // Psychedelic Analog Soul // City of Hiss", "thumb": "https://i.ytimg.com/vi/yoBU_yW4g6U/mqdefault.jpg", "dur": "1:32:02"}, {"id": "T3x7QXlBxRY", "title": "Dark Noir Jazz Mix // Smoky Slow-Burning Vibes // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/T3x7QXlBxRY/mqdefault.jpg", "dur": "1:35:52"}, {"id": "KkZVuF9a8TQ", "title": "Dark Trip-Hop Session // Late Night Psychedelic // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/KkZVuF9a8TQ/mqdefault.jpg", "dur": "1:33:55"}, {"id": "FtdzZWeOhZE", "title": "Sensual Trip-Hop Jazz Mix // Dark Cinematic // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/FtdzZWeOhZE/mqdefault.jpg", "dur": "1:45:52"}, {"id": "FPEiOIdKzwU", "title": "Dark Jazz & Cinematic Trip-Hop // Music for Night Driving", "thumb": "https://i.ytimg.com/vi/FPEiOIdKzwU/mqdefault.jpg", "dur": "1:29:18"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
