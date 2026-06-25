@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOOM PULSE</title>
+<!-- categories: Funk -->
+<!-- channel-id: UCoD1ViJxGRK_u4T1WXI0nxw -->
+<!-- channel-url: https://youtube.com/@boom_pulse -->
+<!-- created: 2026-06-26 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=BOOM_PULSE.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/a3rlyOu0RBaXAdFictfy1eXXfdPUi_uUfUGsgj1CtuNRgosLZIXi1Sd0-mb7WFLc3nLQ4abUgts=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">BOOM PULSE</div>
+      <div class="channel-count">101 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "BOOM PULSE";
+const KANAL = "BOOM_PULSE.html";
+const ORIG_CATEGORIES = "Funk";
+const VIDEOS = [{"id": "NxLMFX9MD1I", "title": "🔥 Midnight Chill & Vintage Soul Funk | Soft Spiritual Grooves & Deep Vocal Sessions", "thumb": "https://i.ytimg.com/vi/NxLMFX9MD1I/mqdefault.jpg", "dur": "3:11:48"}, {"id": "hSDIO1CvMz0", "title": "🔥 Spiritual Vintage Soul Funk by Boom Pulse | Deep Raw Grooves & Rare Vocal Sessions", "thumb": "https://i.ytimg.com/vi/hSDIO1CvMz0/mqdefault.jpg", "dur": "3:24:17"}, {"id": "_WEbNb-kkE8", "title": "🔥 Vintage Soul Funk Grooves You've Been Looking For | Ultra-Dry Rhythm & Raw Minimal Pocket", "thumb": "https://i.ytimg.com/vi/_WEbNb-kkE8/mqdefault.jpg", "dur": "3:05:28"}, {"id": "KWX0lhIAhS0", "title": "🔥 Ultimate 70s Vintage Soul Funk Grooves | Deep Spiritual Flow & Rare Vocal Sessions", "thumb": "https://i.ytimg.com/vi/KWX0lhIAhS0/mqdefault.jpg", "dur": "3:59:16"}, {"id": "vSmSMV3rcgo", "title": "🔥 Vintage Soul Funk Grooves You've Been Waiting For | Rare Locked-in Rhythm & Spiritual Lyrics", "thumb": "https://i.ytimg.com/vi/vSmSMV3rcgo/mqdefault.jpg", "dur": "3:38:53"}, {"id": "ywOP-v2sbLM", "title": "🔥 Vintage Soul Funk Grooves You've Been Looking For | Deep Divine Flow & Rare Vocal Sessions", "thumb": "https://i.ytimg.com/vi/ywOP-v2sbLM/mqdefault.jpg", "dur": "3:37:58"}, {"id": "l3u707rV1js", "title": "🔥 Ultimate Vintage Soul Funk Grooves | Deep Spiritual Raw Rhythm & Rare 70s Soul Vibes", "thumb": "https://i.ytimg.com/vi/l3u707rV1js/mqdefault.jpg", "dur": "3:21:32"}, {"id": "mbZLlM-o490", "title": "🔥 Spiritual Vintage Soul Funk Grooves You’ve Been Waiting For | Deep Raw Rhythm & Minimal Dry Flow", "thumb": "https://i.ytimg.com/vi/mbZLlM-o490/mqdefault.jpg", "dur": "3:04:55"}, {"id": "nKlNGCN1cAI", "title": "🎷 Smooth Jazz Funk & Vintage Soul Grooves | Deep Spiritual Flow & Ultra-Dry Vocal Sessions", "thumb": "https://i.ytimg.com/vi/nKlNGCN1cAI/mqdefault.jpg", "dur": "3:24:01"}, {"id": "frvm9FILbCU", "title": "👑 Boom Pulse - A Few Days (Official Lyric Video) | Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/frvm9FILbCU/mqdefault.jpg", "dur": "3:59"}, {"id": "T_rhh5SmHpc", "title": "🎷 Vintage Soul Jazz Funk You’ve Been Seeking | Deep Spiritual Flow & Sophisticated Grooves ✨", "thumb": "https://i.ytimg.com/vi/T_rhh5SmHpc/mqdefault.jpg", "dur": "3:01:19"}, {"id": "FcTTVlOHc-Q", "title": "🔥 Spiritual Soul Funk You’ve Been Looking For | Deep Pocket & Minimal Dry Rhythm", "thumb": "https://i.ytimg.com/vi/FcTTVlOHc-Q/mqdefault.jpg", "dur": "3:21:10"}, {"id": "omgQ2AXR8_k", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Looking For | Deep Spiritual Flow & Minimal Dry Rhythm", "thumb": "https://i.ytimg.com/vi/omgQ2AXR8_k/mqdefault.jpg", "dur": "4:06:19"}, {"id": "0us_UA1gArc", "title": "🔥 Runaway Prince (1 Hour Loop) | Deep Spiritual Soul Funk You’ve Been Seeking", "thumb": "https://i.ytimg.com/vi/0us_UA1gArc/mqdefault.jpg", "dur": "1:03:56"}, {"id": "63LNBsvstHc", "title": "🔥 Smooth Soul Funk Infinity | Retro Grooves in the Deep Pocket & Analog Flow", "thumb": "https://i.ytimg.com/vi/63LNBsvstHc/mqdefault.jpg", "dur": "3:49:54"}, {"id": "_8ouoXsUCgA", "title": "🔥 Smooth Soul Funk | Deep Retro Grooves & Timeless Analog Vibes", "thumb": "https://i.ytimg.com/vi/_8ouoXsUCgA/mqdefault.jpg", "dur": "3:11:01"}, {"id": "wqW7HJz9MmY", "title": "🔥 Rest in the Funk Groove | Spiritual Chill Funk & Minimal Dry Flow", "thumb": "https://i.ytimg.com/vi/wqW7HJz9MmY/mqdefault.jpg", "dur": "3:16:59"}, {"id": "lRPz16pUYCU", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Seeking | Deep Hypnotic Soul Vibe & Raw Spirit", "thumb": "https://i.ytimg.com/vi/lRPz16pUYCU/mqdefault.jpg", "dur": "3:20:44"}, {"id": "fESumQR4oFc", "title": "👑 Boom Pulse - Do Not Disturb (Official Lyric Video) | Vintage Soul Funk", "thumb": "https://i.ytimg.com/vi/fESumQR4oFc/mqdefault.jpg", "dur": "3:50"}, {"id": "NNr_o1ApgqY", "title": "🔥 70s VINTAGE SOUL FUNK GROOVES | Upbeat Analog Rhythm to Keep Walking, Keep Moving🚶‍♂️", "thumb": "https://i.ytimg.com/vi/NNr_o1ApgqY/mqdefault.jpg", "dur": "3:34:26"}, {"id": "hEdMy3VWUkY", "title": "👑 Best of Boom Pulse | Vintage Soul Funk Grooves You’ll Keep on Repeat(5H+)", "thumb": "https://i.ytimg.com/vi/hEdMy3VWUkY/mqdefault.jpg", "dur": "5:45:24"}, {"id": "g90cjC05ric", "title": "🔥 SMOOTH VINTAGE SOUL FLOW (3H+) 📻 | Deep Calm Spirit & Funk Grooves You've Been Waiting For", "thumb": "https://i.ytimg.com/vi/g90cjC05ric/mqdefault.jpg", "dur": "3:30:09"}, {"id": "r6Ec-Ip8O88", "title": "🔥 Spiritual Chill Soul Funk & Rare Deep Groove | Hypnotic Vintage Flow You've Been Seeking", "thumb": "https://i.ytimg.com/vi/r6Ec-Ip8O88/mqdefault.jpg", "dur": "4:53:24"}, {"id": "XYtbXOJ3G4o", "title": "🔥 Minimal Soul Funk You've Been Looking For | Bright Grooves & The Marvelous Light", "thumb": "https://i.ytimg.com/vi/XYtbXOJ3G4o/mqdefault.jpg", "dur": "3:08:06"}, {"id": "2Q1mdvybLpY", "title": "🔥 Spiritual Chill Funk & Rare Deep Groove | Ultimate Sacred Vibes For Work & Chill", "thumb": "https://i.ytimg.com/vi/2Q1mdvybLpY/mqdefault.jpg", "dur": "3:15:47"}, {"id": "uPq9CrxV08Y", "title": "🔥 Vintage Soul Funk Groove You’ve Been Waiting For | Raw Soul Spirit & Deep Hypnotic Rhythm", "thumb": "https://i.ytimg.com/vi/uPq9CrxV08Y/mqdefault.jpg", "dur": "3:33:33"}, {"id": "5akB3CvRY4A", "title": "🔥 Holy Spiritual Chill Funk & Rare Deep Groove | Calm Vintage Soul You've Been Seeking", "thumb": "https://i.ytimg.com/vi/5akB3CvRY4A/mqdefault.jpg", "dur": "3:29:13"}, {"id": "T_FihZxwkJ8", "title": "🔥 Spiritual Chill Funk & Rare Deep Groove | Gentle Vintage Grooves For Working, Studying & Driving", "thumb": "https://i.ytimg.com/vi/T_FihZxwkJ8/mqdefault.jpg", "dur": "4:45:48"}, {"id": "Y28_iGLKFYA", "title": "🔥 Spiritual Latin Soul Funk & Rare Chill Groove | Ultimate Vintage Grooves You've Been Seeking", "thumb": "https://i.ytimg.com/vi/Y28_iGLKFYA/mqdefault.jpg", "dur": "4:03:14"}, {"id": "6pM_ll-iaHE", "title": "🔥 Minimal Soul Funk & Feel-Good Rhythm | Crisp Vintage Grooves For Working & Driving", "thumb": "https://i.ytimg.com/vi/6pM_ll-iaHE/mqdefault.jpg", "dur": "3:00:04"}, {"id": "sLOwB7JXw8E", "title": "🔥 Spiritual Chill Funk & Minimal Dry Soul | Vintage Grooves You've Been Seeking", "thumb": "https://i.ytimg.com/vi/sLOwB7JXw8E/mqdefault.jpg", "dur": "5:03:12"}, {"id": "nncdbSrCXyg", "title": "🔥 Ultimate Spiritual Chill Funk | Gentle Vintage Grooves For Working, Studying & Driving", "thumb": "https://i.ytimg.com/vi/nncdbSrCXyg/mqdefault.jpg", "dur": "3:16:27"}, {"id": "SMTS0QXjf-4", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Craving | Holy Presence & Minimal Dry Flow", "thumb": "https://i.ytimg.com/vi/SMTS0QXjf-4/mqdefault.jpg", "dur": "3:43:45"}, {"id": "MEexT19iFXk", "title": "🔥 Vintage Soul Funk Grooves You've Been Craving | Holy Raw Spirit & Minimal Dry Pocket", "thumb": "https://i.ytimg.com/vi/MEexT19iFXk/mqdefault.jpg", "dur": "3:15:04"}, {"id": "q86dGcV7jNE", "title": "🔥 After Dark & Mellow Deep Groove | Vintage Soul Funk You’ve Been Seeking", "thumb": "https://i.ytimg.com/vi/q86dGcV7jNE/mqdefault.jpg", "dur": "5:37:07"}, {"id": "8wkPjbf8oUA", "title": "🔥 Calm Spiritual Smooth Funk & Rare Deep Soul | Vintage Chill Grooves For Working", "thumb": "https://i.ytimg.com/vi/8wkPjbf8oUA/mqdefault.jpg", "dur": "3:17:18"}, {"id": "BED6RC2hJ0Y", "title": "🔥 Vintage Soul Funk Grooves You Didn’t Know You Needed | Calm Spiritual Jazz & Deep Raw Flow", "thumb": "https://i.ytimg.com/vi/BED6RC2hJ0Y/mqdefault.jpg", "dur": "3:32:17"}, {"id": "9lBobuRLg4U", "title": "🔥 Spiritual Chill Funk & Authentic 70s Soul | Vintage Soul Funk Grooves You’ve Been Seeking", "thumb": "https://i.ytimg.com/vi/9lBobuRLg4U/mqdefault.jpg", "dur": "3:23:29"}, {"id": "gtLmQXPMrpU", "title": "🔥 Midnight Soul Funk & Deep Spiritual Groove | Vintage Soul Funk Grooves You’ve Been Missing", "thumb": "https://i.ytimg.com/vi/gtLmQXPMrpU/mqdefault.jpg", "dur": "3:25:10"}, {"id": "InTo6CNN_cA", "title": "🔥 This Groove Knows You Better Than You Think | Smooth 70s Soul Funk— Night Drive & Cruising Vibes", "thumb": "https://i.ytimg.com/vi/InTo6CNN_cA/mqdefault.jpg", "dur": "3:07:41"}, {"id": "B1UkaCpwsVA", "title": "🔥 Smooth Soul Funk You Didn’t Know You Needed| Feel-Good Groove for Work & Chill", "thumb": "https://i.ytimg.com/vi/B1UkaCpwsVA/mqdefault.jpg", "dur": "3:22:45"}, {"id": "DIIohAWuFzU", "title": "🍷✨ You Didn’t Find This Groove, It Found You | Vintage Soul Funk 📻", "thumb": "https://i.ytimg.com/vi/DIIohAWuFzU/mqdefault.jpg", "dur": "3:17:56"}, {"id": "6TOeKSBpeaA", "title": "🔥 Vintage Soul Funk Groove You’ve Been Looking For | Deep Rare Soul Flow & Calm Hypnotic Spirit", "thumb": "https://i.ytimg.com/vi/6TOeKSBpeaA/mqdefault.jpg", "dur": "3:18:11"}, {"id": "j5jPMFmyJSk", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Searching For | Deep Rare Flow & Hypnotic Soul Rhythm", "thumb": "https://i.ytimg.com/vi/j5jPMFmyJSk/mqdefault.jpg", "dur": "3:10:11"}, {"id": "X-4ilDyg52M", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Seeking | Deep Hypnotic Soul & Chill Spirit Vibe", "thumb": "https://i.ytimg.com/vi/X-4ilDyg52M/mqdefault.jpg", "dur": "3:03:26"}, {"id": "_JJRq6V0-i8", "title": "🔥 Deep Spiritual Chill Vibe & Rare Groove | Vintage Soul Funk Grooves You’ve Been Seeking", "thumb": "https://i.ytimg.com/vi/_JJRq6V0-i8/mqdefault.jpg", "dur": "3:14:10"}, {"id": "aT7-bHnqCYg", "title": "🔥 Vintage Soul Funk Groove You’ve Been Waiting For | Deepest Soul Flow & Raw Spiritual Vibe", "thumb": "https://i.ytimg.com/vi/aT7-bHnqCYg/mqdefault.jpg", "dur": "3:10:29"}, {"id": "LU9TQ0m3vzk", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Looking For | Raw Soul Spirit & Deep Hypnotic Rhythm", "thumb": "https://i.ytimg.com/vi/LU9TQ0m3vzk/mqdefault.jpg", "dur": "3:37:49"}, {"id": "RPiWM5YCEOY", "title": "🔥 Spiritual Chill Funk & Rare Deep Groove | Vintage Soul Funk Grooves You’ve Been Seeking", "thumb": "https://i.ytimg.com/vi/RPiWM5YCEOY/mqdefault.jpg", "dur": "2:40:29"}, {"id": "DfLmonoxQuw", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Craving | The Ultimate Raw Soul & Hypnotic Rare Groove", "thumb": "https://i.ytimg.com/vi/DfLmonoxQuw/mqdefault.jpg", "dur": "3:19:29"}, {"id": "EKxYdk-OFgo", "title": "🔥 Hypnotic Flow : Vintage Soul Funk Grooves You’ve Been Seeking | The Deepest", "thumb": "https://i.ytimg.com/vi/EKxYdk-OFgo/mqdefault.jpg", "dur": "3:09:57"}, {"id": "uGEmxuC_YeU", "title": "🔥 Vintage Soul Funk Grooves You've Been Waiting For | Hidden Gems & Rare Masterpieces", "thumb": "https://i.ytimg.com/vi/uGEmxuC_YeU/mqdefault.jpg", "dur": "3:30:01"}, {"id": "oKkIRSgHiYk", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Hunting For | Pure Minimal Pocket & Holy Raw Spirit", "thumb": "https://i.ytimg.com/vi/oKkIRSgHiYk/mqdefault.jpg", "dur": "3:43:31"}, {"id": "CF02PdLmvcw", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Craving | Deep Dry Soul & Minimal Spiritual Flow", "thumb": "https://i.ytimg.com/vi/CF02PdLmvcw/mqdefault.jpg", "dur": "3:20:45"}, {"id": "zbNOG1jhYuM", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Craving | The Ultimate Raw Soul & Hypnotic Rare Groove", "thumb": "https://i.ytimg.com/vi/zbNOG1jhYuM/mqdefault.jpg", "dur": "3:24:42"}, {"id": "ctfDdbpQlQ8", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Seeking | Deep Spiritual Soul & Raw Hypnotic Vibe", "thumb": "https://i.ytimg.com/vi/ctfDdbpQlQ8/mqdefault.jpg", "dur": "3:51:30"}, {"id": "ObfI0FSn1Og", "title": "👑 10 Hours Vintage Soul Funk Grooves You’ve Been Searching For | Golden Hits Collection", "thumb": "https://i.ytimg.com/vi/ObfI0FSn1Og/mqdefault.jpg", "dur": "10:26:47"}, {"id": "kJWYwHvlNGo", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Desiring | Rare Hypnotic Rhythm & Holy Spiritual Pocket", "thumb": "https://i.ytimg.com/vi/kJWYwHvlNGo/mqdefault.jpg", "dur": "5:29:57"}, {"id": "fJJxcI9PPsk", "title": "🔥 Vintage Soul Funk Groove You’ve Been Waiting For | Raw Spiritual Rhythm & Rare Deep Groove", "thumb": "https://i.ytimg.com/vi/fJJxcI9PPsk/mqdefault.jpg", "dur": "4:08:44"}, {"id": "er0heqAXWbg", "title": "🔥 Vintage Soul Funk Groove You’ve Been Seeking | Deep Hypnotic Soul Vibe & Raw Spirit", "thumb": "https://i.ytimg.com/vi/er0heqAXWbg/mqdefault.jpg", "dur": "3:11:08"}, {"id": "bsAS0Q-RKDQ", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Craving | Hypnotic Soul Spirit & Deep Dry Feel", "thumb": "https://i.ytimg.com/vi/bsAS0Q-RKDQ/mqdefault.jpg", "dur": "3:14:26"}, {"id": "sW8SsFaAWF0", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Searching For | Hypnotic Rare Flow & Deep Soul Pocket", "thumb": "https://i.ytimg.com/vi/sW8SsFaAWF0/mqdefault.jpg", "dur": "3:09:45"}, {"id": "Ef95XpnYYic", "title": "🔥 Vintage Soul Funk Groove You’ve Been Searching For | Deep Pocket & Raw Rhythm", "thumb": "https://i.ytimg.com/vi/Ef95XpnYYic/mqdefault.jpg", "dur": "1:36:59"}, {"id": "mnRm8TUp_mg", "title": "🔥 Vintage Soul Funk Grooves You’ve Been Waiting For | Deep Raw Spirit & Minimal Dry Flow", "thumb": "https://i.ytimg.com/vi/mnRm8TUp_mg/mqdefault.jpg", "dur": "5:44:43"}, {"id": "eRErtHjd1wg", "title": "🔥 Vintage Soul Funk Groove You’ve Been Looking For | Raw & Minimal Dry Groove", "thumb": "https://i.ytimg.com/vi/eRErtHjd1wg/mqdefault.jpg", "dur": "3:35:55"}, {"id": "mJdce_oZ_Vc", "title": "🔥 Vintage Soul Funk Groove You’ve Been Waiting For | Deep & Dry Hypnotic Vibe", "thumb": "https://i.ytimg.com/vi/mJdce_oZ_Vc/mqdefault.jpg", "dur": "4:33:19"}, {"id": "2vmZMq0m0u4", "title": "🔥 The Vintage Soul Funk You’ve Been Waiting For | Deep & Dry Groove", "thumb": "https://i.ytimg.com/vi/2vmZMq0m0u4/mqdefault.jpg", "dur": "1:23:32"}, {"id": "5r3wmhAEu0M", "title": "🔥 Vintage Soul Funk Groove You’ve Been Missing | Deep Hypnotic Loop", "thumb": "https://i.ytimg.com/vi/5r3wmhAEu0M/mqdefault.jpg", "dur": "2:03:26"}, {"id": "D5PDX3FGKGg", "title": "🔥 Vintage Soul Funk Groove | Relaxing Noir Music for Deep Thought", "thumb": "https://i.ytimg.com/vi/D5PDX3FGKGg/mqdefault.jpg", "dur": "3:23:26"}, {"id": "gf62saOCFcg", "title": "🔥1970s Vintage Latin Soul Funk Mix | Classic Latin Funk & Chicano Soul", "thumb": "https://i.ytimg.com/vi/gf62saOCFcg/mqdefault.jpg", "dur": "1:29:46"}, {"id": "cXokjNJ0VBE", "title": "🔥 Vintage Soul Funk Groove You’ve Been Searching For | Deep Focus & Minimalist Flow", "thumb": "https://i.ytimg.com/vi/cXokjNJ0VBE/mqdefault.jpg", "dur": "1:23:19"}, {"id": "c2XdD4g7HhU", "title": "🔥 Vintage Soul Funk Groove You’ve Been Searching For | Authentic Analog Sound Work Flow", "thumb": "https://i.ytimg.com/vi/c2XdD4g7HhU/mqdefault.jpg", "dur": "2:35:35"}, {"id": "QP77LyNrxDo", "title": "🔥 Vintage Soul Funk Groove You’ve Been Waiting For | Deep Divine Flow & Rare Locked-in Rhythm", "thumb": "https://i.ytimg.com/vi/QP77LyNrxDo/mqdefault.jpg", "dur": "1:47:12"}, {"id": "GqGRq0TSS1w", "title": "🔥 Vintage Latin Soul Funk You’ve Been Missing | Raw & Hypnotic Soul Groove", "thumb": "https://i.ytimg.com/vi/GqGRq0TSS1w/mqdefault.jpg", "dur": "1:44:58"}, {"id": "_mX38Ex_sFA", "title": "🔥 Vintage Latin Soul-Funk You’ve Been Looking For — Hypnotic Funk Vibes", "thumb": "https://i.ytimg.com/vi/_mX38Ex_sFA/mqdefault.jpg", "dur": "1:27:09"}, {"id": "IxIlsl0yfv0", "title": "🔥 Rare Vintage Latin Soul Funk Gems You’ve Never Heard Before", "thumb": "https://i.ytimg.com/vi/IxIlsl0yfv0/mqdefault.jpg", "dur": "1:54:11"}, {"id": "asRe30bq9vE", "title": "🔥 Vintage Soul Funk You’ve Been Searching For | Upbeat 70s Sunshine Groove Playlist", "thumb": "https://i.ytimg.com/vi/asRe30bq9vE/mqdefault.jpg", "dur": "2:43:07"}, {"id": "Pc7uNFx0FxI", "title": "🔥 Vintage Soul-Funk You’ve Been Waiting For — Laid-back Storytelling & Deep Groove", "thumb": "https://i.ytimg.com/vi/Pc7uNFx0FxI/mqdefault.jpg", "dur": "1:17:12"}, {"id": "m93EFXlaeiM", "title": "🔥 Vintage Soul Funk You’ve Been Missing For | Deep Pocket Grooves & Minimal Vibes", "thumb": "https://i.ytimg.com/vi/m93EFXlaeiM/mqdefault.jpg", "dur": "1:49:22"}, {"id": "LVXkrLhpaPM", "title": "🔥 Vintage Latin Soul Funk You’ve Been Missing For | Deep Spirit & Rhythm Flow", "thumb": "https://i.ytimg.com/vi/LVXkrLhpaPM/mqdefault.jpg", "dur": "1:50:52"}, {"id": "g4JBQqTPZ5w", "title": "🔥 Vintage Soul Funk You’ve Been Looking For | Mesmerizing Rhythm & Deep Soul Flow", "thumb": "https://i.ytimg.com/vi/g4JBQqTPZ5w/mqdefault.jpg", "dur": "1:34:25"}, {"id": "6QwXaSZcBwA", "title": "🔥 Vintage Latin Soul-Funk You’ve Been Waiting For — Hypnotic Groove & Locked-in Flow", "thumb": "https://i.ytimg.com/vi/6QwXaSZcBwA/mqdefault.jpg", "dur": "2:06:11"}, {"id": "Wrnut-GXlCY", "title": "🔥 Vintage Soul Funk You’ve Been Searching For | The Definition of Cool & Signature Groove", "thumb": "https://i.ytimg.com/vi/Wrnut-GXlCY/mqdefault.jpg", "dur": "3:17:59"}, {"id": "-jLA2trkKJo", "title": "🔥 Vintage Latin Soul Funk You’ve Been Missing For | Raw Groove Session Mix", "thumb": "https://i.ytimg.com/vi/-jLA2trkKJo/mqdefault.jpg", "dur": "1:17:10"}, {"id": "QR0BDBWQ6fg", "title": "🔥 Vintage Latin Soul Funk You’ve Been Looking For | The Classic Groove Playlist", "thumb": "https://i.ytimg.com/vi/QR0BDBWQ6fg/mqdefault.jpg", "dur": "1:24:37"}, {"id": "57iXQ7lww2U", "title": "🔥 Vintage Latin Soul-Funk You’ve Been Waiting For — Smooth Classic Funk Groove Mix", "thumb": "https://i.ytimg.com/vi/57iXQ7lww2U/mqdefault.jpg", "dur": "1:31:04"}, {"id": "T7T9ZY2ZlOI", "title": "🔥 Vintage Soul Funk You’ve Been Looking For | Urban Smooth Night Drive Playlist", "thumb": "https://i.ytimg.com/vi/T7T9ZY2ZlOI/mqdefault.jpg", "dur": "2:50:20"}, {"id": "mgdd5nou6Dw", "title": "🔥 Vintage Latin Soul Funk You’ve Been Searching For | Carnival Groove Flow Mix", "thumb": "https://i.ytimg.com/vi/mgdd5nou6Dw/mqdefault.jpg", "dur": "1:30:29"}, {"id": "835TYF82di4", "title": "🔥 The Vintage Soul Funk You’ve Been Searching For | Smooth Groove Playlist", "thumb": "https://i.ytimg.com/vi/835TYF82di4/mqdefault.jpg", "dur": "1:41:10"}, {"id": "NsVcdLzay_k", "title": "🔥 “Vintage Latin Soul Funk Flow – Warm Groove Vibes for Work & Chill”", "thumb": "https://i.ytimg.com/vi/NsVcdLzay_k/mqdefault.jpg", "dur": "1:13:26"}, {"id": "w_9_Dbx-1ZM", "title": "🔥 Vintage Latin Soul-Funk You’ve Been Waiting For — Deep Funk Groove Mix", "thumb": "https://i.ytimg.com/vi/w_9_Dbx-1ZM/mqdefault.jpg", "dur": "1:50:44"}, {"id": "fY9sI33mjmk", "title": "🔥 The Vintage Soul Funk Groove You’ve Been Looking For | Vintage Latin Funk Playlist", "thumb": "https://i.ytimg.com/vi/fY9sI33mjmk/mqdefault.jpg", "dur": "1:24:48"}, {"id": "UW56hxMGn1Q", "title": "🔥 Vintage Latin Soul Funk Groove You’ve Been Missing | Smooth Vintage Playlist", "thumb": "https://i.ytimg.com/vi/UW56hxMGn1Q/mqdefault.jpg", "dur": "53:42"}, {"id": "SiXlDF62fqw", "title": "“Feel That Funk – 70s Soul Groove Inspired by James Brown”", "thumb": "https://i.ytimg.com/vi/SiXlDF62fqw/mqdefault.jpg", "dur": "2:46"}, {"id": "A4pm9eh8PUw", "title": "“The Godfather Groove – A James Brown Style Soul Funk Jam”", "thumb": "https://i.ytimg.com/vi/A4pm9eh8PUw/mqdefault.jpg", "dur": "2:35"}, {"id": "FfTBLsE7ft4", "title": "🔥 Vintage Latin Soul Funk Groove You’ve Been Searching For | Dry Rhythm Flow Mix", "thumb": "https://i.ytimg.com/vi/FfTBLsE7ft4/mqdefault.jpg", "dur": "1:20:07"}, {"id": "-DwMxsyR4fs", "title": "🔥 Vintage Latin Soul Funk You’ve Been Searching For | Classic Groove Playlist", "thumb": "https://i.ytimg.com/vi/-DwMxsyR4fs/mqdefault.jpg", "dur": "1:02:43"}, {"id": "h09qW10MoVg", "title": "River and Flame (Ver.2) | 1970s Latin Soul Funk Groove", "thumb": "https://i.ytimg.com/vi/h09qW10MoVg/mqdefault.jpg", "dur": "3:12"}, {"id": "9BrhTCdbEis", "title": "River and Flame | 1970s Latin Soul Funk Groove", "thumb": "https://i.ytimg.com/vi/9BrhTCdbEis/mqdefault.jpg", "dur": "3:15"}, {"id": "UDtQWjY3DYw", "title": "Don’t Take the Light Away – Soul Version", "thumb": "https://i.ytimg.com/vi/UDtQWjY3DYw/mqdefault.jpg", "dur": "3:17"}, {"id": "8AGvz2OJeRQ", "title": "When I Think of You -  (Soul Version)", "thumb": "https://i.ytimg.com/vi/8AGvz2OJeRQ/mqdefault.jpg", "dur": "3:48"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
