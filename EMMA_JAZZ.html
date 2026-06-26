@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMMA JAZZ</title>
+<!-- categories: Jazz, Vintage -->
+<!-- channel-id: UC1PAEOSPCIt2j_JWAXwUkqw -->
+<!-- channel-url: https://www.youtube.com/@EMMAJAZZRADIO -->
+<!-- created: 2026-06-26 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=EMMA_JAZZ.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/YGeVxzhZXb92BWSN9gazYZnc5T3ugDCGEecyOyupcz6Ec1bN2I2pMcSAmDPSSj6x1jyY49Ik=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">EMMA JAZZ</div>
+      <div class="channel-count">54 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "EMMA JAZZ";
+const KANAL = "EMMA_JAZZ.html";
+const ORIG_CATEGORIES = "Jazz, Vintage";
+const VIDEOS = [{"id": "Pr-XIvPweS8", "title": "Playlist | 틀자마자 기분이 너무 좋아지는 스윙재즈 🌼 커피와 함께 듣기 좋은 플레이리스트", "thumb": "https://i.ytimg.com/vi/Pr-XIvPweS8/mqdefault.jpg", "dur": "3:53:15"}, {"id": "OVMohNkhs5U", "title": "Playlist | 오늘은 하늘만 바라봐도 괜찮은 날 | Cafe Swing Jazz", "thumb": "https://i.ytimg.com/vi/OVMohNkhs5U/mqdefault.jpg", "dur": "4:00:42"}, {"id": "lsRfflGKqQc", "title": "Playlist | 🌿 오늘은 왠지 좋은일만 생길것 같은 커피 한 잔과 스윙 재즈 ☕ | Cafe Jazz", "thumb": "https://i.ytimg.com/vi/lsRfflGKqQc/mqdefault.jpg", "dur": "3:42:19"}, {"id": "S0wZ7hLCKDE", "title": "🌿 햇살 가득한 창가에서 듣는 스윙 재즈 | Cafe Jazz Playlist", "thumb": "https://i.ytimg.com/vi/S0wZ7hLCKDE/mqdefault.jpg", "dur": "3:21:12"}, {"id": "nI-sSB_9pEo", "title": "Playlist | 오늘은 비도 괜찮은 하루☔ 듣는 순간 마음이 편안해지는 스윙 재즈", "thumb": "https://i.ytimg.com/vi/nI-sSB_9pEo/mqdefault.jpg", "dur": "1:45:29"}, {"id": "wDDDGTKIjQ0", "title": "🌼 햇살을 달리는 행복한 재즈 | 꽃향기 가득한 스윙 재즈 플레이리스트 ☀️", "thumb": "https://i.ytimg.com/vi/wDDDGTKIjQ0/mqdefault.jpg", "dur": "2:29:01"}, {"id": "ROM45nPJpRY", "title": "Playlist | 꽃향기처럼 기분 좋아지는 🌸 모닝 재즈 플레이리스트", "thumb": "https://i.ytimg.com/vi/ROM45nPJpRY/mqdefault.jpg", "dur": "1:43:41"}, {"id": "_XMgqRfak_o", "title": "Playlist | 좋은 하루는 이 음악으로 시작하세요 ☀️✨ 아침 스윙 재즈", "thumb": "https://i.ytimg.com/vi/_XMgqRfak_o/mqdefault.jpg", "dur": "1:37:52"}, {"id": "buqvsREjHKA", "title": "Playlist | 💙 이상하게 마음이 편안해지는 바다 기차 여행 🚆☕ 스윙재즈", "thumb": "https://i.ytimg.com/vi/buqvsREjHKA/mqdefault.jpg", "dur": "1:44:13"}, {"id": "_fIazQW-dVg", "title": "Playlist | 🍰 오늘은 달콤한 하루를 보내고 싶은 날 🍓 스윙재즈 · 카페음악", "thumb": "https://i.ytimg.com/vi/_fIazQW-dVg/mqdefault.jpg", "dur": "1:42:49"}, {"id": "mAhnrs9Ixi4", "title": "Playlist | 🌸 오늘은 왠지 좋은 일이 생길 것 같은 스윙재즈 ☕💛 카페음악 · 노동요", "thumb": "https://i.ytimg.com/vi/mAhnrs9Ixi4/mqdefault.jpg", "dur": "1:44:30"}, {"id": "6qId2dkCd2o", "title": "Playlist | 🚆 듣는 순간 어디론가 떠나고 싶어지는 스윙재즈 🌊💙 여행음악 · 카페음악", "thumb": "https://i.ytimg.com/vi/6qId2dkCd2o/mqdefault.jpg", "dur": "1:51:40"}, {"id": "mwxjFKZA1Dk", "title": "[PLAYLIST] 🍋 Your Daily Vitamin | happy swing jazz", "thumb": "https://i.ytimg.com/vi/mwxjFKZA1Dk/mqdefault.jpg", "dur": "1:42:23"}, {"id": "Tf-bwtgZI-k", "title": "🎵 PLAYLIST | 🌼 봄바람이 머무는 스윙재즈 🌿 | 햇살 가득한 힐링 음악 ☀️🎷", "thumb": "https://i.ytimg.com/vi/Tf-bwtgZI-k/mqdefault.jpg", "dur": "1:40:18"}, {"id": "NW32tyK1d70", "title": "🎵 PLAYLIST | 🌊 햇살 가득한 해안 마을, 주말 스윙재즈 ☀️ | 여유로운 카페 힐링 음악 🎷", "thumb": "https://i.ytimg.com/vi/NW32tyK1d70/mqdefault.jpg", "dur": "1:31:42"}, {"id": "YofNtB5elhs", "title": "[PLAYLIST] Spring Breeze Swing Jazz | Relaxing Café Morning", "thumb": "https://i.ytimg.com/vi/YofNtB5elhs/mqdefault.jpg", "dur": "2:38:42"}, {"id": "wTratQv78e0", "title": "🎶 PLAYLIST | ☕ 봄꽃이 가득한 카페에서 🌿 | 따뜻한 아침 스윙재즈 🎷", "thumb": "https://i.ytimg.com/vi/wTratQv78e0/mqdefault.jpg", "dur": "1:26:27"}, {"id": "82naxaWK1e8", "title": "[PLAYLIST] Blue Sky Swing Jazz | Warm Happy Morning Vibes", "thumb": "https://i.ytimg.com/vi/82naxaWK1e8/mqdefault.jpg", "dur": "1:50:51"}, {"id": "CmAvaGRctKc", "title": "[PLAYLIST] Rainy Day Swing Jazz | Cozy Cafe Morning jazz", "thumb": "https://i.ytimg.com/vi/CmAvaGRctKc/mqdefault.jpg", "dur": "1:21:14"}, {"id": "a19qdQYZhKU", "title": "[PLAYLIST] Happy Day Swing Jazz | cozy swing jazz", "thumb": "https://i.ytimg.com/vi/a19qdQYZhKU/mqdefault.jpg", "dur": "1:36:53"}, {"id": "jhzEBla39ts", "title": "[PLAYLIST] Feel-Good Swing Jazz with Morning Sunshine | soft morning jazz", "thumb": "https://i.ytimg.com/vi/jhzEBla39ts/mqdefault.jpg", "dur": "1:49:06"}, {"id": "swKA3nHBu0U", "title": "Sunshine Bloom Swing Café | spring swing jazz playlist", "thumb": "https://i.ytimg.com/vi/swKA3nHBu0U/mqdefault.jpg", "dur": "1:58:46"}, {"id": "Ek4rihrEoEQ", "title": "Relaxing Spring Swing Jazz | Gentle Vintage Melodies & Garden Vibes", "thumb": "https://i.ytimg.com/vi/Ek4rihrEoEQ/mqdefault.jpg", "dur": "2:54:20"}, {"id": "OjybWVle5sw", "title": "Sunlight Picnic Swing Jazz | Cozy Morning Jazz Cafe", "thumb": "https://i.ytimg.com/vi/OjybWVle5sw/mqdefault.jpg", "dur": "2:24:01"}, {"id": "tw9QJzHZjeM", "title": "🎵 PLAYLIST | 🌿 평화로운 아침, 부드러운 스윙재즈 ☀️ | 마음이 편안해지는 힐링 음악 🎷", "thumb": "https://i.ytimg.com/vi/tw9QJzHZjeM/mqdefault.jpg", "dur": "1:34:16"}, {"id": "gnkSV2kPdxw", "title": "Swing Jazz for Deep Rest | cozy swing jazz", "thumb": "https://i.ytimg.com/vi/gnkSV2kPdxw/mqdefault.jpg", "dur": "1:42:20"}, {"id": "VShXQiRLMqU", "title": "🎵 PLAYLIST | ☕ 부드러운 스윙재즈와 따뜻한 커피 🌿 | 포근한 휴일의 힐링 음악 🎷", "thumb": "https://i.ytimg.com/vi/VShXQiRLMqU/mqdefault.jpg", "dur": "1:26:02"}, {"id": "P3qZWx9QJIM", "title": "🎵 PLAYLIST | ☀️ 황금빛 오후, 부드러운 스윙재즈 🍂 | 빈티지 감성 힐링 음악 🎷", "thumb": "https://i.ytimg.com/vi/P3qZWx9QJIM/mqdefault.jpg", "dur": "1:23:24"}, {"id": "K9Fo8bzx4sk", "title": "🎵 PLAYLIST | ☕ 커피와 함께 여유로운 하루  | 따뜻한 아침 스윙재즈 🎷", "thumb": "https://i.ytimg.com/vi/K9Fo8bzx4sk/mqdefault.jpg", "dur": "1:23:43"}, {"id": "U9debgWBrFY", "title": "[PLAYLIST] 창가에 앉아 듣는 따뜻한 감성 스윙 재즈 | soft swing jazz", "thumb": "https://i.ytimg.com/vi/U9debgWBrFY/mqdefault.jpg", "dur": "1:21:46"}, {"id": "HjCEBI9zMWI", "title": "[PLAYLIST] 이거 틀면 분위기 끝… 부드러운 스윙 재즈 | soft swing jazz", "thumb": "https://i.ytimg.com/vi/HjCEBI9zMWI/mqdefault.jpg", "dur": "1:25:19"}, {"id": "DaAVfVZl5Oo", "title": "[PLAYLIST] 듣고 있으면 괜히 기분 좋아지는 스윙 재즈 | cozy swing jazz", "thumb": "https://i.ytimg.com/vi/DaAVfVZl5Oo/mqdefault.jpg", "dur": "1:15:08"}, {"id": "4TLQPtM7vjA", "title": "[PLAYLIST] 햇살처럼 부드러운 하루, 소프트 스윙 재즈", "thumb": "https://i.ytimg.com/vi/4TLQPtM7vjA/mqdefault.jpg", "dur": "1:14:21"}, {"id": "7p-hoq9F-8w", "title": "[PLAYLIST] 햇살 머금은 창가, 고양이와 보내는 느린 스윙 재즈", "thumb": "https://i.ytimg.com/vi/7p-hoq9F-8w/mqdefault.jpg", "dur": "1:24:51"}, {"id": "x2WuTjQ7I78", "title": "[PLAYLIST] 봄 코지재즈, 편안한 카페 감성 재즈", "thumb": "https://i.ytimg.com/vi/x2WuTjQ7I78/mqdefault.jpg", "dur": "1:25:35"}, {"id": "AYTYlblroT0", "title": "[PLAYLIST] 이 분위기 뭐야… 봄 햇살에 고양이까지 완벽한 코지 재즈", "thumb": "https://i.ytimg.com/vi/AYTYlblroT0/mqdefault.jpg", "dur": "1:21:21"}, {"id": "VxSW7O9lPg4", "title": "[PLAYLIST] 봄날, 그냥 이거 하나면 충분해 l spring swing jazz", "thumb": "https://i.ytimg.com/vi/VxSW7O9lPg4/mqdefault.jpg", "dur": "1:17:18"}, {"id": "-0CS36jLT1w", "title": "[PLAYLIST] 창가 햇살과 꽃향기, 코지 스윙 재즈", "thumb": "https://i.ytimg.com/vi/-0CS36jLT1w/mqdefault.jpg", "dur": "1:36:08"}, {"id": "MYTUbgvnbz0", "title": "[PLAYLIST] 햇살 아래 꽃과 함께 듣는 스윙 재즈 🌼l cozy swing jazz", "thumb": "https://i.ytimg.com/vi/MYTUbgvnbz0/mqdefault.jpg", "dur": "1:50:35"}, {"id": "MZBm2tiRsaY", "title": "[Playlist] 따뜻한 햇빛 속, 여유로운 스윙 재즈", "thumb": "https://i.ytimg.com/vi/MZBm2tiRsaY/mqdefault.jpg", "dur": "1:13:43"}, {"id": "szvj8D01tY8", "title": "봄 재즈 카페 플레이리스트 🌿 커피 한 잔과 함께하는 여유로운 시간", "thumb": "https://i.ytimg.com/vi/szvj8D01tY8/mqdefault.jpg", "dur": "1:20:24"}, {"id": "aaVyt27FC_k", "title": "[PLAYLIST] Quiet Morning Swing Jazz ☕️ 고양이와 시작하는 조용한 하루", "thumb": "https://i.ytimg.com/vi/aaVyt27FC_k/mqdefault.jpg", "dur": "1:28:39"}, {"id": "-NQGOGdCF0o", "title": "[PLAYLIST] 나른한 오후, 고양이와 재즈 ☕🐾 코지 스윙 재즈", "thumb": "https://i.ytimg.com/vi/-NQGOGdCF0o/mqdefault.jpg", "dur": "2:19:00"}, {"id": "q65jJi5ErDE", "title": "[PLAYLIST] 봄날, 카페에서 강아지와 함께 듣는 스윙 재즈 ☕️🐶 | Cozy Spring Jazz", "thumb": "https://i.ytimg.com/vi/q65jJi5ErDE/mqdefault.jpg", "dur": "1:43:47"}, {"id": "tpc1MOzNkGA", "title": "[PLAYLIST] 듣는 순간 분위기 바뀌는 봄 재즈 🌸 | Cozy Cafe Swing Jazz", "thumb": "https://i.ytimg.com/vi/tpc1MOzNkGA/mqdefault.jpg", "dur": "1:23:06"}, {"id": "EVjJH8eapRI", "title": "[Playlist] 햇살 좋은 날, 그냥 틀어두기 좋은 재즈 ☀️ Soft Swing Jazz", "thumb": "https://i.ytimg.com/vi/EVjJH8eapRI/mqdefault.jpg", "dur": "1:47:37"}, {"id": "zwu5A6wZ4KU", "title": "[PLAYLIST] 기분 좋아지고 싶을 때 듣는 재즈 🌿 봄 스윙 모음", "thumb": "https://i.ytimg.com/vi/zwu5A6wZ4KU/mqdefault.jpg", "dur": "1:25:59"}, {"id": "uQmPYJahNn4", "title": "[Playlist] 봄재즈 틀어놓고 아무것도 안 해도 좋은 날 ㅣ spring swing jazz", "thumb": "https://i.ytimg.com/vi/uQmPYJahNn4/mqdefault.jpg", "dur": "1:21:18"}, {"id": "vAh4OI9O714", "title": "봄 카페에서 듣는 스윙재즈 | 편안한 오후의 시간", "thumb": "https://i.ytimg.com/vi/vAh4OI9O714/mqdefault.jpg", "dur": "1:38:06"}, {"id": "EpfjwleNvPE", "title": "[Playlist] 벚꽃처럼 부드러운 봄재즈🌸 포근한 스윙", "thumb": "https://i.ytimg.com/vi/EpfjwleNvPE/mqdefault.jpg", "dur": "1:27:44"}, {"id": "hPZv3FZSJAo", "title": "[playlist] 봄재즈 🌸 햇살처럼 스며드는 스윙 재즈 플레이리스트", "thumb": "https://i.ytimg.com/vi/hPZv3FZSJAo/mqdefault.jpg", "dur": "1:27:44"}, {"id": "liMLp4axqBU", "title": "[PLAYLIST] 봄 감성 스윙 재즈 🌸 | Cozy Jazz Playlist", "thumb": "https://i.ytimg.com/vi/liMLp4axqBU/mqdefault.jpg", "dur": "1:06:31"}, {"id": "ZvPv-awRrpE", "title": "[Playlist] 오늘 하루 시작용 재즈 🎧 ㅣ coffee cozy swing jazz☕", "thumb": "https://i.ytimg.com/vi/ZvPv-awRrpE/mqdefault.jpg", "dur": "1:28:56"}, {"id": "GdckvQGIyM0", "title": "[Playlist] 아침에 이거 틀면 기분 좋아지는 스윙 재즈 ☕🌿 ㅣ Cozy Swing Jazz", "thumb": "https://i.ytimg.com/vi/GdckvQGIyM0/mqdefault.jpg", "dur": "1:34:16"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
