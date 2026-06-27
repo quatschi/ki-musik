@@ -495,7 +495,7 @@
           const displayChannel = (ch.name && ch.name !== 'Unbekannt') ? ch.name : (metaEntry.channel || 'Unbekannt');
           const chForThumb = channelList.find(c => c.name === displayChannel) || ch;
           currentVideoId = video.videoId;
-          markPlayed(currentVideoId, ch.file);
+          markPlayed(currentVideoId, ch.file, displayTitle, displayChannel);
           currentVideoTitle = displayTitle;
           currentChannelName = displayChannel;
           currentRating = allRatings[video.videoId] || 0;
@@ -584,7 +584,7 @@
       }
 
       currentVideoId = video.videoId;
-      markPlayed(currentVideoId, ch.file);
+      markPlayed(currentVideoId, ch.file, video.title, ch.name);
       currentVideoTitle = video.title;
       currentChannelName = ch.name;
       currentRating = allRatings[video.videoId] || 0;
@@ -676,9 +676,9 @@
   }
 
   let flushDebounceTimer = null;
-  function markPlayed(videoId, kanalFile) {
+  function markPlayed(videoId, kanalFile, title, channelName) {
     if (!videoId) return;
-    playedSongs[videoId] = { date: todayStr(), kanal: kanalFile || '' };
+    playedSongs[videoId] = { date: todayStr(), kanal: kanalFile || '', title: title || '', channel: channelName || '' };
     playedSongsPendingSave = true;
     // Kurz nach dem Songstart speichern (nicht sofort, aber auch nicht erst nach 30 Sekunden) –
     // das verkleinert das Risiko, einen Eintrag zu verlieren, wenn man gleich danach die Seite verlässt.
@@ -858,7 +858,7 @@
             const video = videos.find(v => v.videoId === videoParam) || { videoId: videoParam, title: videoParam, dur: '' };
             const ch = fixed || { name: kanalParam, thumb: '' };
             currentVideoId = video.videoId;
-            markPlayed(currentVideoId, kanalParam);
+            markPlayed(currentVideoId, kanalParam, video.title, ch.name);
             currentVideoTitle = video.title;
             currentChannelName = ch.name;
             currentRating = allRatings[video.videoId] || 0;

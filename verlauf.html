@@ -86,17 +86,19 @@
     const meta = (noten && noten.meta) || {};
 
     let entries = Object.entries(played).map(([videoId, info]) => {
-      const m = meta[videoId] || {};
-      // Abwärtskompatibel: alte Einträge waren nur ein Datums-String ohne Kanal
+      // Abwärtskompatibel: alte Einträge waren nur ein Datums-String ohne Kanal/Titel
       const date = (typeof info === 'string') ? info : (info.date || '');
       const kanal = (typeof info === 'object' && info.kanal) ? info.kanal : '';
+      const m = meta[videoId] || {}; // Fallback für sehr alte Einträge ohne eigenen Titel
+      const title = (typeof info === 'object' && info.title) ? info.title : (m.title || videoId);
+      const channel = (typeof info === 'object' && info.channel) ? info.channel : (m.channel || '');
       return {
         videoId,
         date,
         kanal,
         rating: ratings[videoId] || 0,
-        title: m.title || videoId,
-        channel: m.channel || ''
+        title,
+        channel
       };
     });
 
@@ -132,7 +134,7 @@
         <div class="entry-stars">${renderStars(e.rating)}</div>
         <div class="entry-date">${formatDate(e.date)}</div>`;
       if (e.kanal) {
-        const href = e.kanal + '?song=' + encodeURIComponent(e.videoId);
+        const href = 'radio2.html?kanal=' + encodeURIComponent(e.kanal) + '&video=' + encodeURIComponent(e.videoId);
         return `<a class="entry" href="${href}" style="text-decoration:none;color:inherit;cursor:pointer;">${inner}</a>`;
       }
       return `<div class="entry">${inner}</div>`;
