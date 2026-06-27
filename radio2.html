@@ -675,10 +675,15 @@
     playedSongsLoaded = true;
   }
 
+  let flushDebounceTimer = null;
   function markPlayed(videoId, kanalFile) {
     if (!videoId) return;
     playedSongs[videoId] = { date: todayStr(), kanal: kanalFile || '' };
     playedSongsPendingSave = true;
+    // Kurz nach dem Songstart speichern (nicht sofort, aber auch nicht erst nach 30 Sekunden) –
+    // das verkleinert das Risiko, einen Eintrag zu verlieren, wenn man gleich danach die Seite verlässt.
+    clearTimeout(flushDebounceTimer);
+    flushDebounceTimer = setTimeout(flushPlayedSongs, 2000);
   }
 
   // Wird beim Songwechsel (verzögert) und beim Verlassen der Seite aufgerufen
@@ -689,7 +694,7 @@
       let sha = null;
       const getResp = await fetch(
         `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PLAYED_FILE}`,
-        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' }, keepalive: true }
       );
       let serverPlayed = {};
       if (getResp.ok) {
@@ -708,7 +713,8 @@
         {
           method: 'PUT',
           headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
+          keepalive: true
         }
       );
     } catch(e) {
