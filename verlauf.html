@@ -37,6 +37,7 @@
   <div class="filters">
     <button class="filter-btn active" data-sort="date">Nach Datum</button>
     <button class="filter-btn" data-sort="rating">Nach Bewertung</button>
+    <button class="filter-btn" data-sort="channel">Nach Kanal</button>
   </div>
 
   <div class="stats" id="stats"></div>
@@ -121,6 +122,8 @@
     let sorted = [...entries];
     if (sortMode === 'date') {
       sorted.sort((a, b) => b.date.localeCompare(a.date));
+    } else if (sortMode === 'channel') {
+      sorted.sort((a, b) => a.channel.localeCompare(b.channel) || b.date.localeCompare(a.date));
     } else {
       sorted.sort((a, b) => b.rating - a.rating || b.date.localeCompare(a.date));
     }
