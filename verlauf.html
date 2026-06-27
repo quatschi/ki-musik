@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verlauf – KI-Musik</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  h1 { text-align: center; font-size: 1.8rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .subtitle { text-align: center; font-size: 0.8rem; color: #7a6fa0; margin-bottom: 24px; }
+  .filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #9b8fc0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; }
+  .filter-btn.active { background: #5a3fa0; color: white; border-color: #5a3fa0; }
+  .filter-btn:hover { border-color: rgba(180,150,255,0.5); }
+  .list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .entry { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 16px; transition: all 0.2s ease; }
+  a.entry:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .entry-info { flex: 1; min-width: 0; }
+  .entry-title { font-size: 0.9rem; color: #e8e0ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .entry-sub { font-size: 0.76rem; color: #7a6fa0; margin-top: 2px; }
+  .entry-stars { font-size: 0.95rem; color: #4a4060; flex-shrink: 0; }
+  .entry-stars .active { color: #f0c040; }
+  .entry-date { font-size: 0.76rem; color: #7a6fa0; flex-shrink: 0; min-width: 80px; text-align: right; }
+  .empty { text-align: center; color: #7a6fa0; padding: 40px; font-size: 0.9rem; }
+  .loading { text-align: center; color: #7a6fa0; padding: 40px; font-style: italic; }
+  .stats { text-align: center; color: #7a6fa0; font-size: 0.8rem; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← Zurück zur Übersicht</a>
+  <h1>🕐 Verlauf</h1>
+  <div class="subtitle">Bereits angehörte Stücke</div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-sort="date">Nach Datum</button>
+    <button class="filter-btn" data-sort="rating">Nach Bewertung</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="list" id="list"><div class="loading">Lade Verlauf ...</div></div>
+
+<script>
+  const GITHUB_USER = 'quatschi';
+  const GITHUB_REPO = 'ki-musik';
+
+  let sortMode = 'date';
+
+  async function fetchJson(file) {
+    try {
+      const r = await fetch(file, { cache: 'no-store' });
+      if (r.ok) return await r.json();
+    } catch(e) {}
+    return null;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderStars(rating) {
+    return [1,2,3,4,5].map(n => `<span class="${n <= rating ? 'active' : ''}">★</span>`).join('');
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-');
+    return `${d}.${m}.${y}`;
+  }
+
+  async function load() {
+    const [played, noten] = await Promise.all([
+      fetchJson('played_songs.json'),
+      fetchJson('noten.json')
+    ]);
+
+    if (!played || !Object.keys(played).length) {
+      document.getElementById('list').innerHTML = '<div class="empty">Noch keine Titel im Verlauf. Höre etwas im Radio, dann erscheint es hier.</div>';
+      document.getElementById('stats').textContent = '';
+      return;
+    }
+
+    const ratings = (noten && noten.ratings) || {};
+    const meta = (noten && noten.meta) || {};
+
+    let entries = Object.entries(played).map(([videoId, info]) => {
+      const m = meta[videoId] || {};
+      // Abwärtskompatibel: alte Einträge waren nur ein Datums-String ohne Kanal
+      const date = (typeof info === 'string') ? info : (info.date || '');
+      const kanal = (typeof info === 'object' && info.kanal) ? info.kanal : '';
+      return {
+        videoId,
+        date,
+        kanal,
+        rating: ratings[videoId] || 0,
+        title: m.title || videoId,
+        channel: m.channel || ''
+      };
+    });
+
+    document.getElementById('stats').textContent = `${entries.length} Titel im Verlauf`;
+    renderList(entries);
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sortMode = btn.dataset.sort;
+        renderList(entries);
+      });
+    });
+
+    window._verlaufEntries = entries;
+  }
+
+  function renderList(entries) {
+    let sorted = [...entries];
+    if (sortMode === 'date') {
+      sorted.sort((a, b) => b.date.localeCompare(a.date));
+    } else {
+      sorted.sort((a, b) => b.rating - a.rating || b.date.localeCompare(a.date));
+    }
+
+    const html = sorted.map(e => {
+      const inner = `
+        <div class="entry-info">
+          <div class="entry-title">${escapeHtml(e.title)}</div>
+          <div class="entry-sub">${escapeHtml(e.channel)}</div>
+        </div>
+        <div class="entry-stars">${renderStars(e.rating)}</div>
+        <div class="entry-date">${formatDate(e.date)}</div>`;
+      if (e.kanal) {
+        const href = e.kanal + '?song=' + encodeURIComponent(e.videoId);
+        return `<a class="entry" href="${href}" style="text-decoration:none;color:inherit;cursor:pointer;">${inner}</a>`;
+      }
+      return `<div class="entry">${inner}</div>`;
+    }).join('');
+
+    document.getElementById('list').innerHTML = html || '<div class="empty">Keine Einträge.</div>';
+  }
+
+  load();
+</script>
+</body>
+</html>

@@ -495,6 +495,7 @@
           const displayChannel = (ch.name && ch.name !== 'Unbekannt') ? ch.name : (metaEntry.channel || 'Unbekannt');
           const chForThumb = channelList.find(c => c.name === displayChannel) || ch;
           currentVideoId = video.videoId;
+          markPlayed(currentVideoId, ch.file);
           currentVideoTitle = displayTitle;
           currentChannelName = displayChannel;
           currentRating = allRatings[video.videoId] || 0;
@@ -553,8 +554,8 @@
       }
       if (!videos.length) { if (kanalParam) break; continue; }
 
-      // Zufälliges Video wählen und auf Einbettbarkeit prüfen
-      const shuffled = videos.sort(() => Math.random() - 0.5);
+      // Zufälliges Video wählen (bevorzugt noch nicht gehörte) und auf Einbettbarkeit prüfen
+      const shuffled = preferUnplayed(videos).sort(() => Math.random() - 0.5);
       let found = null;
       for (const video of shuffled.slice(0, 8)) { // max 8 API-Anfragen pro Versuch
         setStatus('Prüfe Video...');
@@ -583,6 +584,7 @@
       }
 
       currentVideoId = video.videoId;
+      markPlayed(currentVideoId, ch.file);
       currentVideoTitle = video.title;
       currentChannelName = ch.name;
       currentRating = allRatings[video.videoId] || 0;
@@ -619,12 +621,16 @@
   const GITHUB_USER = 'quatschi';
   const GITHUB_REPO = 'ki-musik';
   const GITHUB_FILE = 'noten.json';
+  const PLAYED_FILE = 'played_songs.json';
   const TOKEN_KEY = 'gh_token_ki_musik';
   let currentVideoId = null;
   let currentVideoTitle = '';
   let currentChannelName = '';
   let currentRating = 0;
   let allRatings = {};
+  let playedSongs = {};       // { videoId: "YYYY-MM-DD" }
+  let playedSongsLoaded = false;
+  let playedSongsPendingSave = false;
 
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
@@ -650,6 +656,82 @@
         window.allMeta = content.meta || {};
       }
     } catch(e) {}
+  }
+
+  // ===== "Bereits gespielt"-Verlauf =====
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  }
+
+  async function loadPlayedSongs() {
+    if (playedSongsLoaded) return;
+    try {
+      // Kein Token nötig zum Lesen — die Datei ist öffentlich auf GitHub Pages abrufbar
+      const resp = await fetch('played_songs.json', { cache: 'no-store' });
+      if (resp.ok) {
+        playedSongs = await resp.json();
+      }
+    } catch(e) { playedSongs = {}; }
+    playedSongsLoaded = true;
+  }
+
+  function markPlayed(videoId, kanalFile) {
+    if (!videoId) return;
+    playedSongs[videoId] = { date: todayStr(), kanal: kanalFile || '' };
+    playedSongsPendingSave = true;
+  }
+
+  // Wird beim Songwechsel (verzögert) und beim Verlassen der Seite aufgerufen
+  async function flushPlayedSongs() {
+    if (!playedSongsPendingSave || !getToken()) return;
+    playedSongsPendingSave = false;
+    try {
+      let sha = null;
+      const getResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PLAYED_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let serverPlayed = {};
+      if (getResp.ok) {
+        const existing = await getResp.json();
+        sha = existing.sha;
+        try { serverPlayed = JSON.parse(decodeURIComponent(escape(atob(existing.content)))); } catch(e) {}
+      }
+      // Lokalen und Server-Stand zusammenführen (nicht überschreiben, falls ein anderes Gerät zwischenzeitlich auch geschrieben hat)
+      playedSongs = Object.assign(serverPlayed, playedSongs);
+      const json = JSON.stringify(playedSongs);
+      const encoded = btoa(unescape(encodeURIComponent(json)));
+      const body = { message: 'Verlauf aktualisiert', content: encoded };
+      if (sha) body.sha = sha;
+      await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${PLAYED_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }
+      );
+    } catch(e) {
+      playedSongsPendingSave = true; // beim nächsten Versuch erneut probieren
+    }
+  }
+
+  // Beim Verlassen/Schließen der Seite den letzten Song noch sichern
+  window.addEventListener('beforeunload', () => {
+    if (playedSongsPendingSave && getToken() && currentVideoId) {
+      // Synchron-artiger "best effort" Versuch via fetch mit keepalive, damit der Request auch nach Seitenverlassen noch läuft
+      try {
+        flushPlayedSongs();
+      } catch(e) {}
+    }
+  });
+
+  // Aus einer Liste von Videos zunächst die noch nicht gespielten herausfiltern;
+  // sind alle schon gespielt, wird die komplette Liste zurückgegeben (Zyklus beginnt neu)
+  function preferUnplayed(videos) {
+    if (!videos || !videos.length) return videos;
+    const unplayed = videos.filter(v => !playedSongs[v.videoId]);
+    return unplayed.length ? unplayed : videos;
   }
 
   function setRadioRating(val) {
@@ -729,6 +811,9 @@
   async function init() {
     channelList = await loadChannelList();
     await loadAllRatings();
+    await loadPlayedSongs();
+    // Alle 30 Sekunden prüfen, ob ein neuer "gespielt"-Eintrag noch zu GitHub gesendet werden muss
+    setInterval(flushPlayedSongs, 30000);
 
     // Toggle-Button für zufälligen Zeiteinstieg
     const fdiv = document.getElementById('filters');
@@ -767,6 +852,7 @@
             const video = videos.find(v => v.videoId === videoParam) || { videoId: videoParam, title: videoParam, dur: '' };
             const ch = fixed || { name: kanalParam, thumb: '' };
             currentVideoId = video.videoId;
+            markPlayed(currentVideoId, kanalParam);
             currentVideoTitle = video.title;
             currentChannelName = ch.name;
             currentRating = allRatings[video.videoId] || 0;
