@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Beautiful Home</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCQB9ahM9XN6MDK847fu-axQ -->
+<!-- channel-url: https://youtube.com/@the-beautiful-home -->
+<!-- created: 2026-07-05 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=The_Beautiful_Home.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/UC6D05Yn2h-4OzCqhYERs5EAMkSti5j2vZaexM550PTkQZBMA8m3BYAKXmcUnvuK4_pnZM0J=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">The Beautiful Home</div>
+      <div class="channel-count">109 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "The Beautiful Home";
+const KANAL = "The_Beautiful_Home.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "RsHN5YHDm6E", "title": "Creating AMSTERDAM Aesthetics In Small Spaces", "thumb": "https://i.ytimg.com/vi/RsHN5YHDm6E/mqdefault.jpg", "dur": "2:14:45"}, {"id": "zNrNzKZIsao", "title": "Creating RALPH LAUREN CAPE COD Aesthetics In Small Spaces", "thumb": "https://i.ytimg.com/vi/zNrNzKZIsao/mqdefault.jpg", "dur": "2:07:11"}, {"id": "uX8HvfpDyX0", "title": "Creating LOS ANGELES Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/uX8HvfpDyX0/mqdefault.jpg", "dur": "1:38:24"}, {"id": "Gu17SmMbwWo", "title": "Creating NEW YORK LOFT Aesthetics | The Art of Brooklyn Living", "thumb": "https://i.ytimg.com/vi/Gu17SmMbwWo/mqdefault.jpg", "dur": "1:37:57"}, {"id": "w3N83fpRRDQ", "title": "Creating COMPORTA Aesthetics At Home | Luxury Coastal Home Decor Ideas", "thumb": "https://i.ytimg.com/vi/w3N83fpRRDQ/mqdefault.jpg", "dur": "1:44:06"}, {"id": "xymbbbFcwsg", "title": "Creating NATE BERKUS Aesthetics At Home | Warm, Collected & Timeless", "thumb": "https://i.ytimg.com/vi/xymbbbFcwsg/mqdefault.jpg", "dur": "1:35:50"}, {"id": "KAlZ6fsvXHk", "title": "Creating SAINT TROPEZ Aesthetics At Home | Luxury Mediterranean Living", "thumb": "https://i.ytimg.com/vi/KAlZ6fsvXHk/mqdefault.jpg", "dur": "1:39:51"}, {"id": "dqoKdwgEBEM", "title": "Creating RALPH LAUREN Aesthetics In Small Spaces", "thumb": "https://i.ytimg.com/vi/dqoKdwgEBEM/mqdefault.jpg", "dur": "1:18:09"}, {"id": "fsOSnkoJMa8", "title": "Creating NEW YORK Aesthetics In Small Spaces | Moody Manhattan Living", "thumb": "https://i.ytimg.com/vi/fsOSnkoJMa8/mqdefault.jpg", "dur": "1:10:32"}, {"id": "Oh8knK0pVWY", "title": "Why RALPH LAUREN Gardens Feel So Expensive And How To Copy Them", "thumb": "https://i.ytimg.com/vi/Oh8knK0pVWY/mqdefault.jpg", "dur": "15:46"}, {"id": "JFSUCkH2BII", "title": "Creating COPENHAGEN Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/JFSUCkH2BII/mqdefault.jpg", "dur": "1:05:17"}, {"id": "8EUirrQ_Wl0", "title": "What Every Luxurious Home Has In Common And How To Get It", "thumb": "https://i.ytimg.com/vi/8EUirrQ_Wl0/mqdefault.jpg", "dur": "15:47"}, {"id": "2-u9wBp1VrE", "title": "Creating MILAN Aesthetics in Small Spaces", "thumb": "https://i.ytimg.com/vi/2-u9wBp1VrE/mqdefault.jpg", "dur": "56:44"}, {"id": "pDbbBLaGTQ0", "title": "Why Small NEW YORK Apartments Feel Luxurious — And How to Copy It", "thumb": "https://i.ytimg.com/vi/pDbbBLaGTQ0/mqdefault.jpg", "dur": "14:40"}, {"id": "fg1gOE0_o58", "title": "Creating OLD MONEY Aesthetics In Outdoor Spaces | Garden & Patio Ideas", "thumb": "https://i.ytimg.com/vi/fg1gOE0_o58/mqdefault.jpg", "dur": "1:05:37"}, {"id": "xQ4dztq2e4M", "title": "Creating PARIS Aesthetics in Small Spaces", "thumb": "https://i.ytimg.com/vi/xQ4dztq2e4M/mqdefault.jpg", "dur": "1:20:29"}, {"id": "wyGdsMYAraU", "title": "Creating HAMPTONS Aesthetics At Home | Coastal Luxury Living", "thumb": "https://i.ytimg.com/vi/wyGdsMYAraU/mqdefault.jpg", "dur": "1:26:18"}, {"id": "vygDa7ZuzVo", "title": "Creating NEW YORK Aesthetics In Small Spaces | Urban & Luxury Living", "thumb": "https://i.ytimg.com/vi/vygDa7ZuzVo/mqdefault.jpg", "dur": "1:06:51"}, {"id": "M0AJGfz5ceA", "title": "TIMELESS ENTRYWAYS That NEVER Go Out Of Style", "thumb": "https://i.ytimg.com/vi/M0AJGfz5ceA/mqdefault.jpg", "dur": "56:33"}, {"id": "y2d8NQ2_eao", "title": "Inside A 19th-Century Victorian LONDON TOWNHOUSE | British Heritage Meets Modern Elegance", "thumb": "https://i.ytimg.com/vi/y2d8NQ2_eao/mqdefault.jpg", "dur": "1:51:22"}, {"id": "2kzpTGHKDw0", "title": "Inside A 19th Century Restored NEW YORK TOWNHOUSE | Modern Luxury Meets Manhattan Elegance", "thumb": "https://i.ytimg.com/vi/2kzpTGHKDw0/mqdefault.jpg", "dur": "1:05:05"}, {"id": "gO9rTV5AZSM", "title": "Creating CHANEL Aesthetics At Home For EASTER", "thumb": "https://i.ytimg.com/vi/gO9rTV5AZSM/mqdefault.jpg", "dur": "56:05"}, {"id": "6BOg1fuOo4A", "title": "Inside A 17th-Century Renovated AMSTERDAM Canal House | Modern Luxury Meets Historic Dutch Charm", "thumb": "https://i.ytimg.com/vi/6BOg1fuOo4A/mqdefault.jpg", "dur": "1:15:45"}, {"id": "BII7GKjoxF8", "title": "TIMELESS BEDROOMS That NEVER Go Out Of Style", "thumb": "https://i.ytimg.com/vi/BII7GKjoxF8/mqdefault.jpg", "dur": "1:21:59"}, {"id": "_xlFm6ZpJbo", "title": "Creating ARMANI Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/_xlFm6ZpJbo/mqdefault.jpg", "dur": "1:17:50"}, {"id": "2k_B9MDoaPg", "title": "Creating MILAN Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/2k_B9MDoaPg/mqdefault.jpg", "dur": "1:19:39"}, {"id": "SQwfFapAC94", "title": "INSIDE an 18th-Century LAKE COMO Villa Reimagined for Modern Living", "thumb": "https://i.ytimg.com/vi/SQwfFapAC94/mqdefault.jpg", "dur": "1:02:42"}, {"id": "mJwOFfKFYEg", "title": "Creating LUXURY Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/mJwOFfKFYEg/mqdefault.jpg", "dur": "1:36:02"}, {"id": "1GTN6byPL-0", "title": "Creating PARIS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/1GTN6byPL-0/mqdefault.jpg", "dur": "1:26:01"}, {"id": "6DQV-Er2E70", "title": "Creating MIAMI Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/6DQV-Er2E70/mqdefault.jpg", "dur": "1:42:21"}, {"id": "5e7yRHsEcbo", "title": "Creating CHANEL Aesthetics In Small spaces", "thumb": "https://i.ytimg.com/vi/5e7yRHsEcbo/mqdefault.jpg", "dur": "52:53"}, {"id": "WECrUUu1WLY", "title": "Creating LUXURY HOTEL Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/WECrUUu1WLY/mqdefault.jpg", "dur": "1:39:47"}, {"id": "IEPflPN1ZAg", "title": "Creating NEW YORK Aesthetics In Small Spaces", "thumb": "https://i.ytimg.com/vi/IEPflPN1ZAg/mqdefault.jpg", "dur": "1:00:42"}, {"id": "m8DdFzL-d6g", "title": "TIMELESS KITCHENS That NEVER Go Out Of Style", "thumb": "https://i.ytimg.com/vi/m8DdFzL-d6g/mqdefault.jpg", "dur": "52:45"}, {"id": "pnjhGkg-2RQ", "title": "Creating BLACK AND WHITE Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/pnjhGkg-2RQ/mqdefault.jpg", "dur": "53:53"}, {"id": "ygircNy_wqE", "title": "Creating BROWN Aesthetics At Home  | 2026 Home Decoration Trends", "thumb": "https://i.ytimg.com/vi/ygircNy_wqE/mqdefault.jpg", "dur": "1:07:03"}, {"id": "hAxHxywBGDM", "title": "Creating OLD MONEY Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/hAxHxywBGDM/mqdefault.jpg", "dur": "1:00:22"}, {"id": "Y_8i-0eEeco", "title": "Creating TIMELESS Aesthetics At Home | Home Decoration Ideas Beyond Trends", "thumb": "https://i.ytimg.com/vi/Y_8i-0eEeco/mqdefault.jpg", "dur": "1:20:39"}, {"id": "hSh7ypoGHok", "title": "Creating COZY WINTER Aesthetics At Home | 2026 Home Decoration Ideas", "thumb": "https://i.ytimg.com/vi/hSh7ypoGHok/mqdefault.jpg", "dur": "1:25:39"}, {"id": "StzPghiFtXk", "title": "Creating LAST MINUTE CHRISTMAS Aesthetics At Home | Simple Christmas Decoration Ideas", "thumb": "https://i.ytimg.com/vi/StzPghiFtXk/mqdefault.jpg", "dur": "48:14"}, {"id": "gwOXQxxgd3I", "title": "Creating LONDON Aesthetics At Home For CHRISTMAS | Elegant Christmas Decoration Ideas", "thumb": "https://i.ytimg.com/vi/gwOXQxxgd3I/mqdefault.jpg", "dur": "1:07:03"}, {"id": "D9ZHH1QwivU", "title": "Creating PARIS Aesthetics At Home For CHRISTMAS | Elegant Chic Christmas Decoration Ideas", "thumb": "https://i.ytimg.com/vi/D9ZHH1QwivU/mqdefault.jpg", "dur": "1:18:29"}, {"id": "-GEWJv_iQ6g", "title": "Creating SCANDINAVIAN Aesthetics At Home For CHRISTMAS | Nordic Natural Christmas Decoration", "thumb": "https://i.ytimg.com/vi/-GEWJv_iQ6g/mqdefault.jpg", "dur": "55:51"}, {"id": "AOpL2oRFLco", "title": "Creating OLD MONEY Aesthetics At Home For CHRISTMAS | Quiet Luxury Christmas Decoration", "thumb": "https://i.ytimg.com/vi/AOpL2oRFLco/mqdefault.jpg", "dur": "1:00:32"}, {"id": "_JBtz62ZbxM", "title": "Creating FRENCH COUNTRY Aesthetics At Home For Christmas | Rustic Christmas Decoration Ideas", "thumb": "https://i.ytimg.com/vi/_JBtz62ZbxM/mqdefault.jpg", "dur": "1:24:19"}, {"id": "0iQh64pmNZY", "title": "Creating GREEN Aesthetics At Home for CHRISTMAS | Christmas Decoration Ideas", "thumb": "https://i.ytimg.com/vi/0iQh64pmNZY/mqdefault.jpg", "dur": "57:52"}, {"id": "gXLG9fOy05g", "title": "Creating RALPH LAUREN Aesthetics At Home For CHRISTMAS | 2025 Christmas Decoration Inspiration", "thumb": "https://i.ytimg.com/vi/gXLG9fOy05g/mqdefault.jpg", "dur": "1:14:00"}, {"id": "FwE4AZSmFew", "title": "Creating THE WHITE LOTUS Aesthetics At Home | Italian Villa Interior Inspiration", "thumb": "https://i.ytimg.com/vi/FwE4AZSmFew/mqdefault.jpg", "dur": "46:34"}, {"id": "5M9bh89DCc4", "title": "Creating NEW YORK Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/5M9bh89DCc4/mqdefault.jpg", "dur": "55:20"}, {"id": "8mngFMnbZmk", "title": "Creating RALPH LAUREN Aesthetics At Home For THANKSGIVING", "thumb": "https://i.ytimg.com/vi/8mngFMnbZmk/mqdefault.jpg", "dur": "52:53"}, {"id": "l7KUGa23F_o", "title": "Creating CHANEL Aesthetics At Home For Christmas", "thumb": "https://i.ytimg.com/vi/l7KUGa23F_o/mqdefault.jpg", "dur": "59:12"}, {"id": "QcuM8xqirN4", "title": "Creating DIOR Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/QcuM8xqirN4/mqdefault.jpg", "dur": "47:46"}, {"id": "wRMHBsZTgLY", "title": "Creating YVES SAINT LAURENT Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/wRMHBsZTgLY/mqdefault.jpg", "dur": "55:33"}, {"id": "vhxTqnsJeqM", "title": "Creating BOBBY MCALPINE Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/vhxTqnsJeqM/mqdefault.jpg", "dur": "1:01:21"}, {"id": "3InF8A5Xfc0", "title": "Creating RALPH LAUREN AMERICAN RANCH Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/3InF8A5Xfc0/mqdefault.jpg", "dur": "46:54"}, {"id": "3tdNhUcu7pY", "title": "Creating JOHN SALADINO Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/3tdNhUcu7pY/mqdefault.jpg", "dur": "44:26"}, {"id": "NS82-B2Oz9o", "title": "Creating HOTEL BALZAC PARIS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/NS82-B2Oz9o/mqdefault.jpg", "dur": "45:37"}, {"id": "89Q60lw65cs", "title": "Creating HERMÈS Aesthetics At Home For Christmas", "thumb": "https://i.ytimg.com/vi/89Q60lw65cs/mqdefault.jpg", "dur": "50:01"}, {"id": "-bP3X8Y4azU", "title": "Creating ATHENA CALDERONE Aesthetics At Home For Christmas", "thumb": "https://i.ytimg.com/vi/-bP3X8Y4azU/mqdefault.jpg", "dur": "33:26"}, {"id": "MG-gYIwcij8", "title": "Creating ROSE UNIACKE Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/MG-gYIwcij8/mqdefault.jpg", "dur": "29:26"}, {"id": "F78D07TejlQ", "title": "Creating MILAN GREEN Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/F78D07TejlQ/mqdefault.jpg", "dur": "37:55"}, {"id": "hsruvRWfUs8", "title": "Creating DARRYL CARTER Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/hsruvRWfUs8/mqdefault.jpg", "dur": "39:35"}, {"id": "lIOnD4_omsQ", "title": "Creating Hubert de GIVENCHY Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/lIOnD4_omsQ/mqdefault.jpg", "dur": "23:17"}, {"id": "Yow2pz_6NHA", "title": "Creating BILLY BALDWIN Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/Yow2pz_6NHA/mqdefault.jpg", "dur": "22:17"}, {"id": "P1wGVV45a6U", "title": "Creating OLIVE ATELIERS Aesthetics At Home For Fall | Home Decor Ideas", "thumb": "https://i.ytimg.com/vi/P1wGVV45a6U/mqdefault.jpg", "dur": "38:31"}, {"id": "uTEvAoqoRqk", "title": "Creating ETHNIC CHIC Aesthetics At Home | Home Decor Inspiration", "thumb": "https://i.ytimg.com/vi/uTEvAoqoRqk/mqdefault.jpg", "dur": "33:16"}, {"id": "4d0iMX8aLjo", "title": "Creating RALPH LAUREN Aesthetics At Home | Fall Home Decor ", "thumb": "https://i.ytimg.com/vi/4d0iMX8aLjo/mqdefault.jpg", "dur": "23:07"}, {"id": "-U24ndy6lC8", "title": "Creating CHANEL Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/-U24ndy6lC8/mqdefault.jpg", "dur": "32:06"}, {"id": "IBflvlh-cSk", "title": "Creating HERMÈS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/IBflvlh-cSk/mqdefault.jpg", "dur": "32:56"}, {"id": "qW2kym6hhjw", "title": "Creating LORO PIANA Aesthetics At Home | Quiet Luxury Home Decor", "thumb": "https://i.ytimg.com/vi/qW2kym6hhjw/mqdefault.jpg", "dur": "39:39"}, {"id": "bxMe1_LPzCw", "title": "Creating RALPH LAUREN Aesthetics At Home for Fall 2025", "thumb": "https://i.ytimg.com/vi/bxMe1_LPzCw/mqdefault.jpg", "dur": "35:59"}, {"id": "BVCUOa_JlLY", "title": "Creating AMSTERDAM Aesthetics At Home | Modern Vintage Interior", "thumb": "https://i.ytimg.com/vi/BVCUOa_JlLY/mqdefault.jpg", "dur": "34:46"}, {"id": "S1TQwjuLfpU", "title": "Creating ELIZABETH TAYLOR Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/S1TQwjuLfpU/mqdefault.jpg", "dur": "19:58"}, {"id": "9XgGEPR-hW4", "title": "Creating RALPH LAUREN Aesthetics At Home | Outdoor Living", "thumb": "https://i.ytimg.com/vi/9XgGEPR-hW4/mqdefault.jpg", "dur": "28:01"}, {"id": "0iCd9aAK3Nk", "title": "Creating SOHO HOUSE Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/0iCd9aAK3Nk/mqdefault.jpg", "dur": "25:57"}, {"id": "hrKl-l_8jsM", "title": "Creating BELGIAN Aesthetics At Home For Spring", "thumb": "https://i.ytimg.com/vi/hrKl-l_8jsM/mqdefault.jpg", "dur": "14:51"}, {"id": "tLAU4B_1B40", "title": "Creating RALPH LAUREN HAMPTONS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/tLAU4B_1B40/mqdefault.jpg", "dur": "23:35"}, {"id": "4HtpkXxooqw", "title": "Creating WARM NEUTRAL Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/4HtpkXxooqw/mqdefault.jpg", "dur": "18:18"}, {"id": "tQEnQ14WM4w", "title": "Creating EUROPEAN Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/tQEnQ14WM4w/mqdefault.jpg", "dur": "21:57"}, {"id": "C09kP1UW2EY", "title": "Creating OLIVE ATELIERS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/C09kP1UW2EY/mqdefault.jpg", "dur": "20:28"}, {"id": "p6tLesOlNlI", "title": "Creating a Home Like GRACE KELLY's East Falls Estate", "thumb": "https://i.ytimg.com/vi/p6tLesOlNlI/mqdefault.jpg", "dur": "15:34"}, {"id": "gnzO3EVgn7o", "title": "Creating ANTIQUE Aesthetics In Modern Homes", "thumb": "https://i.ytimg.com/vi/gnzO3EVgn7o/mqdefault.jpg", "dur": "19:18"}, {"id": "ikvxm6MgcVo", "title": "Creating JACKIE KENNEDY Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/ikvxm6MgcVo/mqdefault.jpg", "dur": "17:38"}, {"id": "4iE4HCepDss", "title": "Creating RALPH LAUREN Aesthetics At Home | Blue And White Home Decor", "thumb": "https://i.ytimg.com/vi/4iE4HCepDss/mqdefault.jpg", "dur": "22:01"}, {"id": "aXOJ9KaXAZg", "title": "Creating BUNNY WILLIAMS Aesthetics At Home For EASTER", "thumb": "https://i.ytimg.com/vi/aXOJ9KaXAZg/mqdefault.jpg", "dur": "20:08"}, {"id": "MmR7wqUGdPg", "title": "Creating DAVID HICKS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/MmR7wqUGdPg/mqdefault.jpg", "dur": "21:58"}, {"id": "aUXNKjAjcYw", "title": "Creating TORY BURCH Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/aUXNKjAjcYw/mqdefault.jpg", "dur": "22:04"}, {"id": "MtXu4fmlKu4", "title": "Creating CABANA MAGAZINE Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/MtXu4fmlKu4/mqdefault.jpg", "dur": "20:08"}, {"id": "7-CLmeewU54", "title": "Creating RALPH LAUREN Aesthetics At Home For EASTER", "thumb": "https://i.ytimg.com/vi/7-CLmeewU54/mqdefault.jpg", "dur": "24:30"}, {"id": "OG7rttdvWXQ", "title": "Creating CHARLOTTE MOSS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/OG7rttdvWXQ/mqdefault.jpg", "dur": "26:35"}, {"id": "8fQ3mjlUC3E", "title": "Creating RALPH LAUREN Aesthetics At Home | Spring Home Decor", "thumb": "https://i.ytimg.com/vi/8fQ3mjlUC3E/mqdefault.jpg", "dur": "19:29"}, {"id": "Uf0g_qvsG-s", "title": "Creating ALEXA HAMPTON Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/Uf0g_qvsG-s/mqdefault.jpg", "dur": "17:12"}, {"id": "9c-91S2WT1U", "title": "Creating BUNNY WILLIAMS Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/9c-91S2WT1U/mqdefault.jpg", "dur": "20:58"}, {"id": "Lc-13n_6lE0", "title": "Creating RALPH LAUREN Aesthetics At Home | Bedroom Inspiration", "thumb": "https://i.ytimg.com/vi/Lc-13n_6lE0/mqdefault.jpg", "dur": "14:22"}, {"id": "TP0sBwfZcao", "title": "Creating NANCY MEYERS Aesthetics At Home | 2025 Interior Ideas", "thumb": "https://i.ytimg.com/vi/TP0sBwfZcao/mqdefault.jpg", "dur": "13:20"}, {"id": "W_zLvSeZIb0", "title": "Creating RALPH LAUREN Aesthetics At Home | 2025 Interior Inspiration", "thumb": "https://i.ytimg.com/vi/W_zLvSeZIb0/mqdefault.jpg", "dur": "19:53"}, {"id": "cVr_G1dd-Kc", "title": "Creating FRENCH COUNTRY Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/cVr_G1dd-Kc/mqdefault.jpg", "dur": "21:06"}, {"id": "3qmuI9561nE", "title": "Creating MARTHA STEWART Aesthetics In Modern Homes", "thumb": "https://i.ytimg.com/vi/3qmuI9561nE/mqdefault.jpg", "dur": "15:29"}, {"id": "-U4LEiZQEuc", "title": "Creating RALPH LAUREN Aesthetics At Home For CHRISTMAS", "thumb": "https://i.ytimg.com/vi/-U4LEiZQEuc/mqdefault.jpg", "dur": "20:00"}, {"id": "6c0cwlLsqMg", "title": "Creating LUXURY CHALET Aesthetics At Home | Interior Design Inspiration", "thumb": "https://i.ytimg.com/vi/6c0cwlLsqMg/mqdefault.jpg", "dur": "39:11"}, {"id": "hAB0W2eqW-g", "title": "Creating PARISIAN Aesthetics In Modern Homes | Interior Design Tips", "thumb": "https://i.ytimg.com/vi/hAB0W2eqW-g/mqdefault.jpg", "dur": "9:40"}, {"id": "k1xV6LsC8ws", "title": "Incorporating Classic RALPH LAUREN Aesthetics In Home Decor | Interior Ideas", "thumb": "https://i.ytimg.com/vi/k1xV6LsC8ws/mqdefault.jpg", "dur": "8:49"}, {"id": "sdUiiAZqYiE", "title": "Creating NATE BERKUS Aesthetics In Modern Homes | Interior Design Inspiration", "thumb": "https://i.ytimg.com/vi/sdUiiAZqYiE/mqdefault.jpg", "dur": "9:19"}, {"id": "ymyJi8Cq5WM", "title": "ENGLISH Home Decor Inspiration | Timeless Interior Design", "thumb": "https://i.ytimg.com/vi/ymyJi8Cq5WM/mqdefault.jpg", "dur": "12:24"}, {"id": "oiITeMfTN5w", "title": "Creating RALPH LAUREN Aesthetics In Modern Homes | Interior Design Tips", "thumb": "https://i.ytimg.com/vi/oiITeMfTN5w/mqdefault.jpg", "dur": "8:41"}, {"id": "ZWQopGXvg28", "title": "Incorporating ART & VINTAGE OBJECTS Into Modern Interior Design", "thumb": "https://i.ytimg.com/vi/ZWQopGXvg28/mqdefault.jpg", "dur": "11:35"}, {"id": "ZVVtfG9o-8g", "title": "Creating AXEL VERVOORDT Aesthetics in Modern Homes | Interior Design", "thumb": "https://i.ytimg.com/vi/ZVVtfG9o-8g/mqdefault.jpg", "dur": "14:14"}, {"id": "Rt3tvOfa6bM", "title": "Creating JAPANDI Aesthetics in Modern Homes | Interior Design", "thumb": "https://i.ytimg.com/vi/Rt3tvOfa6bM/mqdefault.jpg", "dur": "22:37"}, {"id": "g3Wwc1oL3JE", "title": "Creating KELLY WEARSTLER Aesthetics At Home", "thumb": "https://i.ytimg.com/vi/g3Wwc1oL3JE/mqdefault.jpg", "dur": "11:24"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
