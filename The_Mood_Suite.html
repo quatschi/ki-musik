@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mood Suite</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCuunZGl6qPOELP9j6iWROnw -->
+<!-- channel-url: https://youtube.com/@themoodsuite -->
+<!-- created: 2026-07-10 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=The_Mood_Suite.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/E6Yq-59NIbpo5drL0cRIddUjn1A93_60XgMuYot99dVSWSa1vblf5fAEhAlh0KklEeumW6qr6w=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">The Mood Suite</div>
+      <div class="channel-count">182 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "The Mood Suite";
+const KANAL = "The_Mood_Suite.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "SbUHi7q8Itk", "title": "Southern Soul Blues Slow Jams | Late Night Grown Folk Slow Jams", "thumb": "https://i.ytimg.com/vi/SbUHi7q8Itk/mqdefault.jpg", "dur": "57:39"}, {"id": "FM1VGNQem5g", "title": "Southern Soul Blues Party Vol. 10 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/FM1VGNQem5g/mqdefault.jpg", "dur": "53:15"}, {"id": "UsThzzpXBY8", "title": "Smooth Step Soul Vol. 6 | Feel-Good Two-Step Jams with Southern Soul Flavor", "thumb": "https://i.ytimg.com/vi/UsThzzpXBY8/mqdefault.jpg", "dur": "1:04:41"}, {"id": "MIePYS65O5c", "title": "Southern Soul Blues Love Songs | Romantic Soul for Grown Folks", "thumb": "https://i.ytimg.com/vi/MIePYS65O5c/mqdefault.jpg", "dur": "1:05:41"}, {"id": "S3EqMuPGLZQ", "title": "Southern Soul Blues Party Vol. 9 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/S3EqMuPGLZQ/mqdefault.jpg", "dur": "1:00:13"}, {"id": "B0Kjw9E-mx8", "title": "Smooth Step Soul Vol. 5 | Feel-Good Two-Step Jams with Southern Soul Flavor", "thumb": "https://i.ytimg.com/vi/B0Kjw9E-mx8/mqdefault.jpg", "dur": "59:15"}, {"id": "x4bOCFDvnSc", "title": "Southern Soul Blues Party Vol. 8 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/x4bOCFDvnSc/mqdefault.jpg", "dur": "1:06:08"}, {"id": "nGKfyBjsdxQ", "title": "Smooth Step Soul Vol. 4 | Feel-Good Grown Folks Soul Jams with Southern Soul Bounce", "thumb": "https://i.ytimg.com/vi/nGKfyBjsdxQ/mqdefault.jpg", "dur": "54:30"}, {"id": "66J19mN8IrY", "title": "Southern Soul Blues Party Vol. 7 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/66J19mN8IrY/mqdefault.jpg", "dur": "1:07:48"}, {"id": "mrOdRn5HnYg", "title": "Smooth Afro R&B & Reggae Soul Grooves | Love, Life & Good Vibes", "thumb": "https://i.ytimg.com/vi/mrOdRn5HnYg/mqdefault.jpg", "dur": "50:43"}, {"id": "IvPYdl0lrjg", "title": "After the Rush | Smooth Groove Soul Instrumentals for De-Stressing & Unwinding", "thumb": "https://i.ytimg.com/vi/IvPYdl0lrjg/mqdefault.jpg", "dur": "1:12:54"}, {"id": "ra3tjLFZs-w", "title": "Smooth Step Soul Vol. 3 | Feel-Good Grown Folks Soul Jams with Southern Soul Bounce", "thumb": "https://i.ytimg.com/vi/ra3tjLFZs-w/mqdefault.jpg", "dur": "57:06"}, {"id": "tA61-q5uDX8", "title": "Southern Soul Blues Party Vol. 6 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/tA61-q5uDX8/mqdefault.jpg", "dur": "57:30"}, {"id": "R9-Bzdqzod4", "title": "Smooth Step Soul Vol. 2 | Feel-Good Grown Folks Soul Jams with Southern Soul Bounce", "thumb": "https://i.ytimg.com/vi/R9-Bzdqzod4/mqdefault.jpg", "dur": "59:27"}, {"id": "gLAtS5OMAVo", "title": "The After Hours Suite | Smooth Jazz Grooves for Focus, Chill & Late Nights", "thumb": "https://i.ytimg.com/vi/gLAtS5OMAVo/mqdefault.jpg", "dur": "1:35:53"}, {"id": "YBdtAiCg8J8", "title": "Southern Soul Blues Party Vol. 5 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/YBdtAiCg8J8/mqdefault.jpg", "dur": "1:11:35"}, {"id": "jIPfkYhpdcg", "title": "Smooth Step Soul Vol. 1 | Feel-Good Two-Step Jams with Southern Soul Flavor", "thumb": "https://i.ytimg.com/vi/jIPfkYhpdcg/mqdefault.jpg", "dur": "50:09"}, {"id": "BKdkSshEuCU", "title": "Southern Soul Blues Party Vol. 4 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/BKdkSshEuCU/mqdefault.jpg", "dur": "1:10:51"}, {"id": "TH_6v9jhmMA", "title": "Island Vibes | Smooth Jamaican Jazz & Soul R&B Instrumentals", "thumb": "https://i.ytimg.com/vi/TH_6v9jhmMA/mqdefault.jpg", "dur": "1:20:19"}, {"id": "-VW2uBWlUEw", "title": "Smooth Jazz & Soul R&B Instrumentals | Calm Focus & Study Grooves [R&B]", "thumb": "https://i.ytimg.com/vi/-VW2uBWlUEw/mqdefault.jpg", "dur": "2:00:25"}, {"id": "hfGGLEygLj0", "title": "Southern Soul Blues Party Vol. 3 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/hfGGLEygLj0/mqdefault.jpg", "dur": "59:02"}, {"id": "JzQgbMuU3U4", "title": "Southern Soul Guitar Grooves | Smooth Instrumentals for Focus, Work & Unwind", "thumb": "https://i.ytimg.com/vi/JzQgbMuU3U4/mqdefault.jpg", "dur": "1:09:21"}, {"id": "JTm2a4NN8Qc", "title": "Quiet Storm R&B Love Songs | Smooth Soulful Vibes for Love, Chill & Deep Feelings", "thumb": "https://i.ytimg.com/vi/JTm2a4NN8Qc/mqdefault.jpg", "dur": "1:28:42"}, {"id": "2cjbGLwOImA", "title": "Smooth Jazz & Soul R&B | Soulful Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/2cjbGLwOImA/mqdefault.jpg", "dur": "1:11:46"}, {"id": "Ev3__lr5700", "title": "Southern Soul Blues Party Vol. 2 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/Ev3__lr5700/mqdefault.jpg", "dur": "1:03:02"}, {"id": "XPPG2lwJ784", "title": "Southern Soul Jazz Lounge | Smooth Sax Grooves for Work, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/XPPG2lwJ784/mqdefault.jpg", "dur": "1:24:17"}, {"id": "3AnxH8z2B6c", "title": "[R&B] Smooth Jazz & Soul Instrumentals | Warm Soulful Grooves for Focus, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/3AnxH8z2B6c/mqdefault.jpg", "dur": "2:19:29"}, {"id": "_xlUhnUq9tM", "title": "Laid-Back Smooth Jazz & Soul R&B | Late Night Grooves for Focus, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/_xlUhnUq9tM/mqdefault.jpg", "dur": "2:02:06"}, {"id": "tw01OXuSoGo", "title": "Smooth Jazz + Soulful R&B Instrumentals | Warm Soprano Sax Grooves for Work, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/tw01OXuSoGo/mqdefault.jpg", "dur": "1:11:54"}, {"id": "5aIxr97Br2M", "title": "Smooth Jazz & Soul R&B | For Work, Chill Evenings & Midnight Vibes", "thumb": "https://i.ytimg.com/vi/5aIxr97Br2M/mqdefault.jpg", "dur": "2:20:23"}, {"id": "L8JxJhECEeg", "title": "Southern Soul Blues Party Vol. 1 | Grown-Folks Grooves for Love, Dancing & Backyard Vibes", "thumb": "https://i.ytimg.com/vi/L8JxJhECEeg/mqdefault.jpg", "dur": "54:29"}, {"id": "Xm-W-LliZiw", "title": "Velvet Sax & Soul | Smooth Jazz R&B for Work, Relaxation & Late-Night Flow", "thumb": "https://i.ytimg.com/vi/Xm-W-LliZiw/mqdefault.jpg", "dur": "1:26:09"}, {"id": "gydOKsljJqw", "title": "【R&B Soul】Smooth R&B Soul Instrumentals | Grown & Sexy Late Night Vibes", "thumb": "https://i.ytimg.com/vi/gydOKsljJqw/mqdefault.jpg", "dur": "2:07:34"}, {"id": "_HZgoFmOgp4", "title": "Smooth Jazz & Soul R&B Instrumentals | Timeless Vibes for Focus, Relaxation & Late Nights", "thumb": "https://i.ytimg.com/vi/_HZgoFmOgp4/mqdefault.jpg", "dur": "1:34:02"}, {"id": "qKQ7x-FFmoo", "title": "Soulful R&B Vibes | Smooth Love Songs for Feelings, Healing & Grown Romance", "thumb": "https://i.ytimg.com/vi/qKQ7x-FFmoo/mqdefault.jpg", "dur": "57:06"}, {"id": "hsQfXwmLpYA", "title": "Smooth Jazz R&B Instrumentals | Head-Nod Soul Grooves for Work, Chill & Late Nights", "thumb": "https://i.ytimg.com/vi/hsQfXwmLpYA/mqdefault.jpg", "dur": "1:39:25"}, {"id": "DmIitv20-Pw", "title": "[R&B] Romantic R&B Soul Radio Mix | Smooth Love Songs to Vibe, Chill & Unwind", "thumb": "https://i.ytimg.com/vi/DmIitv20-Pw/mqdefault.jpg", "dur": "2:15:33"}, {"id": "S5HfChxHGNc", "title": "[R&B] Smooth Jazz, R&B & Neo Soul Vibes | Soulful Grooves for Chill, Focus & Unwind", "thumb": "https://i.ytimg.com/vi/S5HfChxHGNc/mqdefault.jpg", "dur": "2:54:24"}, {"id": "ASehElQtpIQ", "title": "【R&B Soul】Romantic R&B Soul Music – Smooth Love Songs to Set the Mood & Chill", "thumb": "https://i.ytimg.com/vi/ASehElQtpIQ/mqdefault.jpg", "dur": "1:29:30"}, {"id": "lhAMQ3leuvo", "title": "【R&B Soul】Romantic R&B Soul Music – Smooth Love Songs to Vibe & Unwind", "thumb": "https://i.ytimg.com/vi/lhAMQ3leuvo/mqdefault.jpg", "dur": "1:29:21"}, {"id": "l3J79-g7zYY", "title": "Smooth Jazz & Soul Live | Chill Vibes & Slow Evening Instrumentals [Live]", "thumb": "https://i.ytimg.com/vi/l3J79-g7zYY/mqdefault.jpg", "dur": "11:54:59"}, {"id": "DMWvw9YiQ28", "title": "Smooth Jazz & Soul R&B Instrumentals | Music for Slow Evenings and a Clear Mind", "thumb": "https://i.ytimg.com/vi/DMWvw9YiQ28/mqdefault.jpg", "dur": "1:13:19"}, {"id": "MUryIjdRRAw", "title": "【R&B Soul】Romantic R&B Soul Music – Smooth Soulful Vibes for Slow Jam Nights", "thumb": "https://i.ytimg.com/vi/MUryIjdRRAw/mqdefault.jpg", "dur": "1:22:40"}, {"id": "nUYU-NZdVL4", "title": "Smooth Jazz & Soul R&B | Warm Melodies for Focus, Relaxation & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/nUYU-NZdVL4/mqdefault.jpg", "dur": "2:04:21"}, {"id": "wgS6X8jwQ20", "title": "Smooth Jazz & Soul R&B Instrumental | Warm Melodies for Gentle Relaxing Moments", "thumb": "https://i.ytimg.com/vi/wgS6X8jwQ20/mqdefault.jpg", "dur": "1:10:14"}, {"id": "8GtZ49z9Nwg", "title": "R&B Soul Playlist – Grown & Romantic Smooth Jams", "thumb": "https://i.ytimg.com/vi/8GtZ49z9Nwg/mqdefault.jpg", "dur": "1:00:58"}, {"id": "G1tFIBHLZ34", "title": "Soulful Romantic R&B Love Songs 💖 Male + Female Love Vibes | Smooth Slow Jams & Deep Chill [Vocals]", "thumb": "https://i.ytimg.com/vi/G1tFIBHLZ34/mqdefault.jpg", "dur": "2:00:40"}, {"id": "KGQBz0mPKuc", "title": "Smooth Jazz & Soul R&B | Perfect Grooves for Focus, Work & Vibe 🎧", "thumb": "https://i.ytimg.com/vi/KGQBz0mPKuc/mqdefault.jpg", "dur": "2:08:51"}, {"id": "mNtWdzuGEwY", "title": "Smooth Jazz & Soul: Warm Sax & Chill Vibes for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/mNtWdzuGEwY/mqdefault.jpg", "dur": "2:21:03"}, {"id": "8F9-_2OB5b4", "title": "Smooth Soul & Jazz ✨ Deep Chill Relaxing Vibes | Late Night Quiet Storm Instrumentals", "thumb": "https://i.ytimg.com/vi/8F9-_2OB5b4/mqdefault.jpg", "dur": "1:13:26"}, {"id": "hY_xvgFbvTY", "title": "Smooth Soul & Jazz ✨ Quiet Storm Vibes to Melt Stress Away | Deep Chill Late Night", "thumb": "https://i.ytimg.com/vi/hY_xvgFbvTY/mqdefault.jpg", "dur": "1:00:19"}, {"id": "7HiVtZ-EumY", "title": "Smooth Soul & Jazz for Focus, Work & Relaxation | Laid-Back Groove Vibes", "thumb": "https://i.ytimg.com/vi/7HiVtZ-EumY/mqdefault.jpg", "dur": "1:38:10"}, {"id": "6a1ehObLdvY", "title": "Nightfall Suite | Quiet-Storm R&B for Deep Focus & Flow", "thumb": "https://i.ytimg.com/vi/6a1ehObLdvY/mqdefault.jpg", "dur": "1:08:42"}, {"id": "i9Q7jyP6EcM", "title": "Golden Afterglow | Quiet-Storm R&B for Soulful Calm", "thumb": "https://i.ytimg.com/vi/i9Q7jyP6EcM/mqdefault.jpg", "dur": "1:07:03"}, {"id": "MzBHFJUpjbo", "title": "Penthouse Hush | Quiet-Storm R&B for Calm Focus", "thumb": "https://i.ytimg.com/vi/MzBHFJUpjbo/mqdefault.jpg", "dur": "1:02:27"}, {"id": "LLuXL30pn28", "title": "Velvet Afterglow | Quiet Storm R&B Rhythms for Emotional Calm", "thumb": "https://i.ytimg.com/vi/LLuXL30pn28/mqdefault.jpg", "dur": "1:19:49"}, {"id": "VwdhLDN0CxU", "title": "Soul Reflections | Quiet Storm R&B Instrumentals for Relaxed Nights", "thumb": "https://i.ytimg.com/vi/VwdhLDN0CxU/mqdefault.jpg", "dur": "1:09:51"}, {"id": "glZ-btx10qQ", "title": "Soulful Midnight Flow | Smooth R&B Grooves for Relax & Creative Healing", "thumb": "https://i.ytimg.com/vi/glZ-btx10qQ/mqdefault.jpg", "dur": "1:09:29"}, {"id": "xoTWVF4jmb0", "title": "Velvet Soul Nights | Smooth R&B Grooves for Relaxed Focus & Healing", "thumb": "https://i.ytimg.com/vi/xoTWVF4jmb0/mqdefault.jpg", "dur": "1:30:36"}, {"id": "9bY4fCcJMEk", "title": "Silk & Shadows | Cinematic R&B for Calm, Soulful Evenings", "thumb": "https://i.ytimg.com/vi/9bY4fCcJMEk/mqdefault.jpg", "dur": "1:26:13"}, {"id": "D0d3Zwbj4_Y", "title": "Chill Music to Calm and Relax Your Soul", "thumb": "https://i.ytimg.com/vi/D0d3Zwbj4_Y/mqdefault.jpg", "dur": "1:17:52"}, {"id": "e3JcddottE8", "title": "Midnight Vibes: Smooth R&B for Serene Evenings", "thumb": "https://i.ytimg.com/vi/e3JcddottE8/mqdefault.jpg", "dur": "1:10:03"}, {"id": "q7FLqHiwhpg", "title": "Midnight R&B Bliss: Irresistible Lo-Fi Vibes to Melt Your Stress", "thumb": "https://i.ytimg.com/vi/q7FLqHiwhpg/mqdefault.jpg", "dur": "1:14:23"}, {"id": "rdBUMe_5EqI", "title": "Timeless Chill R&B: Smooth Instrumentals for Late-Night Study & Sleep", "thumb": "https://i.ytimg.com/vi/rdBUMe_5EqI/mqdefault.jpg", "dur": "1:36:51"}, {"id": "f3kDnAeMCIw", "title": "Late Night R&B Mix 2025: Soulful Slow Jams for Chill & Create", "thumb": "https://i.ytimg.com/vi/f3kDnAeMCIw/mqdefault.jpg", "dur": "1:17:50"}, {"id": "yCp5TCBpE4M", "title": "Cinematic Soul Nights: Luxe R&B Vibes for Creative Flow & Relaxation ✨", "thumb": "https://i.ytimg.com/vi/yCp5TCBpE4M/mqdefault.jpg", "dur": "1:03:26"}, {"id": "WGCmMJbqQZk", "title": "Velvet Skyline: Flugelhorn Night Therapy for Deep Calm", "thumb": "https://i.ytimg.com/vi/WGCmMJbqQZk/mqdefault.jpg", "dur": "1:27:33"}, {"id": "SYYrR6OCai8", "title": "Soulful R&B Flow: Viral Stress-Melt Vibes 🌙 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/SYYrR6OCai8/mqdefault.jpg", "dur": "1:08:31"}, {"id": "IJG-jHMSNFk", "title": "Light Groove Calm: Viral R&B Head-Nod Stress Relief 🌟 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/IJG-jHMSNFk/mqdefault.jpg", "dur": "1:15:52"}, {"id": "uOKVsRjlN8I", "title": "Unwind in Soulful R&B Bliss: Viral Healing Vibes 🌙 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/uOKVsRjlN8I/mqdefault.jpg", "dur": "1:02:56"}, {"id": "vF59Dz1Ycww", "title": "Night Lounge Therapy: Viral R&B Grooves to Melt Stress 🌙 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/vF59Dz1Ycww/mqdefault.jpg", "dur": "1:08:23"}, {"id": "IgtC0Pub1uU", "title": "Gentle Groove Therapy: Viral R&B Instrumentals to Focus & Heal 🌿 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/IgtC0Pub1uU/mqdefault.jpg", "dur": "1:30:27"}, {"id": "_PqMANaXVIk", "title": "Night Holds You: Viral R&B Instrumentals to Unwind & Heal 🌙 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/_PqMANaXVIk/mqdefault.jpg", "dur": "1:33:56"}, {"id": "_cD9xV7hvVs", "title": "Unwind & Reset: Viral R&B Instrumentals to Heal Your Mind 🌿 – The Mood Suite", "thumb": "https://i.ytimg.com/vi/_cD9xV7hvVs/mqdefault.jpg", "dur": "2:15:09"}, {"id": "v4bsOt8G2lQ", "title": "Rest Your Spirit with Ultimate R&B Healing 🌿 – Mood Suite", "thumb": "https://i.ytimg.com/vi/v4bsOt8G2lQ/mqdefault.jpg", "dur": "2:07:25"}, {"id": "oa5PDGRB3wI", "title": "Healing Presence | Therapeutic R&B for Soulful Healing – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/oa5PDGRB3wI/mqdefault.jpg", "dur": "2:03:47"}, {"id": "fEl2MPj8ZFo", "title": "Luxury R&B Instrumentals for Relaxation & Reflection – The Mood Suite", "thumb": "https://i.ytimg.com/vi/fEl2MPj8ZFo/mqdefault.jpg", "dur": "1:36:53"}, {"id": "p12z7M8RnZY", "title": "Quiet Horizons: Smooth R&B to Unwind & Reflect – The Mood Suite", "thumb": "https://i.ytimg.com/vi/p12z7M8RnZY/mqdefault.jpg", "dur": "1:09:26"}, {"id": "2kHXNzOEWRI", "title": "Emotional Reset: Music for Quiet Release", "thumb": "https://i.ytimg.com/vi/2kHXNzOEWRI/mqdefault.jpg", "dur": "1:02:35"}, {"id": "eIH7M-Eh28M", "title": "Release & Recenter | Smooth R&B to Calm Your Emotions – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/eIH7M-Eh28M/mqdefault.jpg", "dur": "1:01:26"}, {"id": "cZ6OTprthiI", "title": "🎧 Deep Release | Soulful R&B to Unwind Your Spirit – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/cZ6OTprthiI/mqdefault.jpg", "dur": "1:00:58"}, {"id": "kk0hU-WDbPo", "title": "Focus Therapy: Soulful R&B for Calm Productivity", "thumb": "https://i.ytimg.com/vi/kk0hU-WDbPo/mqdefault.jpg", "dur": "1:19:51"}, {"id": "2PrrcK5xkFQ", "title": "Stay With the Feeling | Soulful R&B to Reset Your Mood – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/2PrrcK5xkFQ/mqdefault.jpg", "dur": "1:04:07"}, {"id": "vCS27QLOq64", "title": "Weightless | Soulful R&B to Help You Let Go – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/vCS27QLOq64/mqdefault.jpg", "dur": "1:03:40"}, {"id": "XmUK300CksM", "title": "Stillness in the Groove | Smooth R&B to Ease Your Mind – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/XmUK300CksM/mqdefault.jpg", "dur": "1:06:08"}, {"id": "EQK1ChDrwfQ", "title": "Clear Focus | Smooth R&B for Deep Work & Clarity – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/EQK1ChDrwfQ/mqdefault.jpg", "dur": "1:16:29"}, {"id": "06LEShKCsm0", "title": "Soul in the Room | Smooth R&B to Set a Calm Mood – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/06LEShKCsm0/mqdefault.jpg", "dur": "1:20:09"}, {"id": "n69v_bqKkYk", "title": "Think Clearly | Soulful R&B for Deep Focus & Mental Clarity – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/n69v_bqKkYk/mqdefault.jpg", "dur": "1:03:45"}, {"id": "hE0sc2Bkemw", "title": "Soft Reboot | Smooth R&B to Relax Your Mind & Regain Balance – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/hE0sc2Bkemw/mqdefault.jpg", "dur": "1:02:04"}, {"id": "kKHaH5eWYyM", "title": "Soul Notes | Smooth Lofi R&B for Reflection & Clarity – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/kKHaH5eWYyM/mqdefault.jpg", "dur": "1:02:43"}, {"id": "1jucPHaAXGA", "title": "In the Flow | Soulful R&B for Steady Focus – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/1jucPHaAXGA/mqdefault.jpg", "dur": "1:05:00"}, {"id": "vJy1biB3GB8", "title": "Still Soul | Smooth R&B to Keep You Centered – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/vJy1biB3GB8/mqdefault.jpg", "dur": "1:06:44"}, {"id": "-_aNFOr8rh4", "title": "Soul Focus | Smooth R&B for Calm Energy & Inner Focus – The Mood Suite", "thumb": "https://i.ytimg.com/vi/-_aNFOr8rh4/mqdefault.jpg", "dur": "1:09:22"}, {"id": "eoBXBdfOecE", "title": "Mellow Reflections | Smooth Soul R&B to Slow It Down – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/eoBXBdfOecE/mqdefault.jpg", "dur": "1:35:08"}, {"id": "bTPVLV0GWwM", "title": "Ease Into It | Soulful R&B to Warm the Spirit – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/bTPVLV0GWwM/mqdefault.jpg", "dur": "2:06:26"}, {"id": "s5xjSYbRun4", "title": "Soothe Me Slow | Soulful R&B to Ease Your Spirit – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/s5xjSYbRun4/mqdefault.jpg", "dur": "1:10:21"}, {"id": "iAsefH6VOMQ", "title": "Grown & Glowing | Soulful R&B for Late Night Peace – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/iAsefH6VOMQ/mqdefault.jpg", "dur": "1:07:38"}, {"id": "5kZ0jRrObmA", "title": "Deeply Yours | Soulful R&B for Emotional Grounding – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/5kZ0jRrObmA/mqdefault.jpg", "dur": "1:34:12"}, {"id": "QRpIl9sFGfc", "title": "Quiet Healing | Smooth Soul & R&B to Ease Your Spirit – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/QRpIl9sFGfc/mqdefault.jpg", "dur": "1:10:11"}, {"id": "FC6laHHNeW4", "title": "Soul Reverie | Smooth R&B & Dreamy Instrumentals – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/FC6laHHNeW4/mqdefault.jpg", "dur": "1:07:58"}, {"id": "5qPPaqV1NJ8", "title": "Neo Vibes | Uptempo Soul & R&B Instrumentals – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/5qPPaqV1NJ8/mqdefault.jpg", "dur": "1:06:19"}, {"id": "L3xAPbUuWfE", "title": "Midnight Flow | Smooth Soul & R&B Instrumentals to Unwind and Reflect – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/L3xAPbUuWfE/mqdefault.jpg", "dur": "1:18:00"}, {"id": "LFy2jtKfn3I", "title": "Late Night Groove: Relaxing Soul and R&B Collection – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/LFy2jtKfn3I/mqdefault.jpg", "dur": "1:12:15"}, {"id": "u1Isuva4NEc", "title": "Slow Burn Soul | Smooth R&B Vibes for Late Nights & Quiet Moments – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/u1Isuva4NEc/mqdefault.jpg", "dur": "1:00:56"}, {"id": "Y_6n-Ro0r5E", "title": "Easy Soul Vibes for a Good Mood – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/Y_6n-Ro0r5E/mqdefault.jpg", "dur": "1:10:25"}, {"id": "9KKPunWZYGY", "title": "[Chill Soul] Feel Good Frequencies | Chill Music Vibes for a Smooth Mood – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/9KKPunWZYGY/mqdefault.jpg", "dur": "1:15:21"}, {"id": "8D2TtK86ZDM", "title": "[Late Night Soul] Slow Burn Confessions | Soothing Music for Relaxing & Unwinding – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/8D2TtK86ZDM/mqdefault.jpg", "dur": "1:14:47"}, {"id": "8ZaexqI8IYA", "title": "Evening Silhouettes | Smooth R&B Vibes for Unwinding & Reflection – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/8ZaexqI8IYA/mqdefault.jpg", "dur": "1:03:02"}, {"id": "bVJinrgEvhE", "title": "[Late Night Soul] Heart & Harmony | Deep R&B Flow for Reflection & Calm – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/bVJinrgEvhE/mqdefault.jpg", "dur": "1:13:46"}, {"id": "Zr1RnCBfD-o", "title": "[Smooth Focus] R&B Chill Flow | Soulful Instrumentals for Calm Work & Reflection – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/Zr1RnCBfD-o/mqdefault.jpg", "dur": "1:10:29"}, {"id": "inePsGvCemg", "title": "Echoes & Stillness | Late Night Soul & R&B – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/inePsGvCemg/mqdefault.jpg", "dur": "1:06:28"}, {"id": "-gu2xhnC1vg", "title": "Midnight Whispers | Smooth Soul & R&B Vibes – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/-gu2xhnC1vg/mqdefault.jpg", "dur": "1:13:25"}, {"id": "6jKc0Q8hHsc", "title": "Evening Groove | Smooth Soul & R&B Guitar Flow – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/6jKc0Q8hHsc/mqdefault.jpg", "dur": "1:04:26"}, {"id": "vqVLapolgiI", "title": "Held by the Vibe | Smooth Soul & R&B – The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/vqVLapolgiI/mqdefault.jpg", "dur": "1:08:46"}, {"id": "-zLrW1_seW4", "title": "Quiet Luxury | Chill R&B & Soul Reflections – The Mood Suite", "thumb": "https://i.ytimg.com/vi/-zLrW1_seW4/mqdefault.jpg", "dur": "1:06:50"}, {"id": "nsTbIMGUrlk", "title": "Still in the Vibe | Chill R&B & Laid-Back Soul – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/nsTbIMGUrlk/mqdefault.jpg", "dur": "1:10:59"}, {"id": "PS1HrJbEl7o", "title": "Wrapped in the Feeling | Chill R&B & Soul Flow – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/PS1HrJbEl7o/mqdefault.jpg", "dur": "1:03:14"}, {"id": "KA-x1xUxQQI", "title": "Let It All Sink In | Chill R&B & Smooth Soul – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/KA-x1xUxQQI/mqdefault.jpg", "dur": "1:08:27"}, {"id": "OX-zR-BF6HI", "title": "Where Melody Moves You | Soul & R&B Vibes – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/OX-zR-BF6HI/mqdefault.jpg", "dur": "1:09:25"}, {"id": "1Hh2p9b1UtU", "title": "Hold the Moment | Reflective Soul & R&B – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/1Hh2p9b1UtU/mqdefault.jpg", "dur": "1:19:00"}, {"id": "XS4XfhnpUcs", "title": "Ease Into the Night | Smooth R&B with Sax & Soul – The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/XS4XfhnpUcs/mqdefault.jpg", "dur": "1:03:27"}, {"id": "aDkqb6jdMNE", "title": "Let Your Worries Fade Away | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/aDkqb6jdMNE/mqdefault.jpg", "dur": "1:03:41"}, {"id": "H6HM1FTmcCQ", "title": "Ease Into the Evening | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/H6HM1FTmcCQ/mqdefault.jpg", "dur": "1:17:38"}, {"id": "S2JFoBGDNi8", "title": "Harmonic Immersion | R&B, Soul, & Jazz Fusion - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/S2JFoBGDNi8/mqdefault.jpg", "dur": "1:09:11"}, {"id": "yxp3SawJ-Rc", "title": "Vibe Enrichment | Urban Soul Fusion - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/yxp3SawJ-Rc/mqdefault.jpg", "dur": "1:13:56"}, {"id": "44G9VTTRMTI", "title": "Essence Renewal | Soul & R&B Grooves - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/44G9VTTRMTI/mqdefault.jpg", "dur": "1:06:37"}, {"id": "IH4skcwTbTg", "title": "Soul Nourisher | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/IH4skcwTbTg/mqdefault.jpg", "dur": "1:31:32"}, {"id": "nz3AuBSp_Xg", "title": "Peace of Mind | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/nz3AuBSp_Xg/mqdefault.jpg", "dur": "1:18:35"}, {"id": "wiDffTvdhh4", "title": "Mellow Mood | Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/wiDffTvdhh4/mqdefault.jpg", "dur": "1:01:49"}, {"id": "hMs-goyOWXk", "title": "The Right Vibe | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/hMs-goyOWXk/mqdefault.jpg", "dur": "1:12:59"}, {"id": "YM54ghP46tc", "title": "Pure Bliss | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/YM54ghP46tc/mqdefault.jpg", "dur": "1:10:29"}, {"id": "0IVDu36rnBQ", "title": "Simply Smooth | Southern Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/0IVDu36rnBQ/mqdefault.jpg", "dur": "1:13:17"}, {"id": "VfC8c4fL5W8", "title": "Feel Good Mode | Smooth Soul, Jazz & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/VfC8c4fL5W8/mqdefault.jpg", "dur": "1:07:08"}, {"id": "TA4Ead9RsQQ", "title": "Soothing Embrace | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/TA4Ead9RsQQ/mqdefault.jpg", "dur": "1:15:43"}, {"id": "AFX5tDMBhT0", "title": "Premium Escape | Smooth Soul & R&B - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/AFX5tDMBhT0/mqdefault.jpg", "dur": "1:09:48"}, {"id": "ktYpz64GUog", "title": "Vibe Enhancer | Smooth Jazz & Soul - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/ktYpz64GUog/mqdefault.jpg", "dur": "1:15:30"}, {"id": "Qz7-8iTKRoA", "title": "Mind Soother | R&B & Soul - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/Qz7-8iTKRoA/mqdefault.jpg", "dur": "1:12:15"}, {"id": "2oy54gBvm2o", "title": "Mood Brightener | R&B & Soul Flow - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/2oy54gBvm2o/mqdefault.jpg", "dur": "1:40:41"}, {"id": "b_C577IFosw", "title": "Pure Escape | R&B & Soul Flow - The Mood Suite✨", "thumb": "https://i.ytimg.com/vi/b_C577IFosw/mqdefault.jpg", "dur": "1:12:42"}, {"id": "Jg4YobqgbLk", "title": "Mood Elevator | R&B & Soul Essence • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/Jg4YobqgbLk/mqdefault.jpg", "dur": "1:23:34"}, {"id": "6lBxsNPBRN0", "title": "Deep Immersion | R&B & Soul Essence • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/6lBxsNPBRN0/mqdefault.jpg", "dur": "1:15:09"}, {"id": "i026m5DD9EE", "title": "Smooth Composure · R&B & Soul Essence • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/i026m5DD9EE/mqdefault.jpg", "dur": "1:20:57"}, {"id": "2hm2QKxSFxc", "title": "Inner Reset | R&B Soul Release • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/2hm2QKxSFxc/mqdefault.jpg", "dur": "1:15:59"}, {"id": "nqkN6eTP2Mo", "title": "Golden Moment | R&B • Pop • Soul Fusion • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/nqkN6eTP2Mo/mqdefault.jpg", "dur": "1:18:25"}, {"id": "8qCQHEdnqyo", "title": "Cool Comfort | R&B & Soul Collection • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/8qCQHEdnqyo/mqdefault.jpg", "dur": "1:08:07"}, {"id": "97g8cIwI-rs", "title": "Mood Fix | R&B & Soul Experience • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/97g8cIwI-rs/mqdefault.jpg", "dur": "1:16:55"}, {"id": "PnpxWCuKuLs", "title": "Mind Unwind | R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/PnpxWCuKuLs/mqdefault.jpg", "dur": "1:04:12"}, {"id": "N7lWO6bvNWM", "title": "Soul Refresher | R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/N7lWO6bvNWM/mqdefault.jpg", "dur": "1:15:48"}, {"id": "juJKpv7jyuY", "title": "Soul Medicine | R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/juJKpv7jyuY/mqdefault.jpg", "dur": "1:06:03"}, {"id": "EmqIJ9kURrc", "title": "Smooth Essence | R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/EmqIJ9kURrc/mqdefault.jpg", "dur": "1:29:31"}, {"id": "H0ZHkp6ksic", "title": "The Sweet Spot | R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/H0ZHkp6ksic/mqdefault.jpg", "dur": "1:16:24"}, {"id": "y0dHJAOoweM", "title": "Soul Groove | R&B • Neo Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/y0dHJAOoweM/mqdefault.jpg", "dur": "1:05:57"}, {"id": "i6LzT_xJGfA", "title": "Vibe Activation | Neo Soul Groove • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/i6LzT_xJGfA/mqdefault.jpg", "dur": "1:37:48"}, {"id": "xPGjT0_cAcU", "title": "Tension Release: Smooth Soul • R&B ✨", "thumb": "https://i.ytimg.com/vi/xPGjT0_cAcU/mqdefault.jpg", "dur": "1:15:29"}, {"id": "0HfIbclOWVc", "title": "Mood Lift: R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/0HfIbclOWVc/mqdefault.jpg", "dur": "1:18:33"}, {"id": "FBeVOkx6qE8", "title": "Soul Comfort: R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/FBeVOkx6qE8/mqdefault.jpg", "dur": "1:07:26"}, {"id": "WNrGwv2_vY0", "title": "Groove Therapy: R&B • Soul • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/WNrGwv2_vY0/mqdefault.jpg", "dur": "1:37:12"}, {"id": "du1y5_JoAbc", "title": "Soulful Whispers | Smooth Soul • R&B • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/du1y5_JoAbc/mqdefault.jpg", "dur": "1:31:05"}, {"id": "gw00-0sSCw8", "title": "Soul Essence | Smooth Soul • R&B • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/gw00-0sSCw8/mqdefault.jpg", "dur": "1:05:00"}, {"id": "M4UIKJSRnYY", "title": "Smooth Grooves | Neo Soul • R&B • The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/M4UIKJSRnYY/mqdefault.jpg", "dur": "1:25:47"}, {"id": "lL96W4Qjwxg", "title": "The Perfect Vibe: Neo Soul • Jazz • R&B Elements ✨", "thumb": "https://i.ytimg.com/vi/lL96W4Qjwxg/mqdefault.jpg", "dur": "1:31:43"}, {"id": "YN2wrL9UNs0", "title": "Neo Soul & R&B Vibes | Good Energy Mix - The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/YN2wrL9UNs0/mqdefault.jpg", "dur": "2:03:46"}, {"id": "5G_vpLUhHDI", "title": "Smooth Neo Soul Vibes | R&B Groove Mix - The Mood Suite ✨", "thumb": "https://i.ytimg.com/vi/5G_vpLUhHDI/mqdefault.jpg", "dur": "1:04:09"}, {"id": "94mTzdcuOX0", "title": "Relaxing Neo Soul Study | R&B Focus Mix - The Mood Suite 📚", "thumb": "https://i.ytimg.com/vi/94mTzdcuOX0/mqdefault.jpg", "dur": "1:01:12"}, {"id": "Cu9VoABiT6w", "title": "Soulful Grooves | Jazz & R&B Mix - The Mood Suite ⚡️", "thumb": "https://i.ytimg.com/vi/Cu9VoABiT6w/mqdefault.jpg", "dur": "1:03:09"}, {"id": "frhzedCFMlE", "title": "Modern Neo Soul Mix | R&B Essentials - The Mood Suite 💫", "thumb": "https://i.ytimg.com/vi/frhzedCFMlE/mqdefault.jpg", "dur": "2:08:41"}, {"id": "jc3xH4-nwfA", "title": "Focus & Study Mix | ChillHop Session - The Mood Suite 📚", "thumb": "https://i.ytimg.com/vi/jc3xH4-nwfA/mqdefault.jpg", "dur": "1:05:51"}, {"id": "AMMks5sTV-8", "title": "Blues & Bourbon: Echoes of a Timeless Night", "thumb": "https://i.ytimg.com/vi/AMMks5sTV-8/mqdefault.jpg", "dur": "1:29:49"}, {"id": "hpg3Tnugi6E", "title": "Soulful Energy | Neo Soul & R&B Mix - The Mood Suite ⚡️", "thumb": "https://i.ytimg.com/vi/hpg3Tnugi6E/mqdefault.jpg", "dur": "1:08:27"}, {"id": "szdUQ73U3f4", "title": "Urban Soul Energy | Jazz R&B Collection - The Mood Suite ⚡️", "thumb": "https://i.ytimg.com/vi/szdUQ73U3f4/mqdefault.jpg", "dur": "1:17:06"}, {"id": "zyUtNMSqQWY", "title": "Neo Soul Groove | Upbeat R&B Mix - The Mood Suite ⚡️", "thumb": "https://i.ytimg.com/vi/zyUtNMSqQWY/mqdefault.jpg", "dur": "1:00:16"}, {"id": "apmHqPQog3c", "title": "Smooth Soul & Jazz | R&B Collection - The Mood Suite 🎷", "thumb": "https://i.ytimg.com/vi/apmHqPQog3c/mqdefault.jpg", "dur": "1:07:02"}, {"id": "Ie8M_z8Ck58", "title": "Study With Me | Lofi Focus Music - The Mood Suite 📚", "thumb": "https://i.ytimg.com/vi/Ie8M_z8Ck58/mqdefault.jpg", "dur": "1:03:08"}, {"id": "PHcPyj8TiV4", "title": "Neo Soul Sanctuary | Smooth R&B Mix - The Mood Suite 💫", "thumb": "https://i.ytimg.com/vi/PHcPyj8TiV4/mqdefault.jpg", "dur": "1:14:56"}, {"id": "XWUnurlQHck", "title": "Rainy Day Jazz & Relaxing Music | Neo Soul Afternoon Mix 🌧️", "thumb": "https://i.ytimg.com/vi/XWUnurlQHck/mqdefault.jpg", "dur": "3:01:46"}, {"id": "Fmx0EKMMQm0", "title": "Essential Lo-fi Jazz Study Music | Mindful Focus Mix 📚", "thumb": "https://i.ytimg.com/vi/Fmx0EKMMQm0/mqdefault.jpg", "dur": "1:10:07"}, {"id": "68o8caqDafE", "title": "Smooth Jazz & Soul Lounge | Evening Relaxation Mix 🌙", "thumb": "https://i.ytimg.com/vi/68o8caqDafE/mqdefault.jpg", "dur": "2:00:13"}, {"id": "7_4XolDvOvY", "title": "Chill Hip Hop & R&B Mix | Smooth Vibes 2025 🎧", "thumb": "https://i.ytimg.com/vi/7_4XolDvOvY/mqdefault.jpg", "dur": "1:28:26"}, {"id": "f0pXH_M6nBU", "title": "Relaxing R&B Soul Mix 2025 | Sleep, Study, Work Playlist 🌙", "thumb": "https://i.ytimg.com/vi/f0pXH_M6nBU/mqdefault.jpg", "dur": "1:15:52"}, {"id": "7Q2oXExXjWA", "title": "Relaxing Soul Jazz & Smooth R&B | Evening Study & Focus Music 🌙", "thumb": "https://i.ytimg.com/vi/7Q2oXExXjWA/mqdefault.jpg", "dur": "1:07:20"}, {"id": "lw6lFdH5UP0", "title": "Romantic Soul & R&B | A Night of Sweet Melodies | The Mood Suite", "thumb": "https://i.ytimg.com/vi/lw6lFdH5UP0/mqdefault.jpg", "dur": "1:18:50"}, {"id": "L4D4w_Dd6fE", "title": "Smooth Soul & Jazz to Elevate Your Mood | The Mood Suite Experience", "thumb": "https://i.ytimg.com/vi/L4D4w_Dd6fE/mqdefault.jpg", "dur": "1:11:32"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
