@@ -17,10 +17,6 @@
   .filter-btn.excluded { background: rgba(255,80,80,0.15); border-color: rgba(255,100,100,0.5); color: #ff9999; text-decoration: line-through; }
   .mode-toggle { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #7a6fa0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; margin-bottom: 8px; }
   .mode-toggle.excl-mode { background: rgba(255,80,80,0.15); border-color: rgba(255,100,100,0.4); color: #ff9999; }
-  .dj-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #7a6fa0; padding: 6px 16px; cursor: pointer; font-size: 0.78rem; font-family: inherit; transition: all 0.2s ease; margin-bottom: 8px; }
-  .dj-btn.active { background: rgba(255,200,50,0.2); border-color: rgba(255,200,50,0.6); color: #ffd700; }
-  .dj-time-select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; color: #9b8fc0; padding: 5px 10px; font-size: 0.78rem; font-family: inherit; cursor: pointer; display: none; margin-bottom: 8px; }
-  .dj-time-select.visible { display: inline-block; }
   .player-container { width: 100%; max-width: 640px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; overflow: hidden; }
   .video-frame { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
   .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
@@ -273,66 +269,6 @@
     return videos;
   }
 
-  // ===== DJ-Modus =====
-  let djActive = false;
-  let djTimer = null;
-
-  function toggleDJ() {
-    djActive = !djActive;
-    const btn = document.getElementById('btn-dj');
-    const sel = document.getElementById('dj-time-select');
-    if (djActive) {
-      btn.classList.add('active');
-      sel.classList.add('visible');
-      startDJTimer();
-    } else {
-      btn.classList.remove('active');
-      sel.classList.remove('visible');
-      clearDJTimer();
-      // Lautstärke zurücksetzen falls gerade ausgeblendet wird
-      if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(100);
-    }
-  }
-
-  function startDJTimer() {
-    clearDJTimer();
-    const minutes = parseInt(document.getElementById('dj-time-select').value) || 10;
-    djTimer = setTimeout(() => {
-      if (djActive) djFadeAndNext();
-    }, minutes * 60 * 1000);
-  }
-
-  function clearDJTimer() {
-    if (djTimer) { clearTimeout(djTimer); djTimer = null; }
-  }
-
-  async function djFadeAndNext() {
-    if (!ytPlayer || !ytPlayer.setVolume) { pickRandom(); startDJTimer(); return; }
-    // Sanft ausblenden über 3 Sekunden
-    let vol = 100;
-    const fadeOut = setInterval(() => {
-      vol = Math.max(0, vol - 5);
-      ytPlayer.setVolume(vol);
-      if (vol <= 0) {
-        clearInterval(fadeOut);
-        // Nächstes Video laden
-        pickRandom();
-        // Einblenden nach kurzem Delay
-        setTimeout(() => {
-          let v2 = 0;
-          const fadeIn = setInterval(() => {
-            v2 = Math.min(100, v2 + 5);
-            if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(v2);
-            if (v2 >= 100) {
-              clearInterval(fadeIn);
-              if (djActive) startDJTimer(); // Timer für nächstes Stück neu starten
-            }
-          }, 80);
-        }, 1500);
-      }
-    }, 120);
-  }
-
   function toggleBestOf() {
     bestOfMode = !bestOfMode;
     const btn = document.getElementById('btn-bestof');
@@ -524,7 +460,6 @@
   }
 
   async function pickRandom() {
-    if (djActive) startDJTimer(); // DJ-Timer bei jedem Songwechsel neu starten
     if (isLoading) return;
     isLoading = true;
     clearPlaybackTimeout();
@@ -902,26 +837,6 @@
     bbtn.textContent = '⭐ Best Of';
     bbtn.onclick = toggleBestOf;
     fdiv.appendChild(bbtn);
-
-    // DJ-Modus Button + Zeitwahl
-    const djbtn = document.createElement('button');
-    djbtn.className = 'dj-btn';
-    djbtn.id = 'btn-dj';
-    djbtn.textContent = '🎧 DJ';
-    djbtn.onclick = toggleDJ;
-    fdiv.appendChild(djbtn);
-
-    const djsel = document.createElement('select');
-    djsel.className = 'dj-time-select';
-    djsel.id = 'dj-time-select';
-    [5, 10, 15, 20].forEach(min => {
-      const opt = document.createElement('option');
-      opt.value = min;
-      opt.textContent = min + ' Min';
-      djsel.appendChild(opt);
-    });
-    djsel.value = 10; // Standard: 10 Minuten
-    fdiv.appendChild(djsel);
 
     if (kanalParam) {
       // Kanal-Modus: Kategorie-Knöpfe ausblenden, Kanalname anzeigen
