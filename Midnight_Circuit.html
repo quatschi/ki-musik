@@ -4,44 +4,172 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Midnight Circuit</title>
-<!-- categories: Jazz, Funk, Smooth Jazz -->
+<!-- categories: Jazz, Funk -->
 <!-- channel-id: UCWwsqPNyfdP1DRLkKTXlLvA -->
 <!-- channel-url: https://youtube.com/@midnightcircuit-c6l -->
 <!-- created: 2026-06-20 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
-  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
   .back:hover { color: #e0d7ff; }
-  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
-  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
-  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
-  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
-  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
-  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
-  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
-  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
-  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
-  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .stars { display: flex; gap: 3px; }
-  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
   .star:hover, .star.active { color: #f0c040; }
-  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
   .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
   .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
   .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
-  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
   .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
-  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
   .save-btn:hover { background: #7a5fc0; }
-  .save-btn:disabled { background: #3a2a70; cursor: wait; }
   .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
-  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
   .status-ok { color: #6fcf97; }
   .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
   .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
   .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
   .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
@@ -90,7 +218,6 @@
 </style>
 </head>
 <body>
-
 <div class="token-overlay" id="token-overlay">
   <div class="token-box">
     <h2>🔑 GitHub Token eingeben</h2>
@@ -109,7 +236,7 @@
     <img class='channel-avatar' src='https://yt3.ggpht.com/IncJ2fmJoGa_OAAhrzsQk8QnTexC7Wa9krIbsHukScW-y29IWEfIl1bKAuDuY8o1ckNbQuopbQ=s800-c-k-c0x00ffffff-no-rj'>
     <div>
       <div class="channel-title">Midnight Circuit</div>
-      <div class="channel-count">15 Videos</div>
+      <div class="channel-count">52 Videos</div>
     </div>
   </div>
 
@@ -157,8 +284,8 @@ const GITHUB_FILE = 'noten.json';
 const META_FILE = 'kanal_meta.json';
 const CHANNEL = "Midnight Circuit";
 const KANAL = "Midnight_Circuit.html";
-const ORIG_CATEGORIES = "Jazz, Funk, Smooth Jazz";
-const VIDEOS = [{"id": "6mDrFia5sjc", "title": "Night City Groove 🚗 Smooth Jazz Funk Rhythms for Driving, Work & Chill", "thumb": "https://i.ytimg.com/vi/6mDrFia5sjc/mqdefault.jpg", "dur": "1:10:55"}, {"id": "kFcSovKD9I8", "title": "City Night ✨ Tight Rhythm Jazz Funk for Late Night Drive & Work Playlist", "thumb": "https://i.ytimg.com/vi/kFcSovKD9I8/mqdefault.jpg", "dur": "1:10:05"}, {"id": "OkEJz3kYkbI", "title": "Golden Hour City Drive 🎧 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/OkEJz3kYkbI/mqdefault.jpg", "dur": "1:09:05"}, {"id": "GC0JsCDTc0w", "title": "Sunset City 🌆 Tight Rhythm Jazz Funk for Driving & Chill Playlist", "thumb": "https://i.ytimg.com/vi/GC0JsCDTc0w/mqdefault.jpg", "dur": "1:09:19"}, {"id": "HoWB6z2E6_s", "title": "Midnight Drive Jazz Funk 🎷 Smooth City Rhythms for Work & Chill Playlist", "thumb": "https://i.ytimg.com/vi/HoWB6z2E6_s/mqdefault.jpg", "dur": "1:10:55"}, {"id": "vr1j1mWgkBM", "title": "Midnight City Drive 🌙 Tight Rhythm Jazz Funk for Focus, Driving & Night Vibes", "thumb": "https://i.ytimg.com/vi/vr1j1mWgkBM/mqdefault.jpg", "dur": "1:11:13"}, {"id": "o80hnPhzfAg", "title": "Neon City Groove 🚗 Tight Rhythm Jazz Funk Playlist for Late Night Drive & Work", "thumb": "https://i.ytimg.com/vi/o80hnPhzfAg/mqdefault.jpg", "dur": "1:10:05"}, {"id": "J0ALhULeb8Y", "title": "Neon Streets Rhythm 🌃 Tight Rhythm Jazz Funk for Driving, Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/J0ALhULeb8Y/mqdefault.jpg", "dur": "1:10:55"}, {"id": "8N2h3AygQyA", "title": "Midnight City Streets 🎷 Smooth Jazz Funk Grooves for Night Drive & Focus Playlist", "thumb": "https://i.ytimg.com/vi/8N2h3AygQyA/mqdefault.jpg", "dur": "1:09:05"}, {"id": "avnT8y52qqk", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/avnT8y52qqk/mqdefault.jpg", "dur": "1:09:05"}, {"id": "DaZT0TRmgRg", "title": "Streets Begin to Breathe 🌃 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/DaZT0TRmgRg/mqdefault.jpg", "dur": "1:11:13"}, {"id": "fyRXVzzY2cA", "title": "Night City Groove 🚗 Smooth Jazz Funk Rhythms for Driving, Work & Chill", "thumb": "https://i.ytimg.com/vi/fyRXVzzY2cA/mqdefault.jpg", "dur": "1:11:13"}, {"id": "mC8KoKZvazI", "title": "City Night 🌙 Tight Rhythm Jazz Funk for Late Night Drive & Work Playlist", "thumb": "https://i.ytimg.com/vi/mC8KoKZvazI/mqdefault.jpg", "dur": "1:09:08"}, {"id": "DSwCFjzlZ08", "title": "Golden Hour City Drive 🎷 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/DSwCFjzlZ08/mqdefault.jpg", "dur": "1:10:55"}, {"id": "FmV9HtsvSSM", "title": "Sunset City 🌆 Tight Rhythm Jazz Funk for Driving, Work & Chill Playlist", "thumb": "https://i.ytimg.com/vi/FmV9HtsvSSM/mqdefault.jpg", "dur": "1:09:08"}];
+const ORIG_CATEGORIES = "Jazz, Funk";
+const VIDEOS = [{"id": "rFC4bw3GzUE", "title": "Streets Begin to Breathe 🌌 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/rFC4bw3GzUE/mqdefault.jpg", "dur": "1:09:57"}, {"id": "qYf_k_qtIeo", "title": "Neon Nights 🌃 Tight Rhythm Jazz Funk for Driving, Work & Night Vibes", "thumb": "https://i.ytimg.com/vi/qYf_k_qtIeo/mqdefault.jpg", "dur": "1:09:05"}, {"id": "5gGEgfvjM8s", "title": "Midnight City Streets 🌃 Smooth Jazz Funk for Driving, Work & Relaxed Late Night Vibes", "thumb": "https://i.ytimg.com/vi/5gGEgfvjM8s/mqdefault.jpg", "dur": "1:10:18"}, {"id": "pT9W7Nx9Z2c", "title": "Streets Begin to Breathe 🌃 Smooth Rhythm Jazz Funk for Late Night Drive & Concentration", "thumb": "https://i.ytimg.com/vi/pT9W7Nx9Z2c/mqdefault.jpg", "dur": "1:09:08"}, {"id": "T3PJXppV-GY", "title": "Streets Begin to Breathe 🌌 Tight Jazz Funk Grooves for Night Driving & Focus", "thumb": "https://i.ytimg.com/vi/T3PJXppV-GY/mqdefault.jpg", "dur": "1:11:13"}, {"id": "omSR_wJO21k", "title": "Golden Hour City Drive 🌆 Chill Smooth Jazz Funk for Evening Work & Drive", "thumb": "https://i.ytimg.com/vi/omSR_wJO21k/mqdefault.jpg", "dur": "1:11:13"}, {"id": "B7DS-68XfHw", "title": "Golden Hour City Drive 🎷 Smooth Jazz Funk Grooves for Evening Work & Relaxation", "thumb": "https://i.ytimg.com/vi/B7DS-68XfHw/mqdefault.jpg", "dur": "1:10:18"}, {"id": "A6cD1vDmRAY", "title": "Midnight City Streets 🌙 Jazz Funk Grooves for Driving, Work & Relaxed Late Nights", "thumb": "https://i.ytimg.com/vi/A6cD1vDmRAY/mqdefault.jpg", "dur": "1:09:57"}, {"id": "IO2LpysNxzQ", "title": "Golden Hour City Drive 🎷 Smooth Tight Rhythm Jazz Funk for Evening Focus & Chill", "thumb": "https://i.ytimg.com/vi/IO2LpysNxzQ/mqdefault.jpg", "dur": "1:09:05"}, {"id": "Fy6M2HrLK0c", "title": "Streets Begin to Breathe 🌃 Smooth Jazz Funk for Night Focus & Late Driving", "thumb": "https://i.ytimg.com/vi/Fy6M2HrLK0c/mqdefault.jpg", "dur": "1:11:13"}, {"id": "DpTZKCcHKwA", "title": "Golden Hour City Drive 🌆 Chill Jazz Funk Rhythms for Evening Work & Drive", "thumb": "https://i.ytimg.com/vi/DpTZKCcHKwA/mqdefault.jpg", "dur": "1:11:13"}, {"id": "Mdx_HBCGWBg", "title": "Midnight City Streets 🌃 Smooth Jazz Funk Rhythms for Night Drive, Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/Mdx_HBCGWBg/mqdefault.jpg", "dur": "1:10:18"}, {"id": "77ponk17mZY", "title": "Streets Begin to Breathe 🌃 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/77ponk17mZY/mqdefault.jpg", "dur": "1:09:57"}, {"id": "gm5tawwqpbE", "title": "Golden Hour City Drive 🌇 Smooth Jazz Funk for Evening Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/gm5tawwqpbE/mqdefault.jpg", "dur": "1:10:55"}, {"id": "VBEi6tr0NlQ", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/VBEi6tr0NlQ/mqdefault.jpg", "dur": "1:09:08"}, {"id": "Gu-gx4Eaqz0", "title": "Streets Begin to Breathe 🌌 Smooth Jazz Funk Grooves for Night Driving & Concentration", "thumb": "https://i.ytimg.com/vi/Gu-gx4Eaqz0/mqdefault.jpg", "dur": "1:09:19"}, {"id": "QTTm78Q0ILw", "title": "Golden Hour City Drive 🎷 Tight Rhythm Jazz Funk for Work, Drive & Relaxing Evening", "thumb": "https://i.ytimg.com/vi/QTTm78Q0ILw/mqdefault.jpg", "dur": "1:09:08"}, {"id": "IJQGWVKqhrM", "title": "Midnight City Streets 🎷 Smooth Jazz Funk Grooves for Night Drive & Focus Playlist", "thumb": "https://i.ytimg.com/vi/IJQGWVKqhrM/mqdefault.jpg", "dur": "1:09:08"}, {"id": "3crSl7k0gGI", "title": "Golden Hour City Drive 🎷 Smooth Tight Rhythm Jazz Funk for Evening Work & Relaxation", "thumb": "https://i.ytimg.com/vi/3crSl7k0gGI/mqdefault.jpg", "dur": "1:10:55"}, {"id": "GnJvqiXtiCU", "title": "Midnight City Streets 🌃 Smooth Jazz Funk for Night Drive, Work & Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/GnJvqiXtiCU/mqdefault.jpg", "dur": "1:10:18"}, {"id": "pfd2sCF15hk", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/pfd2sCF15hk/mqdefault.jpg", "dur": "1:10:05"}, {"id": "2gczERWybZU", "title": "Golden Hour City Drive 🎷 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/2gczERWybZU/mqdefault.jpg", "dur": "1:10:05"}, {"id": "nBWoKVaCca8", "title": "Streets Begin to Breathe 🌃 Tight Jazz Funk for Night Driving & Concentration", "thumb": "https://i.ytimg.com/vi/nBWoKVaCca8/mqdefault.jpg", "dur": "1:09:08"}, {"id": "mOAskcugbUo", "title": "Night City Groove 🚗 Smooth Driving Jazz Funk for Work, Chill & Night Vibes", "thumb": "https://i.ytimg.com/vi/mOAskcugbUo/mqdefault.jpg", "dur": "1:09:08"}, {"id": "VREhnZ4pfjk", "title": "Golden Hour City Drive 🎷 Evening Jazz Funk Grooves for Work & Relaxation", "thumb": "https://i.ytimg.com/vi/VREhnZ4pfjk/mqdefault.jpg", "dur": "1:10:18"}, {"id": "jJJQP3mfzds", "title": "Streets Begin to Breathe 🌃 Smooth Jazz Funk Rhythms for Night Drive & Evening Chill", "thumb": "https://i.ytimg.com/vi/jJJQP3mfzds/mqdefault.jpg", "dur": "1:10:05"}, {"id": "VEHFXf48jKc", "title": "Night City Groove 🚗 Tight Rhythm Jazz Funk for Night Driving & Focused Work", "thumb": "https://i.ytimg.com/vi/VEHFXf48jKc/mqdefault.jpg", "dur": "1:09:08"}, {"id": "vcVO6YCdpBU", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/vcVO6YCdpBU/mqdefault.jpg", "dur": "1:11:13"}, {"id": "fO_GAG4SlsM", "title": "Golden Hour City Drive 🌇 Smooth Jazz Funk for Evening Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/fO_GAG4SlsM/mqdefault.jpg", "dur": "1:09:08"}, {"id": "HTJ5m0D-u7g", "title": "Night City Groove 🚗 Smooth Jazz Funk Rhythms for Driving, Work & Chill", "thumb": "https://i.ytimg.com/vi/HTJ5m0D-u7g/mqdefault.jpg", "dur": "1:09:05"}, {"id": "jVIy59bIb7o", "title": "Streets Begin to Breathe 🌃 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/jVIy59bIb7o/mqdefault.jpg", "dur": "1:11:13"}, {"id": "tSLzHdyqqUo", "title": "Golden Hour City Drive 🎧 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/tSLzHdyqqUo/mqdefault.jpg", "dur": "1:10:18"}, {"id": "cJWP_tz6rqo", "title": "Neon City Groove 🚗 Tight Rhythm Jazz Funk Playlist for Late Night Drive & Work", "thumb": "https://i.ytimg.com/vi/cJWP_tz6rqo/mqdefault.jpg", "dur": "1:09:05"}, {"id": "riCzrVAvhKU", "title": "Neon Streets Rhythm 🌃 Tight Rhythm Jazz Funk for Driving, Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/riCzrVAvhKU/mqdefault.jpg", "dur": "1:09:57"}, {"id": "S2IeK-DN7Hs", "title": "Midnight City Streets 🎷 Smooth Jazz Funk Grooves for Night Drive & Focus Playlist", "thumb": "https://i.ytimg.com/vi/S2IeK-DN7Hs/mqdefault.jpg", "dur": "1:09:08"}, {"id": "7GF3XGIQ7ZM", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/7GF3XGIQ7ZM/mqdefault.jpg", "dur": "1:09:05"}, {"id": "WLJZD5z-YCs", "title": "Streets Begin to Breathe 🌃 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/WLJZD5z-YCs/mqdefault.jpg", "dur": "1:10:55"}, {"id": "6mDrFia5sjc", "title": "Night City Groove 🚗 Smooth Jazz Funk Rhythms for Driving, Work & Chill", "thumb": "https://i.ytimg.com/vi/6mDrFia5sjc/mqdefault.jpg", "dur": "1:10:55"}, {"id": "kFcSovKD9I8", "title": "City Night ✨ Tight Rhythm Jazz Funk for Late Night Drive & Work Playlist", "thumb": "https://i.ytimg.com/vi/kFcSovKD9I8/mqdefault.jpg", "dur": "1:10:05"}, {"id": "OkEJz3kYkbI", "title": "Golden Hour City Drive 🎧 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/OkEJz3kYkbI/mqdefault.jpg", "dur": "1:09:05"}, {"id": "GC0JsCDTc0w", "title": "Sunset City 🌆 Tight Rhythm Jazz Funk for Driving & Chill Playlist", "thumb": "https://i.ytimg.com/vi/GC0JsCDTc0w/mqdefault.jpg", "dur": "1:09:19"}, {"id": "HoWB6z2E6_s", "title": "Midnight Drive Jazz Funk 🎷 Smooth City Rhythms for Work & Chill Playlist", "thumb": "https://i.ytimg.com/vi/HoWB6z2E6_s/mqdefault.jpg", "dur": "1:10:55"}, {"id": "vr1j1mWgkBM", "title": "Midnight City Drive 🌙 Tight Rhythm Jazz Funk for Focus, Driving & Night Vibes", "thumb": "https://i.ytimg.com/vi/vr1j1mWgkBM/mqdefault.jpg", "dur": "1:11:13"}, {"id": "o80hnPhzfAg", "title": "Neon City Groove 🚗 Tight Rhythm Jazz Funk Playlist for Late Night Drive & Work", "thumb": "https://i.ytimg.com/vi/o80hnPhzfAg/mqdefault.jpg", "dur": "1:10:05"}, {"id": "J0ALhULeb8Y", "title": "Neon Streets Rhythm 🌃 Tight Rhythm Jazz Funk for Driving, Work & Chill Vibes", "thumb": "https://i.ytimg.com/vi/J0ALhULeb8Y/mqdefault.jpg", "dur": "1:10:55"}, {"id": "8N2h3AygQyA", "title": "Midnight City Streets 🎷 Smooth Jazz Funk Grooves for Night Drive & Focus Playlist", "thumb": "https://i.ytimg.com/vi/8N2h3AygQyA/mqdefault.jpg", "dur": "1:09:05"}, {"id": "avnT8y52qqk", "title": "Midnight City Streets 🌙 Tight Rhythm Jazz Funk for Driving, Work & Late Night Chill", "thumb": "https://i.ytimg.com/vi/avnT8y52qqk/mqdefault.jpg", "dur": "1:09:05"}, {"id": "DaZT0TRmgRg", "title": "Streets Begin to Breathe 🌃 Tight Rhythm Jazz Funk for Night Drive & Focus", "thumb": "https://i.ytimg.com/vi/DaZT0TRmgRg/mqdefault.jpg", "dur": "1:11:13"}, {"id": "fyRXVzzY2cA", "title": "Night City Groove 🚗 Smooth Jazz Funk Rhythms for Driving, Work & Chill", "thumb": "https://i.ytimg.com/vi/fyRXVzzY2cA/mqdefault.jpg", "dur": "1:11:13"}, {"id": "mC8KoKZvazI", "title": "City Night 🌙 Tight Rhythm Jazz Funk for Late Night Drive & Work Playlist", "thumb": "https://i.ytimg.com/vi/mC8KoKZvazI/mqdefault.jpg", "dur": "1:09:08"}, {"id": "DSwCFjzlZ08", "title": "Golden Hour City Drive 🎷 Tight Rhythm Jazz Funk for Work & Evening Vibes", "thumb": "https://i.ytimg.com/vi/DSwCFjzlZ08/mqdefault.jpg", "dur": "1:10:55"}, {"id": "FmV9HtsvSSM", "title": "Sunset City 🌆 Tight Rhythm Jazz Funk for Driving, Work & Chill Playlist", "thumb": "https://i.ytimg.com/vi/FmV9HtsvSSM/mqdefault.jpg", "dur": "1:09:08"}];
 const TOKEN_KEY = 'gh_token_ki_musik';
 let ratings = {}, meta = {}, changed = false;
 let kanalMeta = {};
@@ -356,15 +483,15 @@ async function saveRatings() {
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
   setStatus('Speichern...', '');
-  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
-  const encoded = b64EncodeUtf8(json);
   try {
     let sha = null;
     const getResp = await fetch(
       `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
       { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
     );
-    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
     const body = { message: 'Bewertung aktualisiert', content: encoded };
     if (sha) body.sha = sha;
     const putResp = await fetch(
@@ -518,8 +645,6 @@ async function saveEdit() {
   }
   btn.disabled = false;
 }
-
-init();
 </script>
 </body>
 </html>

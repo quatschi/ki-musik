@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lofi Amgevi</title>
+<!-- categories: Smooth Jazz -->
+<!-- channel-id: UCNJpfGdG-Cwh-qL1V9TWJVw -->
+<!-- channel-url: https://youtube.com/@lofiamgevi -->
+<!-- created: 2026-07-18 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Lofi_Amgevi.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/ETnOsDwY_OyN24fDR3kXsGbzyaQfkF6GL-0V23e8kvLYzaActxh7cQHzjpS6Rh5VQLEy3Rr8Iw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Lofi Amgevi</div>
+      <div class="channel-count">408 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Lofi Amgevi";
+const KANAL = "Lofi_Amgevi.html";
+const ORIG_CATEGORIES = "Smooth Jazz";
+const VIDEOS = [{"id": "Jn6oH3Uux7A", "title": "Midnight Saxophone | Chill Jazz Soul & Smooth R&B Lounge Music", "thumb": "https://i.ytimg.com/vi/Jn6oH3Uux7A/mqdefault.jpg", "dur": "1:13:50"}, {"id": "RDU7pz1Aayo", "title": "Smooth Jazz Classic | Chill Jazz Soul for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/RDU7pz1Aayo/mqdefault.jpg", "dur": "2:13:19"}, {"id": "djYAvWoMVe4", "title": "Chill Jazz Soul | Smooth Sax, Deep Bass & Warm Rhodes for Romantic Lounge Nights", "thumb": "https://i.ytimg.com/vi/djYAvWoMVe4/mqdefault.jpg", "dur": "2:43:58"}, {"id": "KiVuJNd-j3Y", "title": "Chill Jazz Soul | Smooth Sax, Deep Bass & Warm Rhodes for Romantic Lounge Nights", "thumb": "https://i.ytimg.com/vi/KiVuJNd-j3Y/mqdefault.jpg", "dur": "2:18:12"}, {"id": "Sou-dCEFx70", "title": "Late Night Jazz Saxophone Music – Fireplace & Rain Ambience | Chill Jazz Bar", "thumb": "https://i.ytimg.com/vi/Sou-dCEFx70/mqdefault.jpg", "dur": "2:08:35"}, {"id": "HieYe6Qf5is", "title": "Chill Jazz Soul | Soulful Sax & Smooth Rhodes for Cozy Romantic Nights", "thumb": "https://i.ytimg.com/vi/HieYe6Qf5is/mqdefault.jpg", "dur": "2:09:33"}, {"id": "Xcxzdk76D44", "title": "Chill Jazz Soul | Smooth Sax, Deep Bass & Warm Rhodes for Romantic Late Night Lounge Vibes", "thumb": "https://i.ytimg.com/vi/Xcxzdk76D44/mqdefault.jpg", "dur": "2:14:30"}, {"id": "JOxVOkYEn5c", "title": "Smooth Jazz Chill Out Lounge R&B | Elegant Sax & Electric Piano for Calm Nights", "thumb": "https://i.ytimg.com/vi/JOxVOkYEn5c/mqdefault.jpg", "dur": "2:42:10"}, {"id": "yJ-yoms0GGU", "title": "Chill Jazz Soul | Sultry Sax & Warm Rhodes for Intimate Late Night Lounge", "thumb": "https://i.ytimg.com/vi/yJ-yoms0GGU/mqdefault.jpg", "dur": "2:11:02"}, {"id": "Drm5YAD4j8U", "title": "Smooth Jazz Chill Out Lounge R&B | Warm Expressive Sax & Deep Groove for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/Drm5YAD4j8U/mqdefault.jpg", "dur": "2:23:25"}, {"id": "KEgLCvsMFZ8", "title": "Smooth Jazz Chill Out Lounge | Elegant Lounge Music for Calm Nights & Focus", "thumb": "https://i.ytimg.com/vi/KEgLCvsMFZ8/mqdefault.jpg", "dur": "2:46:29"}, {"id": "wgWf6lRZcs4", "title": "Chill Jazz Soul | Smooth Sax, Deep Bass & Warm Rhodes for Romantic Lounge Nights", "thumb": "https://i.ytimg.com/vi/wgWf6lRZcs4/mqdefault.jpg", "dur": "2:49:35"}, {"id": "6zWZphzmRsA", "title": "Smooth Jazz Classic & Soul R&B | Mellow Sax, Rhodes & Deep R&B Groove for Cozy Nights", "thumb": "https://i.ytimg.com/vi/6zWZphzmRsA/mqdefault.jpg", "dur": "1:38:55"}, {"id": "NvA8rjjh5gE", "title": "Smooth Jazz & Soul R&B Instrumental | Warm Sax, Soft Drums & Deep Groove Vibes", "thumb": "https://i.ytimg.com/vi/NvA8rjjh5gE/mqdefault.jpg", "dur": "1:50:58"}, {"id": "Zrr-2UXEc3E", "title": "Smooth Jazz Classic | Romantic Soprano Sax & Electric Piano for Intimate Evenings", "thumb": "https://i.ytimg.com/vi/Zrr-2UXEc3E/mqdefault.jpg", "dur": "1:23:19"}, {"id": "-WQCqzJlgc4", "title": "Smooth Jazz Classic | Soulful Piano & Sax with Warm Timeless Lounge Vibes", "thumb": "https://i.ytimg.com/vi/-WQCqzJlgc4/mqdefault.jpg", "dur": "1:52:10"}, {"id": "6_ZZx8SbxHs", "title": "Smooth Jazz Classic | Elegant Sax Melodies with Gentle Piano & Peaceful Strings", "thumb": "https://i.ytimg.com/vi/6_ZZx8SbxHs/mqdefault.jpg", "dur": "1:52:10"}, {"id": "NIjKVKl2kuk", "title": "Smooth Jazz Classic 90s – Romantic & Melancholic Saxophone for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/NIjKVKl2kuk/mqdefault.jpg", "dur": "1:50:12"}, {"id": "w78SJ9BajCg", "title": "Classic Smooth Jazz Guitar | Warm Soul Lounge for Calm & Cozy Moments", "thumb": "https://i.ytimg.com/vi/w78SJ9BajCg/mqdefault.jpg", "dur": "2:24:09"}, {"id": "CnQGO2NCeUY", "title": "Smooth Jazz Classic | Infinite Smooth Jazz for Elegant Evenings & Calm Mood", "thumb": "https://i.ytimg.com/vi/CnQGO2NCeUY/mqdefault.jpg", "dur": "1:35:21"}, {"id": "Z9DOy_saqCs", "title": "Smooth Jazz Classic Lounge | Elegant Relaxation for Cozy Evening Moments & Timeless Elegant Ambience", "thumb": "https://i.ytimg.com/vi/Z9DOy_saqCs/mqdefault.jpg", "dur": "1:51:52"}, {"id": "Hal-CWYN4aw", "title": "Relax and Unwind | Smooth Jazz Classic Lounge for Cozy Evenings & Relaxation", "thumb": "https://i.ytimg.com/vi/Hal-CWYN4aw/mqdefault.jpg", "dur": "1:52:16"}, {"id": "N_pebezi8H4", "title": "Jazz Smooth 90s – Chill Classics | Smooth Jazz Heaven for Relaxing Piano & Sax Nights", "thumb": "https://i.ytimg.com/vi/N_pebezi8H4/mqdefault.jpg", "dur": "1:52:07"}, {"id": "WimvQUcU2IU", "title": "Jazz Smooth 90s | Back to the Classics for Relaxing Nights & Smooth Lounge Vibes", "thumb": "https://i.ytimg.com/vi/WimvQUcU2IU/mqdefault.jpg", "dur": "1:52:07"}, {"id": "LlJe-oA-vt0", "title": "Jazz Smooth 90s | Chill Back to the Classics for Elegant Evenings & Lounge Relaxation", "thumb": "https://i.ytimg.com/vi/LlJe-oA-vt0/mqdefault.jpg", "dur": "1:52:07"}, {"id": "c7yNax3umoI", "title": "90s Smooth Jazz – Timeless Grooves for a Relaxing Escape, Elegant Evenings & Cozy Lounge Vibes", "thumb": "https://i.ytimg.com/vi/c7yNax3umoI/mqdefault.jpg", "dur": "1:52:07"}, {"id": "1EHgyik2y5Y", "title": "The Secret To Instant Calm: A Smooth Jazz Lounge Collection", "thumb": "https://i.ytimg.com/vi/1EHgyik2y5Y/mqdefault.jpg", "dur": "1:51:22"}, {"id": "uUazl9ri-6E", "title": "The Secret to a Perfect Evening: This Smooth Jazz Classic", "thumb": "https://i.ytimg.com/vi/uUazl9ri-6E/mqdefault.jpg", "dur": "1:52:07"}, {"id": "xIrHOuzTc50", "title": "Smooth Jazz Classic | Timeless Evening Lounge for Relaxing Nights & Elegant Mood", "thumb": "https://i.ytimg.com/vi/xIrHOuzTc50/mqdefault.jpg", "dur": "1:52:07"}, {"id": "y9XzS9gZCK4", "title": "Relax and Unwind Instantly With Infinite Smooth Jazz Saxophone and Piano", "thumb": "https://i.ytimg.com/vi/y9XzS9gZCK4/mqdefault.jpg", "dur": "1:51:51"}, {"id": "y1ZuP20OWNM", "title": "Relax and Unwind: Soothing Saxophone and Piano for Calm", "thumb": "https://i.ytimg.com/vi/y1ZuP20OWNM/mqdefault.jpg", "dur": "1:51:21"}, {"id": "iPUW-OIFPDM", "title": "Relax and Unwind: Smooth Jazz Featuring Saxophone and Guitar", "thumb": "https://i.ytimg.com/vi/iPUW-OIFPDM/mqdefault.jpg", "dur": "1:46:43"}, {"id": "AyxMMjsvtCE", "title": "The Secret to a Peaceful Evening: Soothing Smooth Jazz and Elegant R&B Vibes", "thumb": "https://i.ytimg.com/vi/AyxMMjsvtCE/mqdefault.jpg", "dur": "1:51:57"}, {"id": "RvIn5eeuPJ4", "title": "Boost Productivity & Relaxation: Smooth Jazz Guitar for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/RvIn5eeuPJ4/mqdefault.jpg", "dur": "1:44:19"}, {"id": "EeXEo-vvFxk", "title": "Jazz Guitar & Cafe Rain: Music for Focus, Study, Work, and Relaxation", "thumb": "https://i.ytimg.com/vi/EeXEo-vvFxk/mqdefault.jpg", "dur": "1:43:59"}, {"id": "0YmPnv9yuZo", "title": "Rain Session Jazz Playlist: Fireside Cafe and Warm Jazz in a Town", "thumb": "https://i.ytimg.com/vi/0YmPnv9yuZo/mqdefault.jpg", "dur": "1:51:47"}, {"id": "wUTQG8QmYoc", "title": "Discover the Best Smooth Jazz Saxophone Music for Relaxation", "thumb": "https://i.ytimg.com/vi/wUTQG8QmYoc/mqdefault.jpg", "dur": "1:52:09"}, {"id": "T3MZKIJYqac", "title": "Smooth Jazz Heaven: Relaxing Piano & Sax Music for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/T3MZKIJYqac/mqdefault.jpg", "dur": "1:52:10"}, {"id": "7IoXmcP6x-U", "title": "Smooth Jazz Focus Lounge | Elegant Background Music for Work", "thumb": "https://i.ytimg.com/vi/7IoXmcP6x-U/mqdefault.jpg", "dur": "1:50:17"}, {"id": "8CE6bNUZyCo", "title": "My Secret to Staying Focused: Discovering This Elegant Jazz Lounge", "thumb": "https://i.ytimg.com/vi/8CE6bNUZyCo/mqdefault.jpg", "dur": "1:52:18"}, {"id": "Wl5OA4bICKs", "title": "Smooth Jazz Piano | Relaxing Evening Lounge with Warm Keys, Elegant Vibes & Cozy Night Mood", "thumb": "https://i.ytimg.com/vi/Wl5OA4bICKs/mqdefault.jpg", "dur": "1:52:13"}, {"id": "LMZifOaRfLY", "title": "Smooth Jazz Instrumental Music For Work, Focus, And Relaxation", "thumb": "https://i.ytimg.com/vi/LMZifOaRfLY/mqdefault.jpg", "dur": "1:51:18"}, {"id": "cv-PcZ2S0Hk", "title": "Transform Your Tracks: Unlock Smooth Jazz Tones from the 90s Instantly", "thumb": "https://i.ytimg.com/vi/cv-PcZ2S0Hk/mqdefault.jpg", "dur": "1:52:27"}, {"id": "7znv69AQRdM", "title": "The Hidden Elements Behind 90s Smooth Jazz's Elegant Sax and Piano Tone", "thumb": "https://i.ytimg.com/vi/7znv69AQRdM/mqdefault.jpg", "dur": "1:52:27"}, {"id": "yZ2ntvwMBtE", "title": "90s Smooth Jazz Nostalgia Mix – Elegant Chill for Relaxing Evenings & Timeless Lounge", "thumb": "https://i.ytimg.com/vi/yZ2ntvwMBtE/mqdefault.jpg", "dur": "1:51:58"}, {"id": "4USwP1TuKkg", "title": "Smooth Jazz Heaven | New Year Chill Lounge with Piano & Smooth Sax Music", "thumb": "https://i.ytimg.com/vi/4USwP1TuKkg/mqdefault.jpg", "dur": "1:51:40"}, {"id": "r-ojsiUrttw", "title": "Smooth Jazz 90s Weekend Brunch Mix | Uplifting Lounge Jazz for Relaxing Time with Friends", "thumb": "https://i.ytimg.com/vi/r-ojsiUrttw/mqdefault.jpg", "dur": "1:50:41"}, {"id": "7ItK1ynRMXs", "title": "90s Smooth Jazz Tone Secrets | Warm Sax, Mellow Guitar & Timeless Lounge Vibes for Late Nights", "thumb": "https://i.ytimg.com/vi/7ItK1ynRMXs/mqdefault.jpg", "dur": "1:52:07"}, {"id": "ie8NOAQGfUw", "title": "Smooth Jazz Heaven | Relaxing Piano & Sax Music for Elegant New Year Nights & Cozy Lounge Moments", "thumb": "https://i.ytimg.com/vi/ie8NOAQGfUw/mqdefault.jpg", "dur": "1:51:42"}, {"id": "9PwioTeZF-M", "title": "Smooth Jazz 90s New Year Night | Cozy Lounge Jazz for Calm Celebration", "thumb": "https://i.ytimg.com/vi/9PwioTeZF-M/mqdefault.jpg", "dur": "1:50:11"}, {"id": "lerzmknMITs", "title": "Smooth Jazz 90s New Year Mix | Elegant Lounge Vibes for Midnight Celebration", "thumb": "https://i.ytimg.com/vi/lerzmknMITs/mqdefault.jpg", "dur": "1:50:25"}, {"id": "rL6YRqL7xXU", "title": "Smooth Jazz & R&B Lounge | Midnight Rome City Jazz with Romantic Lounge Ambience", "thumb": "https://i.ytimg.com/vi/rL6YRqL7xXU/mqdefault.jpg", "dur": "1:52:22"}, {"id": "wU6sXJwxfyY", "title": "Classic Smooth Jazz 90s | Midnight City Jazz Lounge for Night Drives & Urban Chill", "thumb": "https://i.ytimg.com/vi/wU6sXJwxfyY/mqdefault.jpg", "dur": "1:52:46"}, {"id": "qoZpLcysKo0", "title": "Smooth Jazz Heaven | Urban Late Night Lounge with Smooth Jazz & City Lights Mood", "thumb": "https://i.ytimg.com/vi/qoZpLcysKo0/mqdefault.jpg", "dur": "1:51:09"}, {"id": "CZFd2X25yxY", "title": "The Perfect 90s Smooth Jazz Playlist for Work or a Night Out", "thumb": "https://i.ytimg.com/vi/CZFd2X25yxY/mqdefault.jpg", "dur": "1:51:50"}, {"id": "KiNmXF_aKnk", "title": "Classic 90s Smooth Jazz | Timeless Evening Vibes for Relaxing Nights & Elegant Lounge Mood", "thumb": "https://i.ytimg.com/vi/KiNmXF_aKnk/mqdefault.jpg", "dur": "1:51:49"}, {"id": "TjRRNmCGn80", "title": "🌃 Smooth Jazz Heaven | Late Night City Lounge with Mellow Sax & Urban Night Ambience", "thumb": "https://i.ytimg.com/vi/TjRRNmCGn80/mqdefault.jpg", "dur": "1:51:55"}, {"id": "_dTPf_VhagQ", "title": "Smooth Jazz Heaven | Timeless Evening Lounge for Relaxing Nights & Elegant Lounge Mood", "thumb": "https://i.ytimg.com/vi/_dTPf_VhagQ/mqdefault.jpg", "dur": "1:51:15"}, {"id": "Y1Fr2QeH7U4", "title": "Classic 90s Smooth Jazz | Timeless Evening Lounge Vibes for Calm Nights & City Evenings", "thumb": "https://i.ytimg.com/vi/Y1Fr2QeH7U4/mqdefault.jpg", "dur": "1:52:07"}, {"id": "2iYJlflM5V4", "title": "Classic 90s Smooth Jazz | Timeless Evening Vibes for Relaxing Nights & Elegant Lounge Ambience", "thumb": "https://i.ytimg.com/vi/2iYJlflM5V4/mqdefault.jpg", "dur": "1:51:56"}, {"id": "cTY8fJ-ygOU", "title": "🎷 Smooth Jazz 90s Elegant for Work Mix | Chill Evening Lounge Elegant Night Vibes", "thumb": "https://i.ytimg.com/vi/cTY8fJ-ygOU/mqdefault.jpg", "dur": "1:50:44"}, {"id": "0QI3rweWM_0", "title": "🎷 Smooth Jazz 90s Warm Guitar & Piano – Relaxing Study Lounge", "thumb": "https://i.ytimg.com/vi/0QI3rweWM_0/mqdefault.jpg", "dur": "1:50:23"}, {"id": "o4JgSvYBHOk", "title": "Smooth Jazz 90s Nostalgia | Elegant Chill Evening Lounge Mix", "thumb": "https://i.ytimg.com/vi/o4JgSvYBHOk/mqdefault.jpg", "dur": "2:27:58"}, {"id": "7RDwhEPmLn4", "title": "Smooth Jazz 90s Late Night City Jazz | Soulful Sax for for Work & Focus", "thumb": "https://i.ytimg.com/vi/7RDwhEPmLn4/mqdefault.jpg", "dur": "1:50:03"}, {"id": "tArjS0jXXGA", "title": "Smooth Jazz 90s Chill Mix | Vintage Lounge Beats for Deep Focus & Calm Productivity", "thumb": "https://i.ytimg.com/vi/tArjS0jXXGA/mqdefault.jpg", "dur": "1:49:36"}, {"id": "UGNJ10BR6XM", "title": "🎄 Smooth Jazz 90s Christmas Mix | Cozy Holiday Lounge Music for Warm Merry Christmas Nights", "thumb": "https://i.ytimg.com/vi/UGNJ10BR6XM/mqdefault.jpg", "dur": "1:43:32"}, {"id": "MfvGSSn5bbk", "title": "Smooth Jazz 90s Morning Coffee ☕🎶 | Relaxing R&B Lounge for Work & Cozy Mood", "thumb": "https://i.ytimg.com/vi/MfvGSSn5bbk/mqdefault.jpg", "dur": "1:48:12"}, {"id": "JvI42jpEpj4", "title": "Smooth Jazz 90s Romantic Nights | Classy Sax & Rhodes Pop Jazz Mix for Cozy Morning Café Vibes", "thumb": "https://i.ytimg.com/vi/JvI42jpEpj4/mqdefault.jpg", "dur": "1:52:01"}, {"id": "k5eab6NWl0c", "title": "Smooth Jazz 90s Romantic Nights | Classy Sax & Rhodes Pop Jazz Mix for Lounge & Easy Listening", "thumb": "https://i.ytimg.com/vi/k5eab6NWl0c/mqdefault.jpg", "dur": "1:51:41"}, {"id": "1F41alpKpRQ", "title": "Smooth Jazz 90s Romantic Nights | Classy Pop Jazz Instrumental for Lounge & Cozy Evenings", "thumb": "https://i.ytimg.com/vi/1F41alpKpRQ/mqdefault.jpg", "dur": "2:10:57"}, {"id": "Id64xBLBNq0", "title": "Smooth Jazz Heaven Mix | Classic Piano & Soulful Sax Playlist for Relaxing Lounge & Cozy Nights", "thumb": "https://i.ytimg.com/vi/Id64xBLBNq0/mqdefault.jpg", "dur": "2:36:40"}, {"id": "y3kibJXWs3A", "title": "90s Smooth Jazz & Soulful R&B Mix, Mellow Retro Lounge Sax & Rhodes Piano Playlist for Relax & Study", "thumb": "https://i.ytimg.com/vi/y3kibJXWs3A/mqdefault.jpg", "dur": "1:53:22"}, {"id": "vJ0g74kjkws", "title": "Classic 90s Smooth Jazz Playlist | Soulful, Mellow & Elegant Lounge Nights", "thumb": "https://i.ytimg.com/vi/vJ0g74kjkws/mqdefault.jpg", "dur": "1:51:26"}, {"id": "443Gh1GMtp4", "title": "90s Smooth Jazz Cozy Night Mix – Mellow Sax & Elegant Lounge", "thumb": "https://i.ytimg.com/vi/443Gh1GMtp4/mqdefault.jpg", "dur": "1:51:26"}, {"id": "2h2xUcuX87g", "title": "Classic 90s Smooth Jazz Playlist | Soulful Sax & Mellow Cozy Night Ambience", "thumb": "https://i.ytimg.com/vi/2h2xUcuX87g/mqdefault.jpg", "dur": "1:52:35"}, {"id": "2mmc56Fvruk", "title": "Smooth Jazz 90s Romantic Nights | Soulful Sax & Jazzy Guitar Relax Mix & Cozy Guitar Lounge Vibes", "thumb": "https://i.ytimg.com/vi/2mmc56Fvruk/mqdefault.jpg", "dur": "1:50:40"}, {"id": "0mGessXoUz8", "title": "Smooth Jazz 90s – Chill Back to the Classics for Relaxing Evenings & Warm Cozy Vibes", "thumb": "https://i.ytimg.com/vi/0mGessXoUz8/mqdefault.jpg", "dur": "1:50:40"}, {"id": "Pd0LR8gchwc", "title": "Smooth Jazz 90s – Soulful Sax & Gentle Guitar for Cozy Romantic Lounge Nights", "thumb": "https://i.ytimg.com/vi/Pd0LR8gchwc/mqdefault.jpg", "dur": "1:50:40"}, {"id": "GXV-H3-q2IY", "title": "90s Classic Smooth Jazz 🎷 | Soulful Sax, Clean Guitar & Luxury Hotel Lounge Ambience", "thumb": "https://i.ytimg.com/vi/GXV-H3-q2IY/mqdefault.jpg", "dur": "1:51:52"}, {"id": "wL_tuFLWg9g", "title": "Smooth Jazz Lounge – Soulful Sax & Gentle Guitar for Cozy Romantic Nights", "thumb": "https://i.ytimg.com/vi/wL_tuFLWg9g/mqdefault.jpg", "dur": "1:50:35"}, {"id": "Ch1B0E3l6Ww", "title": "Smooth Jazz Lounge – Soulful Sax & Romantic Guitar for Cozy Nights & Café Ambience", "thumb": "https://i.ytimg.com/vi/Ch1B0E3l6Ww/mqdefault.jpg", "dur": "1:52:41"}, {"id": "j2ry3dD-iXE", "title": "Smooth Jazz Instrumental | Soulful Sax, Romantic Guitar & Cozy Lounge Vibes", "thumb": "https://i.ytimg.com/vi/j2ry3dD-iXE/mqdefault.jpg", "dur": "1:53:12"}, {"id": "SC0QloReivs", "title": "Smooth Jazz Lounge Instrumental | Soulful Sax, Romantic Guitar & Cozy Night Vibes", "thumb": "https://i.ytimg.com/vi/SC0QloReivs/mqdefault.jpg", "dur": "1:48:38"}, {"id": "eBVaQXfplS8", "title": "Smooth Jazz Mellow Funk Instrumental | Relaxed Soulful Groove, Funky Bass & Jazzy Keys", "thumb": "https://i.ytimg.com/vi/eBVaQXfplS8/mqdefault.jpg", "dur": "1:43:38"}, {"id": "IKSES0tkeYc", "title": "90s Pop Smooth Jazz Instrumental | Mellow Lounge, Retro Study & Classy Vibes", "thumb": "https://i.ytimg.com/vi/IKSES0tkeYc/mqdefault.jpg", "dur": "2:10:14"}, {"id": "6zEt2TwHfho", "title": "Classic Smooth Jazz 80s 🎷 | Romantic Café Night – Warm Piano, Sax & Cozy Lounge Vibes", "thumb": "https://i.ytimg.com/vi/6zEt2TwHfho/mqdefault.jpg", "dur": "1:52:02"}, {"id": "59nGRFN9jWs", "title": "80s Smooth Jazz Soul 🎷 | Piano & Soprano Sax – Urban Night Lounge Vibes", "thumb": "https://i.ytimg.com/vi/59nGRFN9jWs/mqdefault.jpg", "dur": "2:06:23"}, {"id": "hyRSvQUiX88", "title": "Classic 90s Smooth Jazz 🎷 | Warm Electric Piano, Alto Sax & Gentle Groove – Romantic Café Night", "thumb": "https://i.ytimg.com/vi/hyRSvQUiX88/mqdefault.jpg", "dur": "2:02:53"}, {"id": "66o4dUBUyKo", "title": "Smooth Jazz Elegant R&B Groove | Cozy Electric Piano Saxophone Evening", "thumb": "https://i.ytimg.com/vi/66o4dUBUyKo/mqdefault.jpg", "dur": "1:58:05"}, {"id": "drgS8xo0tYA", "title": "80s Smooth Jazz Soul | Vintage Electric Piano, Soprano Sax & Synth Bass, Urban Night Nostalgic Vibes", "thumb": "https://i.ytimg.com/vi/drgS8xo0tYA/mqdefault.jpg", "dur": "1:57:28"}, {"id": "ZGACMtxsKsM", "title": "80s Smooth Jazz Soul Mix — Vintage Electric Piano, Warm Synth Bass & Urban Night Vibes", "thumb": "https://i.ytimg.com/vi/ZGACMtxsKsM/mqdefault.jpg", "dur": "1:53:08"}, {"id": "6YWa6Eym6G4", "title": "Smooth Jazz 90s • Elegant R&B Grooves 🎷 | Warm Sax, Rhodes Piano & Deep Bass – Classy Night Lounge", "thumb": "https://i.ytimg.com/vi/6YWa6Eym6G4/mqdefault.jpg", "dur": "1:58:53"}, {"id": "4C1RZBTEx3A", "title": "Smooth Jazz 90s, R&B–Jazz Fusion  | Mellow Rhodes, Soulful Sax & Warm Guitar – Cozy, Late-Night Cafe", "thumb": "https://i.ytimg.com/vi/4C1RZBTEx3A/mqdefault.jpg", "dur": "1:42:11"}, {"id": "4uYWsbRAN20", "title": "Classic Smooth Jazz & Soulful R&B | Warm Electric Piano, Tenor Sax & Silky Bass, Romantic 90s Lounge", "thumb": "https://i.ytimg.com/vi/4uYWsbRAN20/mqdefault.jpg", "dur": "1:51:15"}, {"id": "nN3MsuJKvTI", "title": "Romantic Smooth Jazz & R&B Groove | Mellow Rhodes, Soft Guitar & Elegant Sax – Cozy Luxurious Vibes", "thumb": "https://i.ytimg.com/vi/nN3MsuJKvTI/mqdefault.jpg", "dur": "1:50:00"}, {"id": "PVQ-6cw0QTA", "title": "Classic Smooth Jazz 90s - Elegant and Soulful Jazz - Relaxing Instrumental Music for Romantic Nights", "thumb": "https://i.ytimg.com/vi/PVQ-6cw0QTA/mqdefault.jpg", "dur": "1:51:24"}, {"id": "bRQtfsxNhPk", "title": "Smooth R&B–Jazz Fusion 🎷 | Mellow Rhodes, Soulful Sax & Cozy Late-Night Coffee Vibes", "thumb": "https://i.ytimg.com/vi/bRQtfsxNhPk/mqdefault.jpg", "dur": "1:50:25"}, {"id": "zIH9UB2RakU", "title": "Smooth Jazz 90s Elegant 🎷 | Electric Piano, Soft Drums & Sax Solo – Romantic Classy Nostalgic Vibes", "thumb": "https://i.ytimg.com/vi/zIH9UB2RakU/mqdefault.jpg", "dur": "1:51:44"}, {"id": "B_PD__IW96s", "title": "90s Smooth Jazz Bluesy Groove 🎷 | Warm Electric Piano, Soulful Guitar & Sax – Emotional Night Vibes", "thumb": "https://i.ytimg.com/vi/B_PD__IW96s/mqdefault.jpg", "dur": "1:44:09"}, {"id": "f2OievqUq2I", "title": "Smooth Jazz 90s 🎷 | Elegant Lounge Vibes – Warm Saxophone, Rhodes Piano & Gentle Grooves", "thumb": "https://i.ytimg.com/vi/f2OievqUq2I/mqdefault.jpg", "dur": "1:50:40"}, {"id": "mQiU4xwrg7k", "title": "Jazz Soul Fusion 🎶 | Warm Soul Grooves & Rich Jazz Harmony – Chill Instrumental Mix, Guitar & Brass", "thumb": "https://i.ytimg.com/vi/mQiU4xwrg7k/mqdefault.jpg", "dur": "1:53:25"}, {"id": "c3-2DRSbVq0", "title": "Classic 90s Smooth Jazz 🎷 | Romantic Café Night Instrumental – Warm Electric Piano & Alto Sax", "thumb": "https://i.ytimg.com/vi/c3-2DRSbVq0/mqdefault.jpg", "dur": "1:52:56"}, {"id": "jjdISWdKh_M", "title": "Classic 90s Smooth Jazz 🎷 | Romantic Electric Piano & Sax Instrumental – Relax Café Night Mood", "thumb": "https://i.ytimg.com/vi/jjdISWdKh_M/mqdefault.jpg", "dur": "1:50:13"}, {"id": "SBwSglFQxZY", "title": "STOP Wasting Time Debating Smooth Jazz or Funky Grooves for Focus - I've Got the Answer", "thumb": "https://i.ytimg.com/vi/SBwSglFQxZY/mqdefault.jpg", "dur": "2:04:36"}, {"id": "bPBP2p49DQM", "title": "Smooth Jazz Funky Grooves 🎷 | Soulful Guitar & Electric Piano Mix – Chill & Upbeat Lounge Vibes", "thumb": "https://i.ytimg.com/vi/bPBP2p49DQM/mqdefault.jpg", "dur": "1:37:25"}, {"id": "PgN7zCkQqcc", "title": "The Secret to Creating SOULFUL R&B Music Like a Pro", "thumb": "https://i.ytimg.com/vi/PgN7zCkQqcc/mqdefault.jpg", "dur": "1:55:27"}, {"id": "ClEJ2oSh9mE", "title": "Smooth Jazz 90s & Soulful R&B Grooves | Guitar, Sax & Rhodes – Relaxed 80s Smooth Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/ClEJ2oSh9mE/mqdefault.jpg", "dur": "1:49:30"}, {"id": "ijKwUueSpL4", "title": "Smooth Jazz & Soulful R&B Grooves 🎷 | Mellow Guitar, Rhodes & Sax – Relax Café Ambience", "thumb": "https://i.ytimg.com/vi/ijKwUueSpL4/mqdefault.jpg", "dur": "1:54:14"}, {"id": "UTN6ykZqPIo", "title": "Smooth Jazz & Soulful R&B Instrumental 🎶 | Electric Piano & Sax Chill Groove for Evening Relaxation", "thumb": "https://i.ytimg.com/vi/UTN6ykZqPIo/mqdefault.jpg", "dur": "1:49:28"}, {"id": "Kex5E5eDIAE", "title": "🎷 Classic Smooth Jazz Instrumental 🎷 | Romantic Piano & Soprano Sax for Relaxing Evenings", "thumb": "https://i.ytimg.com/vi/Kex5E5eDIAE/mqdefault.jpg", "dur": "2:52:11"}, {"id": "muQ2lPAe3D4", "title": "Smooth Jazz 90s 🎶 | Relaxing Piano & Sax – Soulful Background Music for Work, Study & Evening Chill", "thumb": "https://i.ytimg.com/vi/muQ2lPAe3D4/mqdefault.jpg", "dur": "1:49:46"}, {"id": "Nzb1azjwqVI", "title": "Smooth Jazz 90s Soulful 🎷 | Electric Piano & Sax Mix for Relaxing, Studying & Focus", "thumb": "https://i.ytimg.com/vi/Nzb1azjwqVI/mqdefault.jpg", "dur": "1:59:19"}, {"id": "KK7bgJqmYTM", "title": "Smooth Jazz 90s Soulful 🎷 | Classic Lounge Mix with Sax & Electric Piano for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/KK7bgJqmYTM/mqdefault.jpg", "dur": "2:11:25"}, {"id": "yKuCAubp0R0", "title": "Smooth Jazz 90s 🎹 | Electric Piano Lounge Mix for Relaxing, Studying & Focus", "thumb": "https://i.ytimg.com/vi/yKuCAubp0R0/mqdefault.jpg", "dur": "2:14:56"}, {"id": "yoCv1mwsGA0", "title": "Smooth Jazz Funk 90s 🎷 | Electric Piano & Sax Lounge Mix for Relaxing, Studying & Focus", "thumb": "https://i.ytimg.com/vi/yoCv1mwsGA0/mqdefault.jpg", "dur": "2:11:41"}, {"id": "uZncl2_KjsU", "title": "Smooth Jazz 90s Bluesy 🎷 | Soulful Sax & Electric Piano Lounge Mix for Relaxing, Work & Study", "thumb": "https://i.ytimg.com/vi/uZncl2_KjsU/mqdefault.jpg", "dur": "2:20:24"}, {"id": "afHhjG3FxcQ", "title": "Pop Smooth Jazz 90s 🎷 | Classic Sax & Electric Piano Lounge Mix for Relaxing, Work & Study", "thumb": "https://i.ytimg.com/vi/afHhjG3FxcQ/mqdefault.jpg", "dur": "2:19:35"}, {"id": "XYh1FX0qxfU", "title": "Smooth Jazz 90s Soulful 🎷 | Electric Piano & Sax Mix for Relaxing, Studying & Focus", "thumb": "https://i.ytimg.com/vi/XYh1FX0qxfU/mqdefault.jpg", "dur": "1:52:36"}, {"id": "3FoaLf60CfE", "title": "Smooth Jazz Funk 90s 🎷 | Electric Piano & Sax Mix for Relaxing, Studying & Focus", "thumb": "https://i.ytimg.com/vi/3FoaLf60CfE/mqdefault.jpg", "dur": "1:49:51"}, {"id": "cK4d0PK9avY", "title": "Pop Smooth Jazz 90s 🎷 | Classic Groove Lounge Mix with Soulful Sax & Electric Piano", "thumb": "https://i.ytimg.com/vi/cK4d0PK9avY/mqdefault.jpg", "dur": "1:45:52"}, {"id": "DKfnmBfaBP4", "title": "Elegant 90s Smooth Jazz & R&B Lounge Collection 🎷 | Soulful Sax, Rhodes & Classic Groove Vibes", "thumb": "https://i.ytimg.com/vi/DKfnmBfaBP4/mqdefault.jpg", "dur": "1:50:59"}, {"id": "Tr4-K5FdGyU", "title": "Smooth Jazz 90s Soulful 🎹 | Electric Piano & Sax Lounge Mix for Relaxing, Focus & Chill Evenings", "thumb": "https://i.ytimg.com/vi/Tr4-K5FdGyU/mqdefault.jpg", "dur": "1:49:14"}, {"id": "j78g3XB2K94", "title": "Smooth Jazz 90s Funk 🎷 | Electric Piano & Sax Groove Lounge Mix for Relax, Work & Study", "thumb": "https://i.ytimg.com/vi/j78g3XB2K94/mqdefault.jpg", "dur": "1:50:15"}, {"id": "g7QdBd-Ri9o", "title": "Smooth Jazz 90s Funk Groove 🎷 | Electric Piano & Sax Mix for Relaxing, Study & Focus", "thumb": "https://i.ytimg.com/vi/g7QdBd-Ri9o/mqdefault.jpg", "dur": "1:44:26"}, {"id": "fyEV69qUR-0", "title": "Smooth Jazz Heaven 🎹 | Soul & Electric Piano Classics for Relax, Focus & Late Night Lounge", "thumb": "https://i.ytimg.com/vi/fyEV69qUR-0/mqdefault.jpg", "dur": "1:48:48"}, {"id": "iT4jzD34Qys", "title": "Smooth Jazz 90s Soul R&B 🎷 | Classic Sax & Groove Lounge Mix for Relax & Focus", "thumb": "https://i.ytimg.com/vi/iT4jzD34Qys/mqdefault.jpg", "dur": "1:43:13"}, {"id": "zKLMDZuBaY0", "title": "Smooth Jazz Heaven 🎷 | R&B Saxophone Classics for Relax, Focus & Soulful Evenings", "thumb": "https://i.ytimg.com/vi/zKLMDZuBaY0/mqdefault.jpg", "dur": "1:40:40"}, {"id": "I2tR_ATOixY", "title": "Smooth Jazz Heaven 90s 🎶 | Soulful Relaxing Grooves for Study, Focus & Cozy Evenings", "thumb": "https://i.ytimg.com/vi/I2tR_ATOixY/mqdefault.jpg", "dur": "1:47:04"}, {"id": "Rul-XCWLb4M", "title": "Smooth Jazz 90s 🎶 | Timeless Grooves for Relaxing, Studying & Cozy Evenings", "thumb": "https://i.ytimg.com/vi/Rul-XCWLb4M/mqdefault.jpg", "dur": "1:43:04"}, {"id": "-vVKDJPQOKA", "title": "Elegant Jazz 🎷 | Luxurious Jazz-Soul Fusion – Smooth, Sophisticated Night Vibes ✨", "thumb": "https://i.ytimg.com/vi/-vVKDJPQOKA/mqdefault.jpg", "dur": "1:48:20"}, {"id": "XrhzPw7LaEo", "title": "Smooth Jazz 90s 🎶 | Soulful R&B & Electric Piano – Chill Vintage Grooves for Relax & Study", "thumb": "https://i.ytimg.com/vi/XrhzPw7LaEo/mqdefault.jpg", "dur": "1:48:47"}, {"id": "QGHIP7tiNsA", "title": "Smooth Jazz 90s 🎶 | Soulful R&B & Electric Piano – Chill Lounge Music for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/QGHIP7tiNsA/mqdefault.jpg", "dur": "2:22:43"}, {"id": "mPriG3n3Wyg", "title": "Smooth Jazz 90s Contemporary 🎶 | Elegant & Soulful Grooves for Work, Study & Relaxation", "thumb": "https://i.ytimg.com/vi/mPriG3n3Wyg/mqdefault.jpg", "dur": "2:21:30"}, {"id": "8oph_zHj6a0", "title": "Classic 90s Jazz Pop Flow 🎶 | Evening Coffee Vibes ☕ Smooth & Chill Instrumental Mix", "thumb": "https://i.ytimg.com/vi/8oph_zHj6a0/mqdefault.jpg", "dur": "2:07:14"}, {"id": "fKKQ70CHHvg", "title": "Smooth Jazz 90s 🎶 | Electric Piano feat. Saxophone – Chill Music for Relaxing & Studying", "thumb": "https://i.ytimg.com/vi/fKKQ70CHHvg/mqdefault.jpg", "dur": "2:26:04"}, {"id": "eHO2MYVZick", "title": "Smooth Jazz 90s Soulful 🎷 | Relaxing Vintage Grooves for Cozy Evenings & Study Time", "thumb": "https://i.ytimg.com/vi/eHO2MYVZick/mqdefault.jpg", "dur": "2:25:58"}, {"id": "_FIfAIl8nFQ", "title": "Smooth Jazz 90s Soulful 🎶 | Vintage Grooves for Relaxing, Study & Cozy Nights", "thumb": "https://i.ytimg.com/vi/_FIfAIl8nFQ/mqdefault.jpg", "dur": "2:25:49"}, {"id": "RjmA8wbSShA", "title": "Smooth Jazz R&B 🎶 | Soulful Grooves for Relaxation, Focus & Late-Night Vibes", "thumb": "https://i.ytimg.com/vi/RjmA8wbSShA/mqdefault.jpg", "dur": "2:14:31"}, {"id": "EJhYqQPbCws", "title": "Morning Groove Mix – Smooth Jazz & Funk for Peaceful Days", "thumb": "https://i.ytimg.com/vi/EJhYqQPbCws/mqdefault.jpg", "dur": "2:27:00"}, {"id": "rDmU6UWBdSE", "title": "Smooth Jazz Soul Electric Piano Mix | Nostalgia That Will Relax You", "thumb": "https://i.ytimg.com/vi/rDmU6UWBdSE/mqdefault.jpg", "dur": "2:24:15"}, {"id": "tekEZnf1s7U", "title": "Unbelievable! | This Jazz Funk Mix Will Put You in a Good Mood for Anything", "thumb": "https://i.ytimg.com/vi/tekEZnf1s7U/mqdefault.jpg", "dur": "2:23:32"}, {"id": "R-XJyfMxmkk", "title": "The SECRET to Smooth Jazz Instrumental Success", "thumb": "https://i.ytimg.com/vi/R-XJyfMxmkk/mqdefault.jpg", "dur": "2:26:49"}, {"id": "OL5VJEVh_bo", "title": "Need Relaxing Music? This Jazz Funk Will Refresh Your Mind!", "thumb": "https://i.ytimg.com/vi/OL5VJEVh_bo/mqdefault.jpg", "dur": "1:46:19"}, {"id": "pIQ6MX-p82o", "title": "Lounge Smooth Jazz Heaven: Relaxing piano & sax Music", "thumb": "https://i.ytimg.com/vi/pIQ6MX-p82o/mqdefault.jpg", "dur": "2:25:06"}, {"id": "IL8yy0Y0u9Q", "title": "R&B Soul | The Best Mellow Grooves Playlist for Chilling with Friends", "thumb": "https://i.ytimg.com/vi/IL8yy0Y0u9Q/mqdefault.jpg", "dur": "2:16:53"}, {"id": "5d-HZWhNpnw", "title": "Relaxing Saxophone Instrumental for Dinner & Chill", "thumb": "https://i.ytimg.com/vi/5d-HZWhNpnw/mqdefault.jpg", "dur": "2:06:07"}, {"id": "aGx357LRgNA", "title": "Soul & R&B: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/aGx357LRgNA/mqdefault.jpg", "dur": "2:14:43"}, {"id": "NozO57B8NDU", "title": "Instrumental R&B Saxophone Classics | Focus Relaxing Mix", "thumb": "https://i.ytimg.com/vi/NozO57B8NDU/mqdefault.jpg", "dur": "2:24:36"}, {"id": "L2nDrzRrLRc", "title": "Jazz Reggae 90s Mix | Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/L2nDrzRrLRc/mqdefault.jpg", "dur": "2:26:08"}, {"id": "JeBhGnUOxvU", "title": "Jazz Smooth 90s Mix | Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/JeBhGnUOxvU/mqdefault.jpg", "dur": "2:15:00"}, {"id": "KhPDn0YLKBs", "title": "Jazz Blues 90s | Chill Back to the Classics Playlist", "thumb": "https://i.ytimg.com/vi/KhPDn0YLKBs/mqdefault.jpg", "dur": "2:19:57"}, {"id": "A0lzdCzmywc", "title": "Jazz Soul 90s Mix | Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/A0lzdCzmywc/mqdefault.jpg", "dur": "2:23:40"}, {"id": "rKh_nhVfWDk", "title": "Jazz Funky 90s Mix | Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/rKh_nhVfWDk/mqdefault.jpg", "dur": "2:18:55"}, {"id": "56d8rnCRfPM", "title": "Smooth R&B Jazz Mix | Soulful Grooves for Relax & Chill", "thumb": "https://i.ytimg.com/vi/56d8rnCRfPM/mqdefault.jpg", "dur": "2:25:19"}, {"id": "Kas3yO3UDqU", "title": "Relaxing Reggae Jazz Instrumental Fusion 🌴 | Elegant Saxophone & Caribbean Chill Vibes", "thumb": "https://i.ytimg.com/vi/Kas3yO3UDqU/mqdefault.jpg", "dur": "2:16:42"}, {"id": "sjfY2ST02i8", "title": "Smooth Jazz Pop Evening Mix | Elegant Lounge & Chill Playlist 🎷✨", "thumb": "https://i.ytimg.com/vi/sjfY2ST02i8/mqdefault.jpg", "dur": "1:50:27"}, {"id": "pSTv-_DCSaU", "title": "Elegant, Luxurious Jazz-Soul Fusion Mix | Sophisticated Evening Grooves 🎷✨", "thumb": "https://i.ytimg.com/vi/pSTv-_DCSaU/mqdefault.jpg", "dur": "1:56:51"}, {"id": "47sr2hRqhas", "title": "Smooth Jazz Soulful R&B Groove Mix | Elegant Night Lounge Playlist 🎷✨", "thumb": "https://i.ytimg.com/vi/47sr2hRqhas/mqdefault.jpg", "dur": "1:48:57"}, {"id": "H98GrA3d8Eg", "title": "Smooth Jazz & Soulful R&B Groove Mix: Ultimate Chill Vibes", "thumb": "https://i.ytimg.com/vi/H98GrA3d8Eg/mqdefault.jpg", "dur": "2:14:46"}, {"id": "iVhlEOquhqg", "title": "Relaxed Jazz Piano Lounge Vol. 2 | Slow Smooth Jazz Mix with Warm Chords & Cozy Evening Vibes", "thumb": "https://i.ytimg.com/vi/iVhlEOquhqg/mqdefault.jpg", "dur": "1:47:02"}, {"id": "eg-HGo9vJKc", "title": "The Hidden World of 90s Jazz Tones", "thumb": "https://i.ytimg.com/vi/eg-HGo9vJKc/mqdefault.jpg", "dur": "2:22:27"}, {"id": "wcpK4eSWGQE", "title": "Jazz Piano Instrumental | Relaxed Smooth Jazz Lounge Mix with Warm Chords & Cozy Evening Vibes", "thumb": "https://i.ytimg.com/vi/wcpK4eSWGQE/mqdefault.jpg", "dur": "1:46:30"}, {"id": "EZLF0yBEuqA", "title": "Relaxing Jazz Piano Lounge | Slow Smooth Jazz Mix with Warm Chords & Cozy Evening Vibes", "thumb": "https://i.ytimg.com/vi/EZLF0yBEuqA/mqdefault.jpg", "dur": "2:23:02"}, {"id": "oxlNzjAUL1c", "title": "Smooth Jazz 90s Vibes:  Pure Nostalgia & Relaxation Playlist", "thumb": "https://i.ytimg.com/vi/oxlNzjAUL1c/mqdefault.jpg", "dur": "2:17:55"}, {"id": "t00A9QohCbg", "title": "90s R&B & Smooth Jazz: Best Beat for Studying & Relaxation", "thumb": "https://i.ytimg.com/vi/t00A9QohCbg/mqdefault.jpg", "dur": "2:19:56"}, {"id": "yQeoePrNJaE", "title": "Want SMOOTH JAZZ in Your Life? Watch This 90s Playlist Now", "thumb": "https://i.ytimg.com/vi/yQeoePrNJaE/mqdefault.jpg", "dur": "2:20:28"}, {"id": "DhUwg2ah8P0", "title": "Smooth Sax Serenity Mix | Relaxing Jazz Saxophone Playlist", "thumb": "https://i.ytimg.com/vi/DhUwg2ah8P0/mqdefault.jpg", "dur": "1:37:22"}, {"id": "0vSUoRWYZ0w", "title": "Cozy Soul & Jazz Vibes Mix | Smooth R&B Groove Collection", "thumb": "https://i.ytimg.com/vi/0vSUoRWYZ0w/mqdefault.jpg", "dur": "2:24:47"}, {"id": "syFINyzZSWw", "title": "What I Learned from Listening to JAZZ FUNK MUSIC for 30 Days STRAIGHT", "thumb": "https://i.ytimg.com/vi/syFINyzZSWw/mqdefault.jpg", "dur": "2:21:25"}, {"id": "duN_HlGGOxk", "title": "Golden Disco Nights Mix | Smooth Jazz & Vintage Funk Playlist", "thumb": "https://i.ytimg.com/vi/duN_HlGGOxk/mqdefault.jpg", "dur": "2:05:59"}, {"id": "5meRzGlkcQg", "title": "Gentle Blues Serenity Mix | Smooth Jazz & Relax Blues Collection", "thumb": "https://i.ytimg.com/vi/5meRzGlkcQg/mqdefault.jpg", "dur": "2:09:00"}, {"id": "jFBrPQ42b7U", "title": "Chill Jazz Pop Collection | Cozy Night Lounge Music", "thumb": "https://i.ytimg.com/vi/jFBrPQ42b7U/mqdefault.jpg", "dur": "1:42:09"}, {"id": "NAIFfNHkBrE", "title": "Jazz Pop Evening Collection | Smooth Melodies for Relax Playlist", "thumb": "https://i.ytimg.com/vi/NAIFfNHkBrE/mqdefault.jpg", "dur": "1:44:39"}, {"id": "JQzw-HlNjNs", "title": "Elegant Jazz Pop Mix | Smooth & Relaxing Evening Playlist", "thumb": "https://i.ytimg.com/vi/JQzw-HlNjNs/mqdefault.jpg", "dur": "1:38:46"}, {"id": "qzY_XsX_r0M", "title": "Cozy Night Mix | Smooth Jazz & Soulful R&B Instrumental Playlist", "thumb": "https://i.ytimg.com/vi/qzY_XsX_r0M/mqdefault.jpg", "dur": "2:12:32"}, {"id": "0i3Mo44Jiko", "title": "Late Night Smooth Jazz & Soul R&B Mix | Chill Instrumental Collection", "thumb": "https://i.ytimg.com/vi/0i3Mo44Jiko/mqdefault.jpg", "dur": "2:13:52"}, {"id": "37_U5nF11wY", "title": "Midnight Piano Serenade Collection | 90s Smooth Jazz & Chill Relax Playlist", "thumb": "https://i.ytimg.com/vi/37_U5nF11wY/mqdefault.jpg", "dur": "2:07:11"}, {"id": "4IvnstCnE8M", "title": "Midnight Jazz Vibes Playlist | 90s Smooth Soul & R&B Groove Instrumental Collection", "thumb": "https://i.ytimg.com/vi/4IvnstCnE8M/mqdefault.jpg", "dur": "2:15:15"}, {"id": "1oMIYyV-Y0k", "title": "Sophisticated Evenings Mix | Jazz Smooth & Soulful R&B Instrumental Playlist", "thumb": "https://i.ytimg.com/vi/1oMIYyV-Y0k/mqdefault.jpg", "dur": "2:23:59"}, {"id": "N7r96sFuLNY", "title": "Elegant Night Grooves Mix | Smooth Jazz & Soulful R&B Instrumental Playlist", "thumb": "https://i.ytimg.com/vi/N7r96sFuLNY/mqdefault.jpg", "dur": "2:08:54"}, {"id": "eFkJKwkTd7I", "title": "Midnight Serenity Collection | Smooth Jazz & Soul R&B Groove Relax Playlist", "thumb": "https://i.ytimg.com/vi/eFkJKwkTd7I/mqdefault.jpg", "dur": "2:15:21"}, {"id": "FsvkKcZJ9Qg", "title": "Chill Smooth Jazz Groove: Perfect Instrumental Cozy Mix", "thumb": "https://i.ytimg.com/vi/FsvkKcZJ9Qg/mqdefault.jpg", "dur": "1:30:59"}, {"id": "lUQd72cJKcs", "title": "The Perfect Smooth Jazz Mix:  Vintage Lounge Vibes", "thumb": "https://i.ytimg.com/vi/lUQd72cJKcs/mqdefault.jpg", "dur": "1:32:45"}, {"id": "atP8T-KDB5c", "title": "Smooth Jazz Heaven: Relaxing Saxophone Music", "thumb": "https://i.ytimg.com/vi/atP8T-KDB5c/mqdefault.jpg", "dur": "1:34:45"}, {"id": "LspGPBnogCE", "title": "Saxophone Smooth Jazz: Nostalgic Vibes & Chill Beats", "thumb": "https://i.ytimg.com/vi/LspGPBnogCE/mqdefault.jpg", "dur": "1:28:09"}, {"id": "VRn1y_ueXHs", "title": "Smooth Jazz Funk | Perfect for Relaxed Evenings", "thumb": "https://i.ytimg.com/vi/VRn1y_ueXHs/mqdefault.jpg", "dur": "1:24:11"}, {"id": "UqGY39E86EQ", "title": "Smooth Jazz 90s – Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/UqGY39E86EQ/mqdefault.jpg", "dur": "1:38:04"}, {"id": "13YwqXEkBsQ", "title": "Unwind with 80s Smooth Jazz: The Best Chill Mix", "thumb": "https://i.ytimg.com/vi/13YwqXEkBsQ/mqdefault.jpg", "dur": "1:33:13"}, {"id": "DRRGdZU1D-k", "title": "Upbeat Jazz Funk Beats: Focus, Relax & Work", "thumb": "https://i.ytimg.com/vi/DRRGdZU1D-k/mqdefault.jpg", "dur": "1:08:16"}, {"id": "PBrlrRHoV6o", "title": "Smooth Jazz Neo Soul Funk: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/PBrlrRHoV6o/mqdefault.jpg", "dur": "2:07:24"}, {"id": "tJyd1LdJ8lI", "title": "Perfect Sunset Vibes: Instrumental Soul Jazz Mix", "thumb": "https://i.ytimg.com/vi/tJyd1LdJ8lI/mqdefault.jpg", "dur": "1:47:38"}, {"id": "lZRHKZGU208", "title": "Smooth Jazz R&B: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/lZRHKZGU208/mqdefault.jpg", "dur": "1:28:12"}, {"id": "mfu75lzSJhY", "title": "Smooth Jazz Funky Vibes: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/mfu75lzSJhY/mqdefault.jpg", "dur": "1:40:03"}, {"id": "BYpCMiBWMgA", "title": "Smooth Jazz & R&B: The Best Relaxing Music Mix", "thumb": "https://i.ytimg.com/vi/BYpCMiBWMgA/mqdefault.jpg", "dur": "1:30:17"}, {"id": "IVzbczEGobs", "title": "Smooth Jazz Soul: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/IVzbczEGobs/mqdefault.jpg", "dur": "1:20:51"}, {"id": "KMSk-xW-BB0", "title": "Smooth Jazz Pop: Your Daily Dose of Relaxation", "thumb": "https://i.ytimg.com/vi/KMSk-xW-BB0/mqdefault.jpg", "dur": "1:48:36"}, {"id": "s6nCx_aSTZM", "title": "Relaxing Smooth Jazz Piano: Melt Your Stress Away", "thumb": "https://i.ytimg.com/vi/s6nCx_aSTZM/mqdefault.jpg", "dur": "1:32:36"}, {"id": "pMcmJlc8A3s", "title": "Smooth Jazz Funk: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/pMcmJlc8A3s/mqdefault.jpg", "dur": "1:16:17"}, {"id": "htk1Hq505Dk", "title": "Smooth Jazz Blues: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/htk1Hq505Dk/mqdefault.jpg", "dur": "2:10:23"}, {"id": "FZ-mrbYrTus", "title": "Smooth Jazz Reggae Vibes: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/FZ-mrbYrTus/mqdefault.jpg", "dur": "1:32:53"}, {"id": "4620gMN7MGg", "title": "Smooth Jazz Soul: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/4620gMN7MGg/mqdefault.jpg", "dur": "2:19:06"}, {"id": "ixJ6EsXp-ZU", "title": "Smooth Jazz Mellow: Unwind & De-stress with This Mix", "thumb": "https://i.ytimg.com/vi/ixJ6EsXp-ZU/mqdefault.jpg", "dur": "1:34:16"}, {"id": "3Qu_uHEKhns", "title": "The Hidden POWER of Smooth Jazz from the 90s", "thumb": "https://i.ytimg.com/vi/3Qu_uHEKhns/mqdefault.jpg", "dur": "2:38:29"}, {"id": "dM6FQSLiwUg", "title": "This Jazz Soul R&B Mix Will Make You Feel Good", "thumb": "https://i.ytimg.com/vi/dM6FQSLiwUg/mqdefault.jpg", "dur": "1:35:49"}, {"id": "yKW5fvpDh4k", "title": "Escape with Smooth Jazz: Your Daily Dose of Chill", "thumb": "https://i.ytimg.com/vi/yKW5fvpDh4k/mqdefault.jpg", "dur": "1:10:35"}, {"id": "OFSvDgKmOJo", "title": "Discover the SECRET to Creating a Smooth Jazz R&B Sound", "thumb": "https://i.ytimg.com/vi/OFSvDgKmOJo/mqdefault.jpg", "dur": "1:16:24"}, {"id": "i5bBv63QbXY", "title": "Want to Feel Relaxed? Listen to Intimate Mellow Jazz NOW", "thumb": "https://i.ytimg.com/vi/i5bBv63QbXY/mqdefault.jpg", "dur": "1:51:27"}, {"id": "kFSSiPdtvOk", "title": "Nu Jazz Disco Mix: Your New Favorite Weekend Soundtrack", "thumb": "https://i.ytimg.com/vi/kFSSiPdtvOk/mqdefault.jpg", "dur": "2:04:38"}, {"id": "2kobkUO2e3c", "title": "5 Awesome Jazz Funk Tracks You NEED to Hear", "thumb": "https://i.ytimg.com/vi/2kobkUO2e3c/mqdefault.jpg", "dur": "2:46:41"}, {"id": "7t-gIKTb28E", "title": "Ultimate Chill Jazz Funk: Instrumental Beats for Focus", "thumb": "https://i.ytimg.com/vi/7t-gIKTb28E/mqdefault.jpg", "dur": "1:51:40"}, {"id": "-XdsSBQR-UU", "title": "90s Smooth Jazz Lounge Mix : Relax & Unwind", "thumb": "https://i.ytimg.com/vi/-XdsSBQR-UU/mqdefault.jpg", "dur": "1:15:20"}, {"id": "z1_kTxcRzFQ", "title": "JAZZ R&B Grooves: Smooth Sounds for Your Soul", "thumb": "https://i.ytimg.com/vi/z1_kTxcRzFQ/mqdefault.jpg", "dur": "2:32:27"}, {"id": "wS59ulEf14A", "title": "Smooth Jazz 90s: Rediscover Your Favorite Tracks", "thumb": "https://i.ytimg.com/vi/wS59ulEf14A/mqdefault.jpg", "dur": "2:21:39"}, {"id": "pw7ONJd1NVU", "title": "I Listened to 90s Smooth Jazz for 30 Days and Here's What Happened to My Mood", "thumb": "https://i.ytimg.com/vi/pw7ONJd1NVU/mqdefault.jpg", "dur": "1:57:36"}, {"id": "fOmyIXdBe8c", "title": "Discover the SECRET to Creating SOULFUL Blues Jazz Instrumentals", "thumb": "https://i.ytimg.com/vi/fOmyIXdBe8c/mqdefault.jpg", "dur": "3:09:49"}, {"id": "NcuzbD0GU1w", "title": "Relaxing Smooth Jazz & R&B Fusion for Your Soul", "thumb": "https://i.ytimg.com/vi/NcuzbD0GU1w/mqdefault.jpg", "dur": "1:34:28"}, {"id": "wwwGGbFRAmE", "title": "R&B Lounge Jazz:  A Night of Smooth Grooves", "thumb": "https://i.ytimg.com/vi/wwwGGbFRAmE/mqdefault.jpg", "dur": "1:10:29"}, {"id": "fTstjuMWy0E", "title": "Soulful Jazz for a Relaxing Evening", "thumb": "https://i.ytimg.com/vi/fTstjuMWy0E/mqdefault.jpg", "dur": "1:48:39"}, {"id": "wvjBhAyqf40", "title": "Smooth Jazz R&B: Perfect Beats for Relaxation", "thumb": "https://i.ytimg.com/vi/wvjBhAyqf40/mqdefault.jpg", "dur": "1:19:39"}, {"id": "_cXihNavYeU", "title": "Smooth 90s Jazz Instrumental: Vibes You'll Love", "thumb": "https://i.ytimg.com/vi/_cXihNavYeU/mqdefault.jpg", "dur": "2:14:43"}, {"id": "yoUUKlClAIs", "title": "Why Your WORK FROM HOME Soundtrack Isn't Helping You STAY PRODUCTIVE", "thumb": "https://i.ytimg.com/vi/yoUUKlClAIs/mqdefault.jpg", "dur": "1:53:39"}, {"id": "bxlqAdqH3MU", "title": "Smooth Jazz Saxophone: Relaxing Melodies for Your Soul", "thumb": "https://i.ytimg.com/vi/bxlqAdqH3MU/mqdefault.jpg", "dur": "1:42:10"}, {"id": "W-N1Rj6julQ", "title": "Smooth Jazz Hits of the 90s: Pure Nostalgia", "thumb": "https://i.ytimg.com/vi/W-N1Rj6julQ/mqdefault.jpg", "dur": "3:15:21"}, {"id": "_O4VBtCuhig", "title": "Chill 90s Inspired Smooth Jazz: Perfect for Studying & Relaxing", "thumb": "https://i.ytimg.com/vi/_O4VBtCuhig/mqdefault.jpg", "dur": "1:30:26"}, {"id": "aXoraZgoAxk", "title": "Smooth Jazz, R&B, & Soul: Unwind to this Blissful Mix", "thumb": "https://i.ytimg.com/vi/aXoraZgoAxk/mqdefault.jpg", "dur": "1:58:06"}, {"id": "cTvJnEvQaPo", "title": "90s Smooth Jazz Saxophone:  Pure Nostalgia & Vibes", "thumb": "https://i.ytimg.com/vi/cTvJnEvQaPo/mqdefault.jpg", "dur": "2:25:07"}, {"id": "n-uklfNwNX8", "title": "Smooth Jazz Mellow Vibes: Perfect Chill Music", "thumb": "https://i.ytimg.com/vi/n-uklfNwNX8/mqdefault.jpg", "dur": "1:26:47"}, {"id": "5Lro1c9Kfr4", "title": "Jazz: A Soothing Tender Arrangement for Relaxation", "thumb": "https://i.ytimg.com/vi/5Lro1c9Kfr4/mqdefault.jpg", "dur": "1:22:55"}, {"id": "cCg8wG6YSVY", "title": "Paris Cafe Jazz: Midnight Rain - Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/cCg8wG6YSVY/mqdefault.jpg", "dur": "2:09:21"}, {"id": "BfTUtF3SGz0", "title": "City Lights Jazz Lounge: Unwind with Smooth Jazz", "thumb": "https://i.ytimg.com/vi/BfTUtF3SGz0/mqdefault.jpg", "dur": "1:15:22"}, {"id": "amCvugv_Z7U", "title": "R&B & Smooth Jazz Harmonies: Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/amCvugv_Z7U/mqdefault.jpg", "dur": "56:46"}, {"id": "zgwb2l5CFWM", "title": "Modern Cool Jazz for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/zgwb2l5CFWM/mqdefault.jpg", "dur": "1:00:53"}, {"id": "TaDy3dKuswg", "title": "Soulful Jazz for Focus & Calm: The Ultimate Mix", "thumb": "https://i.ytimg.com/vi/TaDy3dKuswg/mqdefault.jpg", "dur": "1:47:52"}, {"id": "xRvK29DvdiM", "title": "Smooth Jazz & Soulful Electric Piano: Ultimate Chill Vibes", "thumb": "https://i.ytimg.com/vi/xRvK29DvdiM/mqdefault.jpg", "dur": "3:25:04"}, {"id": "CVPkZCrtTo8", "title": "Smooth Jazz Funky Vibes: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/CVPkZCrtTo8/mqdefault.jpg", "dur": "1:06:46"}, {"id": "7VtYmH0nECs", "title": "Latin-Infused Smooth Jazz: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/7VtYmH0nECs/mqdefault.jpg", "dur": "1:40:53"}, {"id": "AWZZr_mE3nU", "title": "Jazz Soft Piano Instrumental: Relaxing Music for Calm Vibes", "thumb": "https://i.ytimg.com/vi/AWZZr_mE3nU/mqdefault.jpg", "dur": "1:39:07"}, {"id": "-VNkB47MS64", "title": "Smooth Jazz Vibes: Electric Piano & Percussion Magic", "thumb": "https://i.ytimg.com/vi/-VNkB47MS64/mqdefault.jpg", "dur": "1:04:04"}, {"id": "hpd8ttotw9Y", "title": "Addictive Smooth Jazz & R&B: The Ultimate Relax Mix", "thumb": "https://i.ytimg.com/vi/hpd8ttotw9Y/mqdefault.jpg", "dur": "1:26:52"}, {"id": "-0u998Xj-s4", "title": "Smooth Jazz & R&B Chill Mix: Perfect Background Music", "thumb": "https://i.ytimg.com/vi/-0u998Xj-s4/mqdefault.jpg", "dur": "1:26:00"}, {"id": "0DeqWtuKMpg", "title": "Want the ULTIMATE Chill Experience? Try This 90s Smooth Jazz & R&B Mix NOW", "thumb": "https://i.ytimg.com/vi/0DeqWtuKMpg/mqdefault.jpg", "dur": "2:07:44"}, {"id": "iJtBbpta-O0", "title": "90s Smooth Jazz R&B Mix: Nostalgia Trip for Your Ears", "thumb": "https://i.ytimg.com/vi/iJtBbpta-O0/mqdefault.jpg", "dur": "1:25:52"}, {"id": "8tStmOCZRmg", "title": "Smooth Jazz & 90s R&B Soul: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/8tStmOCZRmg/mqdefault.jpg", "dur": "1:56:16"}, {"id": "PFCo4LSxNgg", "title": "90s Smooth Jazz Beats: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/PFCo4LSxNgg/mqdefault.jpg", "dur": "2:02:05"}, {"id": "XM_gfgNeWdo", "title": "90s Jazz Blues: The Ultimate Chill Mixtape", "thumb": "https://i.ytimg.com/vi/XM_gfgNeWdo/mqdefault.jpg", "dur": "1:56:20"}, {"id": "W3VUp_g3IfQ", "title": "Mellow 90s Jazz Reggae Vibes: Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/W3VUp_g3IfQ/mqdefault.jpg", "dur": "2:07:06"}, {"id": "dLtF_XebGMo", "title": "Jazz Blues & 90s Chillhop: The Ultimate Relax Mix", "thumb": "https://i.ytimg.com/vi/dLtF_XebGMo/mqdefault.jpg", "dur": "1:26:48"}, {"id": "BbYY0LGzwtM", "title": "Nostalgic 90s Soul Jazz: Smooth Vibes & Chill Beats", "thumb": "https://i.ytimg.com/vi/BbYY0LGzwtM/mqdefault.jpg", "dur": "1:35:58"}, {"id": "K5q3BspdsTg", "title": "Smooth Jazz 90s & R&B Groove: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/K5q3BspdsTg/mqdefault.jpg", "dur": "1:55:27"}, {"id": "9hxJM60uLBc", "title": "Smooth Jazz & R&B: The Ultimate Mellow Mix", "thumb": "https://i.ytimg.com/vi/9hxJM60uLBc/mqdefault.jpg", "dur": "1:33:15"}, {"id": "AvYY8pBV3U8", "title": "Smooth Jazz 90s & R&B Grooves Vol. 2: Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/AvYY8pBV3U8/mqdefault.jpg", "dur": "1:34:11"}, {"id": "Fbvlw1K62pk", "title": "Smooth Jazz & R&B Hits of the 90s: Nonstop Groove Session", "thumb": "https://i.ytimg.com/vi/Fbvlw1K62pk/mqdefault.jpg", "dur": "2:02:11"}, {"id": "tBxEZtU5-zA", "title": "Ultimate Chill Mix: Smooth Jazz, R&B & Electric Guitar", "thumb": "https://i.ytimg.com/vi/tBxEZtU5-zA/mqdefault.jpg", "dur": "2:13:36"}, {"id": "eC7nBSAyfuY", "title": "Electric Piano Magic: Smooth Jazz & R&B Mix for Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/eC7nBSAyfuY/mqdefault.jpg", "dur": "2:28:18"}, {"id": "hWdo9T9vrbk", "title": "Soothing Smooth Jazz, Elegant R&B Grooves | To Accompany A Cool Night", "thumb": "https://i.ytimg.com/vi/hWdo9T9vrbk/mqdefault.jpg", "dur": "2:13:29"}, {"id": "kopI2bAHYeU", "title": "Peaceful Seaside Jazz : Focus Music for Working , Studying, Undwinding", "thumb": "https://i.ytimg.com/vi/kopI2bAHYeU/mqdefault.jpg", "dur": "2:13:02"}, {"id": "GbXwxm7CJ9k", "title": "The Hidden DANGER in Listening to 90s Jazz Music", "thumb": "https://i.ytimg.com/vi/GbXwxm7CJ9k/mqdefault.jpg", "dur": "2:42:04"}, {"id": "N7TVSfOAL-k", "title": "You WON'T BELIEVE How RELAXING Music Affects Your Brain", "thumb": "https://i.ytimg.com/vi/N7TVSfOAL-k/mqdefault.jpg", "dur": "2:03:31"}, {"id": "Uaq20duXQQw", "title": "Alternative R&B Grooves: Sensual Beats to Melt Your Stress Away", "thumb": "https://i.ytimg.com/vi/Uaq20duXQQw/mqdefault.jpg", "dur": "2:02:02"}, {"id": "tUo7t7IsfTs", "title": "Smooth Jazz & Gentle Piano | Soulful Sax in a Zen Space 🎷🎹🌿", "thumb": "https://i.ytimg.com/vi/tUo7t7IsfTs/mqdefault.jpg", "dur": "55:20"}, {"id": "ciTdM7mtqC0", "title": "Smooth Jazz, Electric Piano & Blues | Warm Vinyl Sessions by the Fire 🔥🎹🎷", "thumb": "https://i.ytimg.com/vi/ciTdM7mtqC0/mqdefault.jpg", "dur": "1:54:18"}, {"id": "v191oz87YeU", "title": "Smooth Jazz & Acoustic Guitar | Mellow Grooves by the Ocean 🌴🎸🌊", "thumb": "https://i.ytimg.com/vi/v191oz87YeU/mqdefault.jpg", "dur": "1:29:35"}, {"id": "tK7J-gJK9mk", "title": "Smooth Jazz Harmonies | Warm Vinyl Vibes by the Fire 🎷🔥", "thumb": "https://i.ytimg.com/vi/tK7J-gJK9mk/mqdefault.jpg", "dur": "1:42:37"}, {"id": "BI6xd9a9c7s", "title": "Best 90s Smooth Jazz: Feel-Good Mellow Grooves", "thumb": "https://i.ytimg.com/vi/BI6xd9a9c7s/mqdefault.jpg", "dur": "2:21:58"}, {"id": "eHbK5XZv5KE", "title": "Smooth Jazz & Mellow Electric Piano | Coastal Chill Vibes 🌊🎹", "thumb": "https://i.ytimg.com/vi/eHbK5XZv5KE/mqdefault.jpg", "dur": "1:48:23"}, {"id": "vYjuqLF4_A0", "title": "Smooth Jazz, Soul & R&B | Timeless Vibes for Heart & Soul 🎷🎤💫", "thumb": "https://i.ytimg.com/vi/vYjuqLF4_A0/mqdefault.jpg", "dur": "1:29:52"}, {"id": "IkaoK7qOH6I", "title": "Smooth Jazz & Blues by the Ocean 🌊🎷🎸", "thumb": "https://i.ytimg.com/vi/IkaoK7qOH6I/mqdefault.jpg", "dur": "1:45:27"}, {"id": "DIecRz3qaOw", "title": "Smooth Jazz Heaven | Ocean Breeze Jazz 🎷🌅", "thumb": "https://i.ytimg.com/vi/DIecRz3qaOw/mqdefault.jpg", "dur": "1:58:30"}, {"id": "mMQSraTEdUM", "title": "Smooth Jazz Heaven | Acoustic Guitar by the Ocean 🌊🎸", "thumb": "https://i.ytimg.com/vi/mMQSraTEdUM/mqdefault.jpg", "dur": "1:57:28"}, {"id": "3B-k7JyjN-0", "title": "Smooth Jazz Chill Zone: Relax & Unwind with This Playlist", "thumb": "https://i.ytimg.com/vi/3B-k7JyjN-0/mqdefault.jpg", "dur": "1:58:46"}, {"id": "fPddJJE5oUE", "title": "Smooth Jazz Heaven | Ocean Breeze Jazz | Smooth Piano & Saxophone for Peaceful Mornings 🎷🌅", "thumb": "https://i.ytimg.com/vi/fPddJJE5oUE/mqdefault.jpg", "dur": "1:46:04"}, {"id": "tpUsj96LCrg", "title": "Relax & Focus: The Best Chill Soul Groove Music Mix", "thumb": "https://i.ytimg.com/vi/tpUsj96LCrg/mqdefault.jpg", "dur": "2:05:40"}, {"id": "rqu7Oy3IhTo", "title": "Amazing Acoustic R&B Soul Jazz: 10 Unmissable Songs", "thumb": "https://i.ytimg.com/vi/rqu7Oy3IhTo/mqdefault.jpg", "dur": "2:10:22"}, {"id": "WSEWBc-_gUA", "title": "R&B Soul Jazz Saxophone: The Ultimate Relaxation Playlist", "thumb": "https://i.ytimg.com/vi/WSEWBc-_gUA/mqdefault.jpg", "dur": "1:50:57"}, {"id": "4YcZR4rr48A", "title": "Smooth Jazz on Acoustic Guitar: The Ultimate Chill Session", "thumb": "https://i.ytimg.com/vi/4YcZR4rr48A/mqdefault.jpg", "dur": "1:31:01"}, {"id": "pwFd3500y3s", "title": "I've Spent YEARS Researching The BEST Groovy90s Tracks For Chill Vibes", "thumb": "https://i.ytimg.com/vi/pwFd3500y3s/mqdefault.jpg", "dur": "1:44:38"}, {"id": "mH8ahsE2B-U", "title": "STOP Listening to Boring Music! Try JAZZY HOUSE for a BOOST", "thumb": "https://i.ytimg.com/vi/mH8ahsE2B-U/mqdefault.jpg", "dur": "1:37:02"}, {"id": "dDYbRkzauug", "title": "What Happens When You Listen to ELEGANT Jazz Music for 24 Hours Straight", "thumb": "https://i.ytimg.com/vi/dDYbRkzauug/mqdefault.jpg", "dur": "1:50:55"}, {"id": "f5-AhKareX4", "title": "Smooth Jazz Saxophone: The Ultimate Chill Playlist", "thumb": "https://i.ytimg.com/vi/f5-AhKareX4/mqdefault.jpg", "dur": "1:44:39"}, {"id": "yW46XCV82oc", "title": "Smooth Jazz Electric Piano: The Ultimate Chill Playlist", "thumb": "https://i.ytimg.com/vi/yW46XCV82oc/mqdefault.jpg", "dur": "1:42:58"}, {"id": "27uA5ikzfJ0", "title": "Top 5 ESSENTIAL Elements Every Chill Lounge Music Producer Needs", "thumb": "https://i.ytimg.com/vi/27uA5ikzfJ0/mqdefault.jpg", "dur": "2:01:10"}, {"id": "B7XVT4aq3yM", "title": "Discover 5 Simple Tricks to INSTANTLY Calm Your Mind with Jazz", "thumb": "https://i.ytimg.com/vi/B7XVT4aq3yM/mqdefault.jpg", "dur": "1:27:57"}, {"id": "C7rvRoJ8ALs", "title": "Discover the 5 SMOOTH Jazz Tracks that Define the 90s Sound", "thumb": "https://i.ytimg.com/vi/C7rvRoJ8ALs/mqdefault.jpg", "dur": "2:19:24"}, {"id": "RHtoQ-uE1rU", "title": "Ultimate Smooth Jazz: Boost Focus for Work & Study", "thumb": "https://i.ytimg.com/vi/RHtoQ-uE1rU/mqdefault.jpg", "dur": "2:30:29"}, {"id": "ThAXyw2P9-w", "title": "Smooth Jazz Bluesy Guitar: Chill Vibes & Groovy Riffs", "thumb": "https://i.ytimg.com/vi/ThAXyw2P9-w/mqdefault.jpg", "dur": "1:14:37"}, {"id": "bxg5PfWQkXU", "title": "Relaxing Smooth Jazz Lounge Music: Ultimate Chill Vibes", "thumb": "https://i.ytimg.com/vi/bxg5PfWQkXU/mqdefault.jpg", "dur": "2:03:38"}, {"id": "M9F_0ANPXK0", "title": "Smooth Jazz Wedding Reception Music: Ultimate Vibe", "thumb": "https://i.ytimg.com/vi/M9F_0ANPXK0/mqdefault.jpg", "dur": "1:52:34"}, {"id": "5ZEQ4YYpNJo", "title": "Smooth Jazz: The Ultimate Sunday Afternoon Mix", "thumb": "https://i.ytimg.com/vi/5ZEQ4YYpNJo/mqdefault.jpg", "dur": "2:30:36"}, {"id": "BlqrSXLw4x8", "title": "The 5-Minute NEO-SOUL JAZZ Trick to Reduce Stress While Working", "thumb": "https://i.ytimg.com/vi/BlqrSXLw4x8/mqdefault.jpg", "dur": "1:49:26"}, {"id": "htDLx4yWRlM", "title": "Why Neo-Soul Jazz is the PERFECT Soundtrack for CHILLING", "thumb": "https://i.ytimg.com/vi/htDLx4yWRlM/mqdefault.jpg", "dur": "1:24:08"}, {"id": "HXTNktPJr-I", "title": "R&B Jazz Trumpet Grooves: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/HXTNktPJr-I/mqdefault.jpg", "dur": "1:20:36"}, {"id": "KXGZe3ybTn0", "title": "Soulful R&B Jazz: Your Perfect Chill Mix", "thumb": "https://i.ytimg.com/vi/KXGZe3ybTn0/mqdefault.jpg", "dur": "1:55:28"}, {"id": "47z8GmryXP8", "title": "Escape the Day: Best Chill Smooth Jazz Now!", "thumb": "https://i.ytimg.com/vi/47z8GmryXP8/mqdefault.jpg", "dur": "1:43:36"}, {"id": "S5R6eeZl4oI", "title": "STOP Listening To Boring Music! Discover The SECRET To Smooth Jazz + Sax", "thumb": "https://i.ytimg.com/vi/S5R6eeZl4oI/mqdefault.jpg", "dur": "1:47:24"}, {"id": "FDak0UzdzmI", "title": "The Real Difference Between Jazz and Fusion Music for Beginners", "thumb": "https://i.ytimg.com/vi/FDak0UzdzmI/mqdefault.jpg", "dur": "1:47:20"}, {"id": "Iudd26z-eeo", "title": "Elegant Jazz & Soul Music: Unwind & Unplug", "thumb": "https://i.ytimg.com/vi/Iudd26z-eeo/mqdefault.jpg", "dur": "1:55:39"}, {"id": "H_XA2QK5_HE", "title": "Best Jazz Soul R&B: 10 Tracks You Need To Hear", "thumb": "https://i.ytimg.com/vi/H_XA2QK5_HE/mqdefault.jpg", "dur": "1:28:42"}, {"id": "occOv4h96HA", "title": "Jazz Soul & R&B The ULTIMATE Relaxation Playlist You Need Now", "thumb": "https://i.ytimg.com/vi/occOv4h96HA/mqdefault.jpg", "dur": "1:45:49"}, {"id": "cMb2aLPiZcg", "title": "Can This Elegant Jazz Melody REALLY Help You Reduce Stress?", "thumb": "https://i.ytimg.com/vi/cMb2aLPiZcg/mqdefault.jpg", "dur": "1:03:51"}, {"id": "W-IA0YG8qPw", "title": "The SHOCKING Truth About Creating a Luxurious Jazz Atmosphere", "thumb": "https://i.ytimg.com/vi/W-IA0YG8qPw/mqdefault.jpg", "dur": "1:38:51"}, {"id": "2CpR-6BTALU", "title": "Best Smooth Jazz Instrumental Perfect For Working, Studying, Relaxing Or Sleeping", "thumb": "https://i.ytimg.com/vi/2CpR-6BTALU/mqdefault.jpg", "dur": "1:26:32"}, {"id": "EdPV7IFcs0Q", "title": "The SECRET to Smooth Jazz Instrumental Success", "thumb": "https://i.ytimg.com/vi/EdPV7IFcs0Q/mqdefault.jpg", "dur": "2:24:26"}, {"id": "Im8RiCXZgrc", "title": "Smooth Jazz Instrumental Background Music: Focus & Study", "thumb": "https://i.ytimg.com/vi/Im8RiCXZgrc/mqdefault.jpg", "dur": "2:08:29"}, {"id": "Hk2o0B185_Y", "title": "STOP Using Boring Instrumentals - 90s Smooth Jazz Tone Secrets", "thumb": "https://i.ytimg.com/vi/Hk2o0B185_Y/mqdefault.jpg", "dur": "1:40:37"}, {"id": "Zq8yaxBEs_Y", "title": "Smooth Jazz, Soul, & R&B: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/Zq8yaxBEs_Y/mqdefault.jpg", "dur": "1:25:36"}, {"id": "NuKgEC-xWIk", "title": "Ultimate Smooth Jazz & Soul R&B Mix: Stress Relief", "thumb": "https://i.ytimg.com/vi/NuKgEC-xWIk/mqdefault.jpg", "dur": "1:33:47"}, {"id": "eHOUjXV5kx0", "title": "5 MindBlowing Secrets to Creating Your OWN Jazz Mix", "thumb": "https://i.ytimg.com/vi/eHOUjXV5kx0/mqdefault.jpg", "dur": "1:15:26"}, {"id": "PQasp6l0XFA", "title": "Spanish Guitar Music for Sleep | Peaceful Nighttime", "thumb": "https://i.ytimg.com/vi/PQasp6l0XFA/mqdefault.jpg", "dur": "1:35:01"}, {"id": "rI-qK-kjxGs", "title": "Top Music Producer Reveals SECRET to Smooth Jazz 80s Sound", "thumb": "https://i.ytimg.com/vi/rI-qK-kjxGs/mqdefault.jpg", "dur": "2:23:33"}, {"id": "ZEvpmNKYLLw", "title": "The BEST Smooth Jazz Tracks to RELAX with Acoustic Guitar & Sax", "thumb": "https://i.ytimg.com/vi/ZEvpmNKYLLw/mqdefault.jpg", "dur": "1:03:09"}, {"id": "Jd0y0uN3-N4", "title": "Lofi chillout Music | For Focus And Productivity", "thumb": "https://i.ytimg.com/vi/Jd0y0uN3-N4/mqdefault.jpg", "dur": "1:17:10"}, {"id": "8CaglXUYjt8", "title": "Top 5 Essential 90s Jazz Instrumentals Every Music Lover Needs", "thumb": "https://i.ytimg.com/vi/8CaglXUYjt8/mqdefault.jpg", "dur": "1:59:56"}, {"id": "ozuz8DY5jWw", "title": "Smooth Jazz Heaven: Relaxing Piano & Sax Music", "thumb": "https://i.ytimg.com/vi/ozuz8DY5jWw/mqdefault.jpg", "dur": "1:58:42"}, {"id": "H5pDypmZQyw", "title": "Smooth Jazz 80s & 90s - Ultimate Chill Vibes", "thumb": "https://i.ytimg.com/vi/H5pDypmZQyw/mqdefault.jpg", "dur": "2:00:25"}, {"id": "dcDlciCh4xE", "title": "The Ultimate 95s Smooth Jazz Playlist:  Must-Hear Classics", "thumb": "https://i.ytimg.com/vi/dcDlciCh4xE/mqdefault.jpg", "dur": "1:54:49"}, {"id": "uI-QsSuULiI", "title": "What Happens When You Mix 90s Jazz with Modern Sound?", "thumb": "https://i.ytimg.com/vi/uI-QsSuULiI/mqdefault.jpg", "dur": "1:21:57"}, {"id": "nvcXUU0yl6k", "title": "Want to Relax? Listen to This Sensual Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/nvcXUU0yl6k/mqdefault.jpg", "dur": "1:26:02"}, {"id": "NO9W3OecQMY", "title": "Romantic Jazz Soulful Vibes: Perfect Chill Music", "thumb": "https://i.ytimg.com/vi/NO9W3OecQMY/mqdefault.jpg", "dur": "1:26:48"}, {"id": "DCnIRI8kF9g", "title": "Want to Create INSANE Instrumental Hip Hop Jazz Beats? Watch This Now", "thumb": "https://i.ytimg.com/vi/DCnIRI8kF9g/mqdefault.jpg", "dur": "1:26:05"}, {"id": "DvFJSDfoC18", "title": "calm coffee jazz - Relaxing Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/DvFJSDfoC18/mqdefault.jpg", "dur": "1:52:33"}, {"id": "_Yg2QSARXUU", "title": "Evening Smooth Jazz: Relaxing Beats for Your Night", "thumb": "https://i.ytimg.com/vi/_Yg2QSARXUU/mqdefault.jpg", "dur": "1:56:08"}, {"id": "c48Vllg6cOo", "title": "Jazz Lofi Radio: Focus Flow State Music for Work & Study", "thumb": "https://i.ytimg.com/vi/c48Vllg6cOo/mqdefault.jpg", "dur": "1:36:51"}, {"id": "GxGmPvHN8rU", "title": "Jazz Ballad for Sleep - Soft Jazz Instrumental", "thumb": "https://i.ytimg.com/vi/GxGmPvHN8rU/mqdefault.jpg", "dur": "1:31:27"}, {"id": "y3AZHZdCn9k", "title": "5 Smooth Jazz Guitar Secrets to Boost Your Focus", "thumb": "https://i.ytimg.com/vi/y3AZHZdCn9k/mqdefault.jpg", "dur": "1:23:59"}, {"id": "c4wejyBdc8k", "title": "Smooth Jazz for Studying & Working", "thumb": "https://i.ytimg.com/vi/c4wejyBdc8k/mqdefault.jpg", "dur": "2:09:22"}, {"id": "lB9mHmATtJU", "title": "Smooth Jazz for Peaceful Work: Boost Focus & Productivity", "thumb": "https://i.ytimg.com/vi/lB9mHmATtJU/mqdefault.jpg", "dur": "1:56:08"}, {"id": "ctzAWYPIDPQ", "title": "Is Smooth Jazz the KEY to UNWINDING on a Busy Night?", "thumb": "https://i.ytimg.com/vi/ctzAWYPIDPQ/mqdefault.jpg", "dur": "1:51:13"}, {"id": "fiOo2pf1P2Q", "title": "Coffee Jazz for Stress Relief: Ultimate Relaxation", "thumb": "https://i.ytimg.com/vi/fiOo2pf1P2Q/mqdefault.jpg", "dur": "1:29:41"}, {"id": "fiO0f5hqI4Q", "title": "Smooth Jazz For Work | Focus And Chill Instrumental Music", "thumb": "https://i.ytimg.com/vi/fiO0f5hqI4Q/mqdefault.jpg", "dur": "1:33:25"}, {"id": "5Kt4hOpxUmI", "title": "smooth night jazz | Music Calm Background Music for Relax, Chill, Read", "thumb": "https://i.ytimg.com/vi/5Kt4hOpxUmI/mqdefault.jpg", "dur": "1:50:49"}, {"id": "iPGkcjKftEM", "title": "Relaxing Soul Blues Mix:  Chill Vibes & Smooth Sounds", "thumb": "https://i.ytimg.com/vi/iPGkcjKftEM/mqdefault.jpg", "dur": "1:18:30"}, {"id": "40rrE43R8Wk", "title": "Escape the Day: Smooth Jazz Guitar & Chill Beats", "thumb": "https://i.ytimg.com/vi/40rrE43R8Wk/mqdefault.jpg", "dur": "1:48:28"}, {"id": "1-nxLX20mdM", "title": "Smooth Jazz Piano - Sleep Jazz Piano Music - Calm Cafe Jazz Music", "thumb": "https://i.ytimg.com/vi/1-nxLX20mdM/mqdefault.jpg", "dur": "2:07:58"}, {"id": "-7vsA_eq40A", "title": "Tranquil Jazz Piano | Music for Relaxation", "thumb": "https://i.ytimg.com/vi/-7vsA_eq40A/mqdefault.jpg", "dur": "1:18:09"}, {"id": "Hy8FV8xxMsI", "title": "Grand Piano Cafe | Ambiance & Chill Vibes", "thumb": "https://i.ytimg.com/vi/Hy8FV8xxMsI/mqdefault.jpg", "dur": "1:24:38"}, {"id": "dCLKAEyrfUI", "title": "Smooth Jazz Saxophone: 90s Vibes for Dinner & Chill", "thumb": "https://i.ytimg.com/vi/dCLKAEyrfUI/mqdefault.jpg", "dur": "1:56:53"}, {"id": "rzWE7pIPmLE", "title": "Cozy Jazz: The Ultimate Chill Mix for Relaxation", "thumb": "https://i.ytimg.com/vi/rzWE7pIPmLE/mqdefault.jpg", "dur": "2:58:09"}, {"id": "9EI2oWUYnlg", "title": "Smooth Jazz Night | Perfect Background Music for Work/Study", "thumb": "https://i.ytimg.com/vi/9EI2oWUYnlg/mqdefault.jpg", "dur": "1:37:29"}, {"id": "DGqAqLnsoSs", "title": "Morning Jazz Delight | Relax & Start Your Day Peaceful", "thumb": "https://i.ytimg.com/vi/DGqAqLnsoSs/mqdefault.jpg", "dur": "2:41:16"}, {"id": "qlZEyWGDU8c", "title": "Neo Soul R&B 90s Hits | Your New Favorite Playlist", "thumb": "https://i.ytimg.com/vi/qlZEyWGDU8c/mqdefault.jpg", "dur": "2:14:37"}, {"id": "M_vBL7MWbqw", "title": "Jazz Smooth 85s | Your New Favorite Chill Mix", "thumb": "https://i.ytimg.com/vi/M_vBL7MWbqw/mqdefault.jpg", "dur": "2:24:01"}, {"id": "XCOLl_o89UY", "title": "2010s Smooth Jazz : The Ultimate Relaxation Mix", "thumb": "https://i.ytimg.com/vi/XCOLl_o89UY/mqdefault.jpg", "dur": "2:16:56"}, {"id": "FjgqFN1xIIU", "title": "Smooth Jazz 60s Vibes: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/FjgqFN1xIIU/mqdefault.jpg", "dur": "1:11:18"}, {"id": "vpBi7U7wC-Q", "title": "Escape to the 70s:  Smooth Jazz Classics", "thumb": "https://i.ytimg.com/vi/vpBi7U7wC-Q/mqdefault.jpg", "dur": "1:29:07"}, {"id": "_l0qQl4z-Zs", "title": "Smooth Jazz 2000s: Pure Relaxation - Must Listen!", "thumb": "https://i.ytimg.com/vi/_l0qQl4z-Zs/mqdefault.jpg", "dur": "1:24:23"}, {"id": "lFEUI5IM0uQ", "title": "Piano Smooth Jazz: Relaxing Melodies for Your Soul", "thumb": "https://i.ytimg.com/vi/lFEUI5IM0uQ/mqdefault.jpg", "dur": "1:11:01"}, {"id": "sHI1sisyDxc", "title": "Chill Smooth Jazz with Acoustic Guitar - Unwind Now!", "thumb": "https://i.ytimg.com/vi/sHI1sisyDxc/mqdefault.jpg", "dur": "1:11:31"}, {"id": "Q0VTNFiYnN8", "title": "Smooth Jazz 80s Vibes: The Ultimate Chill Mix", "thumb": "https://i.ytimg.com/vi/Q0VTNFiYnN8/mqdefault.jpg", "dur": "2:26:10"}, {"id": "ZfZyBaYv-Ak", "title": "Highway Love Story In Afrobeat R&B Fusion", "thumb": "https://i.ytimg.com/vi/ZfZyBaYv-Ak/mqdefault.jpg", "dur": "1:52:33"}, {"id": "BKF7Lo2O03g", "title": "Smooth Jazz Funk | The Perfect Groove for Relaxed Evenings", "thumb": "https://i.ytimg.com/vi/BKF7Lo2O03g/mqdefault.jpg", "dur": "1:38:05"}, {"id": "rP9mvfDUWkQ", "title": "Smooth Neo Soul Jazz Funk | For Relaxed Grooves and Chill Vibes", "thumb": "https://i.ytimg.com/vi/rP9mvfDUWkQ/mqdefault.jpg", "dur": "1:10:53"}, {"id": "3Nzm5QDwglQ", "title": "Jazz Smooth 90s – Chill Back to the Classics", "thumb": "https://i.ytimg.com/vi/3Nzm5QDwglQ/mqdefault.jpg", "dur": "1:15:58"}, {"id": "9VN1dg2SaFQ", "title": "Smooth Bossa Nova | Guitar Instrumental", "thumb": "https://i.ytimg.com/vi/9VN1dg2SaFQ/mqdefault.jpg", "dur": "1:42:35"}, {"id": "UuiGIgJjXaQ", "title": "Soul Pop - The Soundtrack to Your Heart", "thumb": "https://i.ytimg.com/vi/UuiGIgJjXaQ/mqdefault.jpg", "dur": "2:01:15"}, {"id": "drXfzOdtwQw", "title": "Bossa Nova Jazz – Chill Vibes and Soft Guitar Tones", "thumb": "https://i.ytimg.com/vi/drXfzOdtwQw/mqdefault.jpg", "dur": "2:29:55"}, {"id": "Ac-ltf6aajU", "title": "Blues on the Open Road | Musical companion on the road", "thumb": "https://i.ytimg.com/vi/Ac-ltf6aajU/mqdefault.jpg", "dur": "1:52:00"}, {"id": "uAj4iLzCbcs", "title": "Highway Smooth Jazz | Chill Grooves for the Road", "thumb": "https://i.ytimg.com/vi/uAj4iLzCbcs/mqdefault.jpg", "dur": "1:43:57"}, {"id": "DvWHC2dlXHk", "title": "Country Americana | Music Instrumentals Relaxtion", "thumb": "https://i.ytimg.com/vi/DvWHC2dlXHk/mqdefault.jpg", "dur": "1:52:28"}, {"id": "lOR604CR8XM", "title": "Reggae Instrumental | Island Rhythms - Vibes of Freedom", "thumb": "https://i.ytimg.com/vi/lOR604CR8XM/mqdefault.jpg", "dur": "1:36:51"}, {"id": "PkuTmFIgYAo", "title": "Midnight Strings: A Journey Through the Blues", "thumb": "https://i.ytimg.com/vi/PkuTmFIgYAo/mqdefault.jpg", "dur": "1:51:51"}, {"id": "wKHNkGujxRU", "title": "Midnight Sax Vibes | Chill Lofi Grooves for Dreamy Nights #2", "thumb": "https://i.ytimg.com/vi/wKHNkGujxRU/mqdefault.jpg", "dur": "1:43:18"}, {"id": "lSK_7OlLDWc", "title": "Midnight Sax Vibes | Chill Lofi Grooves for Dreamy Nights", "thumb": "https://i.ytimg.com/vi/lSK_7OlLDWc/mqdefault.jpg", "dur": "1:33:45"}, {"id": "I5rr9JUup2k", "title": "Classical Piano - Romantic Relaxation Music", "thumb": "https://i.ytimg.com/vi/I5rr9JUup2k/mqdefault.jpg", "dur": "1:46:10"}, {"id": "u0h501k4e7Q", "title": "Jazz Soul – The Perfect Instrumental Groove", "thumb": "https://i.ytimg.com/vi/u0h501k4e7Q/mqdefault.jpg", "dur": "1:21:21"}, {"id": "gPFeaaaYLvg", "title": "Dreamy Jazz House Mix | Relax and Unwind", "thumb": "https://i.ytimg.com/vi/gPFeaaaYLvg/mqdefault.jpg", "dur": "1:05:57"}, {"id": "vUbxy-QpH6Q", "title": "Calm Late Night Jazz Music with Instrumental Saxophone Jazz BGM", "thumb": "https://i.ytimg.com/vi/vUbxy-QpH6Q/mqdefault.jpg", "dur": "1:31:06"}, {"id": "eS9rOb-UQGk", "title": "R&B Neo Soul Magic | Feel the Soulful Beat", "thumb": "https://i.ytimg.com/vi/eS9rOb-UQGk/mqdefault.jpg", "dur": "1:54:02"}, {"id": "LaIGmLpZGUQ", "title": "Funky Jazz Groove | Sunset Moment on the Beach or Rooftop", "thumb": "https://i.ytimg.com/vi/LaIGmLpZGUQ/mqdefault.jpg", "dur": "2:30:22"}, {"id": "JFHbZtH4khI", "title": "Rap Music - Alternative Hip-Hop (Lyrics)", "thumb": "https://i.ytimg.com/vi/JFHbZtH4khI/mqdefault.jpg", "dur": "1:07:12"}, {"id": "gqKYTq7r2GE", "title": "Disco Jazz Hip Hop Instrumental", "thumb": "https://i.ytimg.com/vi/gqKYTq7r2GE/mqdefault.jpg", "dur": "1:51:53"}, {"id": "HywoczN01ew", "title": "Soft Saxophone Melody at the Tropical Beach", "thumb": "https://i.ytimg.com/vi/HywoczN01ew/mqdefault.jpg", "dur": "1:35:15"}, {"id": "rS2ZugKzAdI", "title": "Funky Jazz Music | Focus Work & Relaxation", "thumb": "https://i.ytimg.com/vi/rS2ZugKzAdI/mqdefault.jpg", "dur": "1:46:10"}, {"id": "swGunv3ndzs", "title": "Groovy & Smooth Deep Jazz House", "thumb": "https://i.ytimg.com/vi/swGunv3ndzs/mqdefault.jpg", "dur": "1:35:31"}, {"id": "ZZoFWk3Sdys", "title": "Timeless Soul With Deep Emotion And Powerful Vocals With (Lyrics)", "thumb": "https://i.ytimg.com/vi/ZZoFWk3Sdys/mqdefault.jpg", "dur": "1:43:51"}, {"id": "FUP7IEonllo", "title": "Timeless Soul With Deep Emotion And Powerful Vocal", "thumb": "https://i.ytimg.com/vi/FUP7IEonllo/mqdefault.jpg", "dur": "1:36:58"}, {"id": "dDL5whpidzs", "title": "Jazz R&B Soul | Music for Focus Relaxation", "thumb": "https://i.ytimg.com/vi/dDL5whpidzs/mqdefault.jpg", "dur": "1:26:03"}, {"id": "N0Q_TP9f6xc", "title": "Smooth Blues Music", "thumb": "https://i.ytimg.com/vi/N0Q_TP9f6xc/mqdefault.jpg", "dur": "1:14:12"}, {"id": "ofOBDHMOOu0", "title": "Smooth Jazz Instrumental Music for studying", "thumb": "https://i.ytimg.com/vi/ofOBDHMOOu0/mqdefault.jpg", "dur": "1:30:53"}, {"id": "e7JcfU7Rkc4", "title": "Megamix Disco House + Saxophone", "thumb": "https://i.ytimg.com/vi/e7JcfU7Rkc4/mqdefault.jpg", "dur": "1:21:37"}, {"id": "D76PWWzBXtI", "title": "Jazz & Soul R&B – Smooth Instrumental Groove to Relax and Calm the heart and mind", "thumb": "https://i.ytimg.com/vi/D76PWWzBXtI/mqdefault.jpg", "dur": "1:26:00"}, {"id": "87ySqdovImM", "title": "Jazz & Soul R&B – Smooth Instrumental Groove to Relax and Calm the Heart and Mind", "thumb": "https://i.ytimg.com/vi/87ySqdovImM/mqdefault.jpg", "dur": "2:20:34"}, {"id": "uU3hVi0Be70", "title": "R&B Jazz Chill Hits 2024 | Study/Chill/Cafe/Work", "thumb": "https://i.ytimg.com/vi/uU3hVi0Be70/mqdefault.jpg", "dur": "2:12:56"}, {"id": "Bpj1fOJ4x8E", "title": "Nu Acid Jazz | Just Another Day", "thumb": "https://i.ytimg.com/vi/Bpj1fOJ4x8E/mqdefault.jpg", "dur": "1:33:00"}, {"id": "pI3nIqCAsek", "title": "Smooth Funky City Pop On Vinyl", "thumb": "https://i.ytimg.com/vi/pI3nIqCAsek/mqdefault.jpg", "dur": "1:28:04"}, {"id": "Rv-PSlvE4YQ", "title": "Music Indonesia Pop", "thumb": "https://i.ytimg.com/vi/Rv-PSlvE4YQ/mqdefault.jpg", "dur": "1:18:01"}, {"id": "T4qlpnWD8Gg", "title": "Smooth Jazz Music", "thumb": "https://i.ytimg.com/vi/T4qlpnWD8Gg/mqdefault.jpg", "dur": "1:22:26"}, {"id": "ceLsrORuJIU", "title": "Modern Disco Jazz Fusion Lyrics", "thumb": "https://i.ytimg.com/vi/ceLsrORuJIU/mqdefault.jpg", "dur": "1:29:57"}, {"id": "YvW58tl5rlA", "title": "Jazz Music Lyrics", "thumb": "https://i.ytimg.com/vi/YvW58tl5rlA/mqdefault.jpg", "dur": "1:49:12"}, {"id": "L6wcZj_jFsk", "title": "Funky Jazz Instrumental Music | Smooth & Rhythmic, Music for Focus, Study & Relaxation", "thumb": "https://i.ytimg.com/vi/L6wcZj_jFsk/mqdefault.jpg", "dur": "1:43:53"}, {"id": "BTv7SD_FtgA", "title": "Javanese Lofi Edition with Soothing Lyrics", "thumb": "https://i.ytimg.com/vi/BTv7SD_FtgA/mqdefault.jpg", "dur": "1:06:35"}, {"id": "KrQF7TuuuGw", "title": "Feel-Good Music to Brighten Your Day! Neo Soul x Jazz x Hip Hop", "thumb": "https://i.ytimg.com/vi/KrQF7TuuuGw/mqdefault.jpg", "dur": "1:32:03"}, {"id": "9D-dUvxUxsQ", "title": "Javanese Lyric Music", "thumb": "https://i.ytimg.com/vi/9D-dUvxUxsQ/mqdefault.jpg", "dur": "1:11:11"}, {"id": "eOLf3kgLpHQ", "title": "Funky Jazz Instrumental Vibes 🎶  Smooth & Full of Rhythm, Music for Focus, Work & Relaxation", "thumb": "https://i.ytimg.com/vi/eOLf3kgLpHQ/mqdefault.jpg", "dur": "1:22:56"}, {"id": "KCim_oon12M", "title": "Music Lyrics - Jazz Pop #1 Indonesia", "thumb": "https://i.ytimg.com/vi/KCim_oon12M/mqdefault.jpg", "dur": "1:13:07"}, {"id": "SyoKRBb8ocQ", "title": "Music Lyrics - Jazz Pop #2 Indonesia", "thumb": "https://i.ytimg.com/vi/SyoKRBb8ocQ/mqdefault.jpg", "dur": "1:02:37"}, {"id": "qtUpUYYIUqg", "title": "SMOOTH GROOVE JAZZ LYRICS", "thumb": "https://i.ytimg.com/vi/qtUpUYYIUqg/mqdefault.jpg", "dur": "1:00:16"}, {"id": "wpJgRhNtcvs", "title": "SMOOTH JAZZ LYRICS VOL.1", "thumb": "https://i.ytimg.com/vi/wpJgRhNtcvs/mqdefault.jpg", "dur": "48:36"}, {"id": "fIIiOdrOJI0", "title": "Lo-Fi Dangdut Koplo ☕ Saxophone soft, kendang, bass chill", "thumb": "https://i.ytimg.com/vi/fIIiOdrOJI0/mqdefault.jpg", "dur": "31:45"}, {"id": "HufsYW0H18s", "title": "Moonlit Jazz Bar (Classic Jazz-hop, Smoky Vibes)", "thumb": "https://i.ytimg.com/vi/HufsYW0H18s/mqdefault.jpg", "dur": "49:02"}, {"id": "fx2jMC0bTHo", "title": "Lo-Fi Jazz Classic & Smooth ( Chill Jazz, Neo-Soul, Fusion ) Vol.1", "thumb": "https://i.ytimg.com/vi/fx2jMC0bTHo/mqdefault.jpg", "dur": "44:48"}, {"id": "KI3buWclP0Q", "title": "Lo-Fi Study Beats (Smooth Jazz, Soul, Chill Beats)", "thumb": "https://i.ytimg.com/vi/KI3buWclP0Q/mqdefault.jpg", "dur": "56:26"}, {"id": "A9qyOimhc-g", "title": "R&B Soul Jazz Lyrics | This Is The Best Lyrics Song vol.1", "thumb": "https://i.ytimg.com/vi/A9qyOimhc-g/mqdefault.jpg", "dur": "43:05"}, {"id": "vBmJVQcPZ9c", "title": "Hip Hop Jazz | Music Lyrics Vol.1", "thumb": "https://i.ytimg.com/vi/vBmJVQcPZ9c/mqdefault.jpg", "dur": "34:12"}, {"id": "0Sp5PpD7zy4", "title": "RELACATION OF WATER AND BIRD SOUND", "thumb": "https://i.ytimg.com/vi/0Sp5PpD7zy4/mqdefault.jpg", "dur": "24:17"}, {"id": "B2UywHZAMok", "title": "Classic Jazz, Hip Hop Jazz, Smooth Jazz", "thumb": "https://i.ytimg.com/vi/B2UywHZAMok/mqdefault.jpg", "dur": "14:31"}, {"id": "kg0qqSp9yTY", "title": "Cozy Coffee Shop Lo-Fi | Laid-Back Jazz Beats for Study & Focus", "thumb": "https://i.ytimg.com/vi/kg0qqSp9yTY/mqdefault.jpg", "dur": "26:53"}, {"id": "9o1dBaOYaMw", "title": "Dreamy Jazz Lofi – Relaxing Sax & Acoustic Guitar | Chill Beats to Sleep & Study (85 BPM)", "thumb": "https://i.ytimg.com/vi/9o1dBaOYaMw/mqdefault.jpg", "dur": "36:34"}, {"id": "eiHylAii3FI", "title": "Lofi Beat - Beats To Relax", "thumb": "https://i.ytimg.com/vi/eiHylAii3FI/mqdefault.jpg", "dur": "9:39"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
