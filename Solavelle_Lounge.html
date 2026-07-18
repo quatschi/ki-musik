@@ -275,6 +275,7 @@
     <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
     <span class="status-msg" id="status-msg"></span>
     <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
   </div>
 
 <script>
@@ -642,6 +643,58 @@ async function saveEdit() {
     setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
   } catch(e) {
     setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+  const missing = VIDEOS.filter(v => !v.thumb);
+  if (missing.length === 0) {
+    setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+    return;
+  }
+  if (!confirm(missing.length + ' Video(s) ohne Thumbnail (nicht verfügbar) werden entfernt. Fortfahren?')) return;
+  btn.disabled = true;
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  const keptVideos = VIDEOS.filter(v => v.thumb);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missing.length + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
   }
   btn.disabled = false;
 }
