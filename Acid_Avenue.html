@@ -646,17 +646,41 @@ async function saveEdit() {
   }
   btn.disabled = false;
 }
+function checkThumbUnavailable(v) {
+  return new Promise(resolve => {
+    if (!v.thumb) { resolve(true); return; }
+    const img = new Image();
+    let settled = false;
+    const finish = (val) => { if (!settled) { settled = true; resolve(val); } };
+    img.onload = () => {
+      // YouTube liefert für gelöschte/nicht verfügbare Videos ein 120x90-Platzhalterbild
+      // statt des echten Thumbnails – die URL selbst bleibt dabei gültig (kein leerer thumb-Wert).
+      finish(img.naturalWidth === 120 && img.naturalHeight === 90);
+    };
+    img.onerror = () => finish(true);
+    setTimeout(() => finish(false), 8000); // im Zweifel (Timeout) behalten
+    img.src = v.thumb;
+  });
+}
+
 async function removeUnavailable() {
   const btn = document.getElementById('remove-unavailable-btn');
-  const missing = VIDEOS.filter(v => !v.thumb);
+  btn.disabled = true;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails...', '');
+  const checks = await Promise.all(VIDEOS.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+  const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+  const missing = VIDEOS.filter(v => missingIds.has(v.id));
   if (missing.length === 0) {
     setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+    btn.disabled = false;
     return;
   }
-  if (!confirm(missing.length + ' Video(s) ohne Thumbnail (nicht verfügbar) werden entfernt. Fortfahren?')) return;
-  btn.disabled = true;
+  if (!confirm(missing.length + ' Video(s) ohne gültiges Thumbnail (vermutlich nicht mehr verfügbar) werden entfernt. Fortfahren?')) {
+    btn.disabled = false;
+    return;
+  }
   setStatus('Entferne nicht verfügbare Videos...', '');
-  const keptVideos = VIDEOS.filter(v => v.thumb);
+  const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
   try {
     let sha = null;
     let rawContent = '';
