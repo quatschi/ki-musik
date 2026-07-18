@@ -538,11 +538,25 @@ function checkThumbUnavailable(v) {
   });
 }
 
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
 async function removeUnavailable() {
   const btn = document.getElementById('remove-unavailable-btn');
   btn.disabled = true;
-  setStatus('Prüfe Verfügbarkeit der Thumbnails...', '');
-  const checks = await Promise.all(VIDEOS.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+    setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+  });
   const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
   const missing = VIDEOS.filter(v => missingIds.has(v.id));
   if (missing.length === 0) {
