@@ -671,26 +671,59 @@ async function checkAllThumbs(videos, onProgress) {
   return results;
 }
 
+let removeUnavailablePending = null;
+
 async function removeUnavailable() {
   const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
   btn.disabled = true;
+  const originalLabel = btn.textContent;
   setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
-  const checks = await checkAllThumbs(VIDEOS, (done, total) => {
-    setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
-  });
-  const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
-  const missing = VIDEOS.filter(v => missingIds.has(v.id));
-  if (missing.length === 0) {
-    setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
     btn.disabled = false;
-    return;
-  }
-  if (!confirm(missing.length + ' Video(s) ohne gültiges Thumbnail (vermutlich nicht mehr verfügbar) werden entfernt. Fortfahren?')) {
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
     btn.disabled = false;
-    return;
   }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
   setStatus('Entferne nicht verfügbare Videos...', '');
-  const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
   try {
     let sha = null;
     let rawContent = '';
@@ -726,7 +759,7 @@ async function removeUnavailable() {
     keptVideos.forEach(v => VIDEOS.push(v));
     document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
     renderGrid();
-    setStatus('✓ ' + missing.length + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
   } catch(e) {
     setStatus('Fehler: ' + e.message, 'status-err');
   }
