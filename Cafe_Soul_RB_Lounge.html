@@ -647,20 +647,16 @@ async function saveEdit() {
   btn.disabled = false;
 }
 function checkThumbUnavailable(v) {
-  return new Promise(resolve => {
-    if (!v.thumb) { resolve(true); return; }
-    const img = new Image();
-    let settled = false;
-    const finish = (val) => { if (!settled) { settled = true; resolve(val); } };
-    img.onload = () => {
-      // YouTube liefert für gelöschte/nicht verfügbare Videos ein 120x90-Platzhalterbild
-      // statt des echten Thumbnails – die URL selbst bleibt dabei gültig (kein leerer thumb-Wert).
-      finish(img.naturalWidth === 120 && img.naturalHeight === 90);
-    };
-    img.onerror = () => finish(true);
-    setTimeout(() => finish(false), 8000); // im Zweifel (Timeout) behalten
-    img.src = v.thumb;
-  });
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Zuverlässiger und plattformunabhängiger als eine Prüfung
+  // anhand von Bild-Pixelmaßen (die sich je nach Browser/Gerät unterschiedlich
+  // verhalten kann, z.B. iOS Safari vs. Desktop-Chrome).
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => r.ok ? 'ok' : 'unavailable').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
 }
 
 async function checkAllThumbs(videos, onProgress) {
