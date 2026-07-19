@@ -648,13 +648,15 @@ async function saveEdit() {
 }
 function checkThumbUnavailable(v) {
   // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
-  // und öffentlich ist. Zuverlässiger und plattformunabhängiger als eine Prüfung
-  // anhand von Bild-Pixelmaßen (die sich je nach Browser/Gerät unterschiedlich
-  // verhalten kann, z.B. iOS Safari vs. Desktop-Chrome).
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
   const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
   const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
   return Promise.race([
-    fetch(oembedUrl, { method: 'GET' }).then(r => r.ok ? 'ok' : 'unavailable').catch(() => 'timeout'),
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
     timeout
   ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
 }
