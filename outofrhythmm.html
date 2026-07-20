@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>outofrhythmm</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCIfIo7-zgzZx4tOO3w9PK9w -->
+<!-- channel-url: https://www.youtube.com/@outofrhythmm -->
+<!-- created: 2026-07-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=outofrhythmm.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/aR7gM09uDUbS7i6J2ThZu1El6qdbn6N91gupPf_DvXwyaihR4ItpOxI5P0JJNXzBD3jj0deYDp0=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">outofrhythmm</div>
+      <div class="channel-count">41 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "outofrhythmm";
+const KANAL = "outofrhythmm.html";
+const ORIG_CATEGORIES = "Lounge";
+const VIDEOS = [{"id": "ZI59Icdy_Ec", "title": "🎧Playlist |Starlit Car Camping 🌌 Cozy Night Lofi,Smooth Jazzhop for Your Campfire(4 Hours)|CAFE VIBE", "thumb": "https://i.ytimg.com/vi/ZI59Icdy_Ec/mqdefault.jpg", "dur": "2:56:24"}, {"id": "RBGxqluemeI", "title": "🎧Playlist | Sun-Kissed Chords ☀️ Relaxing Beachside Lofi & Mellow Jazzhop to Melt Stress🐱🐶(4Hours)", "thumb": "https://i.ytimg.com/vi/RBGxqluemeI/mqdefault.jpg", "dur": "4:27:09"}, {"id": "PGcNZcbHgMQ", "title": "🎧Playlist | Island Breeze 🏝️ Chill Summer Lofi & Mellow Jazzhop for Your Beach Getaway(5 Hours)|CAFE", "thumb": "https://i.ytimg.com/vi/PGcNZcbHgMQ/mqdefault.jpg", "dur": "4:07:58"}, {"id": "oVH7E74SzOg", "title": "🎧Playlist| New York City Groove 🗽🎷 &Upbeat Jazz & Lofi Live from Times Square 🐱🐶(5Hours) | CAFE VIBE", "thumb": "https://i.ytimg.com/vi/oVH7E74SzOg/mqdefault.jpg", "dur": "4:20:32"}, {"id": "iHbj1xoJA2w", "title": "🎧Playlist | Couch Potato Mode 🛋️ Cozy Lofi Jazzhop to Cure Your Monday Blues(5Hours) |CAFE VIBE·WORK", "thumb": "https://i.ytimg.com/vi/iHbj1xoJA2w/mqdefault.jpg", "dur": "5:03:22"}, {"id": "7kF_EuNIlZU", "title": "🎧Playlist|Tropical Getaway 🌴 Mellow Thailand Lofi Jazzhop to Refresh Your Day🐾🚀🇹🇭(7Hours) |CAFE VIBE", "thumb": "https://i.ytimg.com/vi/7kF_EuNIlZU/mqdefault.jpg", "dur": "4:01:27"}, {"id": "4tsMiCY1cF8", "title": "🎧Playlist | Parisian Picnic 🧺🐶🐱 Parisian Lofi Jazzhop under the Eiffel Tower(7 Hour)| GROOVE·JAZZHOP", "thumb": "https://i.ytimg.com/vi/4tsMiCY1cF8/mqdefault.jpg", "dur": "6:03:55"}, {"id": "8nJYbBvVfVs", "title": "🎧Playlist| Cozy Jazz Vibe☕️🌃  High-End Lofi Jazzhop Beats for Work & Study(7Hours) |CAFE VIBE· WORK", "thumb": "https://i.ytimg.com/vi/8nJYbBvVfVs/mqdefault.jpg", "dur": "6:01:36"}, {"id": "uTX2J8QvNVA", "title": "🎧Playlist | Instant Stress Relief 🍃 Healing Playlist to Calm Your Mind | GROOVE · JAZZHOP (7 Hours)", "thumb": "https://i.ytimg.com/vi/uTX2J8QvNVA/mqdefault.jpg", "dur": "7:16:03"}, {"id": "LvwML8hJ8S8", "title": "🎧Playlist | \"지금 당장 탈출하고 싶을 때 🏃‍♂️💨\" ✨ 일터에서 나홀로 압구정 카페 분위기 내는 칠한 음악 ☕️ BGM | CHILL · JAZZHOP | 힐링플리", "thumb": "https://i.ytimg.com/vi/LvwML8hJ8S8/mqdefault.jpg", "dur": "4:01:41"}, {"id": "HY-UnulHPmg", "title": "🎧Playlist | ✨Sunny Bicycle Ride 🚲 Wind with Fresh Chillhop & GroovyJazzhop 🐶🐱 | GROOVE · JAZZHOP", "thumb": "https://i.ytimg.com/vi/HY-UnulHPmg/mqdefault.jpg", "dur": "4:00:28"}, {"id": "6IZIxoUjW7k", "title": "🎧Playlist | 듣자마자 지루한 사무실이 비행기로✈️  변하는 마법 ☕️ 여행의 설레임을 닮은 잔잔한 노동요 BGM 🎧| GROOVE · JAZZHOP · CHILLHOP", "thumb": "https://i.ytimg.com/vi/6IZIxoUjW7k/mqdefault.jpg", "dur": "4:10:10"}, {"id": "eS7h2K4VTe4", "title": "🎧Playlist | \"틀자마자 해변으로 훌쩍 떠나는 바로 이느낌 🌴\" ✨ 우리 멍냥이들과 시원하게 즐기는 그루브 칠합 🎧🍹 BGM | GROOVE · CHILL · JAZZHOP", "thumb": "https://i.ytimg.com/vi/eS7h2K4VTe4/mqdefault.jpg", "dur": "4:02:13"}, {"id": "akqTChhIziE", "title": "🎧Playlist | Afternoon Caffeine Fix 🪐 Chillhop Beats for a Productive Workday☕️ | GROOVE · JAZZHOP", "thumb": "https://i.ytimg.com/vi/akqTChhIziE/mqdefault.jpg", "dur": "4:18:31"}, {"id": "EtFB_yWYkrI", "title": "🎧Playlist |🚨Subway to NYC Jazz Bar 🚇 Smooth Jazzhop to Escape Your Crowded Commute(4Hours)|CAFE VIBE", "thumb": "https://i.ytimg.com/vi/EtFB_yWYkrI/mqdefault.jpg", "dur": "4:20:47"}, {"id": "Wk6b0yReZEk", "title": "🎧Playlist | 일주일 동안 수고한 나에게 주는 ‘쉼표’ 🎁 댕냥이들과 요트 위에서 칵테일 마시는 기분 선사하는 금요 노동요 BGM 🐱🍹 | GROOVE · JAZZHOP", "thumb": "https://i.ytimg.com/vi/Wk6b0yReZEk/mqdefault.jpg", "dur": "4:23:51"}, {"id": "_VIn_KPlkvs", "title": "🎧Playlist | 듣자마자 여기가 바로 잔잔한 비밀 호숫가 🚣‍♂️ 멍냥이들과 배 타고 물멍하며 듣는 힐링 재즈홉 🌲🎧 | GROOVE · JAZZHOP · CHILLHOP", "thumb": "https://i.ytimg.com/vi/_VIn_KPlkvs/mqdefault.jpg", "dur": "4:03:29"}, {"id": "eUloFZG20D4", "title": "🎧Playlist | Hollywood Boulevard Groove 🎬 Walking with Genius Lofi Jazzhop 🇺🇸🔥 | GROOVE · JAZZHOP", "thumb": "https://i.ytimg.com/vi/eUloFZG20D4/mqdefault.jpg", "dur": "4:13:00"}, {"id": "9f3oBV943_0", "title": "🎧Playlist | ✨듣자마자 여기가 바로 숲속 캠핑장🏕️ 힙한 멍냥이들과 전망 좋은 곳에서 힐링하는 출근길 노동요 🐱🚀✨ | GROOVE · JAZZHOP · CHILLHOP", "thumb": "https://i.ytimg.com/vi/9f3oBV943_0/mqdefault.jpg", "dur": "4:14:13"}, {"id": "Mp1fdUuMUfQ", "title": "🎧Playlist | ✨아침 눈뜨자마자 귀여운 댕냥이들과 모닝 커피 한잔하며 듣는 세상에서 가장 힙한 출근길 그루브 ☕️🐾  | GROOVE · JAZZHOP · CHILLHOP", "thumb": "https://i.ytimg.com/vi/Mp1fdUuMUfQ/mqdefault.jpg", "dur": "4:27:12"}, {"id": "wPADqduFGaw", "title": "🎧Playlist |Beast Mode Activated 😈 High-Energy Lofi & Hip Jazzhop for Intense Gym Workouts(90 Mins)", "thumb": "https://i.ytimg.com/vi/wPADqduFGaw/mqdefault.jpg", "dur": "4:30:12"}, {"id": "MFZfk2AiztE", "title": "🎧Playlist | 도쿄 시부야🚦한복판에 서 있는 듯 가슴 뻥 뚫리는 하이퍼 그루브 🇯🇵⚡️  | GROOVE · JAZZHOP · CHILLHOP | 카페음악", "thumb": "https://i.ytimg.com/vi/MFZfk2AiztE/mqdefault.jpg", "dur": "3:17:09"}, {"id": "fzK7VjWBTqM", "title": "🎧Playlist | Teleport to Bangkok ✈️ Vibrant Jazzhop & Chillhop to Escape the Summer Heat 🇹🇭 |(3Hours)", "thumb": "https://i.ytimg.com/vi/fzK7VjWBTqM/mqdefault.jpg", "dur": "3:03:17"}, {"id": "E5j_hRUX6KA", "title": "🎧Playlist | 듣기만 해도 얼음물에 풍덩 빠진 듯 소름 돋게 시원한 에메랄드빛 CHILL POP 🌊  | GROOVE · JAZZHOP · CHILLHOP", "thumb": "https://i.ytimg.com/vi/E5j_hRUX6KA/mqdefault.jpg", "dur": "4:35:38"}, {"id": "9aIO2UFylcA", "title": "🎧Playlist | Rolls-Royce Ocean Drive 🏎️🌊 Smooth Jazzhop & Premium Chillhop Grooves😎✨ | GROOVE · WORK", "thumb": "https://i.ytimg.com/vi/9aIO2UFylcA/mqdefault.jpg", "dur": "4:14:37"}, {"id": "kcttbWq1swY", "title": "🎧Playlist | Post-Lunch Coffee Fix ☕️ Mellow Lofi & Mellow Jazzhop to Cure Afternoon | CHILLHOP,LO-FI", "thumb": "https://i.ytimg.com/vi/kcttbWq1swY/mqdefault.jpg", "dur": "4:10:44"}, {"id": "jbXuQPqmSTg", "title": "🎧Playlist | Beachside Coffee Truck 🚚🌊 Chill Summer Lofi & Groovy Jazzhop Beats ☕️🔥(100 Mins)", "thumb": "https://i.ytimg.com/vi/jbXuQPqmSTg/mqdefault.jpg", "dur": "1:46:42"}, {"id": "jxjG80DuH7s", "title": "🎧Playlist | \"일하기 싫을 때 이거 들으세요\" ✨ 피로가 싹 가시는 힙한 워크송 ☕️🔥BGM | GROOVE · JAZZHOP · CHILLHOP | 카페음악 · 노동요", "thumb": "https://i.ytimg.com/vi/jxjG80DuH7s/mqdefault.jpg", "dur": "1:38:11"}, {"id": "E9ThC20eR4Q", "title": "🎧Playlist | 정말 아무것도 하기 싫고 그냥 퇴근하고싶을때 🏃‍♂️💨  듣는 오피스 그루브🔥  | GROOVE · JAZZHOP · CHILLHOP | 카페음악", "thumb": "https://i.ytimg.com/vi/E9ThC20eR4Q/mqdefault.jpg", "dur": "1:45:15"}, {"id": "BOfov--kUT0", "title": "🎧Playlist | \"Catching Flights & Vibes ✈️ Fresh Chillhop & Groovy Jazzhop for Your Getaway🧳✨(90 Mins)", "thumb": "https://i.ytimg.com/vi/BOfov--kUT0/mqdefault.jpg", "dur": "1:46:18"}, {"id": "FxuilUL-7x8", "title": "🎧Playlist | 비 와서 출근하기 싫은 사람? 횡단보도 런웨이 만드는 무드 비트 🏃‍♂️✨ | GROOVE · JAZZHOP · CHILLHOP | 카페음악 · 노동요", "thumb": "https://i.ytimg.com/vi/FxuilUL-7x8/mqdefault.jpg", "dur": "1:46:53"}, {"id": "DVrnjsyjsEM", "title": "🎧Playlist | High-Vibe Groove 😎✨🎧 Smooth Jazzhop & Upbeat Chillhop to Lock In  BGM(100 Mins)", "thumb": "https://i.ytimg.com/vi/DVrnjsyjsEM/mqdefault.jpg", "dur": "1:48:13"}, {"id": "ZVrayy5g608", "title": "🎧Playlist| Slow Running Groove🏃‍♂️💨 👟 Chillhop & Jazzhop Beats for Your City Run (100 Min Playlist)", "thumb": "https://i.ytimg.com/vi/ZVrayy5g608/mqdefault.jpg", "dur": "1:39:54"}, {"id": "OkiS9xW7d1o", "title": "🎧Playlist | Floating on Cloud Nine ☁️ Dreamy Jazzhop & Smooth Mellow Grooves(100Mins) | CHILLHOP", "thumb": "https://i.ytimg.com/vi/OkiS9xW7d1o/mqdefault.jpg", "dur": "1:44:34"}, {"id": "Mk3L7BBkRHQ", "title": "🎧Playlist| Friday Afternoon in Brooklyn 😎☕️ Hip Cafe Groove & Jazzhop Beats(90 Mins) |CAFE VIBE·WORK", "thumb": "https://i.ytimg.com/vi/Mk3L7BBkRHQ/mqdefault.jpg", "dur": "1:43:37"}, {"id": "I0WohqF2NR8", "title": "🎧Playlist| Instant Energy Recharge 🔋🔥Jazzhop & Grooves to Lock In,Focus✨(100 Min Playlist)|CAFE VIBE", "thumb": "https://i.ytimg.com/vi/I0WohqF2NR8/mqdefault.jpg", "dur": "1:44:46"}, {"id": "NxGOo_f7HAo", "title": "🎧Playlist | 오늘 월요일이라 우울한 사람? 이거 틀고 갓생 시작하자 😎🔥 | GROOVE · JAZZHOP · CHILLHOP | 카페음악 · 노동요 · 집중음악", "thumb": "https://i.ytimg.com/vi/NxGOo_f7HAo/mqdefault.jpg", "dur": "1:48:08"}, {"id": "SXIIy9t0qAA", "title": "🎧Playlist| Instant Mood Booster🎧 Smooth Jazzhop,Groove Beats🐱🐶(90 Min Playlist)|CAFE VIBE·WORK&STUDY", "thumb": "https://i.ytimg.com/vi/SXIIy9t0qAA/mqdefault.jpg", "dur": "1:48:08"}, {"id": "I2gRi4V7RUI", "title": "🎧Playlist | 틀자마자 드라이브 떠나는 느좋 그루브 😎 | GROOVE · JAZZHOP · CHILLHOP | 카페음악 · 노동요 · 집중음악", "thumb": "https://i.ytimg.com/vi/I2gRi4V7RUI/mqdefault.jpg", "dur": "1:51:27"}, {"id": "4WRg8v8iSPI", "title": "🎧𝐏𝐥𝐚𝐲𝐥𝐢𝐬𝐭 | 사장님 이 노래 제목이 뭐에요? 듣자마자 리듬타는 그루브 🚀  기분 날아가는 봄날에 듣기 딱인 팝송 모음 ✨🎧 봄플리 lofi 카페음악", "thumb": "https://i.ytimg.com/vi/4WRg8v8iSPI/mqdefault.jpg", "dur": "2:18:23"}, {"id": "3kzFVXbq-dI", "title": "𝐏𝐥𝐚𝐲𝐥𝐢𝐬𝐭 | 이 노래 제목이 뭐에요? 아침에 이 노래 틀면 하루가 이상하게 잘 풀림🌸 첫 곡 부터 기분 좋아지는 봄 플리🎧🗽lofi, 노동요,카페음악", "thumb": "https://i.ytimg.com/vi/3kzFVXbq-dI/mqdefault.jpg", "dur": "1:01:46"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
