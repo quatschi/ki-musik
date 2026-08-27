@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Fedora Club</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCcp-OFSgyCG01ZeXG0ey7Iw -->
+<!-- channel-url: https://youtube.com/@blackfedoraclub -->
+<!-- created: 2026-06-24 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Black_Fedora_Club.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/HWFQsGJcvEgaxxsaIR9bzvvT4a6M1uSe3PAEpMmfiNShX6yNnXkTpPavNYYmqNWN5TECW8RhmO4=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Black Fedora Club</div>
+      <div class="channel-count">154 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Black Fedora Club";
+const KANAL = "Black_Fedora_Club.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "YrWw2Yi_U9I", "title": "Nobody Walked These Streets After Midnight — Detective Jazz with Soft Vintage Saxophone", "thumb": "https://i.ytimg.com/vi/YrWw2Yi_U9I/mqdefault.jpg", "dur": "1:02:29"}, {"id": "TjtUsHTiy14", "title": "The Last Jazz Club Still Playing — Vintage Saxophone from a City Full of Forgotten Stories", "thumb": "https://i.ytimg.com/vi/TjtUsHTiy14/mqdefault.jpg", "dur": "1:02:17"}, {"id": "pNRYAY39X1w", "title": "Case File 27 Never Reached the Court — Detective Saxophone for Rainy Nights and Deep Focus", "thumb": "https://i.ytimg.com/vi/pNRYAY39X1w/mqdefault.jpg", "dur": "1:01:36"}, {"id": "OKtSfE7zmIE", "title": "Jazz from a Forgotten Hotel Lounge — Midnight Saxophone Beneath Crystal Chandeliers", "thumb": "https://i.ytimg.com/vi/OKtSfE7zmIE/mqdefault.jpg", "dur": "1:02:48"}, {"id": "tAu_OqVrzHE", "title": "1940s Train Platform Jazz — Waiting for Someone Who Never Arrived", "thumb": "https://i.ytimg.com/vi/tAu_OqVrzHE/mqdefault.jpg", "dur": "1:01:38"}, {"id": "_E4j5c2Q2jQ", "title": "The Detective Never Went Home — Relaxing Saxophone Jazz from a Rainy Night Office", "thumb": "https://i.ytimg.com/vi/_E4j5c2Q2jQ/mqdefault.jpg", "dur": "1:02:07"}, {"id": "bB4xMB4KQlA", "title": "Vintage Diner Jazz for Late Night Thinkers — Soft Saxophone in an Empty Corner Booth", "thumb": "https://i.ytimg.com/vi/bB4xMB4KQlA/mqdefault.jpg", "dur": "1:01:18"}, {"id": "fOLiPmZ0FsM", "title": "Rainy City Detective Jazz — Walking Past Neon Lights and Unsolved Mysteries at Midnight", "thumb": "https://i.ytimg.com/vi/fOLiPmZ0FsM/mqdefault.jpg", "dur": "1:03:24"}, {"id": "FY3jB7A3Ze4", "title": "Hotel Lobby Jazz at Midnight — Elegant Vintage Saxophone in a Forgotten 1940s Grand Hotel", "thumb": "https://i.ytimg.com/vi/FY3jB7A3Ze4/mqdefault.jpg", "dur": "1:02:41"}, {"id": "UYokd05sPpg", "title": "Private Investigator's Office Jazz — Vintage Rain Sounds and Soft Saxophone for Deep Focus", "thumb": "https://i.ytimg.com/vi/UYokd05sPpg/mqdefault.jpg", "dur": "1:03:47"}, {"id": "YHTEkVwIlOk", "title": "Rainy Jazz Club After Midnight — Smooth Saxophone from the Last Lounge Still Open in Town", "thumb": "https://i.ytimg.com/vi/YHTEkVwIlOk/mqdefault.jpg", "dur": "1:02:25"}, {"id": "SGPoFqnEOzk", "title": "Last Train Station Jazz — Vintage Saxophone Echoes Through an Empty Platform After Midnight", "thumb": "https://i.ytimg.com/vi/SGPoFqnEOzk/mqdefault.jpg", "dur": "1:03:16"}, {"id": "LFZmg8buq68", "title": "Detective Office Jazz at 2 AM — Soft Saxophone While Solving Cold Cases in a Rainy 1940s City", "thumb": "https://i.ytimg.com/vi/LFZmg8buq68/mqdefault.jpg", "dur": "1:01:52"}, {"id": "jjFHP4lDSfQ", "title": "The City Feels Heavy Tonight – Dark Jazz for Late Hours", "thumb": "https://i.ytimg.com/vi/jjFHP4lDSfQ/mqdefault.jpg", "dur": "1:01:59"}, {"id": "hqWuqWuH7vY", "title": "Empty Streets, Distant Sax – Slow Jazz in a Noir City", "thumb": "https://i.ytimg.com/vi/hqWuqWuH7vY/mqdefault.jpg", "dur": "1:02:35"}, {"id": "4KmyavQ06i0", "title": "Low Lights & Slow Jazz – Detective Mood in a Rainy City", "thumb": "https://i.ytimg.com/vi/4KmyavQ06i0/mqdefault.jpg", "dur": "1:02:33"}, {"id": "pEJrKDQebWY", "title": "No Answers Tonight – Vintage Noir Jazz in a Silent City", "thumb": "https://i.ytimg.com/vi/pEJrKDQebWY/mqdefault.jpg", "dur": "1:02:02"}, {"id": "eiSwm1EUc9Q", "title": "Some Nights Feel Different – Noir Jazz for Quiet Minds", "thumb": "https://i.ytimg.com/vi/eiSwm1EUc9Q/mqdefault.jpg", "dur": "1:03:51"}, {"id": "QhlMBfxr34w", "title": "City Lights Through the Fog – Dark Noir Jazz for Midnight Hours", "thumb": "https://i.ytimg.com/vi/QhlMBfxr34w/mqdefault.jpg", "dur": "1:02:14"}, {"id": "afDxoJHcwUk", "title": "Soft Sax in the Rain – Late Night Noir Jazz for Deep Thinking", "thumb": "https://i.ytimg.com/vi/afDxoJHcwUk/mqdefault.jpg", "dur": "1:03:57"}, {"id": "mJok9fwSHkk", "title": "The Case That Never Closed – Dark Jazz for a Tired Detective", "thumb": "https://i.ytimg.com/vi/mJok9fwSHkk/mqdefault.jpg", "dur": "1:02:46"}, {"id": "LxoQd1KCtLs", "title": "Rain Against the Window – Slow Noir Jazz for a Lonely Night", "thumb": "https://i.ytimg.com/vi/LxoQd1KCtLs/mqdefault.jpg", "dur": "1:03:54"}, {"id": "1x13lf6j0rk", "title": "Saxophone in the Dark – Smooth Detective Jazz for Rainy Evenings", "thumb": "https://i.ytimg.com/vi/1x13lf6j0rk/mqdefault.jpg", "dur": "1:03:27"}, {"id": "ncYVXVgXsNk", "title": "When the City Sleeps – Dark Noir Jazz for Midnight Thinking", "thumb": "https://i.ytimg.com/vi/ncYVXVgXsNk/mqdefault.jpg", "dur": "1:01:19"}, {"id": "eoM_022aNjo", "title": "Shadows Under Streetlights – Slow Noir Detective Jazz", "thumb": "https://i.ytimg.com/vi/eoM_022aNjo/mqdefault.jpg", "dur": "1:01:55"}, {"id": "kj8JYybkWK8", "title": "Fading Sax at Midnight – Noir Jazz for Lonely City Nights", "thumb": "https://i.ytimg.com/vi/kj8JYybkWK8/mqdefault.jpg", "dur": "1:01:26"}, {"id": "HP0FJjt_KYA", "title": "A City That Won’t Speak – Dark Detective Jazz with Noir Mood", "thumb": "https://i.ytimg.com/vi/HP0FJjt_KYA/mqdefault.jpg", "dur": "1:01:22"}, {"id": "ocfHaUXvD5c", "title": "Cold Rain Nights – Dark Noir Jazz for a Tired Detective", "thumb": "https://i.ytimg.com/vi/ocfHaUXvD5c/mqdefault.jpg", "dur": "1:03:23"}, {"id": "mBi0s0HaXO4", "title": "Late Hours in the City – Soft Detective Jazz for Deep Focus", "thumb": "https://i.ytimg.com/vi/mBi0s0HaXO4/mqdefault.jpg", "dur": "1:02:00"}, {"id": "mOePOwwL9hU", "title": "Lights Through the Rain – Detective Jazz in a Quiet City", "thumb": "https://i.ytimg.com/vi/mOePOwwL9hU/mqdefault.jpg", "dur": "1:02:03"}, {"id": "3aCrW3oqhVk", "title": "How I Create Videos for My Channel - Behind the Scenes of My Detective Jazz Channel", "thumb": "https://i.ytimg.com/vi/3aCrW3oqhVk/mqdefault.jpg", "dur": "10:37"}, {"id": "EbZ9D9w1mqI", "title": "A Quiet Night in the Rain – Detective Jazz with Soft Saxophone", "thumb": "https://i.ytimg.com/vi/EbZ9D9w1mqI/mqdefault.jpg", "dur": "1:02:39"}, {"id": "rO5Hdxl6F3k", "title": "The Last Case – Vintage Detective Jazz in a Silent Night", "thumb": "https://i.ytimg.com/vi/rO5Hdxl6F3k/mqdefault.jpg", "dur": "1:03:41"}, {"id": "nVNC4n3IgjY", "title": "Rain Over the City – Slow Detective Jazz with Distant Saxophone", "thumb": "https://i.ytimg.com/vi/nVNC4n3IgjY/mqdefault.jpg", "dur": "1:03:06"}, {"id": "4BaU9MkQtTk", "title": "Vintage Rain Nights – Classic Detective Jazz for Late Hours", "thumb": "https://i.ytimg.com/vi/4BaU9MkQtTk/mqdefault.jpg", "dur": "1:13:37"}, {"id": "thU_Ncursyo", "title": "1940s Noir City – Rainy Night Detective Jazz with Saxophone", "thumb": "https://i.ytimg.com/vi/thU_Ncursyo/mqdefault.jpg", "dur": "1:12:57"}, {"id": "bAf8w_960kc", "title": "City Shadows at Night – Slow Detective Jazz Noir Atmosphere", "thumb": "https://i.ytimg.com/vi/bAf8w_960kc/mqdefault.jpg", "dur": "1:12:32"}, {"id": "ED1dhzcg1iY", "title": "Neon Streets in the Rain – Detective Jazz with Dark City Vibes", "thumb": "https://i.ytimg.com/vi/ED1dhzcg1iY/mqdefault.jpg", "dur": "1:13:35"}, {"id": "pjcbAMquIrY", "title": "Soft Sax Noir – Vintage Detective Jazz for Rainy Evenings", "thumb": "https://i.ytimg.com/vi/pjcbAMquIrY/mqdefault.jpg", "dur": "1:12:42"}, {"id": "hfOf7YI9xX4", "title": "Smoky Sax at Midnight – Rainy Detective Jazz Atmosphere", "thumb": "https://i.ytimg.com/vi/hfOf7YI9xX4/mqdefault.jpg", "dur": "1:11:18"}, {"id": "7BtECOtr0ic", "title": "Unsolved Nights – Dark Noir Detective Jazz with Lonely Sax", "thumb": "https://i.ytimg.com/vi/7BtECOtr0ic/mqdefault.jpg", "dur": "1:13:36"}, {"id": "gtOSj-CGvkA", "title": "After Midnight Case – Vintage Detective Jazz in a Quiet City", "thumb": "https://i.ytimg.com/vi/gtOSj-CGvkA/mqdefault.jpg", "dur": "1:13:49"}, {"id": "A04iM92KiXw", "title": "Rainy City Nights – Slow Detective Jazz with Dark Saxophone Mood", "thumb": "https://i.ytimg.com/vi/A04iM92KiXw/mqdefault.jpg", "dur": "1:13:40"}, {"id": "6sSyNwLAYTc", "title": "Detective Jazz at Midnight – Rainy Noir Saxophone in a Silent City", "thumb": "https://i.ytimg.com/vi/6sSyNwLAYTc/mqdefault.jpg", "dur": "1:12:20"}, {"id": "M7evvnsgC8c", "title": "Silent Night Detective Jazz – Smooth Noir Sax in a Dark City", "thumb": "https://i.ytimg.com/vi/M7evvnsgC8c/mqdefault.jpg", "dur": "1:14:00"}, {"id": "7DzgTOURpLo", "title": "Lonely Saxophone Nights – Detective Jazz with Rain Ambience", "thumb": "https://i.ytimg.com/vi/7DzgTOURpLo/mqdefault.jpg", "dur": "1:12:38"}, {"id": "SObHS8HuZJg", "title": "After Midnight Rain – Noir Jazz for Quiet Detective Nights", "thumb": "https://i.ytimg.com/vi/SObHS8HuZJg/mqdefault.jpg", "dur": "1:13:26"}, {"id": "oN5yaHkoRhY", "title": "Midnight Noir Jazz – Lonely Detective in a Dark City Mood", "thumb": "https://i.ytimg.com/vi/oN5yaHkoRhY/mqdefault.jpg", "dur": "1:13:07"}, {"id": "La-bAt7I2PI", "title": "Neon Rain Jazz – Dark Detective Mood in a Sleeping City", "thumb": "https://i.ytimg.com/vi/La-bAt7I2PI/mqdefault.jpg", "dur": "1:12:57"}, {"id": "BmAUn42VUDE", "title": "Smoky Sax Noir – Rainy Night Jazz in a Vintage City", "thumb": "https://i.ytimg.com/vi/BmAUn42VUDE/mqdefault.jpg", "dur": "1:14:16"}, {"id": "84ZKIM3aulo", "title": "Rainy City Noir Jazz – Lonely Saxophone Under Streetlights", "thumb": "https://i.ytimg.com/vi/84ZKIM3aulo/mqdefault.jpg", "dur": "1:13:32"}, {"id": "PTl2s94w9ts", "title": "Lost Case Files – Dark Jazz Detective Theme in a Rainy City", "thumb": "https://i.ytimg.com/vi/PTl2s94w9ts/mqdefault.jpg", "dur": "1:13:32"}, {"id": "-mAI-R_FUms", "title": "Dark City Rain Jazz – Slow Noir Music for Late Night Focus", "thumb": "https://i.ytimg.com/vi/-mAI-R_FUms/mqdefault.jpg", "dur": "1:12:43"}, {"id": "66IdAcobkrM", "title": "Midnight Rain Detective Jazz – Dark Sax in a Silent City", "thumb": "https://i.ytimg.com/vi/66IdAcobkrM/mqdefault.jpg", "dur": "1:13:33"}, {"id": "FHG3Uq5VUgk", "title": "Alone in the City – Slow Detective Jazz with Dark Noir Mood", "thumb": "https://i.ytimg.com/vi/FHG3Uq5VUgk/mqdefault.jpg", "dur": "1:13:15"}, {"id": "fQfySpWwWaM", "title": "Crime Scene Jazz – Dark Saxophone in a Noir City Night", "thumb": "https://i.ytimg.com/vi/fQfySpWwWaM/mqdefault.jpg", "dur": "1:13:41"}, {"id": "YLy6P59AEDM", "title": "Midnight Detective Jazz – Slow Noir Music for Deep Night Focus", "thumb": "https://i.ytimg.com/vi/YLy6P59AEDM/mqdefault.jpg", "dur": "1:12:08"}, {"id": "rOyJKcGPKO4", "title": "Shadows of the City – Vintage Detective Jazz with Rainy Mood", "thumb": "https://i.ytimg.com/vi/rOyJKcGPKO4/mqdefault.jpg", "dur": "1:13:39"}, {"id": "4o6P5njJ7GU", "title": "Dark Rain Jazz – Vintage Detective Walking Through Empty Streets", "thumb": "https://i.ytimg.com/vi/4o6P5njJ7GU/mqdefault.jpg", "dur": "1:13:39"}, {"id": "EHprVooucIQ", "title": "After Hours Jazz Noir – Dark City Music for Late Night Thinking", "thumb": "https://i.ytimg.com/vi/EHprVooucIQ/mqdefault.jpg", "dur": "1:12:57"}, {"id": "40CNFTUItq8", "title": "1940s Detective Saxophone – Vintage Noir Jazz for Night Streets", "thumb": "https://i.ytimg.com/vi/40CNFTUItq8/mqdefault.jpg", "dur": "1:11:20"}, {"id": "E3XI5yb6fv8", "title": "Silent Detective Nights – Soft Saxophone & Noir Atmosphere", "thumb": "https://i.ytimg.com/vi/E3XI5yb6fv8/mqdefault.jpg", "dur": "1:13:01"}, {"id": "rnJQEqc4o5c", "title": "Rainy Night Detective Jazz – Saxophone Echoes in an Old City", "thumb": "https://i.ytimg.com/vi/rnJQEqc4o5c/mqdefault.jpg", "dur": "1:12:22"}, {"id": "_MAjeK64-PQ", "title": "Classic Noir City Jazz – Old Detective Stories in Sound", "thumb": "https://i.ytimg.com/vi/_MAjeK64-PQ/mqdefault.jpg", "dur": "1:12:38"}, {"id": "S9vibkGTrB4", "title": "Vintage Mystery Jazz – Rainy Noir City Mood", "thumb": "https://i.ytimg.com/vi/S9vibkGTrB4/mqdefault.jpg", "dur": "1:12:13"}, {"id": "yyC5XCT-_NE", "title": "Midnight Investigation Jazz – Dark Vintage Sound", "thumb": "https://i.ytimg.com/vi/yyC5XCT-_NE/mqdefault.jpg", "dur": "1:11:56"}, {"id": "XdaAkQptjFs", "title": "Film Noir Night Lounge – Smooth Crime Jazz", "thumb": "https://i.ytimg.com/vi/XdaAkQptjFs/mqdefault.jpg", "dur": "1:14:03"}, {"id": "0XIhVuOkaWQ", "title": "Dim Lamp Jazz – Old Detective Office Atmosphere", "thumb": "https://i.ytimg.com/vi/0XIhVuOkaWQ/mqdefault.jpg", "dur": "1:12:43"}, {"id": "fEKvYB_JV7k", "title": "City of Shadows Jazz – Dark Sax Noir Atmosphere", "thumb": "https://i.ytimg.com/vi/fEKvYB_JV7k/mqdefault.jpg", "dur": "1:12:24"}, {"id": "8bXaiUB2R2U", "title": "Noir City Rain Jazz – Vintage Detective Night", "thumb": "https://i.ytimg.com/vi/8bXaiUB2R2U/mqdefault.jpg", "dur": "1:13:01"}, {"id": "_znwZ74fFdw", "title": "After Midnight Jazz Lounge – Smooth Noir Soundscape", "thumb": "https://i.ytimg.com/vi/_znwZ74fFdw/mqdefault.jpg", "dur": "1:12:25"}, {"id": "iFzj5MKyjcU", "title": "Dark Alley Jazz – Classic Film Noir Night Mood", "thumb": "https://i.ytimg.com/vi/iFzj5MKyjcU/mqdefault.jpg", "dur": "1:12:35"}, {"id": "AJq6LcvlpXQ", "title": "Crime Investigation Jazz – Vintage Mystery Music", "thumb": "https://i.ytimg.com/vi/AJq6LcvlpXQ/mqdefault.jpg", "dur": "1:11:40"}, {"id": "IYwgaNHiDH0", "title": "Vintage Detective Story Jazz – Rainy Evening Ambience", "thumb": "https://i.ytimg.com/vi/IYwgaNHiDH0/mqdefault.jpg", "dur": "1:11:33"}, {"id": "dw_FBMxTq1I", "title": "Mystery Night Jazz – Slow Saxophone Noir Mood", "thumb": "https://i.ytimg.com/vi/dw_FBMxTq1I/mqdefault.jpg", "dur": "1:12:09"}, {"id": "t9-NsDolJD8", "title": "Shadow Detective Jazz – Vintage Crime Atmosphere", "thumb": "https://i.ytimg.com/vi/t9-NsDolJD8/mqdefault.jpg", "dur": "1:12:06"}, {"id": "qEIp32X0_QY", "title": "Lonely Detective Theme – Slow Noir Jazz Atmosphere", "thumb": "https://i.ytimg.com/vi/qEIp32X0_QY/mqdefault.jpg", "dur": "1:14:11"}, {"id": "h-Ivd8ChUpM", "title": "Noir Lounge Jazz – Dark Piano & Sax Vibes", "thumb": "https://i.ytimg.com/vi/h-Ivd8ChUpM/mqdefault.jpg", "dur": "1:12:19"}, {"id": "d1CfKjsxCEo", "title": "Old City Detective Jazz – Rainy Night Saxophone", "thumb": "https://i.ytimg.com/vi/d1CfKjsxCEo/mqdefault.jpg", "dur": "1:12:07"}, {"id": "MazvRAsxlcc", "title": "Dim Streetlight Jazz – Midnight Noir City Mood", "thumb": "https://i.ytimg.com/vi/MazvRAsxlcc/mqdefault.jpg", "dur": "1:11:32"}, {"id": "68iCnnzJ6gY", "title": "Classic Crime Scene Jazz – Dark Vintage Soundtrack", "thumb": "https://i.ytimg.com/vi/68iCnnzJ6gY/mqdefault.jpg", "dur": "1:11:33"}, {"id": "QnDSVCFB6hI", "title": "Foggy Streets Jazz – Vintage Noir City Ambience", "thumb": "https://i.ytimg.com/vi/QnDSVCFB6hI/mqdefault.jpg", "dur": "1:13:13"}, {"id": "tGQACgM8_gs", "title": "Cinematic Crime Jazz – Dark Saxophone Night Session", "thumb": "https://i.ytimg.com/vi/tGQACgM8_gs/mqdefault.jpg", "dur": "1:12:46"}, {"id": "rWgHqLuAsrQ", "title": "Smoky Jazz Bar at Midnight – Vintage Detective Mood", "thumb": "https://i.ytimg.com/vi/rWgHqLuAsrQ/mqdefault.jpg", "dur": "1:13:43"}, {"id": "Oia7NNQ6g2A", "title": "Rain & Neon Lights – Dark Jazz from a Noir City", "thumb": "https://i.ytimg.com/vi/Oia7NNQ6g2A/mqdefault.jpg", "dur": "1:13:06"}, {"id": "R8H8AZJC_eY", "title": "Old Detective Office Jazz – Vintage Noir Study Music", "thumb": "https://i.ytimg.com/vi/R8H8AZJC_eY/mqdefault.jpg", "dur": "1:13:20"}, {"id": "32gjoYrlHD4", "title": "Midnight Crime Lounge – Smooth Jazz Noir Atmosphere", "thumb": "https://i.ytimg.com/vi/32gjoYrlHD4/mqdefault.jpg", "dur": "1:13:24"}, {"id": "gao5bVX-aDU", "title": "Shadowy City Jazz – Dark Detective Story Vibes", "thumb": "https://i.ytimg.com/vi/gao5bVX-aDU/mqdefault.jpg", "dur": "1:13:03"}, {"id": "fdxeBSNDE0w", "title": "Vintage Crime Jazz – Slow Sax & Piano Night Mood", "thumb": "https://i.ytimg.com/vi/fdxeBSNDE0w/mqdefault.jpg", "dur": "1:11:39"}, {"id": "wC65t2ZZgSE", "title": "Classic Film Noir Saxophone – Midnight Jazz Mystery", "thumb": "https://i.ytimg.com/vi/wC65t2ZZgSE/mqdefault.jpg", "dur": "1:12:19"}, {"id": "11jtfkDGBso", "title": "Rainy Alley Jazz – Dark Vintage Detective Mood", "thumb": "https://i.ytimg.com/vi/11jtfkDGBso/mqdefault.jpg", "dur": "1:12:36"}, {"id": "jUEG3-QUo3g", "title": "Late Night Detective Lounge – Smooth Noir Jazz Ambience", "thumb": "https://i.ytimg.com/vi/jUEG3-QUo3g/mqdefault.jpg", "dur": "1:12:17"}, {"id": "Qm0nJt5oZYo", "title": "Dark Film Noir Jazz – Vintage Crime Story Atmosphere", "thumb": "https://i.ytimg.com/vi/Qm0nJt5oZYo/mqdefault.jpg", "dur": "1:12:25"}, {"id": "M5S2g-o6nO4", "title": "1940s Detective Jazz – Smoky Saxophone in a Rainy Noir City", "thumb": "https://i.ytimg.com/vi/M5S2g-o6nO4/mqdefault.jpg", "dur": "1:13:58"}, {"id": "dXQJabiXSp4", "title": "Noir Crime Jazz – Saxophone Noir for Focus & Mood", "thumb": "https://i.ytimg.com/vi/dXQJabiXSp4/mqdefault.jpg", "dur": "1:12:44"}, {"id": "j35gJ2TCZIA", "title": "Film Noir Jazz Ambience – Rain & Shadows", "thumb": "https://i.ytimg.com/vi/j35gJ2TCZIA/mqdefault.jpg", "dur": "1:11:54"}, {"id": "HI9a-hz49NA", "title": "Jazz Noir Playlist for Creativity & Focus", "thumb": "https://i.ytimg.com/vi/HI9a-hz49NA/mqdefault.jpg", "dur": "1:14:05"}, {"id": "SladEtnT22Y", "title": "Cinematic Noir Jazz – Saxophone & Double Bass Mood", "thumb": "https://i.ytimg.com/vi/SladEtnT22Y/mqdefault.jpg", "dur": "1:13:24"}, {"id": "OjBzYloKtfE", "title": "Film Noir Background Music for Chill Jazz Vibes", "thumb": "https://i.ytimg.com/vi/OjBzYloKtfE/mqdefault.jpg", "dur": "1:11:53"}, {"id": "jmUeBV2fFVc", "title": "Noir Jazz Detective Music – Rainy City Noir Sounds", "thumb": "https://i.ytimg.com/vi/jmUeBV2fFVc/mqdefault.jpg", "dur": "1:11:40"}, {"id": "N2S5aqQNLt4", "title": "Dark Jazz | Noir Music Sessions – Study Ambience", "thumb": "https://i.ytimg.com/vi/N2S5aqQNLt4/mqdefault.jpg", "dur": "1:13:46"}, {"id": "JxwpJdorGXY", "title": "Film Noir Jazz Ambience – Detective Story Music", "thumb": "https://i.ytimg.com/vi/JxwpJdorGXY/mqdefault.jpg", "dur": "1:11:53"}, {"id": "aCLlWeYKFEQ", "title": "Jazz Noir Playlist – 1 Hour Detective Jazz", "thumb": "https://i.ytimg.com/vi/aCLlWeYKFEQ/mqdefault.jpg", "dur": "1:12:27"}, {"id": "Kdnpvqxx6tE", "title": "Cinematic Noir Jazz – Sleek Detective Vibes", "thumb": "https://i.ytimg.com/vi/Kdnpvqxx6tE/mqdefault.jpg", "dur": "1:12:06"}, {"id": "pTf1u8CttTo", "title": "Film Noir Background Music – Crime Mood & Late Nights", "thumb": "https://i.ytimg.com/vi/pTf1u8CttTo/mqdefault.jpg", "dur": "1:11:29"}, {"id": "Or8p5G5D9tE", "title": "Noir Jazz Detective Music for Writing & Focus", "thumb": "https://i.ytimg.com/vi/Or8p5G5D9tE/mqdefault.jpg", "dur": "1:12:00"}, {"id": "DX_t2YQiSkY", "title": "Detective Jazz & Noir Ambience – Smooth Jazz Hours", "thumb": "https://i.ytimg.com/vi/DX_t2YQiSkY/mqdefault.jpg", "dur": "1:12:27"}, {"id": "UNb75Zg6VHU", "title": "Film Noir Jazz Ambience for Work & Chill", "thumb": "https://i.ytimg.com/vi/UNb75Zg6VHU/mqdefault.jpg", "dur": "1:13:10"}, {"id": "jAN_dEyyPcc", "title": "Jazz Noir Playlist – Crime & Mystery Mood Music", "thumb": "https://i.ytimg.com/vi/jAN_dEyyPcc/mqdefault.jpg", "dur": "1:13:42"}, {"id": "VGdadsBSbHU", "title": "Cinematic Noir Jazz for Deep Study & Late Nights", "thumb": "https://i.ytimg.com/vi/VGdadsBSbHU/mqdefault.jpg", "dur": "1:13:21"}, {"id": "dxj-ecAGVKM", "title": "Film Noir Background Music for Study & Work", "thumb": "https://i.ytimg.com/vi/dxj-ecAGVKM/mqdefault.jpg", "dur": "1:11:56"}, {"id": "oIxs-E659sw", "title": "Noir Jazz Detective Music – Moody Crime Scene Soundtrack", "thumb": "https://i.ytimg.com/vi/oIxs-E659sw/mqdefault.jpg", "dur": "1:12:13"}, {"id": "1-7CU6EDhEc", "title": "Dark Smooth Jazz Noir – Late Night City Playlist", "thumb": "https://i.ytimg.com/vi/1-7CU6EDhEc/mqdefault.jpg", "dur": "1:13:55"}, {"id": "Eoy0902ZNEU", "title": "Film Noir Jazz Ambience – Moody Sax & Bass", "thumb": "https://i.ytimg.com/vi/Eoy0902ZNEU/mqdefault.jpg", "dur": "1:12:10"}, {"id": "j1u__ekMixo", "title": "Jazz Noir Playlist – The Boss | Rainy Night Ambience", "thumb": "https://i.ytimg.com/vi/j1u__ekMixo/mqdefault.jpg", "dur": "1:13:58"}, {"id": "QK19byoUMcs", "title": "Cinematic Noir Jazz – Dark Jazz & Moody Ambience", "thumb": "https://i.ytimg.com/vi/QK19byoUMcs/mqdefault.jpg", "dur": "1:12:32"}, {"id": "3SRZwwN2-3k", "title": "Film Noir Background Music – Noir Sax & Cinematic Mood", "thumb": "https://i.ytimg.com/vi/3SRZwwN2-3k/mqdefault.jpg", "dur": "1:11:29"}, {"id": "mSyCvTrremg", "title": "Noir Jazz Detective Music for Night Streets & Suspense", "thumb": "https://i.ytimg.com/vi/mSyCvTrremg/mqdefault.jpg", "dur": "1:13:31"}, {"id": "D3h7NJ9MITE", "title": "Dark Jazz | Noir Music Sessions – Crime Night Mood", "thumb": "https://i.ytimg.com/vi/D3h7NJ9MITE/mqdefault.jpg", "dur": "1:12:04"}, {"id": "SVBzZq-2jng", "title": "Film Noir Jazz Ambience – Midnight City Vibes", "thumb": "https://i.ytimg.com/vi/SVBzZq-2jng/mqdefault.jpg", "dur": "1:12:02"}, {"id": "BlRlsMQ1nOc", "title": "Jazz Noir Playlist – Dark Jazz for Study", "thumb": "https://i.ytimg.com/vi/BlRlsMQ1nOc/mqdefault.jpg", "dur": "1:11:33"}, {"id": "RqhpvHNQpzs", "title": "Cinematic Noir Jazz – Noir Music Sessions for Relax", "thumb": "https://i.ytimg.com/vi/RqhpvHNQpzs/mqdefault.jpg", "dur": "1:12:27"}, {"id": "DQCNuPq3L90", "title": "Film Noir Background Music – Dark Jazz for Deep Focus", "thumb": "https://i.ytimg.com/vi/DQCNuPq3L90/mqdefault.jpg", "dur": "1:12:53"}, {"id": "FAAIoY07e-A", "title": "Noir Jazz Detective Music – Dark Smooth Sax & Mystery", "thumb": "https://i.ytimg.com/vi/FAAIoY07e-A/mqdefault.jpg", "dur": "1:12:24"}, {"id": "HM6lXvohC38", "title": "Noir Jazz Collection – Dark City Nights & Old Crimes", "thumb": "https://i.ytimg.com/vi/HM6lXvohC38/mqdefault.jpg", "dur": "1:12:48"}, {"id": "cjtHuddMocs", "title": "1940s Jazz Noir – Classic Detective Film Atmosphere", "thumb": "https://i.ytimg.com/vi/cjtHuddMocs/mqdefault.jpg", "dur": "1:11:50"}, {"id": "R_IzQwDzJ-U", "title": "Dark Noir Jazz Ambience – City Lights After Midnight", "thumb": "https://i.ytimg.com/vi/R_IzQwDzJ-U/mqdefault.jpg", "dur": "1:13:57"}, {"id": "uH3SZHBZY98", "title": "Vintage Detective Jazz – Smoke, Rain, and Mystery", "thumb": "https://i.ytimg.com/vi/uH3SZHBZY98/mqdefault.jpg", "dur": "1:13:11"}, {"id": "fQf7Vuru2hM", "title": "Late Night Crime Jazz – Film Noir Mood Soundtrack", "thumb": "https://i.ytimg.com/vi/fQf7Vuru2hM/mqdefault.jpg", "dur": "1:13:32"}, {"id": "UmkqN2_g6xw", "title": "Noir Jazz Nights – Slow Saxophone & Dark Streets", "thumb": "https://i.ytimg.com/vi/UmkqN2_g6xw/mqdefault.jpg", "dur": "1:14:37"}, {"id": "eLZPqNcgHL4", "title": "Old Crime Stories – Vintage Film Noir Jazz Music", "thumb": "https://i.ytimg.com/vi/eLZPqNcgHL4/mqdefault.jpg", "dur": "1:13:22"}, {"id": "LH3OHPJPN5E", "title": "Classic Noir Jazz – A Detective Alone in the City", "thumb": "https://i.ytimg.com/vi/LH3OHPJPN5E/mqdefault.jpg", "dur": "1:12:55"}, {"id": "yoQEDxovfv0", "title": "Shadows & Rain – Dark Noir Jazz for Late Night Listening", "thumb": "https://i.ytimg.com/vi/yoQEDxovfv0/mqdefault.jpg", "dur": "1:13:51"}, {"id": "Uf8N8s3kbfI", "title": "Midnight Detective – Noir Jazz from the 1940s City", "thumb": "https://i.ytimg.com/vi/Uf8N8s3kbfI/mqdefault.jpg", "dur": "1:13:09"}, {"id": "0OUsIl6vQxo", "title": "Noir Jazz Background Music – Deep Night City Mood", "thumb": "https://i.ytimg.com/vi/0OUsIl6vQxo/mqdefault.jpg", "dur": "1:14:18"}, {"id": "mDMklj0FTzs", "title": "Moody Noir Jazz – Classic Crime Film Atmosphere Music", "thumb": "https://i.ytimg.com/vi/mDMklj0FTzs/mqdefault.jpg", "dur": "1:12:03"}, {"id": "zuCtdKjqa3Y", "title": "1940s Detective Jazz – Dark Alley Noir Soundtrack", "thumb": "https://i.ytimg.com/vi/zuCtdKjqa3Y/mqdefault.jpg", "dur": "1:11:34"}, {"id": "iCOMvgqXR2E", "title": "Late Night Noir Jazz Playlist – Cigarette Smoke & City Lights", "thumb": "https://i.ytimg.com/vi/iCOMvgqXR2E/mqdefault.jpg", "dur": "1:13:15"}, {"id": "EsmphmUTpyA", "title": "Vintage Noir Jazz – Old Detective Stories in Music Form", "thumb": "https://i.ytimg.com/vi/EsmphmUTpyA/mqdefault.jpg", "dur": "1:11:34"}, {"id": "8ziT2HQi9gU", "title": "Film Noir Jazz Ambience – Crime Scenes & Shadowy Streets", "thumb": "https://i.ytimg.com/vi/8ziT2HQi9gU/mqdefault.jpg", "dur": "1:12:21"}, {"id": "v0DoqbC3c2g", "title": "Slow Dark Jazz – Midnight Detective Music for Focus & Mood", "thumb": "https://i.ytimg.com/vi/v0DoqbC3c2g/mqdefault.jpg", "dur": "1:11:31"}, {"id": "Xqmi2uFjXFw", "title": "Noir Jazz for Rainy Nights – Vintage Film Noir Atmosphere", "thumb": "https://i.ytimg.com/vi/Xqmi2uFjXFw/mqdefault.jpg", "dur": "1:12:09"}, {"id": "ItvK2z72ocE", "title": "Dark City Jazz – 1940s Noir Detective Walking Alone at Night", "thumb": "https://i.ytimg.com/vi/ItvK2z72ocE/mqdefault.jpg", "dur": "1:12:59"}, {"id": "5bQ5O6EDnWk", "title": "Smoky Noir Jazz – Late Night Detective Music with Saxophone", "thumb": "https://i.ytimg.com/vi/5bQ5O6EDnWk/mqdefault.jpg", "dur": "1:12:27"}, {"id": "DaOk0lu6KPQ", "title": "Vintage 1940s Jazz Noir – Classic Detective Film Atmosphere", "thumb": "https://i.ytimg.com/vi/DaOk0lu6KPQ/mqdefault.jpg", "dur": "1:11:56"}, {"id": "vo9N-DqkhIo", "title": "1940s Noir Jazz – Vintage Crime Music from the Golden Era", "thumb": "https://i.ytimg.com/vi/vo9N-DqkhIo/mqdefault.jpg", "dur": "1:14:35"}, {"id": "r328x1SbJ98", "title": "Late Night Detective Jazz – Dark City Noir Ambience", "thumb": "https://i.ytimg.com/vi/r328x1SbJ98/mqdefault.jpg", "dur": "1:13:59"}, {"id": "9MBvBSZGZQ8", "title": "Late Night Jazz Noir – Slow Detective Music for Midnight Hours", "thumb": "https://i.ytimg.com/vi/9MBvBSZGZQ8/mqdefault.jpg", "dur": "1:12:17"}, {"id": "EDPMKZ3rnMM", "title": "Film Noir Jazz Playlist – Crime, Mystery & Midnight Streets", "thumb": "https://i.ytimg.com/vi/EDPMKZ3rnMM/mqdefault.jpg", "dur": "1:12:11"}, {"id": "6WmfXOGcYBk", "title": "Film Noir Music – Classic 1940s Detective Jazz Soundtrack", "thumb": "https://i.ytimg.com/vi/6WmfXOGcYBk/mqdefault.jpg", "dur": "1:11:32"}, {"id": "atFV3AOGuQg", "title": "Dark Jazz 1940s Style – Smoky Sax & Shadowy Noir Vibes", "thumb": "https://i.ytimg.com/vi/atFV3AOGuQg/mqdefault.jpg", "dur": "1:12:12"}, {"id": "H5ZRlTPVD0o", "title": "Dark Jazz for Late Night Thinking – Vintage Detective Atmosphere", "thumb": "https://i.ytimg.com/vi/H5ZRlTPVD0o/mqdefault.jpg", "dur": "1:12:32"}, {"id": "PqY6n3ifTqM", "title": "Noir Jazz Soundtrack – Vintage 1940s Crime & Mystery Mood", "thumb": "https://i.ytimg.com/vi/PqY6n3ifTqM/mqdefault.jpg", "dur": "1:13:06"}, {"id": "YWziMiafidk", "title": "Noir Jazz 1940s – Classic Detective Music for Dark City Nights", "thumb": "https://i.ytimg.com/vi/YWziMiafidk/mqdefault.jpg", "dur": "1:13:42"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

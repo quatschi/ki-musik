@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Desk Radio</title>
+<!-- categories: Lounge, Funk -->
+<!-- channel-id: UChJm95Lr2lu3t8Pux9CfYNg -->
+<!-- channel-url: https://www.youtube.com/@NightDeskRadio -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Night_Desk_Radio.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/A1Kn6UglS319RaPVLWlgXTXYwQuKoz7eJWkLIHdc-kqYYMLP24pdJha6qkzuqZD9kMIt7XgUbA=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Night Desk Radio</div>
+      <div class="channel-count">57 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Night Desk Radio";
+const KANAL = "Night_Desk_Radio.html";
+const ORIG_CATEGORIES = "Lounge, Funk";
+const VIDEOS = [{"id": "qCZK8CTOXi0", "title": "BASS ESCAPE | Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/qCZK8CTOXi0/mqdefault.jpg", "dur": "1:01:20"}, {"id": "N0wkaj9Md3o", "title": "BASS SPEAKS | Melodic Funk Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/N0wkaj9Md3o/mqdefault.jpg", "dur": "1:00:29"}, {"id": "N0k8IDdI4qE", "title": "BASS PRESSURE | Heavy Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/N0k8IDdI4qE/mqdefault.jpg", "dur": "1:04:57"}, {"id": "k4sShw-WFew", "title": "BASS REVIVE | Emotional Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/k4sShw-WFew/mqdefault.jpg", "dur": "1:02:08"}, {"id": "kIraB30gWds", "title": "BASS BREAKTHROUGH | Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/kIraB30gWds/mqdefault.jpg", "dur": "1:04:10"}, {"id": "Y8gVfKuhD2c", "title": "BASS ANCHOR | Deep Focus Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/Y8gVfKuhD2c/mqdefault.jpg", "dur": "1:00:46"}, {"id": "oT31GdkBHl0", "title": "BASS FORGE | Heavy Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/oT31GdkBHl0/mqdefault.jpg", "dur": "1:01:52"}, {"id": "fGVQc9GSyUQ", "title": "BASS GRAVITY | Deep Pocket Neo Soul Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/fGVQc9GSyUQ/mqdefault.jpg", "dur": "1:01:52"}, {"id": "c0agIGrLcuI", "title": "BASS TENSION | High-Tension Dark Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/c0agIGrLcuI/mqdefault.jpg", "dur": "1:02:20"}, {"id": "dnH6H4lu548", "title": "BASS RESOLVE — Drumless Play-Along | No Vocals Emotional Bass Groove", "thumb": "https://i.ytimg.com/vi/dnH6H4lu548/mqdefault.jpg", "dur": "10:23"}, {"id": "8-Iy7xCH0Eo", "title": "BASS SIGNAL | Dark Melodic Electronic Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/8-Iy7xCH0Eo/mqdefault.jpg", "dur": "1:02:45"}, {"id": "tfrUQj7QYeY", "title": "BASS SCARS | Dark Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/tfrUQj7QYeY/mqdefault.jpg", "dur": "1:01:45"}, {"id": "I1jyaDO42Ko", "title": "BASS VOW | Uplifting Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/I1jyaDO42Ko/mqdefault.jpg", "dur": "1:10:19"}, {"id": "gLQBpKAmKy4", "title": "BASS MOMENTUM | Driving Melodic Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/gLQBpKAmKy4/mqdefault.jpg", "dur": "1:00:11"}, {"id": "FNlbtP4cTjw", "title": "BASS CURRENT | Liquid Drum & Bass Groove for Deep Focus | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/FNlbtP4cTjw/mqdefault.jpg", "dur": "1:05:26"}, {"id": "-eou7TUSBwU", "title": "BASS NIGHTSHIFT | Late-Night Funk Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/-eou7TUSBwU/mqdefault.jpg", "dur": "1:10:16"}, {"id": "GVo5iuuTULw", "title": "BASS EDGE — Low Drum Guide Play-Along Test | No Vocals Bass Rock Practice", "thumb": "https://i.ytimg.com/vi/GVo5iuuTULw/mqdefault.jpg", "dur": "7:29"}, {"id": "QucZhWJPnr8", "title": "BASS SPARK | Neon Funk Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/QucZhWJPnr8/mqdefault.jpg", "dur": "1:02:40"}, {"id": "tyYKYm4FNss", "title": "BASS RESOLVE | Emotional Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/tyYKYm4FNss/mqdefault.jpg", "dur": "1:00:49"}, {"id": "ugRoNeuYBfw", "title": "BASS STACK | Layered Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/ugRoNeuYBfw/mqdefault.jpg", "dur": "1:02:59"}, {"id": "Einp3n4456E", "title": "BASS POCKET | Tight Funk Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/Einp3n4456E/mqdefault.jpg", "dur": "1:01:54"}, {"id": "cGYM18ALtsY", "title": "BASS STRUT | Funk Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/cGYM18ALtsY/mqdefault.jpg", "dur": "1:00:16"}, {"id": "7BIRXKHXEq0", "title": "BASS VOLTAGE | Electric Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/7BIRXKHXEq0/mqdefault.jpg", "dur": "1:00:21"}, {"id": "j8pAtfNj-zY", "title": "BASS IGNITE | High-Energy Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/j8pAtfNj-zY/mqdefault.jpg", "dur": "59:35"}, {"id": "T_E_ACH05mg", "title": "BASS RISE | Emotional Arena Rock Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/T_E_ACH05mg/mqdefault.jpg", "dur": "1:02:20"}, {"id": "g3OCyGwnA8M", "title": "BASS FIESTA | Danceable Latin Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/g3OCyGwnA8M/mqdefault.jpg", "dur": "1:01:14"}, {"id": "rTqzs6U220k", "title": "BASS DRIVE II — MIDNIGHT HIGHWAY | Night Drive Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/rTqzs6U220k/mqdefault.jpg", "dur": "1:03:10"}, {"id": "jdLymyYJ6kE", "title": "BASS TOKYO | City Pop Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/jdLymyYJ6kE/mqdefault.jpg", "dur": "1:01:00"}, {"id": "jIWWwMCLn9U", "title": "BASS VELVET | Smooth R&B Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/jIWWwMCLn9U/mqdefault.jpg", "dur": "1:03:21"}, {"id": "TSto5jdyem0", "title": "BASS EDGE | Bass-Forward Rock Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/TSto5jdyem0/mqdefault.jpg", "dur": "1:00:24"}, {"id": "5sezfTAnutA", "title": "BASS TUMBAO | Latin Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/5sezfTAnutA/mqdefault.jpg", "dur": "1:01:42"}, {"id": "s-Eea3rBlPA", "title": "BASS AURORA | Dreamy Floating Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/s-Eea3rBlPA/mqdefault.jpg", "dur": "1:01:43"}, {"id": "JSium-bK1rs", "title": "BASS PULSE | Upbeat Bass Funk Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/JSium-bK1rs/mqdefault.jpg", "dur": "1:00:00"}, {"id": "2B6w-gf2wmo", "title": "BASS AFTER HOURS | Late-Night Bass Groove for Focus & Chill | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/2B6w-gf2wmo/mqdefault.jpg", "dur": "1:01:11"}, {"id": "WxUpJ0hLf8U", "title": "Foggy Streetlight Serenity | Soft Piano No Vocals Sleep", "thumb": "https://i.ytimg.com/vi/WxUpJ0hLf8U/mqdefault.jpg", "dur": "8:01:35"}, {"id": "iwsemJaA-Mg", "title": "BASS NOIR | Cinematic Night Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/iwsemJaA-Mg/mqdefault.jpg", "dur": "1:00:20"}, {"id": "bkGl18nk2bM", "title": "BASS DRIVE | Urban Night Drive Bass Groove | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/bkGl18nk2bM/mqdefault.jpg", "dur": "1:00:51"}, {"id": "xwXRLTK3o-o", "title": "Deep Bass Jazz for Focus & Relaxation | No Vocals | 1H", "thumb": "https://i.ytimg.com/vi/xwXRLTK3o-o/mqdefault.jpg", "dur": "1:01:06"}, {"id": "ZGLYsY4FzlQ", "title": "Two Shadows, One Rhythm | Deep Bass Ambient", "thumb": "https://i.ytimg.com/vi/ZGLYsY4FzlQ/mqdefault.jpg", "dur": "40:01"}, {"id": "F1ccak1Sn7E", "title": "SUB-BASS COCOON | Deep Sub-Bass Ambient for Sleep | No Vocals | 8H", "thumb": "https://i.ytimg.com/vi/F1ccak1Sn7E/mqdefault.jpg", "dur": "8:12:01"}, {"id": "F-aCZRkz3dM", "title": "BASS MOVES | Bass Funk Grooves | No Vocals | For Bass Lovers | 1H", "thumb": "https://i.ytimg.com/vi/F-aCZRkz3dM/mqdefault.jpg", "dur": "1:00:41"}, {"id": "7Far4MWPMKg", "title": "BASS SINGS | Melodic Funk Jazz Bass Grooves | No Vocals | For Bass Lovers | 1H", "thumb": "https://i.ytimg.com/vi/7Far4MWPMKg/mqdefault.jpg", "dur": "1:00:08"}, {"id": "Bq9e5rLAMZE", "title": "Moonlit Sakura Rain for Deep Sleep | Soft Piano Ambient | No Vocals | 8H", "thumb": "https://i.ytimg.com/vi/Bq9e5rLAMZE/mqdefault.jpg", "dur": "8:09:20"}, {"id": "OfcSZQasg9Q", "title": "Muted Bass Groove | No Vocals | 1H | ONE MORE BAR II", "thumb": "https://i.ytimg.com/vi/OfcSZQasg9Q/mqdefault.jpg", "dur": "59:30"}, {"id": "qxRjkL3IG5g", "title": "MIDNIGHT POCKET II — GHOST NOTE THEORY | Bass-Forward Funk Jazz Fusion (No Vocals) | 1H Compilation", "thumb": "https://i.ytimg.com/vi/qxRjkL3IG5g/mqdefault.jpg", "dur": "1:01:27"}, {"id": "PcHpDfSY4IA", "title": "MIDNIGHT POCKET — Bass-Forward Funk Jazz Fusion (No Vocals) | 1H Compilation", "thumb": "https://i.ytimg.com/vi/PcHpDfSY4IA/mqdefault.jpg", "dur": "1:00:30"}, {"id": "zfREAP-udhU", "title": "ONE MORE BAR — Pocket Drum Mix (Instrumental) | 1H Compilation", "thumb": "https://i.ytimg.com/vi/zfREAP-udhU/mqdefault.jpg", "dur": "58:48"}, {"id": "T67hRZj-Lj0", "title": "LOCK IN (DUE TODAY) — No Vocals Focus EDM | 1H Continuous Mix", "thumb": "https://i.ytimg.com/vi/T67hRZj-Lj0/mqdefault.jpg", "dur": "59:15"}, {"id": "XI-cIS12ao8", "title": "Blue Hour Focus – City Skyline Ambient Music for Concentration", "thumb": "https://i.ytimg.com/vi/XI-cIS12ao8/mqdefault.jpg", "dur": "1:02:09"}, {"id": "Wbw4_TZdhX4", "title": "1 Hour Warm Jazz | Candlelight Focus Session", "thumb": "https://i.ytimg.com/vi/Wbw4_TZdhX4/mqdefault.jpg", "dur": "1:00:39"}, {"id": "Sr9OWHMcZnw", "title": "Rainy Café Jazz Session | 1 Hour Deep Focus Instrumental Mix", "thumb": "https://i.ytimg.com/vi/Sr9OWHMcZnw/mqdefault.jpg", "dur": "1:01:06"}, {"id": "FJVla4SQuTY", "title": "No Vocals Jazz | Warm Ambience for Concentration", "thumb": "https://i.ytimg.com/vi/FJVla4SQuTY/mqdefault.jpg", "dur": "1:03:43"}, {"id": "hLa6BzYVTxE", "title": "FLOOR TESTーKick Is King | No Vocals", "thumb": "https://i.ytimg.com/vi/hLa6BzYVTxE/mqdefault.jpg", "dur": "4:12"}, {"id": "sP-Rn3pspsQ", "title": "Two Meters, One Moment of Perfect Alignment", "thumb": "https://i.ytimg.com/vi/sP-Rn3pspsQ/mqdefault.jpg", "dur": "3:42"}, {"id": "4rw_HPhS5nY", "title": "Between Frets｜Hands & Strings指と弦のあいだにある音 / Where the Bass Really Speaks", "thumb": "https://i.ytimg.com/vi/4rw_HPhS5nY/mqdefault.jpg", "dur": "3:17"}, {"id": "Do_YgW07--U", "title": "Late Night Coffeehouse Jazz | Pure Focus Mix", "thumb": "https://i.ytimg.com/vi/Do_YgW07--U/mqdefault.jpg", "dur": "1:09:19"}, {"id": "z3JLHGi8k9E", "title": "Rainy Winter Night | 8 Hours Deep Sleep Ambient", "thumb": "https://i.ytimg.com/vi/z3JLHGi8k9E/mqdefault.jpg", "dur": "8:00:01"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tom’s Jazz Lounge</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCSF_ZOoWF6oqeeCeCov9stw -->
+<!-- channel-url: https://youtube.com/@tomsjazzlounge -->
+<!-- created: 2026-06-24 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Toms_Jazz_Lounge.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/yByfBvVHrLb8YDnRRJ_hxP5aBnUpU5wxUYKHASa2uc62QoW2zpr2g3V5kxztfjsZ1aAQBwo3Ww=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Tom’s Jazz Lounge</div>
+      <div class="channel-count">73 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Tom\u2019s Jazz Lounge";
+const KANAL = "Toms_Jazz_Lounge.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "NhTEsUahw5M", "title": "Vintage Jazz Noir -- Last Drink, or Last Smoke?", "thumb": "https://i.ytimg.com/vi/NhTEsUahw5M/mqdefault.jpg", "dur": "1:29:36"}, {"id": "ZiK6vRX1bUA", "title": "The Bartender -- Jazz Noir to Soothe Your Night", "thumb": "https://i.ytimg.com/vi/ZiK6vRX1bUA/mqdefault.jpg", "dur": "1:24:27"}, {"id": "_QXw21ygJCQ", "title": "Last Drink of The Night -- Vintage NoirJazz", "thumb": "https://i.ytimg.com/vi/_QXw21ygJCQ/mqdefault.jpg", "dur": "1:21:53"}, {"id": "Tb64yQksXVE", "title": "Not Everything Is Fair, There's Nothing To Do -- Jazz Noirr 1940´s", "thumb": "https://i.ytimg.com/vi/Tb64yQksXVE/mqdefault.jpg", "dur": "1:24:58"}, {"id": "T35rCa96oR0", "title": "Blow Away The Smoke From Your Mind -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/T35rCa96oR0/mqdefault.jpg", "dur": "1:27:00"}, {"id": "JZtFdxYY1T0", "title": "Cool Head -- Between Smoke & Jazz", "thumb": "https://i.ytimg.com/vi/JZtFdxYY1T0/mqdefault.jpg", "dur": "1:28:41"}, {"id": "1cCCInEwHp8", "title": "Ready For Another Drink? -- Noir Jazz", "thumb": "https://i.ytimg.com/vi/1cCCInEwHp8/mqdefault.jpg", "dur": "1:31:40"}, {"id": "0HBZX6Tar2Y", "title": "Alcohol & Smoke -- vintage Jazz 1940´s", "thumb": "https://i.ytimg.com/vi/0HBZX6Tar2Y/mqdefault.jpg", "dur": "1:36:10"}, {"id": "Fa3JkuVztXE", "title": "This Is Jazz -- Vintage Noir Jazz", "thumb": "https://i.ytimg.com/vi/Fa3JkuVztXE/mqdefault.jpg", "dur": "1:31:36"}, {"id": "zSGjy1wG1Ok", "title": "Smoke & Midnight Jazz -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/zSGjy1wG1Ok/mqdefault.jpg", "dur": "1:29:25"}, {"id": "ASAfVbg0Kls", "title": "Detective Thomas -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/ASAfVbg0Kls/mqdefault.jpg", "dur": "1:26:39"}, {"id": "epnHkwZwX_M", "title": "Dance Of Midnight -- Vintage Jazz Noir", "thumb": "https://i.ytimg.com/vi/epnHkwZwX_M/mqdefault.jpg", "dur": "1:30:00"}, {"id": "5gxYptcMDTc", "title": "Gentle Fingers -- Noir Jazz 1940´s", "thumb": "https://i.ytimg.com/vi/5gxYptcMDTc/mqdefault.jpg", "dur": "1:33:02"}, {"id": "_65bn8o07oo", "title": "If You Know How Reras, You Win -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/_65bn8o07oo/mqdefault.jpg", "dur": "1:36:44"}, {"id": "VoKiiVenX7o", "title": "The Last Game -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/VoKiiVenX7o/mqdefault.jpg", "dur": "1:33:21"}, {"id": "5SlgJxUm0bU", "title": "Whiskey Talks Loude -- Vintage Jazz Noir", "thumb": "https://i.ytimg.com/vi/5SlgJxUm0bU/mqdefault.jpg", "dur": "1:26:50"}, {"id": "NbE-d_HZYJw", "title": "Velvet Smoke Letters -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/NbE-d_HZYJw/mqdefault.jpg", "dur": "1:30:12"}, {"id": "FyQYya-CNAA", "title": "Night of Rebirth -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/FyQYya-CNAA/mqdefault.jpg", "dur": "1:30:14"}, {"id": "BvfoQeA77Ok", "title": "Money And Jazz -- Vintage Jazz Noir", "thumb": "https://i.ytimg.com/vi/BvfoQeA77Ok/mqdefault.jpg", "dur": "1:29:17"}, {"id": "E1mSfrK6noA", "title": "Declaration Of Love -- Vintage Jazz Noir", "thumb": "https://i.ytimg.com/vi/E1mSfrK6noA/mqdefault.jpg", "dur": "1:27:52"}, {"id": "v0AlQNkcBVU", "title": "Noir jazz 1940´s -- Midnight Sleep", "thumb": "https://i.ytimg.com/vi/v0AlQNkcBVU/mqdefault.jpg", "dur": "1:26:43"}, {"id": "dNhXzkwBhvU", "title": "Last Smoke -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/dNhXzkwBhvU/mqdefault.jpg", "dur": "1:27:55"}, {"id": "9wHMf8Vh_jc", "title": "Business -- Vintage Jaazz Noir", "thumb": "https://i.ytimg.com/vi/9wHMf8Vh_jc/mqdefault.jpg", "dur": "1:31:39"}, {"id": "ncQToORxwXA", "title": "Seduction and Jazz Noir", "thumb": "https://i.ytimg.com/vi/ncQToORxwXA/mqdefault.jpg", "dur": "1:27:41"}, {"id": "NKFkbjMP1I0", "title": "Jazz.", "thumb": "https://i.ytimg.com/vi/NKFkbjMP1I0/mqdefault.jpg", "dur": "1:30:02"}, {"id": "CD9GA1Eu0wY", "title": "Absolute Jazz -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/CD9GA1Eu0wY/mqdefault.jpg", "dur": "1:27:32"}, {"id": "ycb76xNtV_E", "title": "Lips Of Whiskey -- Vintage Jazz Noir With a Touch of Love", "thumb": "https://i.ytimg.com/vi/ycb76xNtV_E/mqdefault.jpg", "dur": "1:26:18"}, {"id": "yXhFL_W456c", "title": "What´s Your Next Drink? -- Noir Jazz Vintage", "thumb": "https://i.ytimg.com/vi/yXhFL_W456c/mqdefault.jpg", "dur": "1:29:26"}, {"id": "iwejsXr1uQI", "title": "Night News -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/iwejsXr1uQI/mqdefault.jpg", "dur": "1:29:24"}, {"id": "OnkNF2ZWhmk", "title": "Thoughts are Scattered by the Smoke -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/OnkNF2ZWhmk/mqdefault.jpg", "dur": "1:26:52"}, {"id": "wjXNHnvkEZE", "title": "Midnight Gaze -- Vintage Jazz Noir For Relaxation", "thumb": "https://i.ytimg.com/vi/wjXNHnvkEZE/mqdefault.jpg", "dur": "1:30:24"}, {"id": "y3XP_e02PKM", "title": "Nighttime Thoughts Snd a Drink -- Vintage Jazz Noir", "thumb": "https://i.ytimg.com/vi/y3XP_e02PKM/mqdefault.jpg", "dur": "1:28:57"}, {"id": "FWPnnICz7Ds", "title": "Midnight Spark -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/FWPnnICz7Ds/mqdefault.jpg", "dur": "1:31:58"}, {"id": "aw3qQZGpZzE", "title": "Cigar burns slowly -- Jazz Noir To calm down", "thumb": "https://i.ytimg.com/vi/aw3qQZGpZzE/mqdefault.jpg", "dur": "1:33:50"}, {"id": "J2amfhpigqk", "title": "Winw & Jazz -- Jazz Noir at Midnight", "thumb": "https://i.ytimg.com/vi/J2amfhpigqk/mqdefault.jpg", "dur": "1:33:47"}, {"id": "y9lxE3u6j5M", "title": "You are an investigator. Investigate! -- Noir Jazz", "thumb": "https://i.ytimg.com/vi/y9lxE3u6j5M/mqdefault.jpg", "dur": "1:29:38"}, {"id": "HRWMJ7NHQpY", "title": "Vintage Jazz Noir -- If You Drink, Don't DrivE", "thumb": "https://i.ytimg.com/vi/HRWMJ7NHQpY/mqdefault.jpg", "dur": "1:31:14"}, {"id": "KHYfygE9FYc", "title": "One More Drink? -- 1940´s Noir Jazz", "thumb": "https://i.ytimg.com/vi/KHYfygE9FYc/mqdefault.jpg", "dur": "1:31:56"}, {"id": "ETGte-9QzsA", "title": "Night Drive After Midnight -- 1940´s Noir Jazz", "thumb": "https://i.ytimg.com/vi/ETGte-9QzsA/mqdefault.jpg", "dur": "1:36:02"}, {"id": "3A4A7SkUjH8", "title": "the Long Road -- Jazz For Late Nights", "thumb": "https://i.ytimg.com/vi/3A4A7SkUjH8/mqdefault.jpg", "dur": "1:32:20"}, {"id": "lKrLoYOCzwM", "title": "One Last Call -- Vintage Jazz For Late Nights", "thumb": "https://i.ytimg.com/vi/lKrLoYOCzwM/mqdefault.jpg", "dur": "1:31:18"}, {"id": "XCug7NBQJoo", "title": "Midnight Smoke -- Noir Jazz 1940´s", "thumb": "https://i.ytimg.com/vi/XCug7NBQJoo/mqdefault.jpg", "dur": "1:30:53"}, {"id": "T68nwzhNWlY", "title": "Midnight thorns -- flaming petal", "thumb": "https://i.ytimg.com/vi/T68nwzhNWlY/mqdefault.jpg", "dur": "1:26:55"}, {"id": "J0zBgCe9yGo", "title": "The Detective -- A Drink Might Solve Everything", "thumb": "https://i.ytimg.com/vi/J0zBgCe9yGo/mqdefault.jpg", "dur": "1:31:09"}, {"id": "2Jwru8MAy3o", "title": "Something Only I Know -- Overthinking Hurts a Lot...", "thumb": "https://i.ytimg.com/vi/2Jwru8MAy3o/mqdefault.jpg", "dur": "1:37:56"}, {"id": "E8nciUBKXLs", "title": "The Door Was Already Open -- Noir Jazz 1940´s", "thumb": "https://i.ytimg.com/vi/E8nciUBKXLs/mqdefault.jpg", "dur": "1:27:22"}, {"id": "taoxPo7FB1Q", "title": "Vintage Jazz Noir -- Calm Your Troubled Mind", "thumb": "https://i.ytimg.com/vi/taoxPo7FB1Q/mqdefault.jpg", "dur": "1:28:12"}, {"id": "7gtIh5dF9Xk", "title": "Just One More Drink -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/7gtIh5dF9Xk/mqdefault.jpg", "dur": "1:30:22"}, {"id": "Dnps6er4Cio", "title": "Double Identity, Shades of Self -- Jazz Noir 1940´s", "thumb": "https://i.ytimg.com/vi/Dnps6er4Cio/mqdefault.jpg", "dur": "1:25:42"}, {"id": "ts2rBaDGzC0", "title": "If You Want To Weel Wain, Weel It While Listening To Jazz -- Jazz Noir", "thumb": "https://i.ytimg.com/vi/ts2rBaDGzC0/mqdefault.jpg", "dur": "1:28:35"}, {"id": "zmeHQsFYOYg", "title": "1940s Jazz Noir -- Worrying Too Much Won't Help You.", "thumb": "https://i.ytimg.com/vi/zmeHQsFYOYg/mqdefault.jpg", "dur": "1:27:00"}, {"id": "pEsfjjs8jVU", "title": "Vintage Jazz Noir —  for Lonely Nights", "thumb": "https://i.ytimg.com/vi/pEsfjjs8jVU/mqdefault.jpg", "dur": "1:27:07"}, {"id": "sUWqvw7B0V4", "title": "Noir Jazz -- Late Nights Soft Notes", "thumb": "https://i.ytimg.com/vi/sUWqvw7B0V4/mqdefault.jpg", "dur": "1:24:33"}, {"id": "mAZLxHoQgik", "title": "Midnight Boat -- Drifting Through Midnight With Jazz 1942´s", "thumb": "https://i.ytimg.com/vi/mAZLxHoQgik/mqdefault.jpg", "dur": "1:19:27"}, {"id": "ZAFYvORuuOE", "title": "In Times of War, Forget Your Problems With Jazz 1942´s", "thumb": "https://i.ytimg.com/vi/ZAFYvORuuOE/mqdefault.jpg", "dur": "1:25:17"}, {"id": "37kZs3ouWVo", "title": "1940s Detective Jazz Ambience -- Cigarettes & Secrets", "thumb": "https://i.ytimg.com/vi/37kZs3ouWVo/mqdefault.jpg", "dur": "1:23:12"}, {"id": "sZDxII8vuFU", "title": "1942 War Jazz -- Smoky WWII Jazz Lounge for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/sZDxII8vuFU/mqdefault.jpg", "dur": "1:26:49"}, {"id": "C457cLs1-6Y", "title": "Jazz Noie 1940´s -- Empty Bar Dark Jazz", "thumb": "https://i.ytimg.com/vi/C457cLs1-6Y/mqdefault.jpg", "dur": "1:28:02"}, {"id": "AIxm1CXWobQ", "title": "Jazz & Rain -- The Perfect Mix", "thumb": "https://i.ytimg.com/vi/AIxm1CXWobQ/mqdefault.jpg", "dur": "1:29:04"}, {"id": "LaQWwy1SA6M", "title": "Sometimes, Only Silence Will do.", "thumb": "https://i.ytimg.com/vi/LaQWwy1SA6M/mqdefault.jpg", "dur": "1:26:25"}, {"id": "SYt3lBKS6DE", "title": "Quiet Jazz Beneath The Smoke", "thumb": "https://i.ytimg.com/vi/SYt3lBKS6DE/mqdefault.jpg", "dur": "1:26:25"}, {"id": "7RTPHhhUYpw", "title": "Some Nights Don't Need Words. Just Jazz", "thumb": "https://i.ytimg.com/vi/7RTPHhhUYpw/mqdefault.jpg", "dur": "1:26:25"}, {"id": "nzilIbYo2i8", "title": "Whisky and Jazz -- Don't Overthink It", "thumb": "https://i.ytimg.com/vi/nzilIbYo2i8/mqdefault.jpg", "dur": "1:27:48"}, {"id": "zqFfazvH2ec", "title": "Vintage Jazz Noir -- Close Your Eyes and Rest", "thumb": "https://i.ytimg.com/vi/zqFfazvH2ec/mqdefault.jpg", "dur": "1:26:35"}, {"id": "wBfxlRZEnc4", "title": "Noir Jazz -- This Is Not Just Jazz…", "thumb": "https://i.ytimg.com/vi/wBfxlRZEnc4/mqdefault.jpg", "dur": "1:30:29"}, {"id": "q_BCyHd0vhA", "title": "Late Nights & Dark Jazz — Vintage Detective Jazz After Midnight", "thumb": "https://i.ytimg.com/vi/q_BCyHd0vhA/mqdefault.jpg", "dur": "1:33:04"}, {"id": "9xdooZ6gga0", "title": "Jazz 1940´s — The Truth Stayed in the Shadows", "thumb": "https://i.ytimg.com/vi/9xdooZ6gga0/mqdefault.jpg", "dur": "1:33:30"}, {"id": "5iojvcdyc90", "title": "He Knew… But Said Nothing — Midnight Secrets & Noir Jazz", "thumb": "https://i.ytimg.com/vi/5iojvcdyc90/mqdefault.jpg", "dur": "1:28:44"}, {"id": "gcP6BHX2ADU", "title": "Nothing Good Happens After Midnight — Jazz Noir Mood", "thumb": "https://i.ytimg.com/vi/gcP6BHX2ADU/mqdefault.jpg", "dur": "1:29:33"}, {"id": "Y8j32Pfr8Xg", "title": "1940´s Jazz — Classic Jazz for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/Y8j32Pfr8Xg/mqdefault.jpg", "dur": "1:28:20"}, {"id": "G5bGfYZDmvc", "title": "Secrets and Jazz — Nighttime jazz to calm your mind", "thumb": "https://i.ytimg.com/vi/G5bGfYZDmvc/mqdefault.jpg", "dur": "1:25:53"}, {"id": "0NvL_qThvf4", "title": "Jazz for Late Night — Classic Noir Jazz for Sleep & Calm Mind", "thumb": "https://i.ytimg.com/vi/0NvL_qThvf4/mqdefault.jpg", "dur": "1:26:17"}, {"id": "FGe8av6HyIs", "title": "Secrets & Jazz — After Hours Noir Mood", "thumb": "https://i.ytimg.com/vi/FGe8av6HyIs/mqdefault.jpg", "dur": "1:27:30"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relax R&B Studio</title>
+<!-- categories: R&B, Smooth Jazz -->
+<!-- channel-id: UCuh_ImUSWWrEc1UAc4Hl4Ww -->
+<!-- channel-url: https://youtube.com/@relaxjazzstudio-w6y -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Relax_RB_Studio.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/mkqzmhUFdTF9YuAkeiWtZIO4CZdaqpmGNPkLM7h7DJ24k1Vnf0L5wRkUe2rYuz2ZYtFcwolBFg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Relax R&B Studio</div>
+      <div class="channel-count">84 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Relax R&B Studio";
+const KANAL = "Relax_RB_Studio.html";
+const ORIG_CATEGORIES = "R&B, Smooth Jazz";
+const VIDEOS = [{"id": "zCCDPKKr5Tg", "title": "Smooth Jazz Deep Relaxation – Relaxing Coffee Jazz for Work, Study & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/zCCDPKKr5Tg/mqdefault.jpg", "dur": "3:28:20"}, {"id": "RQUIixG1Ais", "title": "Smooth Jazz & Soul R&B – Timeless Relaxing Instrumentals for Every Day", "thumb": "https://i.ytimg.com/vi/RQUIixG1Ais/mqdefault.jpg", "dur": "3:45:13"}, {"id": "ShvbzjsgrZw", "title": "Smooth Jazz & Soul R&B instrumental – melodies for gentle, warm relaxing moments.", "thumb": "https://i.ytimg.com/vi/ShvbzjsgrZw/mqdefault.jpg", "dur": "3:22:09"}, {"id": "dWyS54OnAHs", "title": "Smooth Jazz Relaxing Music | Guitar Saxophone Instrumental for Sleep & Chill", "thumb": "https://i.ytimg.com/vi/dWyS54OnAHs/mqdefault.jpg", "dur": "3:25:34"}, {"id": "WeIsRdc9HlQ", "title": "Warm Smooth Jazz Guitar & Saxophone | Relaxing Night Music for Deep Calm, Coffee & Chill", "thumb": "https://i.ytimg.com/vi/WeIsRdc9HlQ/mqdefault.jpg", "dur": "3:27:37"}, {"id": "gDUha276wYQ", "title": "Smooth Jazz 🎷 Warm Saxophone & Electric Guitar | Deep Relaxation, Peaceful Night & Stress Relief", "thumb": "https://i.ytimg.com/vi/gDUha276wYQ/mqdefault.jpg", "dur": "3:32:25"}, {"id": "Du-BrzF2w6A", "title": "Smooth Jazz & Soul R&B instrumental – Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/Du-BrzF2w6A/mqdefault.jpg", "dur": "3:29:04"}, {"id": "YRQqn_xMZmY", "title": "Smooth Jazz & Soul R&B instrumental – Warm Saxophone & Electric Guitar for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/YRQqn_xMZmY/mqdefault.jpg", "dur": "3:28:15"}, {"id": "aOmw3DfrHGM", "title": "Smooth Jazz 2026 🎷 Warm Saxophone & Electric Guitar for Calm & Focus", "thumb": "https://i.ytimg.com/vi/aOmw3DfrHGM/mqdefault.jpg", "dur": "3:24:17"}, {"id": "OHyyrqvo31k", "title": "Smooth Jazz & Electric Guitar – Warm Melodies for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/OHyyrqvo31k/mqdefault.jpg", "dur": "3:31:20"}, {"id": "U3aorQY1u3E", "title": "Warm Sax & Smooth Guitar Jazz | Deep Relaxation for Peaceful Evenings", "thumb": "https://i.ytimg.com/vi/U3aorQY1u3E/mqdefault.jpg", "dur": "3:31:33"}, {"id": "rp6YSQSPTs4", "title": "Warm Sax & Electric Guitar Smooth Jazz | Deep Relaxation for Peaceful Evenings", "thumb": "https://i.ytimg.com/vi/rp6YSQSPTs4/mqdefault.jpg", "dur": "3:00:41"}, {"id": "p_9jnLhp7gU", "title": "Sunset Smooth Jazz Lounge – Relaxing Saxophone & Guitar for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/p_9jnLhp7gU/mqdefault.jpg", "dur": "3:36:59"}, {"id": "8t-AHg8AEc8", "title": "Happy Sunday Jazz Café ☕ Peaceful Music for a Slow Morning", "thumb": "https://i.ytimg.com/vi/8t-AHg8AEc8/mqdefault.jpg", "dur": "3:38:15"}, {"id": "-gQPlsyE6oA", "title": "Luxury Smooth Jazz Lounge | Warm Saxophone & Soulful Electric Guitar", "thumb": "https://i.ytimg.com/vi/-gQPlsyE6oA/mqdefault.jpg", "dur": "3:32:31"}, {"id": "ICyiPIdKB2g", "title": "Weekend Smooth Jazz & Soul R&B – Relaxing Vibes for a Perfect Weekend.", "thumb": "https://i.ytimg.com/vi/ICyiPIdKB2g/mqdefault.jpg", "dur": "3:27:35"}, {"id": "FhWsxUEVn10", "title": "Smooth Jazz Weekend Café – Relax, Sip Coffee & Unwind", "thumb": "https://i.ytimg.com/vi/FhWsxUEVn10/mqdefault.jpg", "dur": "3:33:59"}, {"id": "fJKCTHdO6HU", "title": "Smooth Jazz & Soul R&B – Warm Morning Atmosphere for Gentle, Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/fJKCTHdO6HU/mqdefault_live.jpg", "dur": ""}, {"id": "YpWJPaSHCLI", "title": "Smooth Jazz & Soul R&B 24/7 – Midnight Jazz Lounge | Relaxing Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/YpWJPaSHCLI/mqdefault.jpg", "dur": "3:49:54"}, {"id": "TTy51qVZ74o", "title": "Smooth Jazz & Soul R&B instrumental – Warm Melodies for Peaceful & Relaxing Moments", "thumb": "https://i.ytimg.com/vi/TTy51qVZ74o/mqdefault.jpg", "dur": "4:57:33"}, {"id": "tgL7UCdZeCg", "title": "Smooth Jazz Guitar & Soulful Sax – Elegant Music for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/tgL7UCdZeCg/mqdefault.jpg", "dur": "4:59:13"}, {"id": "SJUHKRXjanU", "title": "Deep Night Jazz & Soul R&B – Relaxing Instrumental Jazz for Peaceful Nights.", "thumb": "https://i.ytimg.com/vi/SJUHKRXjanU/mqdefault.jpg", "dur": "4:57:30"}, {"id": "eqfGutRU4Hw", "title": "Relaxing Jazz & R&B Lounge – Calm Night Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/eqfGutRU4Hw/mqdefault.jpg", "dur": "4:58:46"}, {"id": "5AqjhfxCNJ8", "title": "Deep Night Jazz Journey 24/7 – Soulful Saxophone Music for Peaceful Moments", "thumb": "https://i.ytimg.com/vi/5AqjhfxCNJ8/mqdefault.jpg", "dur": "11:53:12"}, {"id": "ki-aGJP7f3Y", "title": "Deep Night Jazz & Soul R&B – Smooth Lounge Instrumentals for Relaxation", "thumb": "https://i.ytimg.com/vi/ki-aGJP7f3Y/mqdefault.jpg", "dur": "4:55:04"}, {"id": "a1RNPq_88Co", "title": "Smooth Jazz & Soul R&B – Gentle Guitar and Saxophone Vibes |", "thumb": "https://i.ytimg.com/vi/a1RNPq_88Co/mqdefault.jpg", "dur": "4:58:30"}, {"id": "B7VAFIWOyIY", "title": "Deep Night Jazz & Soul R&B – Relaxing Instrumental Music for a Peaceful Evening.", "thumb": "https://i.ytimg.com/vi/B7VAFIWOyIY/mqdefault.jpg", "dur": "4:57:53"}, {"id": "_OtFXxaG9FM", "title": "Smooth Jazz & Soul R&B – Warm Morning Melodies for a Peaceful Start", "thumb": "https://i.ytimg.com/vi/_OtFXxaG9FM/mqdefault.jpg", "dur": "4:58:17"}, {"id": "HYLNiv4g3VQ", "title": "Smooth Jazz & Soul R&B – Peaceful Lounge for Sleep & Relax", "thumb": "https://i.ytimg.com/vi/HYLNiv4g3VQ/mqdefault.jpg", "dur": "11:54:59"}, {"id": "Ve-Ss7D8W5w", "title": "Smooth Jazz & Soul R&B 24/7 – Midnight Lounge for Relaxing Nights 🌙", "thumb": "https://i.ytimg.com/vi/Ve-Ss7D8W5w/mqdefault.jpg", "dur": "11:55:00"}, {"id": "HZblt4GlIk0", "title": "Deep Night Jazz & Soul R&B – Relaxing Lounge Instrumentals", "thumb": "https://i.ytimg.com/vi/HZblt4GlIk0/mqdefault.jpg", "dur": "4:58:26"}, {"id": "1Mgj-6y7fHc", "title": "Relaxing Midnight Jazz Lounge 24/7 – Smooth Soul R&B Vibes 🌙", "thumb": "https://i.ytimg.com/vi/1Mgj-6y7fHc/mqdefault.jpg", "dur": "11:54:53"}, {"id": "fYnB_AJSaE0", "title": "Smooth Jazz & Soul R&B 24/7 – Midnight Lounge for Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/fYnB_AJSaE0/mqdefault.jpg", "dur": "11:54:58"}, {"id": "lxPRi8vOPVU", "title": "Smooth Jazz & Soul R&B – Warm Morning Atmosphere for Gentle, Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/lxPRi8vOPVU/mqdefault.jpg", "dur": "11:54:59"}, {"id": "5a1RzK2u2fE", "title": "Smooth Jazz & Soul R&B – Warm Morning Atmosphere for Gentle, Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/5a1RzK2u2fE/mqdefault.jpg", "dur": "4:58:47"}, {"id": "9fizDaaV7a4", "title": "Smooth Jazz & Soul R&B – A Gentle Flow for Peaceful, Relaxing & Warm Moments.", "thumb": "https://i.ytimg.com/vi/9fizDaaV7a4/mqdefault.jpg", "dur": "4:53:13"}, {"id": "hcgQpIKasno", "title": "Smooth Jazz & Soul R&B – Warm Instrumentals for Quiet Moments.", "thumb": "https://i.ytimg.com/vi/hcgQpIKasno/mqdefault.jpg", "dur": "4:57:08"}, {"id": "22KqwPsdmY8", "title": "Smooth Jazz & Soul R&B – Elegant Vibes for Calm Evenings.", "thumb": "https://i.ytimg.com/vi/22KqwPsdmY8/mqdefault.jpg", "dur": "4:56:19"}, {"id": "NLVu-51KR08", "title": "Smooth Jazz & Soul R&B – Weekend Chill Music for Cozy Moments.", "thumb": "https://i.ytimg.com/vi/NLVu-51KR08/mqdefault.jpg", "dur": "11:00:19"}, {"id": "Ci2k1uM6Szc", "title": "Smooth Jazz & Soul R&B – Relax with smooth saxophone & gentle electric guitar after work and study.", "thumb": "https://i.ytimg.com/vi/Ci2k1uM6Szc/mqdefault.jpg", "dur": "11:00:36"}, {"id": "nubYOwILoaw", "title": "Smooth Jazz & Soul R&B – Warm Melodies for Peaceful & Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/nubYOwILoaw/mqdefault.jpg", "dur": "11:02:37"}, {"id": "ZKrwpHgkDf4", "title": "Smooth Jazz & Soul R&B Mix – Gentle Sounds for Calm & Cozy Moments.", "thumb": "https://i.ytimg.com/vi/ZKrwpHgkDf4/mqdefault.jpg", "dur": "11:01:16"}, {"id": "fw3nizH-jmQ", "title": "Smooth Jazz & Soul R&B – Perfect background music for studying & relaxation.", "thumb": "https://i.ytimg.com/vi/fw3nizH-jmQ/mqdefault.jpg", "dur": "11:01:56"}, {"id": "mGAh-eSlfW0", "title": "Smooth Jazz & Soul R&B – Smooth Vibes for Relaxing & Thinking.", "thumb": "https://i.ytimg.com/vi/mGAh-eSlfW0/mqdefault.jpg", "dur": "11:00:01"}, {"id": "pb0T9FvRWok", "title": "Smooth Jazz & R&B Chil – Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/pb0T9FvRWok/mqdefault.jpg", "dur": "11:00:01"}, {"id": "M322UDJvxJg", "title": "Smooth Jazz & Soul R&B – Warm Weekend Grooves for a Relaxing Mood.", "thumb": "https://i.ytimg.com/vi/M322UDJvxJg/mqdefault.jpg", "dur": "6:01:00"}, {"id": "YhJ_zvPyeG0", "title": "Smooth Jazz & Soul R&B – Warm Morning Vibes for Peaceful Relaxation.", "thumb": "https://i.ytimg.com/vi/YhJ_zvPyeG0/mqdefault.jpg", "dur": "6:02:46"}, {"id": "w-V0t4CmM8I", "title": "Smooth Jazz & Soul R&B – Warm chill instrumental melodies for peaceful moments.", "thumb": "https://i.ytimg.com/vi/w-V0t4CmM8I/mqdefault.jpg", "dur": "6:01:06"}, {"id": "WA-Y_2RKqbU", "title": "Smooth Jazz & Soul R&B – Gentle morning melodies for a peaceful and warm start to a new day.", "thumb": "https://i.ytimg.com/vi/WA-Y_2RKqbU/mqdefault.jpg", "dur": "6:00:10"}, {"id": "5Ynj2b_PF-s", "title": "Smooth Jazz & Soul R&B – Warm Weekend Melodies for Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/5Ynj2b_PF-s/mqdefault.jpg", "dur": "6:02:29"}, {"id": "bW4vPeQmv4k", "title": "Smooth Jazz & Soul R&B – Warm relaxing melodies and quiet moments.", "thumb": "https://i.ytimg.com/vi/bW4vPeQmv4k/mqdefault.jpg", "dur": "6:00:42"}, {"id": "RsbBz433sIw", "title": "Smooth Jazz & Soul R&B – Warm Morning Atmosphere for Gentle, Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/RsbBz433sIw/mqdefault.jpg", "dur": "6:01:49"}, {"id": "uU5O2QBCqK8", "title": "Smooth Jazz & Soul R&B – Warm Timeless Melodies for Relaxing & Chill Moments.", "thumb": "https://i.ytimg.com/vi/uU5O2QBCqK8/mqdefault.jpg", "dur": "6:00:44"}, {"id": "7jDquX5lg9M", "title": "Smooth Jazz & Soul R&B – Warm Sax & Guitar Melodies for Peaceful Evenings.", "thumb": "https://i.ytimg.com/vi/7jDquX5lg9M/mqdefault.jpg", "dur": "6:02:45"}, {"id": "wQBEmX10PkI", "title": "Smooth Jazz & Soul R&B – Soft Sounds for Peaceful Moments.", "thumb": "https://i.ytimg.com/vi/wQBEmX10PkI/mqdefault.jpg", "dur": "3:01:36"}, {"id": "EI1QYkJD0LA", "title": "Smooth Jazz & Soul R&B – Soft Grooves for Calm and Cozy Evenings.", "thumb": "https://i.ytimg.com/vi/EI1QYkJD0LA/mqdefault.jpg", "dur": "3:00:39"}, {"id": "_nlrcI0Vt-c", "title": "Smooth Jazz & Soul R&B – Gentle Rhythms and Warm Melodies for a Peaceful, Relaxing Weekend.", "thumb": "https://i.ytimg.com/vi/_nlrcI0Vt-c/mqdefault.jpg", "dur": "3:01:29"}, {"id": "LYuNiXS7kas", "title": "Smooth Jazz & Soul R&B – Warm Sax & Guitar Melodies for Peaceful Evenings.", "thumb": "https://i.ytimg.com/vi/LYuNiXS7kas/mqdefault.jpg", "dur": "3:00:39"}, {"id": "UwDdLii2JJg", "title": "Smooth Jazz & Soul R&B – Chill Vibes for Quiet and Cozy Moments.", "thumb": "https://i.ytimg.com/vi/UwDdLii2JJg/mqdefault.jpg", "dur": "3:01:57"}, {"id": "m5MR15HBdzQ", "title": "Smooth Jazz & Soul R&B – Gentle rhythms and warm melodies for a long day of relaxation & chill.", "thumb": "https://i.ytimg.com/vi/m5MR15HBdzQ/mqdefault.jpg", "dur": "3:02:49"}, {"id": "D2ADlpRi1io", "title": "[VLOG #1] Relax and unwind with Relax R&B Studio after long, stressful working hours.", "thumb": "https://i.ytimg.com/vi/D2ADlpRi1io/mqdefault.jpg", "dur": "7:25"}, {"id": "QeLGAnWKpMw", "title": "Smooth Jazz & Soul R&B – Relaxing melodies for a cozy, chill weekend atmosphere.", "thumb": "https://i.ytimg.com/vi/QeLGAnWKpMw/mqdefault.jpg", "dur": "3:01:28"}, {"id": "2O82Ak4NLSo", "title": "Smooth Jazz & Soul R&B – Warm Melodies for Peaceful & Relaxing Moments", "thumb": "https://i.ytimg.com/vi/2O82Ak4NLSo/mqdefault.jpg", "dur": "3:03:42"}, {"id": "Nsyz660PAy8", "title": "Smooth Jazz & Soul R&B – Soft Rhythms and Warm Melodies for Deep Relaxation.", "thumb": "https://i.ytimg.com/vi/Nsyz660PAy8/mqdefault.jpg", "dur": "3:04:42"}, {"id": "ewUtiwuYq0A", "title": "Smooth Jazz & Soul R&B – Chill Vibes for Quiet and Cozy Moments", "thumb": "https://i.ytimg.com/vi/ewUtiwuYq0A/mqdefault.jpg", "dur": "3:02:47"}, {"id": "uz9sTsrLu8o", "title": "Smooth Jazz & Soul R&B – Warm Melodies for Peaceful Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/uz9sTsrLu8o/mqdefault.jpg", "dur": "3:04:52"}, {"id": "n2jYbRMC-Ek", "title": "Smooth Jazz & Soul R&B – Soft Melodies for Warm & Peaceful Moments.", "thumb": "https://i.ytimg.com/vi/n2jYbRMC-Ek/mqdefault.jpg", "dur": "3:00:49"}, {"id": "jmJDpnVxY9E", "title": "Smooth Jazz & Soul R&B – Gentle Jazz Tunes for Stress-Free Relaxation.", "thumb": "https://i.ytimg.com/vi/jmJDpnVxY9E/mqdefault.jpg", "dur": "3:04:09"}, {"id": "A-_Qbv0ItIU", "title": "Smooth Jazz & Soul R&B – Cozy Sounds for Relaxation and Quiet Moments.", "thumb": "https://i.ytimg.com/vi/A-_Qbv0ItIU/mqdefault.jpg", "dur": "3:02:46"}, {"id": "GWyKhg2ivZI", "title": "Smooth Jazz & Soul R&B – Cozy Melodies for Deep Relaxation & Warm Evenings.", "thumb": "https://i.ytimg.com/vi/GWyKhg2ivZI/mqdefault.jpg", "dur": "3:05:29"}, {"id": "cM7xrH28G6Q", "title": "Smooth Jazz & Soul R&B – Warm Sounds for Gentle, Relaxing Weekend Moments.", "thumb": "https://i.ytimg.com/vi/cM7xrH28G6Q/mqdefault.jpg", "dur": "2:53:00"}, {"id": "UJwUf8Crd7Y", "title": "Smooth Jazz & Soul R&B – Soft Grooves for Calm, Warm Relaxation.", "thumb": "https://i.ytimg.com/vi/UJwUf8Crd7Y/mqdefault.jpg", "dur": "2:05:20"}, {"id": "rwA5ObeihqE", "title": "Smooth Jazz & Soul R&B – Gentle Jazz Melodies for a Warm, Long Day of Relaxation.", "thumb": "https://i.ytimg.com/vi/rwA5ObeihqE/mqdefault.jpg", "dur": "1:54:03"}, {"id": "LpfmWsWTwps", "title": "Smooth Jazz & Soul R&B – Warm Grooves for Relaxing Evenings.", "thumb": "https://i.ytimg.com/vi/LpfmWsWTwps/mqdefault.jpg", "dur": "2:04:20"}, {"id": "-7ShKXELD8c", "title": "Smooth Jazz & Soul R&B – Gentle Jazz Melodies for a Long Day of Relaxation.", "thumb": "https://i.ytimg.com/vi/-7ShKXELD8c/mqdefault.jpg", "dur": "2:11:58"}, {"id": "9vBPWIxken4", "title": "Smooth Jazz & Soul R&B – Gentle Guitar & Sax Melodies with Warm Feelings for All-Day Relaxation", "thumb": "https://i.ytimg.com/vi/9vBPWIxken4/mqdefault.jpg", "dur": "2:05:00"}, {"id": "J_GMAi6SLwE", "title": "Smooth Jazz & Soul R&B – Warm Sounds for Gentle Relaxing Moments.", "thumb": "https://i.ytimg.com/vi/J_GMAi6SLwE/mqdefault.jpg", "dur": "2:01:01"}, {"id": "DStdKSDa01Y", "title": "Smooth Jazz & Soul R&B – Warm Grooves for Deep Focus, Relaxation & Chill.", "thumb": "https://i.ytimg.com/vi/DStdKSDa01Y/mqdefault.jpg", "dur": "2:05:17"}, {"id": "RErEpb84R-M", "title": "The creative process of Relax Jazz Studio", "thumb": "https://i.ytimg.com/vi/RErEpb84R-M/mqdefault.jpg", "dur": "10:28"}, {"id": "L3Vkdy2na20", "title": "Smooth Jazz & Soul R&B – Gentle Grooves and Cozy Feelings All Day.", "thumb": "https://i.ytimg.com/vi/L3Vkdy2na20/mqdefault.jpg", "dur": "2:00:20"}, {"id": "TeXYclP1acU", "title": "Smooth Jazz & Soul R&B – Music Chill Jazz for Relax, Focus & Stress Relief", "thumb": "https://i.ytimg.com/vi/TeXYclP1acU/mqdefault.jpg", "dur": "2:02:26"}, {"id": "zRdv3FTpoBQ", "title": "Smooth Jazz & Soul R&B – Soft Beats and Warm Vibes for All-Day Chill.", "thumb": "https://i.ytimg.com/vi/zRdv3FTpoBQ/mqdefault.jpg", "dur": "2:11:32"}, {"id": "jBZTi_RSLSU", "title": "Smooth Jazz & Soul R&B – Soft Beats and Warm Vibes for All-Day Chill.", "thumb": "https://i.ytimg.com/vi/jBZTi_RSLSU/mqdefault.jpg", "dur": "2:07:28"}, {"id": "LvwSjdeapJc", "title": "Smooth Jazz & Soul R&B – Laid-Back Weekend Vibes for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/LvwSjdeapJc/mqdefault.jpg", "dur": "2:01:08"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

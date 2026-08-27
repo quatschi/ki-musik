@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acid Velvet Jazz</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCwm_7Zstvn3UBq3-rt9FBiA -->
+<!-- channel-url: https://www.youtube.com/@acidvelvetjazz -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Acid_Velvet_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/jn9UvL_OGphdsxq2zr698VrripP6pYtL35LKgcHROSr4GB4qklb9mmxfW0PXQwdHl0yvaUOtFig=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Acid Velvet Jazz</div>
+      <div class="channel-count">68 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Acid Velvet Jazz";
+const KANAL = "Acid_Velvet_Jazz.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "h6e_HDeFaDg", "title": "Smooth Nu Lounge Acid Jazz Flow🎷[Vol. 67] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/h6e_HDeFaDg/mqdefault.jpg", "dur": "1:31:55"}, {"id": "nrWFvXuMzQo", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.66]", "thumb": "https://i.ytimg.com/vi/nrWFvXuMzQo/mqdefault.jpg", "dur": "1:26:50"}, {"id": "tXun3mcO_gQ", "title": "Smooth Nu Lounge Acid Jazz Flow🎷[Vol. 65] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/tXun3mcO_gQ/mqdefault.jpg", "dur": "1:49:43"}, {"id": "YMK1w3481c0", "title": "The Best Acid Jazz Instrumentals Vol.64 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/YMK1w3481c0/mqdefault.jpg", "dur": "1:36:19"}, {"id": "fb3lJrDY7aY", "title": "Smooth Nu Lounge Acid Jazz Flow🎷[Vol.63] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/fb3lJrDY7aY/mqdefault.jpg", "dur": "1:42:17"}, {"id": "mKASSuAQ0sI", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.62]", "thumb": "https://i.ytimg.com/vi/mKASSuAQ0sI/mqdefault.jpg", "dur": "1:37:02"}, {"id": "rnPno1CCAkg", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 61]", "thumb": "https://i.ytimg.com/vi/rnPno1CCAkg/mqdefault.jpg", "dur": "1:57:49"}, {"id": "Uhfy4NoWuD4", "title": "The Best Acid Jazz Instrumentals Vol.60 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/Uhfy4NoWuD4/mqdefault.jpg", "dur": "1:19:52"}, {"id": "x998fnpSwII", "title": "The Best Acid Jazz Instrumentals Vol.59 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/x998fnpSwII/mqdefault.jpg", "dur": "1:48:20"}, {"id": "JVYYWtfcoJw", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.58]", "thumb": "https://i.ytimg.com/vi/JVYYWtfcoJw/mqdefault.jpg", "dur": "2:11:31"}, {"id": "IsNSUvcOaxI", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 57]", "thumb": "https://i.ytimg.com/vi/IsNSUvcOaxI/mqdefault.jpg", "dur": "1:27:41"}, {"id": "8_Gdyt8od9s", "title": "The Best Acid Jazz Instrumentals Vol.56 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/8_Gdyt8od9s/mqdefault.jpg", "dur": "2:15:49"}, {"id": "k5R1k3odbbQ", "title": "The Best Acid Jazz, Funky & Soul | Nu Chill & Acid Jazz Classic [Vol.55]", "thumb": "https://i.ytimg.com/vi/k5R1k3odbbQ/mqdefault.jpg", "dur": "1:45:39"}, {"id": "3yAfDar4NxQ", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.54]", "thumb": "https://i.ytimg.com/vi/3yAfDar4NxQ/mqdefault.jpg", "dur": "1:32:39"}, {"id": "4BGN3kTs7ZM", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 47]", "thumb": "https://i.ytimg.com/vi/4BGN3kTs7ZM/mqdefault.jpg", "dur": "1:52:46"}, {"id": "-q5SVK3midU", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 40]", "thumb": "https://i.ytimg.com/vi/-q5SVK3midU/mqdefault.jpg", "dur": "1:42:17"}, {"id": "6SnpraXrOsY", "title": "Urban Lounge & Nu Acid Jazz Vol.53 | Vibrant Funk Grooves for Relax Mind, Productivity", "thumb": "https://i.ytimg.com/vi/6SnpraXrOsY/mqdefault.jpg", "dur": "1:27:43"}, {"id": "zdbJwJ76biQ", "title": "The Best Acid Jazz Instrumentals Vol.52 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/zdbJwJ76biQ/mqdefault.jpg", "dur": "1:45:38"}, {"id": "4XxCDxXEr5s", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 51]", "thumb": "https://i.ytimg.com/vi/4XxCDxXEr5s/mqdefault.jpg", "dur": "1:30:37"}, {"id": "u5DCbMWTOqc", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.50]", "thumb": "https://i.ytimg.com/vi/u5DCbMWTOqc/mqdefault.jpg", "dur": "2:06:02"}, {"id": "GkL7FQwdTYs", "title": "Smooth Nu Lounge Acid Jazz Flow🎷[Vol. 43] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/GkL7FQwdTYs/mqdefault.jpg", "dur": "1:31:44"}, {"id": "IUGcD9EF9Zo", "title": "The Best Acid Jazz Instrumentals Vol.48 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/IUGcD9EF9Zo/mqdefault.jpg", "dur": "2:09:51"}, {"id": "HZCsigPJknc", "title": "Deep Acid Jazz & Funk Flow 🎧 | Warm Analog Rhythms for Creative Focus [Vol.46]", "thumb": "https://i.ytimg.com/vi/HZCsigPJknc/mqdefault.jpg", "dur": "1:40:25"}, {"id": "U3Md81ITZEg", "title": "Urban Lounge & Nu Acid Jazz Vol. 45 | Vibrant Funk Grooves for Relax Mind, Productivity", "thumb": "https://i.ytimg.com/vi/U3Md81ITZEg/mqdefault.jpg", "dur": "2:14:20"}, {"id": "C1Jf-em3P3g", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.44]", "thumb": "https://i.ytimg.com/vi/C1Jf-em3P3g/mqdefault.jpg", "dur": "1:45:29"}, {"id": "KIuMpb_ZmPs", "title": "Smooth Nu Lounge Acid Jazz Flow🎷[Vol. 43] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/KIuMpb_ZmPs/mqdefault.jpg", "dur": "1:50:15"}, {"id": "FMlxM6OnBfM", "title": "The Best Acid Jazz Instrumentals Vol.42 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/FMlxM6OnBfM/mqdefault.jpg", "dur": "1:48:50"}, {"id": "VjkZtBW0HjM", "title": "The Best Acid Jazz Summer Lounge Vol.41 | Jazzy Funk Beats for Productive Energy", "thumb": "https://i.ytimg.com/vi/VjkZtBW0HjM/mqdefault.jpg", "dur": "1:35:43"}, {"id": "HAIg6HdS-u0", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.39]", "thumb": "https://i.ytimg.com/vi/HAIg6HdS-u0/mqdefault.jpg", "dur": "1:41:06"}, {"id": "O95Cvhhqa3E", "title": "The Best Acid Jazz Instrumentals Vol.38 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/O95Cvhhqa3E/mqdefault.jpg", "dur": "2:26:21"}, {"id": "Iq3M3fNisWg", "title": "Deep Acid Jazz & Funk Flow 🎧 | Warm Analog Rhythms for Creative Focus [Vol.37]", "thumb": "https://i.ytimg.com/vi/Iq3M3fNisWg/mqdefault.jpg", "dur": "1:26:33"}, {"id": "x-KnBCdfvkU", "title": "Ultimate Nu Jazz & Acid Jazz Mix | Sophisticated Smooth Nu Jazz Instumentals for Focus [Vol.35]", "thumb": "https://i.ytimg.com/vi/x-KnBCdfvkU/mqdefault.jpg", "dur": "1:44:44"}, {"id": "3U5ow1RDoj8", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 34]", "thumb": "https://i.ytimg.com/vi/3U5ow1RDoj8/mqdefault.jpg", "dur": "1:46:45"}, {"id": "Qk6E_Cni8X0", "title": "Hot Acid Jazz & Funky Groove Flow Vol.33 | Soulful Funk Rhythms for Productivity & Chill", "thumb": "https://i.ytimg.com/vi/Qk6E_Cni8X0/mqdefault.jpg", "dur": "2:14:52"}, {"id": "BPtEfBEyghM", "title": "The Best Acid Jazz Instrumentals Vol.32 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/BPtEfBEyghM/mqdefault.jpg", "dur": "1:32:34"}, {"id": "q40id3k_8RY", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.31]", "thumb": "https://i.ytimg.com/vi/q40id3k_8RY/mqdefault.jpg", "dur": "1:41:55"}, {"id": "8fScqXrJkFs", "title": "Urban Lounge & Nu Acid Jazz Vol. 30 | Vibrant Funk Grooves for Relax Mind, Productivity", "thumb": "https://i.ytimg.com/vi/8fScqXrJkFs/mqdefault.jpg", "dur": "2:00:44"}, {"id": "mnQpI2jn2tI", "title": "The Best Acid Jazz Instrumentals Vol.28 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/mnQpI2jn2tI/mqdefault.jpg", "dur": "1:44:22"}, {"id": "p1HsawoGm_c", "title": "The Best Acid Jazz, Funky & Soul | Nu Chill & Acid Jazz Classic [Vol. 29]", "thumb": "https://i.ytimg.com/vi/p1HsawoGm_c/mqdefault.jpg", "dur": "1:42:35"}, {"id": "tLoXY0_zY4Q", "title": "The Best Acid Jazz, Funky & Soul | Nu Chill & Acid Jazz Classic [Vol. 27]", "thumb": "https://i.ytimg.com/vi/tLoXY0_zY4Q/mqdefault.jpg", "dur": "2:27:09"}, {"id": "ARzDAB0oyXU", "title": "Smooth Lounge Chill Acid Jazz Flow🎷[Vol. 26] | Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/ARzDAB0oyXU/mqdefault.jpg", "dur": "1:42:07"}, {"id": "RLO9mmh89aw", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 25]", "thumb": "https://i.ytimg.com/vi/RLO9mmh89aw/mqdefault.jpg", "dur": "1:31:43"}, {"id": "oDjQ5bZFQ1s", "title": "Deep Acid Jazz & Funk Flow 🎧 | Warm Analog Rhythms for Creative Focus [Vol.24]", "thumb": "https://i.ytimg.com/vi/oDjQ5bZFQ1s/mqdefault.jpg", "dur": "2:11:06"}, {"id": "GM963mER-ck", "title": "Deep Nu Chill Acid Jazz Flow🎷| Smooth Grooves & Jazzy Funk for Productivity Mood 🎧", "thumb": "https://i.ytimg.com/vi/GM963mER-ck/mqdefault.jpg", "dur": "1:42:34"}, {"id": "PRGZcGGqh6o", "title": "The Best Acid Jazz Instrumentals Vol.22 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/PRGZcGGqh6o/mqdefault.jpg", "dur": "2:16:29"}, {"id": "O8XfVUNMxWg", "title": "Acid Jazz Focus Flow 🎧 Funky Groovy Nu Jazz Beats for Deep Work & Study [Vol.21]", "thumb": "https://i.ytimg.com/vi/O8XfVUNMxWg/mqdefault.jpg", "dur": "1:30:38"}, {"id": "JFB3uNzkCRM", "title": "The Best Acid Jazz Summer Mix Instrumentals Vol.20 | Funk Grooves for Chill Summer Paradise", "thumb": "https://i.ytimg.com/vi/JFB3uNzkCRM/mqdefault.jpg", "dur": "1:46:02"}, {"id": "TTs1Jj4sQH8", "title": "The Best Acid Jazz Instrumentals Vol.19 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/TTs1Jj4sQH8/mqdefault.jpg", "dur": "1:50:59"}, {"id": "dY9A7loTscw", "title": "The Best Acid Jazz, Funky & Soul | Nu Chill & Acid Jazz Classics [Vol. 18]", "thumb": "https://i.ytimg.com/vi/dY9A7loTscw/mqdefault.jpg", "dur": "2:22:36"}, {"id": "gIpxgwauAZs", "title": "The Making of Acid Velvet Jazz: Visual Design, Editing & Creative Direction", "thumb": "https://i.ytimg.com/vi/gIpxgwauAZs/mqdefault.jpg", "dur": "7:45"}, {"id": "HHFJQv1y04g", "title": "Best Acid Jazz & Funky Instrumentals Vol. 17 | Funky Grooves for Pure Relaxation", "thumb": "https://i.ytimg.com/vi/HHFJQv1y04g/mqdefault.jpg", "dur": "1:28:58"}, {"id": "nLD7Uwmn5Q4", "title": "The Best Urban Soul and Funky Vibes Vol. 16 | Relax Mind With Acid Jazz & Funky Chill", "thumb": "https://i.ytimg.com/vi/nLD7Uwmn5Q4/mqdefault.jpg", "dur": "2:06:42"}, {"id": "n5mPDZHGUZc", "title": "Smooth Lounge Chill Acid Jazz Flow🎷| Deep Nu Chill & Funk for Work, Relax & Late Night", "thumb": "https://i.ytimg.com/vi/n5mPDZHGUZc/mqdefault.jpg", "dur": "2:05:12"}, {"id": "OjzSSeuth08", "title": "Acid Jazz Focus Flow 🎧 Groovy Nu Jazz Beats for Deep Work & Study [Vol.14]", "thumb": "https://i.ytimg.com/vi/OjzSSeuth08/mqdefault.jpg", "dur": "2:37:20"}, {"id": "A4abcu5nepk", "title": "Deep Acid Jazz & Funk Flow 🎧 | Warm Analog Rhythms for Creative Focus [Vol.13]", "thumb": "https://i.ytimg.com/vi/A4abcu5nepk/mqdefault.jpg", "dur": "1:28:40"}, {"id": "ZailcyP3aSE", "title": "The Best Acid Jazz Instrumentals Vol.12 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/ZailcyP3aSE/mqdefault.jpg", "dur": "1:43:47"}, {"id": "xWTdoLJU_w8", "title": "Smooth Acid Jazz & Funk Flow🎷 | Warm Funk Groove for Deep Work & Study [Vol. 11]", "thumb": "https://i.ytimg.com/vi/xWTdoLJU_w8/mqdefault.jpg", "dur": "1:34:57"}, {"id": "Pm7GRJELPTs", "title": "Acid Jazz Focus Flow 🎧 Groovy Nu Jazz Beats for Deep Work & Study [Vol.10]", "thumb": "https://i.ytimg.com/vi/Pm7GRJELPTs/mqdefault.jpg", "dur": "2:08:40"}, {"id": "LYtesxX546M", "title": "The Best Acid Jazz, Funky & Soul | Nu Chill & Acid Jazz Classic [Vol. 9]", "thumb": "https://i.ytimg.com/vi/LYtesxX546M/mqdefault.jpg", "dur": "1:39:22"}, {"id": "LINd1I0QW0I", "title": "The Best Acid Jazz Instrumentals Vol.8 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/LINd1I0QW0I/mqdefault.jpg", "dur": "1:20:58"}, {"id": "-9eowceYwpY", "title": "Top Acid Jazz & Funk🔥Deep Grooves Nu Jazz for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/-9eowceYwpY/mqdefault.jpg", "dur": "1:32:44"}, {"id": "6zcO7EoE7G8", "title": "The Best Acid Jazz Instrumentals Vol.7 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/6zcO7EoE7G8/mqdefault.jpg", "dur": "2:15:36"}, {"id": "Vxp4a-P1plg", "title": "Acid Jazz Focus Flow 🎧 Groovy Nu Jazz Beats for Deep Work & Study #2", "thumb": "https://i.ytimg.com/vi/Vxp4a-P1plg/mqdefault.jpg", "dur": "1:57:49"}, {"id": "vF8rihYGh-E", "title": "The Best Acid Jazz Instrumentals Vol.5 | Jazzy Funk Grooves for Productive Mood", "thumb": "https://i.ytimg.com/vi/vF8rihYGh-E/mqdefault.jpg", "dur": "1:36:30"}, {"id": "LCOlUHmBqso", "title": "Underground Jazz Grooves | Nu Acid Jazz for Productivity Sessions | 2 Hours Deep Focus", "thumb": "https://i.ytimg.com/vi/LCOlUHmBqso/mqdefault.jpg", "dur": "2:37:06"}, {"id": "81w48lfw9Fg", "title": "Acid Jazz Focus Flow 🎧 Groovy Nu Jazz Beats for Deep Work & Study", "thumb": "https://i.ytimg.com/vi/81w48lfw9Fg/mqdefault.jpg", "dur": "2:37:06"}, {"id": "yPhgVtR6sNQ", "title": "Acid Jazz & Funk Vibes | Sophisticated Instrumentals for Focus | 1 Hours Non Stop", "thumb": "https://i.ytimg.com/vi/yPhgVtR6sNQ/mqdefault.jpg", "dur": "1:42:40"}, {"id": "P67Tw0Zae5g", "title": "Ultimate Nu Jazz & Acid Jazz Mix | Sophisticated Smooth Beats for Focus", "thumb": "https://i.ytimg.com/vi/P67Tw0Zae5g/mqdefault.jpg", "dur": "1:57:37"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

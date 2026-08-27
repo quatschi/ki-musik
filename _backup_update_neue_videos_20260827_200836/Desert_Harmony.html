@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desert Harmony</title>
+<!-- categories: Weltmusik -->
+<!-- channel-id: UCbDZq2xcSrw2jEanocWcVBA -->
+<!-- channel-url: https://www.youtube.com/@DesertHarmony_101 -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Desert_Harmony.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/ln5X0xnV0Xb3sk45nQ1JsskoCTy8LZ85-9-vg5ox0gveq-sfryYa6QuX235DZIUPVHjU_yVeVg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Desert Harmony</div>
+      <div class="channel-count">230 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Desert Harmony";
+const KANAL = "Desert_Harmony.html";
+const ORIG_CATEGORIES = "Weltmusik";
+const VIDEOS = [{"id": "KZKJc87k0fQ", "title": "Serene Desert Soundscape | Arabic Ney & Oud for Restful Sleep", "thumb": "https://i.ytimg.com/vi/KZKJc87k0fQ/mqdefault.jpg", "dur": "3:18:06"}, {"id": "dZZz6NEUkQk", "title": "Serene Desert Soundscape 🌙 Ney Flute & Oud for Focus and Sleep", "thumb": "https://i.ytimg.com/vi/dZZz6NEUkQk/mqdefault.jpg", "dur": "2:08:51"}, {"id": "U92zK7oOvDA", "title": "Midnight Qanun & Oud 🌙 | Deep House & Arabic Lofi Fusion", "thumb": "https://i.ytimg.com/vi/U92zK7oOvDA/mqdefault.jpg", "dur": "2:09:22"}, {"id": "uZAkVYy9EDU", "title": "Inner Peace of the Desert 🖤 | Calm Oud & Ney Journey", "thumb": "https://i.ytimg.com/vi/uZAkVYy9EDU/mqdefault.jpg", "dur": "2:10:25"}, {"id": "1L-0tErblJk", "title": "Arabic Oud & Ney Flute 🌙 Relaxing Middle Eastern Music for Peace and Focus", "thumb": "https://i.ytimg.com/vi/1L-0tErblJk/mqdefault.jpg", "dur": "2:08:09"}, {"id": "xeXK-FAQlPc", "title": "Relaxing Arabian Oud Music 🌙 Calm Melodies for Deep Focus, Events & Quiet Evenings", "thumb": "https://i.ytimg.com/vi/xeXK-FAQlPc/mqdefault.jpg", "dur": "2:05:22"}, {"id": "-nMMqSJbi4o", "title": "Arabian Melodies 🌙 Relaxing Oud Music for Peaceful Nights, Focus & Reflection", "thumb": "https://i.ytimg.com/vi/-nMMqSJbi4o/mqdefault.jpg", "dur": "2:05:17"}, {"id": "EzTki2Aaxuo", "title": "Midnight Oud Oasis 🐪 | Deep House & Lofi Relaxation Journey", "thumb": "https://i.ytimg.com/vi/EzTki2Aaxuo/mqdefault.jpg", "dur": "2:07:04"}, {"id": "3c-bA_013I8", "title": "Arabian Calm After Midnight 🌙 | Luxurious Stress Relief Mix", "thumb": "https://i.ytimg.com/vi/3c-bA_013I8/mqdefault.jpg", "dur": "2:06:20"}, {"id": "1xHxGsy9DiE", "title": "Relaxing Arabic Oud 🌙 Feel Calm Instantly | Soothing Middle Eastern Instrumental Music", "thumb": "https://i.ytimg.com/vi/1xHxGsy9DiE/mqdefault.jpg", "dur": "2:06:15"}, {"id": "SWXUoytJQXs", "title": "Arabian Night Melodies ✨ Soothing Oud Music for Relaxation, Focus & Elegant Gatherings", "thumb": "https://i.ytimg.com/vi/SWXUoytJQXs/mqdefault.jpg", "dur": "2:01:39"}, {"id": "Y9j0vP53cx4", "title": "Deep Sad Arabic Oud | Emotional Arabic & Turkish Lofi for Late Nights", "thumb": "https://i.ytimg.com/vi/Y9j0vP53cx4/mqdefault.jpg", "dur": "1:59:36"}, {"id": "8WumiG5zBlk", "title": "Desert Healing ✨ | Peaceful Arabic Night Music for Relaxation", "thumb": "https://i.ytimg.com/vi/8WumiG5zBlk/mqdefault.jpg", "dur": "2:08:41"}, {"id": "v-7vKNawGuI", "title": "Lonely Arabian Nights 🌙 | Emotional Oud Music for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/v-7vKNawGuI/mqdefault.jpg", "dur": "2:13:05"}, {"id": "zhqiuUPTi2g", "title": "Moonlight Oud Sessions 🌙 | Relaxing Arabic Instrumental Journey", "thumb": "https://i.ytimg.com/vi/zhqiuUPTi2g/mqdefault.jpg", "dur": "2:12:23"}, {"id": "mEp80BYoY1w", "title": "Oud Melodies That Heal the Heart | موسيقى هادئة للدراسة", "thumb": "https://i.ytimg.com/vi/mEp80BYoY1w/mqdefault.jpg", "dur": "4:04:38"}, {"id": "ZWyz2aFeJt4", "title": "Cinematic Oud Mix 2026 | Deep Focus & Meditation Music", "thumb": "https://i.ytimg.com/vi/ZWyz2aFeJt4/mqdefault.jpg", "dur": "2:20:06"}, {"id": "9adpAbXRjLM", "title": "العود يلامس الروح | Emotional Oud & Deep Oriental Vibes", "thumb": "https://i.ytimg.com/vi/9adpAbXRjLM/mqdefault.jpg", "dur": "2:37:10"}, {"id": "qAnM2kHpwgs", "title": "Dark Habibi 🌙 Arabic Deep House for Late Night Vibes", "thumb": "https://i.ytimg.com/vi/qAnM2kHpwgs/mqdefault.jpg", "dur": "1:28:34"}, {"id": "aJU-GESJJ20", "title": "العود يلامس الروح | Emotional Oud & Deep Oriental Vibes", "thumb": "https://i.ytimg.com/vi/aJU-GESJJ20/mqdefault.jpg", "dur": "2:22:02"}, {"id": "SEPZM5XyaK8", "title": "🌙 Deep Arabic Meditation – Ney & Oud Healing Sounds | Inner Peace & Mindfulness", "thumb": "https://i.ytimg.com/vi/SEPZM5XyaK8/mqdefault.jpg", "dur": "2:32:54"}, {"id": "OZTc4ZXDHao", "title": "Arabian Nights 🌙 Dark Arabic Deep House for Late Night Drives", "thumb": "https://i.ytimg.com/vi/OZTc4ZXDHao/mqdefault.jpg", "dur": "1:26:25"}, {"id": "CcvdBz2NbG8", "title": "Healing Oud Instrumentals | موسيقى عود تهدئ الروح", "thumb": "https://i.ytimg.com/vi/CcvdBz2NbG8/mqdefault.jpg", "dur": "2:36:31"}, {"id": "tMfQjYFi2cU", "title": "🌙 Arabic Flamenco Fusion – Emotional Oud, Ney & Violin | Romantic Andalusian Vibes", "thumb": "https://i.ytimg.com/vi/tMfQjYFi2cU/mqdefault.jpg", "dur": "2:31:28"}, {"id": "6YfG5WUHW4M", "title": "Oud Melodies That Heal the Heart | العود يهدئ الروح", "thumb": "https://i.ytimg.com/vi/6YfG5WUHW4M/mqdefault.jpg", "dur": "2:22:40"}, {"id": "3GkQsB7J6JI", "title": "When the Oud Speaks, the Heart Listens | العود يلامس الروح", "thumb": "https://i.ytimg.com/vi/3GkQsB7J6JI/mqdefault.jpg", "dur": "2:25:09"}, {"id": "r52GwopfQEs", "title": "Deep Night Oud 🌙 | Emotional Arabic Solo Oud for Quiet Moments", "thumb": "https://i.ytimg.com/vi/r52GwopfQEs/mqdefault.jpg", "dur": "2:40:40"}, {"id": "xqfCjAfMrYI", "title": "Deep Night Feelings 💔 Soft Oud Instrumental | Calm, Emotional & Healing", "thumb": "https://i.ytimg.com/vi/xqfCjAfMrYI/mqdefault.jpg", "dur": "2:23:58"}, {"id": "F0gfEHYEZS0", "title": "Peaceful Oud Melodies | Emotional & Serene Desert Vibes ✨", "thumb": "https://i.ytimg.com/vi/F0gfEHYEZS0/mqdefault.jpg", "dur": "2:22:17"}, {"id": "BqwBuhSApM0", "title": "Midnight Oud 🌙 Deep Emotional Arabic Music | Calm Your Heart", "thumb": "https://i.ytimg.com/vi/BqwBuhSApM0/mqdefault.jpg", "dur": "2:21:42"}, {"id": "f4LQZ0Wn1fk", "title": "Deeply Relaxing Lofi | Arabic Oud for Stress Relief", "thumb": "https://i.ytimg.com/vi/f4LQZ0Wn1fk/mqdefault.jpg", "dur": "2:20:23"}, {"id": "HJgNfgSivVs", "title": "Desert Oud Solo | Emotional Arabic Ambient Music with Sustained Notes", "thumb": "https://i.ytimg.com/vi/HJgNfgSivVs/mqdefault.jpg", "dur": "2:23:01"}, {"id": "wgFEnhLat_I", "title": "Emotional and cinematic Arabic | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/wgFEnhLat_I/mqdefault.jpg", "dur": "2:29:46"}, {"id": "wqQIA-6RY5I", "title": "💔 Lost Love Arabic Music – Emotional Oud & Violin | Deep Nostalgia & Heartbreak", "thumb": "https://i.ytimg.com/vi/wqQIA-6RY5I/mqdefault.jpg", "dur": "2:31:41"}, {"id": "4aa3AQlCoiE", "title": "🌙 Slow Arabic Oud for Quiet Nights | Minimal Emotional Ambient", "thumb": "https://i.ytimg.com/vi/4aa3AQlCoiE/mqdefault.jpg", "dur": "2:21:53"}, {"id": "xCTS1hINVmg", "title": "Gentle Oud for Deep Inner Peace | موسيقى عود هادئة للاسترخاء", "thumb": "https://i.ytimg.com/vi/xCTS1hINVmg/mqdefault.jpg", "dur": "11:14:55"}, {"id": "N5iW9Lsf1oA", "title": "Extremely Minimal Oud Solo – Arabic Oud Beat You Can’t Skip | Addictive Melody", "thumb": "https://i.ytimg.com/vi/N5iW9Lsf1oA/mqdefault.jpg", "dur": "2:21:36"}, {"id": "QRk9F2XVTmM", "title": "Gentle Oud for Deep Inner Peace | موسيقى عود هادئة للاسترخاء", "thumb": "https://i.ytimg.com/vi/QRk9F2XVTmM/mqdefault.jpg", "dur": "2:19:43"}, {"id": "qcQ609sYHv8", "title": "Gentle Oud for Deep Inner Peace | موسيقى عود هادئة للاسترخاء", "thumb": "https://i.ytimg.com/vi/qcQ609sYHv8/mqdefault.jpg", "dur": "3:01:40"}, {"id": "AF3Q5EqsC6w", "title": "Deeply Relaxing Middle Eastern Night | Oud & Lofi Vibes", "thumb": "https://i.ytimg.com/vi/AF3Q5EqsC6w/mqdefault.jpg", "dur": "2:37:26"}, {"id": "sMbQnE85C8U", "title": "Arabic Music | Relaxing & Luxurious Eastern Vibes", "thumb": "https://i.ytimg.com/vi/sMbQnE85C8U/mqdefault.jpg", "dur": "2:34:32"}, {"id": "jtgcQihvmTM", "title": "Oud Melodies for a Calm Heart | العود يريح القلب", "thumb": "https://i.ytimg.com/vi/jtgcQihvmTM/mqdefault.jpg", "dur": "2:33:33"}, {"id": "rfpdMH2_H_M", "title": "Let the Oud Calm Your Mind | Ancient Arabic Music for Meditation", "thumb": "https://i.ytimg.com/vi/rfpdMH2_H_M/mqdefault.jpg", "dur": "2:31:42"}, {"id": "FbKspFlBmXU", "title": "🌙 Arabic Cinematic Music – Oud & Piano | A Story of Lost Love & Regret", "thumb": "https://i.ytimg.com/vi/FbKspFlBmXU/mqdefault.jpg", "dur": "2:34:22"}, {"id": "FJhq0Ib9KCw", "title": "The Symphony of Soul | سيمفونية الروح – Oud & Qanoun Journey", "thumb": "https://i.ytimg.com/vi/FJhq0Ib9KCw/mqdefault.jpg", "dur": "2:34:26"}, {"id": "2D1gn1ii8Ek", "title": "Broken Soul 🌙 Emotional Arabic Music | Crying Violin & Soft Oud", "thumb": "https://i.ytimg.com/vi/2D1gn1ii8Ek/mqdefault.jpg", "dur": "2:34:26"}, {"id": "UIddbgGB9gI", "title": "Arabic Music | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/UIddbgGB9gI/mqdefault.jpg", "dur": "2:32:36"}, {"id": "fJBVaETLiV0", "title": "موسيقى الشفاء | Oud Melodies That Heal the Heart 🧘‍♀️", "thumb": "https://i.ytimg.com/vi/fJBVaETLiV0/mqdefault.jpg", "dur": "2:35:41"}, {"id": "uC8xn9vUimM", "title": "Arabic Music | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/uC8xn9vUimM/mqdefault.jpg", "dur": "2:37:06"}, {"id": "xdxP8_0EZWk", "title": "The most Relaxing Turkish Oud | Get Relax in 5 minutes", "thumb": "https://i.ytimg.com/vi/xdxP8_0EZWk/mqdefault.jpg", "dur": "1:50:51"}, {"id": "QBmAItf-bUg", "title": "Lost in Memories | Clam Arabic Music For Deep Meditaion", "thumb": "https://i.ytimg.com/vi/QBmAItf-bUg/mqdefault.jpg", "dur": "2:32:55"}, {"id": "xGmbN2T8I4Q", "title": "Arabic Deep House Violin Under Starlight | Emotional Night Vibes", "thumb": "https://i.ytimg.com/vi/xGmbN2T8I4Q/mqdefault.jpg", "dur": "2:35:48"}, {"id": "jBrhdyQc4l4", "title": "Ultra Calming Middle Eastern Vibes | Oud Music for Stress Relief & Tranquility", "thumb": "https://i.ytimg.com/vi/jBrhdyQc4l4/mqdefault.jpg", "dur": "2:34:21"}, {"id": "cLGlPdhXYuY", "title": "Peaceful Middle Eastern Oud Instrumental | Enchanting Arabic Music for Stress Relief, Inner Peace", "thumb": "https://i.ytimg.com/vi/cLGlPdhXYuY/mqdefault.jpg", "dur": "2:44:00"}, {"id": "_TPaJ4VXTb8", "title": "Arabic Oud Meditations 🌙 Peaceful Middle Eastern Lute Music for Deep Focus & Calm", "thumb": "https://i.ytimg.com/vi/_TPaJ4VXTb8/mqdefault.jpg", "dur": "2:41:23"}, {"id": "OyVKMCZUWxM", "title": "Deep Arabic Meditation 🌙 | Calm Oud & Ney for Inner Peace", "thumb": "https://i.ytimg.com/vi/OyVKMCZUWxM/mqdefault.jpg", "dur": "2:37:37"}, {"id": "WOA2iP6MZ_4", "title": "Arabic Oud Music | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/WOA2iP6MZ_4/mqdefault.jpg", "dur": "2:18:51"}, {"id": "iKbGeCZV1Vw", "title": "Mystical Arabic Desert Music 🌙 | Oud, Ney & Qanun Relaxation", "thumb": "https://i.ytimg.com/vi/iKbGeCZV1Vw/mqdefault.jpg", "dur": "2:21:15"}, {"id": "LIEmGIotn7w", "title": "When the Desert Cries 🌌 | Deep Arabic Oud, Ney & Qanun Melody", "thumb": "https://i.ytimg.com/vi/LIEmGIotn7w/mqdefault.jpg", "dur": "2:18:51"}, {"id": "b2OUP3ybet0", "title": "Deep Solitude Nights | Emotional Oud & Ney Desert Music", "thumb": "https://i.ytimg.com/vi/b2OUP3ybet0/mqdefault.jpg", "dur": "2:18:16"}, {"id": "sRNZMTRHBCU", "title": "Arabic Oud & Ney Under the Moon 🌙 Music for Lonely Souls", "thumb": "https://i.ytimg.com/vi/sRNZMTRHBCU/mqdefault.jpg", "dur": "2:16:33"}, {"id": "alH_3zfyFdc", "title": "Night Arabic Oud & Ney 🌙 Deep Music for Loneliness and Inner Peace", "thumb": "https://i.ytimg.com/vi/alH_3zfyFdc/mqdefault.jpg", "dur": "2:19:08"}, {"id": "Ndhl-2hvFEQ", "title": "Arabic Music | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/Ndhl-2hvFEQ/mqdefault.jpg", "dur": "2:18:53"}, {"id": "0eysCFcW63E", "title": "Alone in the Desert | Deep Relaxation with Arabic Instruments", "thumb": "https://i.ytimg.com/vi/0eysCFcW63E/mqdefault.jpg", "dur": "2:18:11"}, {"id": "9o_ySwHXp0M", "title": "Ultra Soft Minimal Traditional Arabic | Deep Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/9o_ySwHXp0M/mqdefault.jpg", "dur": "2:29:39"}, {"id": "sACQypuVubo", "title": "Midnight Desert Ritual | Spiritual Arabic Darbuka & Ney", "thumb": "https://i.ytimg.com/vi/sACQypuVubo/mqdefault.jpg", "dur": "2:17:57"}, {"id": "M4Np9lX54Yo", "title": "Arabic Oud Music for Deep Meditation | Peaceful Middle Eastern Relaxation Journey", "thumb": "https://i.ytimg.com/vi/M4Np9lX54Yo/mqdefault.jpg", "dur": "2:09:11"}, {"id": "UrFlyDX-Xxo", "title": "Emotional Oud Solo | Relaxation with Arabic Instruments", "thumb": "https://i.ytimg.com/vi/UrFlyDX-Xxo/mqdefault.jpg", "dur": "2:31:00"}, {"id": "RhHoiSw_fog", "title": "موسيقى عربية تراثية هادئة | Traditional Arabic Instruments for Calm Atmosphere", "thumb": "https://i.ytimg.com/vi/RhHoiSw_fog/mqdefault.jpg", "dur": "2:15:12"}, {"id": "rYAGEzglm9Y", "title": "Deep Sad Arabic Oud | Desert Moonlight Meditation", "thumb": "https://i.ytimg.com/vi/rYAGEzglm9Y/mqdefault.jpg", "dur": "2:40:13"}, {"id": "8k1IinxcOqo", "title": "Extremely Minimal Oud in B Minor | Dark Arabic Emotional Music", "thumb": "https://i.ytimg.com/vi/8k1IinxcOqo/mqdefault.jpg", "dur": "2:18:10"}, {"id": "zA8mk7mZd5M", "title": "Deep Sad Arabic Oud | Slow, Broken Instrumental Melodies", "thumb": "https://i.ytimg.com/vi/zA8mk7mZd5M/mqdefault.jpg", "dur": "2:37:21"}, {"id": "TEO6dBycUj8", "title": "Deep sad Arabic instrumental music | Solo Oud playing extremely slow and broken melodies", "thumb": "https://i.ytimg.com/vi/TEO6dBycUj8/mqdefault.jpg", "dur": "2:07:58"}, {"id": "TbhyXniMmrQ", "title": "Broken Heart Arabic Music | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/TbhyXniMmrQ/mqdefault.jpg", "dur": "2:20:18"}, {"id": "ss8Tu7sa1vU", "title": "Oud Melodies That Heal the Heart | العود يهدئ الروح", "thumb": "https://i.ytimg.com/vi/ss8Tu7sa1vU/mqdefault.jpg", "dur": "2:33:38"}, {"id": "98ABcxf3YSU", "title": "Soft Arabic oud instrumental inspired by palm trees moving in morning breeze", "thumb": "https://i.ytimg.com/vi/98ABcxf3YSU/mqdefault.jpg", "dur": "2:20:27"}, {"id": "EZA95EfRiv8", "title": "Oud Notes with Very Gentle | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/EZA95EfRiv8/mqdefault.jpg", "dur": "2:32:27"}, {"id": "OPZAxD5obVo", "title": "Arabic Violin Nay Desert Echoes | Deep House Lofi Mix", "thumb": "https://i.ytimg.com/vi/OPZAxD5obVo/mqdefault.jpg", "dur": "2:29:42"}, {"id": "xzrYKUcOEKw", "title": "أصوات الشرق المهدئة | Arabic Oud & Turkish Ney for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/xzrYKUcOEKw/mqdefault.jpg", "dur": "2:32:08"}, {"id": "koLAVH3YqKc", "title": "Calm Arabic Music for Deep Meditation 🕊️ Soft Middle Eastern Melodies", "thumb": "https://i.ytimg.com/vi/koLAVH3YqKc/mqdefault.jpg", "dur": "2:10:28"}, {"id": "3TMdgBD76OA", "title": "Sad Turkish & Arabic Instrumental | Luxurious Chill Vibes", "thumb": "https://i.ytimg.com/vi/3TMdgBD76OA/mqdefault.jpg", "dur": "2:37:42"}, {"id": "zzhU1Mrr2LE", "title": "Oud Violin & Lofi Beats | Emotional Arabic Deep House Mix", "thumb": "https://i.ytimg.com/vi/zzhU1Mrr2LE/mqdefault.jpg", "dur": "2:09:44"}, {"id": "qySlAacErDw", "title": "Healing Oud & Desert Sounds | Mystical Middle Eastern Meditation", "thumb": "https://i.ytimg.com/vi/qySlAacErDw/mqdefault.jpg", "dur": "2:10:20"}, {"id": "orCWfhj0rvg", "title": "Minimal Arabic Spiritual Instrumental | Breathy Ney & Slow Bendir", "thumb": "https://i.ytimg.com/vi/orCWfhj0rvg/mqdefault.jpg", "dur": "2:03:06"}, {"id": "V8xUXg8ouqA", "title": "Relaxing Turkish & Arabic Music | Epic Middle Eastern Atmosphere", "thumb": "https://i.ytimg.com/vi/V8xUXg8ouqA/mqdefault.jpg", "dur": "2:21:13"}, {"id": "azA9BsJZ07k", "title": "When Everything Slows 🕊️ Calm Arabic Music for Meditation", "thumb": "https://i.ytimg.com/vi/azA9BsJZ07k/mqdefault.jpg", "dur": "2:09:46"}, {"id": "c7WskrXe1ac", "title": "The Oud's Forgotten Love | Haunting Middle Eastern Melody", "thumb": "https://i.ytimg.com/vi/c7WskrXe1ac/mqdefault.jpg", "dur": "2:40:02"}, {"id": "gp_DVRjWFwc", "title": "Silent Heart in the Desert | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/gp_DVRjWFwc/mqdefault.jpg", "dur": "2:16:53"}, {"id": "B_h0l_7Y3TY", "title": "Lonely Desert Vastness | Why This Arabic Music Works Better Than White Noise", "thumb": "https://i.ytimg.com/vi/B_h0l_7Y3TY/mqdefault.jpg", "dur": "2:09:43"}, {"id": "_kx39pHwDNY", "title": "Arabic Music | Relaxing & Epic Middle Eastern Vibes - Ney & Oud", "thumb": "https://i.ytimg.com/vi/_kx39pHwDNY/mqdefault.jpg", "dur": "2:16:33"}, {"id": "mXRWO_-DAms", "title": "The Sound of Soul | صوت الروح | Arabic Cinematic Music", "thumb": "https://i.ytimg.com/vi/mXRWO_-DAms/mqdefault.jpg", "dur": "2:09:08"}, {"id": "nTSQBj83O54", "title": "Arabic Oud, Qanun & Ney | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/nTSQBj83O54/mqdefault.jpg", "dur": "2:18:51"}, {"id": "PEFEUWQWjbw", "title": "This Oud + Ney Combo Is Destroying Focus Music Right Now", "thumb": "https://i.ytimg.com/vi/PEFEUWQWjbw/mqdefault.jpg", "dur": "2:12:08"}, {"id": "QLyPQcnu39Q", "title": "Arabic Oud Lofi That Hits Different When You're Stressed", "thumb": "https://i.ytimg.com/vi/QLyPQcnu39Q/mqdefault.jpg", "dur": "2:07:43"}, {"id": "1IuT0EFhaiE", "title": "Midnight Desert Ritual | Spiritual Arabic Darbuka & Oud", "thumb": "https://i.ytimg.com/vi/1IuT0EFhaiE/mqdefault.jpg", "dur": "2:16:14"}, {"id": "UHFlPibyHxk", "title": "Dark Darbuka Deep House | 8D Headphones Build-Up Experience", "thumb": "https://i.ytimg.com/vi/UHFlPibyHxk/mqdefault.jpg", "dur": "2:16:23"}, {"id": "fHPdtiDIOXs", "title": "Arabic Romantic Instrumental | Soft Oud & Nay – Lebanese Love Mood", "thumb": "https://i.ytimg.com/vi/fHPdtiDIOXs/mqdefault.jpg", "dur": "2:04:57"}, {"id": "PdpkE4z4cik", "title": "Very slow oud with Arabic soul | luxurious relaxation vibes", "thumb": "https://i.ytimg.com/vi/PdpkE4z4cik/mqdefault.jpg", "dur": "2:14:26"}, {"id": "MZZI4blwilw", "title": "Ultra soft Arabic Traditional Oud | Chill Deep House Remix", "thumb": "https://i.ytimg.com/vi/MZZI4blwilw/mqdefault.jpg", "dur": "2:08:03"}, {"id": "FfSfuQfHvik", "title": "Night Romance Arabic Instrumental | Emotional Oud melodies", "thumb": "https://i.ytimg.com/vi/FfSfuQfHvik/mqdefault.jpg", "dur": "2:10:47"}, {"id": "21CwiwJMZPA", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/21CwiwJMZPA/mqdefault.jpg", "dur": "2:11:07"}, {"id": "vZ0dOn0iNX4", "title": "Contemplative Arabic Oud Instrumental | Calming Music for Focus & Yoga", "thumb": "https://i.ytimg.com/vi/vZ0dOn0iNX4/mqdefault.jpg", "dur": "2:11:20"}, {"id": "FEpm8PWN1Wo", "title": "Deep Relaxation with Ney, Oud & Bendir | Arabic Spiritual Instrumental Mix", "thumb": "https://i.ytimg.com/vi/FEpm8PWN1Wo/mqdefault.jpg", "dur": "2:08:42"}, {"id": "zII-vv3cgso", "title": "Deep Meditation Arabic Music for Quiet Nights | Soft Instrumentals", "thumb": "https://i.ytimg.com/vi/zII-vv3cgso/mqdefault.jpg", "dur": "2:02:41"}, {"id": "pGQj98bMMi0", "title": "Emotional Moonlit Reflections | Turkish Oud & Deep House", "thumb": "https://i.ytimg.com/vi/pGQj98bMMi0/mqdefault.jpg", "dur": "2:08:48"}, {"id": "UVP1449YyoA", "title": "Arabic Oud Music for Relaxation | Peaceful Middle Eastern Melodies", "thumb": "https://i.ytimg.com/vi/UVP1449YyoA/mqdefault.jpg", "dur": "2:08:27"}, {"id": "-EWbRcFedMU", "title": "🕯️ Whispers of the Nay | Deep Spiritual Arabic Oud & Flute Meditation for Inner Stillness", "thumb": "https://i.ytimg.com/vi/-EWbRcFedMU/mqdefault.jpg", "dur": "2:06:23"}, {"id": "bTq7Ky1zdpo", "title": "Minimal Oud Solo | Stress Relief and Sleep Music with Eastern Vibes", "thumb": "https://i.ytimg.com/vi/bTq7Ky1zdpo/mqdefault.jpg", "dur": "2:07:47"}, {"id": "6QvVIZQtLLs", "title": "Deep Emotional Arabic Instrumental | Late-Night Listening", "thumb": "https://i.ytimg.com/vi/6QvVIZQtLLs/mqdefault.jpg", "dur": "2:07:07"}, {"id": "cWpBG5EJi6M", "title": "Love Separation | Deep Arabic Instrumental for Lonely Nights", "thumb": "https://i.ytimg.com/vi/cWpBG5EJi6M/mqdefault.jpg", "dur": "2:07:12"}, {"id": "2sqHbprD-u0", "title": "Desert Groove | Arabic Deep House with Oud Rhythmic Hooks", "thumb": "https://i.ytimg.com/vi/2sqHbprD-u0/mqdefault.jpg", "dur": "1:59:27"}, {"id": "gg_LCGXCSig", "title": "Soft Sorrow | Romantic Arabic Oud Instrumental for Calm Luxurious Nights", "thumb": "https://i.ytimg.com/vi/gg_LCGXCSig/mqdefault.jpg", "dur": "2:09:54"}, {"id": "_KgZbuI-6NM", "title": "Arabic Oud Solo | Emotional Deep House That Hits Different When You're Stressed", "thumb": "https://i.ytimg.com/vi/_KgZbuI-6NM/mqdefault.jpg", "dur": "2:10:29"}, {"id": "p_3LjM3Q0CA", "title": "Echoes of the Heart | أصداء القلب – Moroccan Sad Music", "thumb": "https://i.ytimg.com/vi/p_3LjM3Q0CA/mqdefault.jpg", "dur": "2:08:25"}, {"id": "rzv5WrGeKhk", "title": "Deep Meditation Arabic Music for Quiet Nights | Soft Instrumentals", "thumb": "https://i.ytimg.com/vi/rzv5WrGeKhk/mqdefault.jpg", "dur": "2:08:55"}, {"id": "WA5YFkp4bIM", "title": "Deep Meditation Arabic Music 🌿 Calm Middle Eastern Instrumentals", "thumb": "https://i.ytimg.com/vi/WA5YFkp4bIM/mqdefault.jpg", "dur": "2:11:12"}, {"id": "WQg-UOFEZZs", "title": "Arabic Dreams — A Traditional Instrumental of Memory and Feeling", "thumb": "https://i.ytimg.com/vi/WQg-UOFEZZs/mqdefault.jpg", "dur": "2:11:38"}, {"id": "vRM2rACv93A", "title": "Arabic Cinematic Music | The Sound of Soul • صوت الروح", "thumb": "https://i.ytimg.com/vi/vRM2rACv93A/mqdefault.jpg", "dur": "2:09:49"}, {"id": "nJ-GxHjfnuQ", "title": "Desert Stillness | سكون الصحراء – Ultra-Soft Arabic Instrumental", "thumb": "https://i.ytimg.com/vi/nJ-GxHjfnuQ/mqdefault.jpg", "dur": "2:07:58"}, {"id": "STv0HbF3pf0", "title": "Silent Reflections | Soft Oud & Airy Ney Ambient Soundscape", "thumb": "https://i.ytimg.com/vi/STv0HbF3pf0/mqdefault.jpg", "dur": "2:13:46"}, {"id": "AfSdWclNSFE", "title": "Calm Arabic Music for Deep Meditation 🕊️ Soft Middle Eastern Melodies", "thumb": "https://i.ytimg.com/vi/AfSdWclNSFE/mqdefault.jpg", "dur": "2:06:33"}, {"id": "1hhU-I6z8QE", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/1hhU-I6z8QE/mqdefault.jpg", "dur": "2:09:29"}, {"id": "UYYKLYmP4nQ", "title": "After Dark | بعد منتصف الليل – Luxury Arabic House", "thumb": "https://i.ytimg.com/vi/UYYKLYmP4nQ/mqdefault.jpg", "dur": "2:05:40"}, {"id": "ab3vVpSnYwk", "title": "Calm Arabic Music for Deep Meditation 🕊️ Soft Middle Eastern Melodies for Relaxation", "thumb": "https://i.ytimg.com/vi/ab3vVpSnYwk/mqdefault.jpg", "dur": "2:04:30"}, {"id": "YI-eqpGmFv4", "title": "Ultra-Soft Arabic Meditation | Slow Oud & Mystical Nay Ambience", "thumb": "https://i.ytimg.com/vi/YI-eqpGmFv4/mqdefault.jpg", "dur": "2:07:37"}, {"id": "Kt6d3JnHnHM", "title": "Ultra-Soft Arabic Ambient | Emotional Oud & Ney for Night Solitude", "thumb": "https://i.ytimg.com/vi/Kt6d3JnHnHM/mqdefault.jpg", "dur": "2:08:17"}, {"id": "0IZUpei_PrI", "title": "أنغام عود هادئة تساعد على تهدئة الذهن وخلق لحظات من السلام الداخلي", "thumb": "https://i.ytimg.com/vi/0IZUpei_PrI/mqdefault.jpg", "dur": "2:06:25"}, {"id": "l7NMKkn_7WQ", "title": "Oud Melodies That Heal the Heart | العود يهدئ الروح", "thumb": "https://i.ytimg.com/vi/l7NMKkn_7WQ/mqdefault.jpg", "dur": "2:12:42"}, {"id": "m4_cApTsH5Q", "title": "Arabian Techno 2026 ⚡ Dark & Exotic Club Drop | Bedouin Style", "thumb": "https://i.ytimg.com/vi/m4_cApTsH5Q/mqdefault.jpg", "dur": "13:04"}, {"id": "SSslQD4p2kA", "title": "Desert Harmony  – Luxurious Oud & Deep House for Relaxation", "thumb": "https://i.ytimg.com/vi/SSslQD4p2kA/mqdefault.jpg", "dur": "2:12:50"}, {"id": "HvmwLNYmUgE", "title": "Minimal Oud Solo | Stress Relief and Sleep Music with Eastern Vibes", "thumb": "https://i.ytimg.com/vi/HvmwLNYmUgE/mqdefault.jpg", "dur": "2:11:08"}, {"id": "VQXF6Zmi4ZI", "title": "Luxurious Calm Atmosphere | Spiritual Arabic Sufi Ambient", "thumb": "https://i.ytimg.com/vi/VQXF6Zmi4ZI/mqdefault.jpg", "dur": "2:15:07"}, {"id": "fX8xh7asyjE", "title": "Luxury Arabic Deep House | Oud Grooves & Late-Night Club Vibes", "thumb": "https://i.ytimg.com/vi/fX8xh7asyjE/mqdefault.jpg", "dur": "2:05:12"}, {"id": "-G9jJA_t8zg", "title": "Layali Sufi | Arabic Ney & Oud Deep House for Peaceful Nights", "thumb": "https://i.ytimg.com/vi/-G9jJA_t8zg/mqdefault.jpg", "dur": "2:30:25"}, {"id": "gzpUcLDXg2Q", "title": "Arabian Club Fever 2026 🌙 Deep Techno House | Mysterious Desert Vibes", "thumb": "https://i.ytimg.com/vi/gzpUcLDXg2Q/mqdefault.jpg", "dur": "29:41"}, {"id": "U2Wpf4BU6j8", "title": "When the Oud Cries | حين يبكي العود – Arabic Instrumental", "thumb": "https://i.ytimg.com/vi/U2Wpf4BU6j8/mqdefault.jpg", "dur": "2:06:06"}, {"id": "qex5AAUYpnI", "title": "Tranquil Middle Eastern Soundscape | Oud & Ney Lofi Fusion", "thumb": "https://i.ytimg.com/vi/qex5AAUYpnI/mqdefault.jpg", "dur": "2:09:28"}, {"id": "OkfsabxKg4o", "title": "أنغام عود تهدئ الذهن وتحقق السلام الداخلي | موسيقى استرخاء عميقة", "thumb": "https://i.ytimg.com/vi/OkfsabxKg4o/mqdefault.jpg", "dur": "2:11:44"}, {"id": "m-CVF0SbU48", "title": "Ultra-Soft Arabic Ambient | Emotional Oud & Ney for Night Solitude", "thumb": "https://i.ytimg.com/vi/m-CVF0SbU48/mqdefault.jpg", "dur": "2:07:25"}, {"id": "t9H4w8By_Tg", "title": "Slow, deeply relaxing Arabic night | Ney & Oud Lofi Mix", "thumb": "https://i.ytimg.com/vi/t9H4w8By_Tg/mqdefault.jpg", "dur": "2:10:06"}, {"id": "Zp30XizteVA", "title": "Gentle Oud Solo 2025 | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/Zp30XizteVA/mqdefault.jpg", "dur": "2:09:23"}, {"id": "YG7VxzbxL4E", "title": "Oud Melodies That Heal the Heart | العود يهدئ الروح | Oud, Ney & Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/YG7VxzbxL4E/mqdefault.jpg", "dur": "11:55:00"}, {"id": "sR0KtcBfaRU", "title": "Luxurious Oud Melodies for Stress Relief | أنغام العود الفاخرة لتخفيف الضغط", "thumb": "https://i.ytimg.com/vi/sR0KtcBfaRU/mqdefault.jpg", "dur": "2:09:46"}, {"id": "QlC_x0B4Kc8", "title": "Inner Journey | Spiritual Arabic Sufi Soundscape with Ney & Daf Instruments", "thumb": "https://i.ytimg.com/vi/QlC_x0B4Kc8/mqdefault.jpg", "dur": "2:30:26"}, {"id": "vId3qx9VAHQ", "title": "Ultra-Soft Arabic Meditation | Slow Oud & Mystical Nay Ambience", "thumb": "https://i.ytimg.com/vi/vId3qx9VAHQ/mqdefault.jpg", "dur": "2:10:24"}, {"id": "BS9EMqLunw8", "title": "Traditional Oud Solo | Serene Arabian Desert Soundscape", "thumb": "https://i.ytimg.com/vi/BS9EMqLunw8/mqdefault.jpg", "dur": "2:11:29"}, {"id": "UDIUXpqgZIs", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/UDIUXpqgZIs/mqdefault.jpg", "dur": "2:08:38"}, {"id": "CBwcmZW8McI", "title": "أصداء القلب | موسيقى عربية روحانية صامتة", "thumb": "https://i.ytimg.com/vi/CBwcmZW8McI/mqdefault.jpg", "dur": "2:07:55"}, {"id": "YtKJPrKp09c", "title": "Echoes of the Heart | Arabic Ney Ambient for Deep Reflection", "thumb": "https://i.ytimg.com/vi/YtKJPrKp09c/mqdefault.jpg", "dur": "2:06:58"}, {"id": "HbtIA5fPqnc", "title": "Stress Relief Music: Oud & Deep House | موسيقى تخفيف التوتر العميقة", "thumb": "https://i.ytimg.com/vi/HbtIA5fPqnc/mqdefault.jpg", "dur": "2:28:23"}, {"id": "uxyuYVcRQ_4", "title": "خيال الغروب | موسيقى عربية رومانسية للاسترخاء العميق", "thumb": "https://i.ytimg.com/vi/uxyuYVcRQ_4/mqdefault.jpg", "dur": "2:04:12"}, {"id": "l0wImjC2Idw", "title": "Desert Stillness | Soft Ney, Oud & Warm Qanun Textures", "thumb": "https://i.ytimg.com/vi/l0wImjC2Idw/mqdefault.jpg", "dur": "2:02:04"}, {"id": "7tZMEeRlmS4", "title": "Arabic Romantic Instrumental | Soft Oud & Nay – Lebanese Love Mood", "thumb": "https://i.ytimg.com/vi/7tZMEeRlmS4/mqdefault.jpg", "dur": "2:05:40"}, {"id": "FI3LkuBwn6k", "title": "Desert Silence | Spiritual Ney & Airy Pads for Lonely Nights", "thumb": "https://i.ytimg.com/vi/FI3LkuBwn6k/mqdefault.jpg", "dur": "2:03:17"}, {"id": "DBtRovKy5LU", "title": "Relaxing Arabic Instrumental | Oud, Qanun & Nay for Calm Background", "thumb": "https://i.ytimg.com/vi/DBtRovKy5LU/mqdefault.jpg", "dur": "2:06:09"}, {"id": "YQwhrs75PBA", "title": "Sufi Trance Meditation | Mystical Ney & Daf in Maqam Saba", "thumb": "https://i.ytimg.com/vi/YQwhrs75PBA/mqdefault.jpg", "dur": "2:08:44"}, {"id": "BINa4Onx9qs", "title": "✨ Spiritual Arabic Meditation | Oud & Ney Maqam Bayati for Peace", "thumb": "https://i.ytimg.com/vi/BINa4Onx9qs/mqdefault.jpg", "dur": "2:05:36"}, {"id": "lfcvzsSXCsE", "title": "Solo Oud for Lonely Nights | Slow Emotional Arabic Night Music", "thumb": "https://i.ytimg.com/vi/lfcvzsSXCsE/mqdefault.jpg", "dur": "2:03:57"}, {"id": "bXs6RwsRh9U", "title": "Arabian Midnight Healing | Slow Oud & Nay in a Lantern-Lit Desert Night", "thumb": "https://i.ytimg.com/vi/bXs6RwsRh9U/mqdefault.jpg", "dur": "2:03:56"}, {"id": "_OppY4QHl1o", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/_OppY4QHl1o/mqdefault.jpg", "dur": "2:09:27"}, {"id": "E89sUt7Y9-g", "title": "Desert Lantern Nights | Deeply Relaxing Arabic Oud & Nay", "thumb": "https://i.ytimg.com/vi/E89sUt7Y9-g/mqdefault.jpg", "dur": "2:02:37"}, {"id": "ql3uAv-j6R4", "title": "Soft Oud Melodies for Quiet Nights and Inner Peace | أنغام العود الهادئة", "thumb": "https://i.ytimg.com/vi/ql3uAv-j6R4/mqdefault.jpg", "dur": "1:57:52"}, {"id": "-reuzW2nhhc", "title": "Emotional Arabic Violin & Nay | Heart-Touching Slow Night Music", "thumb": "https://i.ytimg.com/vi/-reuzW2nhhc/mqdefault.jpg", "dur": "1:59:45"}, {"id": "tSF_gxjhVUs", "title": "Late-Night Violin & Nay | كمانجا وناي لليالي الوحدة والتأمل", "thumb": "https://i.ytimg.com/vi/tSF_gxjhVUs/mqdefault.jpg", "dur": "2:02:47"}, {"id": "o6OZRVfqkig", "title": "Emotional Oud & Nay Breeze | همسات الناي والعود لصفاء الليل", "thumb": "https://i.ytimg.com/vi/o6OZRVfqkig/mqdefault.jpg", "dur": "2:01:45"}, {"id": "W1gugy8sVlM", "title": "Oud & Nay Traditional Piece | Serene Desert Night Ambiance", "thumb": "https://i.ytimg.com/vi/W1gugy8sVlM/mqdefault.jpg", "dur": "2:04:33"}, {"id": "2oHWh6diEIU", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/2oHWh6diEIU/mqdefault.jpg", "dur": "1:59:35"}, {"id": "PVrxSAZi6Tg", "title": "Enchanting Arabic Oud Melodies — A Mystical Middle Eastern Music Journey 🎶", "thumb": "https://i.ytimg.com/vi/PVrxSAZi6Tg/mqdefault.jpg", "dur": "2:03:40"}, {"id": "IIoWgqTLqwU", "title": "Arabian Night Intimacy | Warm Oud & Soft Nay Under Desert Wind", "thumb": "https://i.ytimg.com/vi/IIoWgqTLqwU/mqdefault.jpg", "dur": "2:06:59"}, {"id": "p4DTbUDwlLQ", "title": "Oud in the Silence | Relaxing & Epic Middle Eastern Vibes", "thumb": "https://i.ytimg.com/vi/p4DTbUDwlLQ/mqdefault.jpg", "dur": "2:10:48"}, {"id": "IUuLaN3BhJw", "title": "Healing Oud & Desert Sounds | Mystical Middle Eastern Meditation", "thumb": "https://i.ytimg.com/vi/IUuLaN3BhJw/mqdefault.jpg", "dur": "2:08:32"}, {"id": "w7TEBEKC-IE", "title": "Desert Night Whispers | Emotional Nay & Deep Oud Melodies", "thumb": "https://i.ytimg.com/vi/w7TEBEKC-IE/mqdefault.jpg", "dur": "2:03:53"}, {"id": "1_upJeViynI", "title": "Softest Arabic Night Music 🌙 | Oud Melodies & Nay Breeze", "thumb": "https://i.ytimg.com/vi/1_upJeViynI/mqdefault.jpg", "dur": "2:05:35"}, {"id": "t35R75ml3n0", "title": "✨ Spiritual Arabic Meditation | Oud & Ney Maqam Bayati for Peace", "thumb": "https://i.ytimg.com/vi/t35R75ml3n0/mqdefault.jpg", "dur": "2:02:36"}, {"id": "9_0X8WotyYI", "title": "The Softest Arabi Oud - Part 1", "thumb": "https://i.ytimg.com/vi/9_0X8WotyYI/mqdefault.jpg", "dur": "3:27"}, {"id": "5V068bIXqMM", "title": "Desert Oud | Relaxing & Epic Middle Eastern Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/5V068bIXqMM/mqdefault.jpg", "dur": "2:05:49"}, {"id": "8Unr3XNZcl4", "title": "The Softest Arabic Oud - Part 2", "thumb": "https://i.ytimg.com/vi/8Unr3XNZcl4/mqdefault.jpg", "dur": "5:46"}, {"id": "PEO6pn7i_l8", "title": "💫 Spiritual Arabic Oud & Ney Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/PEO6pn7i_l8/mqdefault.jpg", "dur": "9:21:07"}, {"id": "3GTF3J3pAqA", "title": "Arabian Lonely Night Calm | Deeply Relaxing Oud & Nay Melodies", "thumb": "https://i.ytimg.com/vi/3GTF3J3pAqA/mqdefault.jpg", "dur": "1:58:01"}, {"id": "vjJCa97oL7Y", "title": "The Sound of Soul | صوت الروح | Arabic Cinematic Music", "thumb": "https://i.ytimg.com/vi/vjJCa97oL7Y/mqdefault.jpg", "dur": "2:00:17"}, {"id": "n1pd7_7mpKQ", "title": "💫 Spiritual Arabic Oud & Ney Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/n1pd7_7mpKQ/mqdefault.jpg", "dur": "2:00:46"}, {"id": "jV6iqu92cdg", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/jV6iqu92cdg/mqdefault.jpg", "dur": "2:03:59"}, {"id": "3Qd1oyMmkL8", "title": "Whispers of the Oud | همسات العود | Deep Arabic Meditation Music", "thumb": "https://i.ytimg.com/vi/3Qd1oyMmkL8/mqdefault.jpg", "dur": "2:00:38"}, {"id": "dRKk8HCRyRY", "title": "Deep Midnight Reflections | Emotional Arabic Violin & Nay Melodies", "thumb": "https://i.ytimg.com/vi/dRKk8HCRyRY/mqdefault.jpg", "dur": "2:04:37"}, {"id": "kthIh98IrB4", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/kthIh98IrB4/mqdefault.jpg", "dur": "2:03:53"}, {"id": "wLZ0kVWxAz8", "title": "The Sound of Soul | صوت الروح | Arabic Cinematic Music", "thumb": "https://i.ytimg.com/vi/wLZ0kVWxAz8/mqdefault.jpg", "dur": "2:01:03"}, {"id": "HoIR928m_XQ", "title": "Whispers of the Oud | همسات العود | Deep Arabic Meditation Music", "thumb": "https://i.ytimg.com/vi/HoIR928m_XQ/mqdefault.jpg", "dur": "2:06:19"}, {"id": "mOB_raBwxik", "title": "🌅 Peaceful Oud and Violin Harmony | Deep Relaxation Music for Soul Healing", "thumb": "https://i.ytimg.com/vi/mOB_raBwxik/mqdefault.jpg", "dur": "2:08:29"}, {"id": "XyAyauQUU2g", "title": "The Sound of Soul | صوت الروح | Arabic Cinematic Music", "thumb": "https://i.ytimg.com/vi/XyAyauQUU2g/mqdefault.jpg", "dur": "2:07:18"}, {"id": "yyk-jXJW1do", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/yyk-jXJW1do/mqdefault.jpg", "dur": "2:00:40"}, {"id": "eGf9YqmN01A", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/eGf9YqmN01A/mqdefault.jpg", "dur": "2:06:02"}, {"id": "-0jV_5tKqaY", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/-0jV_5tKqaY/mqdefault.jpg", "dur": "2:07:24"}, {"id": "ETfYTSQRE6s", "title": "Peaceful Middle Eastern Ambient — Arabic Chillout Music for Meditation & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/ETfYTSQRE6s/mqdefault.jpg", "dur": "2:01:54"}, {"id": "H-BAJfpmxyo", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/H-BAJfpmxyo/mqdefault.jpg", "dur": "2:01:19"}, {"id": "VwTWY-3aajE", "title": "Enchanting Arabic Oud Melodies — A Mystical Middle Eastern Music Journey 🎶", "thumb": "https://i.ytimg.com/vi/VwTWY-3aajE/mqdefault.jpg", "dur": "1:59:37"}, {"id": "tNXf-XO9qio", "title": "🌅 Peaceful Oud and Violin Harmony | Deep Relaxation Music for Soul Healing", "thumb": "https://i.ytimg.com/vi/tNXf-XO9qio/mqdefault.jpg", "dur": "1:55:06"}, {"id": "wEnHWdnZEQ8", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/wEnHWdnZEQ8/mqdefault.jpg", "dur": "2:00:22"}, {"id": "2Cd9XHbH--Y", "title": "Softest Oud Melodies for Inner Peace | أنغام العود للسلام الداخلي", "thumb": "https://i.ytimg.com/vi/2Cd9XHbH--Y/mqdefault.jpg", "dur": "2:02:02"}, {"id": "yWKOPrd8quE", "title": "🕯️ Whispers of the Nay | Deep Spiritual Arabic Oud & Flute Meditation for Inner Stillness", "thumb": "https://i.ytimg.com/vi/yWKOPrd8quE/mqdefault.jpg", "dur": "2:04:44"}, {"id": "rYw9e8cJ1pY", "title": "Oud & Violin Emotions | مشاعر العود والكمان العربي", "thumb": "https://i.ytimg.com/vi/rYw9e8cJ1pY/mqdefault.jpg", "dur": "2:01:50"}, {"id": "3622nNQ_gFY", "title": "🌅 Peaceful Oud and Violin Harmony | Deep Relaxation Music for Soul Healing", "thumb": "https://i.ytimg.com/vi/3622nNQ_gFY/mqdefault.jpg", "dur": "2:03:19"}, {"id": "amMQJnrctHg", "title": "🕊️ Calming Oud and Violin | Arabic Meditation for Sleep & Relaxation (Maqam Bayati)", "thumb": "https://i.ytimg.com/vi/amMQJnrctHg/mqdefault.jpg", "dur": "2:05:33"}, {"id": "f9ikBt7LTQw", "title": "The Sound of Soul | صوت الروح | Arabic Cinematic Music", "thumb": "https://i.ytimg.com/vi/f9ikBt7LTQw/mqdefault.jpg", "dur": "2:10:01"}, {"id": "BUZGJtSeX20", "title": "Whispers of the Oud | همسات العود | Deep Arabic Meditation Music", "thumb": "https://i.ytimg.com/vi/BUZGJtSeX20/mqdefault.jpg", "dur": "1:59:49"}, {"id": "idVrjsjTJOg", "title": "Arabic Dreams | أحلام عربية | Emotional Traditional Instrumental", "thumb": "https://i.ytimg.com/vi/idVrjsjTJOg/mqdefault.jpg", "dur": "2:07:36"}, {"id": "Q71I199rPXw", "title": "Tales of the Desert | حكايات الصحراء | Emotional Arabic Instrumental", "thumb": "https://i.ytimg.com/vi/Q71I199rPXw/mqdefault.jpg", "dur": "2:07:50"}, {"id": "gocIXzVW1yU", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/gocIXzVW1yU/mqdefault.jpg", "dur": "2:02:27"}, {"id": "bInCeDQN6Fo", "title": "Whispers of the Oud | همسات العود | Deep Arabic Meditation Music", "thumb": "https://i.ytimg.com/vi/bInCeDQN6Fo/mqdefault.jpg", "dur": "2:05:41"}, {"id": "bkNDPrZXXao", "title": "Beyond the Silence | Oud & Nay for Deep Relaxation | ما وراء الصمت", "thumb": "https://i.ytimg.com/vi/bkNDPrZXXao/mqdefault.jpg", "dur": "2:07:48"}, {"id": "iQjqM0sWheo", "title": "Beyond the Silence | Oud & Nay for Deep Relaxation | ما وراء الصمت", "thumb": "https://i.ytimg.com/vi/iQjqM0sWheo/mqdefault.jpg", "dur": "2:06:16"}, {"id": "B_CLRPe9EWo", "title": "Soul of Silence | Oud & Nay in a Minimal Arabic Night", "thumb": "https://i.ytimg.com/vi/B_CLRPe9EWo/mqdefault.jpg", "dur": "2:06:32"}, {"id": "KMCIXQKgHKk", "title": "Mystic Desert Oud & Nay | موسيقى عربية روحية هادئة", "thumb": "https://i.ytimg.com/vi/KMCIXQKgHKk/mqdefault.jpg", "dur": "2:02:20"}, {"id": "ZQJGso2J0sY", "title": "Oud Melodies That Heal the Heart | العود يهدئ الروح", "thumb": "https://i.ytimg.com/vi/ZQJGso2J0sY/mqdefault.jpg", "dur": "2:08:29"}, {"id": "bPtf3NZMhww", "title": "Whispers of the Oud | همسات العود | Deep Arabic Meditation Music", "thumb": "https://i.ytimg.com/vi/bPtf3NZMhww/mqdefault.jpg", "dur": "2:03:19"}, {"id": "EddJODPKZns", "title": "Whispers of the Oud – Arabic Lo-Fi Chill Beats for Deep Focus", "thumb": "https://i.ytimg.com/vi/EddJODPKZns/mqdefault.jpg", "dur": "2:03:13"}, {"id": "8zp3SRxeBec", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/8zp3SRxeBec/mqdefault.jpg", "dur": "2:02:10"}, {"id": "TkPbiXzprDM", "title": "🌙 Desert Harmony-Emotional Turkish Oud & Arabic Lo-Fi 2025 | Relaxing Chill Beats for Study & Sleep", "thumb": "https://i.ytimg.com/vi/TkPbiXzprDM/mqdefault.jpg", "dur": "2:03:20"}, {"id": "BK8Kbb_kKgc", "title": "🎵 Meditative Oud & Nay Music | 🌙 موسيقى العود والناي للتأمل (Deep Relaxation)", "thumb": "https://i.ytimg.com/vi/BK8Kbb_kKgc/mqdefault.jpg", "dur": "2:02:07"}, {"id": "AAgJkkk2kPo", "title": "Enchanting Arabic Oud Melodies ~ Mystical Middle Eastern Music Journey 🎶", "thumb": "https://i.ytimg.com/vi/AAgJkkk2kPo/mqdefault.jpg", "dur": "2:01:31"}, {"id": "xXqWdWUZDXI", "title": "🎵 Meditative Oud & Nay Music | 🌙 موسيقى العود والناي للتأمل (Deep Relaxation)", "thumb": "https://i.ytimg.com/vi/xXqWdWUZDXI/mqdefault.jpg", "dur": "2:02:00"}, {"id": "MnFrNinIfHo", "title": "The Soul of Istanbul in Lofi 🕌 Ney & Oud for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/MnFrNinIfHo/mqdefault.jpg", "dur": "2:04:24"}, {"id": "17F3UimPshk", "title": "💫 Spiritual Arabic Oud & Violin Meditation | Mystical Maqam Bayati for Inner Peace and Healing", "thumb": "https://i.ytimg.com/vi/17F3UimPshk/mqdefault.jpg", "dur": "2:02:17"}, {"id": "PjdJ_cjSGow", "title": "This Arabic Lofi Will Transport You 🪐 (Oud & Ney Mix)", "thumb": "https://i.ytimg.com/vi/PjdJ_cjSGow/mqdefault.jpg", "dur": "2:00:01"}, {"id": "pcmWjOKsJMo", "title": "🎵 Meditative Oud & Nay Music | 🌙 موسيقى العود والناي للتأمل (Deep Relaxation)", "thumb": "https://i.ytimg.com/vi/pcmWjOKsJMo/mqdefault.jpg", "dur": "2:02:09"}, {"id": "kasNHCkitOw", "title": "Arabian Serenity – Oud & Qanun Fusion for Deep Relaxation and Inner Peace", "thumb": "https://i.ytimg.com/vi/kasNHCkitOw/mqdefault.jpg", "dur": "2:00:42"}, {"id": "QC2o96ql6e0", "title": "2 Hour of Spiritual Arabic Music - Oud, Ney & Ethereal Vocals for Focus & Calm 🌙", "thumb": "https://i.ytimg.com/vi/QC2o96ql6e0/mqdefault.jpg", "dur": "2:00:42"}, {"id": "GIB-DiEDLbU", "title": "🎵 Meditative Oud & Nay Music | 🌙 موسيقى العود والناي للتأمل (Deep Relaxation)", "thumb": "https://i.ytimg.com/vi/GIB-DiEDLbU/mqdefault.jpg", "dur": "2:03:22"}, {"id": "Sh7MrcQoDbI", "title": "The Soul of Istanbul in Lofi 🕌 Ney & Oud for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/Sh7MrcQoDbI/mqdefault.jpg", "dur": "2:00:01"}, {"id": "jVXApzxdwnY", "title": "Arabic Lofi Hip Hop Mix 🎧 Oud & Ney for Relaxation / Sleep / Study", "thumb": "https://i.ytimg.com/vi/jVXApzxdwnY/mqdefault.jpg", "dur": "2:00:05"}, {"id": "PerJPWFuaGE", "title": "Desert Night Vibes | Emotional Oud Instrumentals for Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/PerJPWFuaGE/mqdefault.jpg", "dur": "2:00:01"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

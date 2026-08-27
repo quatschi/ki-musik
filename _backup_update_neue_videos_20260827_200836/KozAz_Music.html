@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KozAz Music</title>
+<!-- categories: Weltmusik, Jazz -->
+<!-- channel-id: UCkMgxd6jfmhrhPJ7ZkK6yEg -->
+<!-- channel-url: https://youtube.com/@kozazmusic -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=KozAz_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/ytc/AIdro_kAhkV3yBK2HxTXDgSHgzZsxBWxJe7QlbBcpndSxi6DQg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">KozAz Music</div>
+      <div class="channel-count">208 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "KozAz Music";
+const KANAL = "KozAz_Music.html";
+const ORIG_CATEGORIES = "Weltmusik, Jazz";
+const VIDEOS = [{"id": "N6DLY0r5s1E", "title": "Indian Music • Mystical Indian Nights", "thumb": "https://i.ytimg.com/vi/N6DLY0r5s1E/mqdefault.jpg", "dur": "1:10:04"}, {"id": "Uch1IX3SsMo", "title": "Indian Music • The Soul of Ancient India", "thumb": "https://i.ytimg.com/vi/Uch1IX3SsMo/mqdefault.jpg", "dur": "1:11:36"}, {"id": "INuTFYEmQR0", "title": "Indian Music • Journey Through Ancient India", "thumb": "https://i.ytimg.com/vi/INuTFYEmQR0/mqdefault.jpg", "dur": "1:06:17"}, {"id": "5xyFziUfJoM", "title": "Indian Music • Echoes of a Timeless India", "thumb": "https://i.ytimg.com/vi/5xyFziUfJoM/mqdefault.jpg", "dur": "1:06:53"}, {"id": "P1iJK9DDXn8", "title": "Peaceful Indian Music to Melt Away Stress & Anxiety", "thumb": "https://i.ytimg.com/vi/P1iJK9DDXn8/mqdefault.jpg", "dur": "1:07:48"}, {"id": "JvbnfJFgkWQ", "title": "Mystical Indian Music for the Soul | 1 Hour", "thumb": "https://i.ytimg.com/vi/JvbnfJFgkWQ/mqdefault.jpg", "dur": "1:04:53"}, {"id": "M1YPRU8nx6k", "title": "Indian Calm Music • Whispering Banyan", "thumb": "https://i.ytimg.com/vi/M1YPRU8nx6k/mqdefault.jpg", "dur": "1:06:32"}, {"id": "ejAVPZiM1pg", "title": "Soft Indian Melodies • Meditation & Mindfulness", "thumb": "https://i.ytimg.com/vi/ejAVPZiM1pg/mqdefault.jpg", "dur": "1:07:22"}, {"id": "_DPFvH7vXSU", "title": "Soft Indian Instrumental • Dawn Breaking Gently", "thumb": "https://i.ytimg.com/vi/_DPFvH7vXSU/mqdefault.jpg", "dur": "1:11:25"}, {"id": "0NvFyEHQDPk", "title": "Temple Garden Mist | Soothing Indian Instrumental for Yoga", "thumb": "https://i.ytimg.com/vi/0NvFyEHQDPk/mqdefault.jpg", "dur": "1:08:35"}, {"id": "Cp9vGDoSBQc", "title": "Soothing Indian Melodies • Lotus Dawn | Meditation & Healing Soundscape", "thumb": "https://i.ytimg.com/vi/Cp9vGDoSBQc/mqdefault.jpg", "dur": "1:10:11"}, {"id": "2q480rjA5m4", "title": "Indian Jazz • Bombay After Dark", "thumb": "https://i.ytimg.com/vi/2q480rjA5m4/mqdefault.jpg", "dur": "1:06:29"}, {"id": "5cQGjo3iMO8", "title": "Monsoon Silk Sessions | Raga-Inspired Jazz for Rainy Nights", "thumb": "https://i.ytimg.com/vi/5cQGjo3iMO8/mqdefault.jpg", "dur": "1:08:20"}, {"id": "ShKvJ1ZvbzI", "title": "Indian Fusion Jazz Lounge | Sophisticated Midnight Vibes", "thumb": "https://i.ytimg.com/vi/ShKvJ1ZvbzI/mqdefault.jpg", "dur": "1:10:11"}, {"id": "VVv35FwyMuQ", "title": "Indian Raga Jazz • Piano, Bass & Sophisticated Fusion", "thumb": "https://i.ytimg.com/vi/VVv35FwyMuQ/mqdefault.jpg", "dur": "1:10:59"}, {"id": "RWCYVbDXsho", "title": "Velvet Raga Nights: Where Indian Melody Meets Sophisticated Jazz", "thumb": "https://i.ytimg.com/vi/RWCYVbDXsho/mqdefault.jpg", "dur": "1:05:26"}, {"id": "Sj88EeOT3ck", "title": "Elegantly Blended: Raga & Jazz After Dark", "thumb": "https://i.ytimg.com/vi/Sj88EeOT3ck/mqdefault.jpg", "dur": "1:06:34"}, {"id": "ZAvC2dSDTS8", "title": "Gentle Indian Melodies | Yoga, Breathing & Meditation Soundscape", "thumb": "https://i.ytimg.com/vi/ZAvC2dSDTS8/mqdefault.jpg", "dur": "1:05:55"}, {"id": "nNOhbU1kp_M", "title": "Indian Music • Marigold River Festival & Peaceful Evening Melodies", "thumb": "https://i.ytimg.com/vi/nNOhbU1kp_M/mqdefault.jpg", "dur": "1:12:40"}, {"id": "W_nGPlew0vI", "title": "Indian Music • Blue Lotus Evening & Calm Spiritual Melodies", "thumb": "https://i.ytimg.com/vi/W_nGPlew0vI/mqdefault.jpg", "dur": "1:04:16"}, {"id": "XSLXJ2n2w2A", "title": "Find Your Inner Peace: Gentle Indian Instrumental Soundscape", "thumb": "https://i.ytimg.com/vi/XSLXJ2n2w2A/mqdefault.jpg", "dur": "1:11:14"}, {"id": "xfiLbuFRqzk", "title": "Traditional Indian Instrumental • Enchanting Garden Melodies | Calm Music", "thumb": "https://i.ytimg.com/vi/xfiLbuFRqzk/mqdefault.jpg", "dur": "1:00:02"}, {"id": "YpkbcpPQ4QE", "title": "Indian Music • Sunset Spice Market & Soulful Instrumental Melodies", "thumb": "https://i.ytimg.com/vi/YpkbcpPQ4QE/mqdefault.jpg", "dur": "1:05:11"}, {"id": "grf3knKB_7U", "title": "Indian Jazz • Monsoon Train Café & Velvet Raga Rhythm", "thumb": "https://i.ytimg.com/vi/grf3knKB_7U/mqdefault.jpg", "dur": "1:03:18"}, {"id": "BGkXTFWjz6I", "title": "Indian Jazz • Moonlit Palace Café & Smooth Raga Groove", "thumb": "https://i.ytimg.com/vi/BGkXTFWjz6I/mqdefault.jpg", "dur": "1:03:51"}, {"id": "iPic621iCFs", "title": "Indian Jazz • Royal Nights & Golden Raga Groove", "thumb": "https://i.ytimg.com/vi/iPic621iCFs/mqdefault.jpg", "dur": "1:02:33"}, {"id": "irJVc93h5CI", "title": "Relax with Indian Music | Traditional Sitar Melodies", "thumb": "https://i.ytimg.com/vi/irJVc93h5CI/mqdefault.jpg", "dur": "1:05:35"}, {"id": "HyFpFjZDIpA", "title": "Vintage Vibes: The Magic of Indian Sitar", "thumb": "https://i.ytimg.com/vi/HyFpFjZDIpA/mqdefault.jpg", "dur": "1:00:58"}, {"id": "2jyrkbJLa88", "title": "Moonlit Melodies: A Cinematic Indian Jazz Journey", "thumb": "https://i.ytimg.com/vi/2jyrkbJLa88/mqdefault.jpg", "dur": "1:00:40"}, {"id": "Dvk_aiQoAWQ", "title": "Gentle Indian Instrumental Music for Mindful Moments", "thumb": "https://i.ytimg.com/vi/Dvk_aiQoAWQ/mqdefault.jpg", "dur": "1:02:39"}, {"id": "wP6VCmQgUWk", "title": "Deep Calm & Relaxation: Traditional Indian Harmonium Melodies", "thumb": "https://i.ytimg.com/vi/wP6VCmQgUWk/mqdefault.jpg", "dur": "1:04:39"}, {"id": "5EV3UlH0730", "title": "Soulful Indian Sitar || Traditional Melodies", "thumb": "https://i.ytimg.com/vi/5EV3UlH0730/mqdefault.jpg", "dur": "1:00:12"}, {"id": "-EqhDJgoRvA", "title": "Indian Music • Rainy Palace Balcony & Peaceful Night Melodies", "thumb": "https://i.ytimg.com/vi/-EqhDJgoRvA/mqdefault.jpg", "dur": "59:28"}, {"id": "u6bVPeEXlJU", "title": "Indian Music • Sunset Temple Courtyard & Soulful Evening Melodies", "thumb": "https://i.ytimg.com/vi/u6bVPeEXlJU/mqdefault.jpg", "dur": "1:00:51"}, {"id": "2SN8Cg0ctoY", "title": "Timeless Indian Instrumental • Soulful Melodies & Peaceful Background Music", "thumb": "https://i.ytimg.com/vi/2SN8Cg0ctoY/mqdefault.jpg", "dur": "57:02"}, {"id": "a46IlJXiAOY", "title": "Indian Music • Monsoon Palace Nights & Soulful Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/a46IlJXiAOY/mqdefault.jpg", "dur": "59:56"}, {"id": "lGApNqXpSoU", "title": "Indian Relaxation Music | Moonlit Ambience & Soulful Melodies", "thumb": "https://i.ytimg.com/vi/lGApNqXpSoU/mqdefault.jpg", "dur": "1:07:57"}, {"id": "ec_7y2-XIYw", "title": "Indian Instrumental Music • Mountain Serenity & Soulful Melodies", "thumb": "https://i.ytimg.com/vi/ec_7y2-XIYw/mqdefault.jpg", "dur": "1:06:52"}, {"id": "1iLUydu9HR0", "title": "Traditional Indian Melodies | Golden Hour Garden Atmosphere", "thumb": "https://i.ytimg.com/vi/1iLUydu9HR0/mqdefault.jpg", "dur": "1:07:20"}, {"id": "g8UXGQg2trk", "title": "Indian Music • Monsoon Village Melodies & Peaceful Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/g8UXGQg2trk/mqdefault.jpg", "dur": "1:05:45"}, {"id": "0DdLwmemicY", "title": "Indian Music • Golden Temple Evenings & Soulful Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/0DdLwmemicY/mqdefault.jpg", "dur": "1:12:39"}, {"id": "oLkNXO6kCiU", "title": "Gentle Indian Melodies • Meditation Music for Calm & Healing", "thumb": "https://i.ytimg.com/vi/oLkNXO6kCiU/mqdefault.jpg", "dur": "1:03:53"}, {"id": "SZ0vRbqLVv0", "title": "Indian Instrumental Music • Himalayan Morning & Peaceful Flute Melodies", "thumb": "https://i.ytimg.com/vi/SZ0vRbqLVv0/mqdefault.jpg", "dur": "1:08:52"}, {"id": "kwp4dx2Vbms", "title": "Indian Instrumental Music • Moonlit Palace Courtyard & Peaceful Night Melodies", "thumb": "https://i.ytimg.com/vi/kwp4dx2Vbms/mqdefault.jpg", "dur": "1:12:13"}, {"id": "I-41PS7Z2-E", "title": "Indian Instrumental Music • Golden River Evening & Peaceful Melodies", "thumb": "https://i.ytimg.com/vi/I-41PS7Z2-E/mqdefault.jpg", "dur": "1:07:36"}, {"id": "qvx3wlqpXWY", "title": "Indian Instrumental Music • Monsoon Garden & Soft Focus Melodies", "thumb": "https://i.ytimg.com/vi/qvx3wlqpXWY/mqdefault.jpg", "dur": "1:10:36"}, {"id": "p3hSw2mnAzE", "title": "Soothing Indian Melodies • Calm Morning Ambience for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/p3hSw2mnAzE/mqdefault.jpg", "dur": "1:06:22"}, {"id": "_UD1_c0-eSw", "title": "Golden Hour Jazz Fusion | Indian Raga & Smooth Grooves", "thumb": "https://i.ytimg.com/vi/_UD1_c0-eSw/mqdefault.jpg", "dur": "1:03:29"}, {"id": "-pdQC5UHv2k", "title": "Indian Jazz Nights | Timeless Fusion for Late-Night Productivity", "thumb": "https://i.ytimg.com/vi/-pdQC5UHv2k/mqdefault.jpg", "dur": "1:07:27"}, {"id": "Hfrq-bl-jSs", "title": "Raga Meets Jazz | Immersive Indian Instrumental for Calm & Concentration", "thumb": "https://i.ytimg.com/vi/Hfrq-bl-jSs/mqdefault.jpg", "dur": "1:06:49"}, {"id": "LTk--z-qMc4", "title": "Hypnotic Café Jazz | Indian Ragas Reimagined", "thumb": "https://i.ytimg.com/vi/LTk--z-qMc4/mqdefault.jpg", "dur": "1:11:53"}, {"id": "-KY0nQtDE8Q", "title": "Evening Jazz Ritual | Traditional Sitar Fusion & World Rhythms", "thumb": "https://i.ytimg.com/vi/-KY0nQtDE8Q/mqdefault.jpg", "dur": "1:05:15"}, {"id": "20rIBuXZFXI", "title": "Raga Jazz Lounge | Deep Indian Instrumental Music for Work & Chill", "thumb": "https://i.ytimg.com/vi/20rIBuXZFXI/mqdefault.jpg", "dur": "1:07:34"}, {"id": "kAFjivj-eXY", "title": "Moonlit Raga Jazz | Soulful Indian Instrumental Music for Study & Relaxation", "thumb": "https://i.ytimg.com/vi/kAFjivj-eXY/mqdefault.jpg", "dur": "1:03:41"}, {"id": "jvR8LEVIDYk", "title": "Warm Raga Jazz Soundscape | Perfect Ambience for Focus", "thumb": "https://i.ytimg.com/vi/jvR8LEVIDYk/mqdefault.jpg", "dur": "1:05:24"}, {"id": "KP4zxI2oc1Y", "title": "Indian Jazz • Rooftop Sunset & Warm Breeze Lounge Vibes", "thumb": "https://i.ytimg.com/vi/KP4zxI2oc1Y/mqdefault.jpg", "dur": "50:50"}, {"id": "L987r3eMAMg", "title": "Indian Jazz • Monsoon Neon Café & Late Night Chill Vibes", "thumb": "https://i.ytimg.com/vi/L987r3eMAMg/mqdefault.jpg", "dur": "1:05:59"}, {"id": "_utfKmU5hn4", "title": "Indian Jazz • Twilight Raga Nights & Velvet Lounge Sessions", "thumb": "https://i.ytimg.com/vi/_utfKmU5hn4/mqdefault.jpg", "dur": "1:08:54"}, {"id": "pBnLbKTr9P8", "title": "Indian Jazz • Golden Hour Raga & Smooth Lounge Vibes", "thumb": "https://i.ytimg.com/vi/pBnLbKTr9P8/mqdefault.jpg", "dur": "1:04:51"}, {"id": "UHIbC1mGysY", "title": "Indian Jazz • Old City Nights & Hidden Café Sessions", "thumb": "https://i.ytimg.com/vi/UHIbC1mGysY/mqdefault.jpg", "dur": "50:10"}, {"id": "UHuYqviItVc", "title": "Indian Jazz • Desert Campfire Nights & Starlit Raga Lounge", "thumb": "https://i.ytimg.com/vi/UHuYqviItVc/mqdefault.jpg", "dur": "50:30"}, {"id": "Z0oIg2jpvBQ", "title": "Indian Jazz • Monsoon Balcony Nights & Warm Café Sessions", "thumb": "https://i.ytimg.com/vi/Z0oIg2jpvBQ/mqdefault.jpg", "dur": "1:00:00"}, {"id": "5YA0NoCx32g", "title": "Golden Hour Indian Jazz | Smooth Fusion for Creative Minds", "thumb": "https://i.ytimg.com/vi/5YA0NoCx32g/mqdefault.jpg", "dur": "1:00:20"}, {"id": "3x2n6rkeWac", "title": "Indian Jazz • Vintage Train Nights & Timeless Raga Lounge", "thumb": "https://i.ytimg.com/vi/3x2n6rkeWac/mqdefault.jpg", "dur": "1:02:29"}, {"id": "YHRDLWUWU-4", "title": "Indian Jazz • Monsoon Street Nights & Rainy Café Sessions", "thumb": "https://i.ytimg.com/vi/YHRDLWUWU-4/mqdefault.jpg", "dur": "1:02:10"}, {"id": "QUEgAolKh7I", "title": "Indian Jazz • Royal Palace Nights & Golden Lounge Sessions", "thumb": "https://i.ytimg.com/vi/QUEgAolKh7I/mqdefault.jpg", "dur": "1:00:06"}, {"id": "XfULdo15FP8", "title": "Urban Lounge Jazz | Indian Fusion City Vibes", "thumb": "https://i.ytimg.com/vi/XfULdo15FP8/mqdefault.jpg", "dur": "1:00:18"}, {"id": "7tBg0nKS44U", "title": "Indian Jazz • Moonlit Raga Nights & Velvet Café Sessions", "thumb": "https://i.ytimg.com/vi/7tBg0nKS44U/mqdefault.jpg", "dur": "1:03:58"}, {"id": "uSker9H4zuE", "title": "Indian Fusion Jazz • Sophisticated Evening Café Vibes", "thumb": "https://i.ytimg.com/vi/uSker9H4zuE/mqdefault.jpg", "dur": "1:03:17"}, {"id": "Upbd3AJwcho", "title": "Classical Ragas × Contemporary Jazz | A Fusion You've Never Heard", "thumb": "https://i.ytimg.com/vi/Upbd3AJwcho/mqdefault.jpg", "dur": "1:03:00"}, {"id": "1ETX-1K6_kI", "title": "Midnight Raga Sessions | Indian Jazz Fusion for Focus Music", "thumb": "https://i.ytimg.com/vi/1ETX-1K6_kI/mqdefault.jpg", "dur": "1:03:23"}, {"id": "tbICLNIcbPk", "title": "Gentle Indian Melodies for Work, Study & Mindfulness", "thumb": "https://i.ytimg.com/vi/tbICLNIcbPk/mqdefault.jpg", "dur": "1:24:02"}, {"id": "AQzoKezEbgI", "title": "Indian Instrumental Music • Peaceful Background for Relaxation & Focus", "thumb": "https://i.ytimg.com/vi/AQzoKezEbgI/mqdefault.jpg", "dur": "1:24:08"}, {"id": "7ZQJA_6GQ_A", "title": "When Indian Tradition Meets Global Sounds | Fusion Perfected", "thumb": "https://i.ytimg.com/vi/7ZQJA_6GQ_A/mqdefault.jpg", "dur": "1:23:46"}, {"id": "C4hoHNo6NQc", "title": "Indian Music • Calm Peaceful Instrumental for Relaxation & Inner Balance", "thumb": "https://i.ytimg.com/vi/C4hoHNo6NQc/mqdefault.jpg", "dur": "1:05:21"}, {"id": "sV5o0sRssn8", "title": "Indian Music • Monsoon Nights & Rainy Café Vibes", "thumb": "https://i.ytimg.com/vi/sV5o0sRssn8/mqdefault.jpg", "dur": "1:01:59"}, {"id": "6wauRx4FE9w", "title": "Indian Music • Golden Temple Nights & Soulful Lounge Vibes", "thumb": "https://i.ytimg.com/vi/6wauRx4FE9w/mqdefault.jpg", "dur": "1:01:41"}, {"id": "KmMS1yP1LIs", "title": "Traditional Indian Healing Sounds | Deep Relaxation & Balance", "thumb": "https://i.ytimg.com/vi/KmMS1yP1LIs/mqdefault.jpg", "dur": "1:02:15"}, {"id": "OlBjHJKym1o", "title": "Peaceful India • Soft Instrumental for Focus | Indian Background Music", "thumb": "https://i.ytimg.com/vi/OlBjHJKym1o/mqdefault.jpg", "dur": "1:28:52"}, {"id": "7t9ly4Y1NJU", "title": "Serene Indian Temple Instrumental | Relaxing Background Music for Peace", "thumb": "https://i.ytimg.com/vi/7t9ly4Y1NJU/mqdefault.jpg", "dur": "1:21:53"}, {"id": "EesP_bTN-oU", "title": "Serene Indian Soundscape | Instrumental Music for Concentration", "thumb": "https://i.ytimg.com/vi/EesP_bTN-oU/mqdefault.jpg", "dur": "1:20:26"}, {"id": "u4dudbyCBWs", "title": "Indian Healing Sunrise • Calm Mind Instrumental", "thumb": "https://i.ytimg.com/vi/u4dudbyCBWs/mqdefault.jpg", "dur": "1:23:07"}, {"id": "XylOe-jiW_M", "title": "Sleep to Raga-Inspired Melodies & Gentle Rain", "thumb": "https://i.ytimg.com/vi/XylOe-jiW_M/mqdefault.jpg", "dur": "1:26:33"}, {"id": "oGC3c31ycgE", "title": "432Hz Indian Frequencies | Calm Your Mind, Heal Your Body", "thumb": "https://i.ytimg.com/vi/oGC3c31ycgE/mqdefault.jpg", "dur": "1:29:07"}, {"id": "UfkOg4-AzrQ", "title": "Soothing Indian Instrumental | Stress Relief & Healing Soundscape", "thumb": "https://i.ytimg.com/vi/UfkOg4-AzrQ/mqdefault.jpg", "dur": "1:22:11"}, {"id": "Bikn3aQu2_g", "title": "Indian Healing Temple Echoes • Calm Instrumental", "thumb": "https://i.ytimg.com/vi/Bikn3aQu2_g/mqdefault.jpg", "dur": "1:46:26"}, {"id": "INOVKrW2TDw", "title": "Indian Music for Healing • Gentle Raga Instrumental", "thumb": "https://i.ytimg.com/vi/INOVKrW2TDw/mqdefault.jpg", "dur": "1:33:23"}, {"id": "lMZFVQqJ5b4", "title": "Indian Healing Calm • Deep Relaxation Instrumental", "thumb": "https://i.ytimg.com/vi/lMZFVQqJ5b4/mqdefault.jpg", "dur": "1:14:45"}, {"id": "UEJEKcHFy4k", "title": "Arabic Jazz Caravan – Rhythms of Motion & Golden Horizons", "thumb": "https://i.ytimg.com/vi/UEJEKcHFy4k/mqdefault.jpg", "dur": "39:59"}, {"id": "GFCwrLqTMxk", "title": "Otherworldly Arab Jazz – Shimmer, Wonder & Emotional Depth", "thumb": "https://i.ytimg.com/vi/GFCwrLqTMxk/mqdefault.jpg", "dur": "1:02:32"}, {"id": "t3SHNeXrnsQ", "title": "Arabic Jazz Café – Soft Conversations & Steaming Cups", "thumb": "https://i.ytimg.com/vi/t3SHNeXrnsQ/mqdefault.jpg", "dur": "1:01:13"}, {"id": "2wnmSLe_Eso", "title": "Moonlit Harbor Jazz | Soft Trumpet & Fluid Piano", "thumb": "https://i.ytimg.com/vi/2wnmSLe_Eso/mqdefault.jpg", "dur": "1:00:19"}, {"id": "Ou6-IGK2Td4", "title": "Contemporary Jazz with an Arabic Spirit | Smooth, Cinematic, Urban", "thumb": "https://i.ytimg.com/vi/Ou6-IGK2Td4/mqdefault.jpg", "dur": "1:00:09"}, {"id": "6s2wVTaSoPc", "title": "The Desert Soundscape: Subtle Swing Meets Arabic Melody", "thumb": "https://i.ytimg.com/vi/6s2wVTaSoPc/mqdefault.jpg", "dur": "1:04:07"}, {"id": "p6UqOMK76No", "title": "Smooth Jazz with Oud – City Nightfall Vibes", "thumb": "https://i.ytimg.com/vi/p6UqOMK76No/mqdefault.jpg", "dur": "1:00:01"}, {"id": "1jgvBKAupyw", "title": "Gentle Jazz Evolution • Immersive Listening Experience", "thumb": "https://i.ytimg.com/vi/1jgvBKAupyw/mqdefault.jpg", "dur": "1:05:40"}, {"id": "_lQsqa_ZZMg", "title": "Classical Traditions Meet Jazz Piano • Intimate & Timeless", "thumb": "https://i.ytimg.com/vi/_lQsqa_ZZMg/mqdefault.jpg", "dur": "1:00:30"}, {"id": "rBGrVAxgk9M", "title": "Indian Jazz Silk Road Sessions • Instrumental", "thumb": "https://i.ytimg.com/vi/rBGrVAxgk9M/mqdefault.jpg", "dur": "1:00:55"}, {"id": "5u0fXaEa7Pk", "title": "Subtle Swing & Expressive Melodic Lines • Jazz Fusion", "thumb": "https://i.ytimg.com/vi/5u0fXaEa7Pk/mqdefault.jpg", "dur": "1:06:55"}, {"id": "kgsa1hXfWkg", "title": "Eastern Raga Western Jazz | Midnight Fusion", "thumb": "https://i.ytimg.com/vi/kgsa1hXfWkg/mqdefault.jpg", "dur": "1:08:28"}, {"id": "FHmIz2Gy8Wo", "title": "Persian Folk Instrumentals of Silence & Wind", "thumb": "https://i.ytimg.com/vi/FHmIz2Gy8Wo/mqdefault.jpg", "dur": "1:03:23"}, {"id": "TqWW7vF7qqE", "title": "Indian House Fusion Instrumentals | Sacred Dance Energy", "thumb": "https://i.ytimg.com/vi/TqWW7vF7qqE/mqdefault.jpg", "dur": "1:01:49"}, {"id": "SSzD8Vcj8b0", "title": "Lotus Pulse • Indian House Fusion Instrumentals | Mystic Dance Energy", "thumb": "https://i.ytimg.com/vi/SSzD8Vcj8b0/mqdefault.jpg", "dur": "1:00:29"}, {"id": "hQfcMrF0jxY", "title": "Indian House Fusion Dance Mix | Euphoric Ethnic Club Vibes", "thumb": "https://i.ytimg.com/vi/hQfcMrF0jxY/mqdefault.jpg", "dur": "1:00:58"}, {"id": "uFdVGLGGVO0", "title": "Indian Dance Fusion Mix | Exotic Beats for Energy & Vibes", "thumb": "https://i.ytimg.com/vi/uFdVGLGGVO0/mqdefault.jpg", "dur": "1:00:20"}, {"id": "YbRY3-Fs1Fw", "title": "Indian House Dance Fusion - House Dance Fusion", "thumb": "https://i.ytimg.com/vi/YbRY3-Fs1Fw/mqdefault.jpg", "dur": "1:01:29"}, {"id": "xnumjZ0J6Uw", "title": "This Blend of Sitar & Deep House Will Rewire Your Brain", "thumb": "https://i.ytimg.com/vi/xnumjZ0J6Uw/mqdefault.jpg", "dur": "1:01:39"}, {"id": "88oEKQBadVE", "title": "This Hypnotic Indian Folk House Mix Is Pure Yoga and Dance Floor Combined", "thumb": "https://i.ytimg.com/vi/88oEKQBadVE/mqdefault.jpg", "dur": "1:01:26"}, {"id": "Gb1pKn5cHk4", "title": "Sitar Meets House Bass | When Indian Traditions Collide with Dance Floor Energy", "thumb": "https://i.ytimg.com/vi/Gb1pKn5cHk4/mqdefault.jpg", "dur": "1:02:38"}, {"id": "oOI9kBJps84", "title": "Gentle Ney Flute & Bağlama • Traditional Turkish Folk Healing Sounds", "thumb": "https://i.ytimg.com/vi/oOI9kBJps84/mqdefault.jpg", "dur": "1:01:25"}, {"id": "HCg_yhDvr-8", "title": "Gentle Ney Flute & Bağlama • Traditional Turkish Healing Soundscape", "thumb": "https://i.ytimg.com/vi/HCg_yhDvr-8/mqdefault.jpg", "dur": "1:00:57"}, {"id": "j7HuASr2T3M", "title": "Gentle Turkish Melodies | Anatolian Soul for Mindfulness", "thumb": "https://i.ytimg.com/vi/j7HuASr2T3M/mqdefault.jpg", "dur": "1:00:06"}, {"id": "PXfrwcid2Xs", "title": "Arabic Instrumental Music • Desert Soul 3 • Mystic Melodies from the Middle East", "thumb": "https://i.ytimg.com/vi/PXfrwcid2Xs/mqdefault.jpg", "dur": "1:02:50"}, {"id": "qdAvlHLw04o", "title": "Arabic Instrumental Music • Desert Soul 2 • Mystic Melodies from the Middle East", "thumb": "https://i.ytimg.com/vi/qdAvlHLw04o/mqdefault.jpg", "dur": "1:02:07"}, {"id": "PSkxeNiFJic", "title": "Arabic Instrumental Music • Desert Soul • Mystic Melodies from the Middle East", "thumb": "https://i.ytimg.com/vi/PSkxeNiFJic/mqdefault.jpg", "dur": "1:01:43"}, {"id": "c_Opa_opsiA", "title": "Bollywood Dreams 6 | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/c_Opa_opsiA/mqdefault.jpg", "dur": "1:55:48"}, {"id": "FfQ6At948iE", "title": "Bollywood Dreams 5 | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/FfQ6At948iE/mqdefault.jpg", "dur": "2:01:12"}, {"id": "nJn0nIaWNqc", "title": "Sitar & Tabla Magic | Bollywood-Inspired Indian Instrumental Vibes | Pt.3", "thumb": "https://i.ytimg.com/vi/nJn0nIaWNqc/mqdefault.jpg", "dur": "2:01:02"}, {"id": "f6rsYdWLIrU", "title": "Sitar & Tabla Magic | Bollywood-Inspired Indian Instrumental Vibes | Pt.2", "thumb": "https://i.ytimg.com/vi/f6rsYdWLIrU/mqdefault.jpg", "dur": "1:56:28"}, {"id": "w2lbx2JmNTc", "title": "Sitar & Tabla Magic | Bollywood-Inspired Indian Instrumental Vibes", "thumb": "https://i.ytimg.com/vi/w2lbx2JmNTc/mqdefault.jpg", "dur": "1:59:48"}, {"id": "6u5OwRkXktI", "title": "Bollywood Dreams 4 | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/6u5OwRkXktI/mqdefault.jpg", "dur": "2:00:20"}, {"id": "Mqu8kC60eb0", "title": "Bollywood Dreams 3 | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/Mqu8kC60eb0/mqdefault.jpg", "dur": "1:26:45"}, {"id": "4_RrqT0RQqY", "title": "Bollywood Dreams 2 | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/4_RrqT0RQqY/mqdefault.jpg", "dur": "1:20:28"}, {"id": "acMXOSqMA8U", "title": "Bollywood Dreams | Indian Instrumental Music with Cinematic Vibes", "thumb": "https://i.ytimg.com/vi/acMXOSqMA8U/mqdefault.jpg", "dur": "1:25:41"}, {"id": "Ie0u-x9EeVc", "title": "Bansuri Flute & Sitar | Himalayan Melodies for Inner Peace", "thumb": "https://i.ytimg.com/vi/Ie0u-x9EeVc/mqdefault.jpg", "dur": "2:09:25"}, {"id": "-4k7B2pPBmM", "title": "Transcendent Summit • Indian Instrumental Music for Spiritual Awakening", "thumb": "https://i.ytimg.com/vi/-4k7B2pPBmM/mqdefault.jpg", "dur": "1:36:34"}, {"id": "zNsmsVKb6LI", "title": "Indian Music • Instrumental Album • Himalayan Peace • Melodies for Inner Peace", "thumb": "https://i.ytimg.com/vi/zNsmsVKb6LI/mqdefault.jpg", "dur": "1:40:38"}, {"id": "PwO5TzDutxE", "title": "Timeless Sitar Melodies | Classical Indian Music for Complete Relaxation", "thumb": "https://i.ytimg.com/vi/PwO5TzDutxE/mqdefault.jpg", "dur": "1:36:01"}, {"id": "a5J4tW82G1M", "title": "This Carnatic Album Is Designed to Dissolve Stress", "thumb": "https://i.ytimg.com/vi/a5J4tW82G1M/mqdefault.jpg", "dur": "1:22:05"}, {"id": "Otv9IAmuY_I", "title": "Sitar & Tabla Fusion | A Journey Into Tranquility | Indian Instrumental Meditation Album", "thumb": "https://i.ytimg.com/vi/Otv9IAmuY_I/mqdefault.jpg", "dur": "1:21:42"}, {"id": "93iznl9_knQ", "title": "Carnatic Music for Meditation: Yaman, Kalyani & Sacred Ragas", "thumb": "https://i.ytimg.com/vi/93iznl9_knQ/mqdefault.jpg", "dur": "1:16:28"}, {"id": "YOA7SSdMjWI", "title": "Ancient Indian Melodies | Sitar, Bansuri & Sacred Rhythms", "thumb": "https://i.ytimg.com/vi/YOA7SSdMjWI/mqdefault.jpg", "dur": "1:09:27"}, {"id": "pPsbFsLB99s", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Rhythms", "thumb": "https://i.ytimg.com/vi/pPsbFsLB99s/mqdefault.jpg", "dur": "1:06:04"}, {"id": "OWU9YMRSUGc", "title": "Indian Music • Instrumental Album • Indian Folk • Rustic Melodies: Sounds of Rural India", "thumb": "https://i.ytimg.com/vi/OWU9YMRSUGc/mqdefault.jpg", "dur": "1:15:53"}, {"id": "jDX0K5APg20", "title": "Sitar & Tabla Fusion | A Profound Journey Into Tranquility | Indian Instrumental Meditation Album", "thumb": "https://i.ytimg.com/vi/jDX0K5APg20/mqdefault.jpg", "dur": "1:10:58"}, {"id": "EN16kpBvff8", "title": "Let This Melody Carry Your Stress Away", "thumb": "https://i.ytimg.com/vi/EN16kpBvff8/mqdefault.jpg", "dur": "1:36:15"}, {"id": "dR1_p839uk4", "title": "Tranquil Carnatic Instrumental for Deep Meditation & Sleep", "thumb": "https://i.ytimg.com/vi/dR1_p839uk4/mqdefault.jpg", "dur": "1:25:07"}, {"id": "tDyDjgU5W14", "title": "Carnatic Melodies Designed to Soothe Your Soul", "thumb": "https://i.ytimg.com/vi/tDyDjgU5W14/mqdefault.jpg", "dur": "1:26:42"}, {"id": "opXVCKFwufM", "title": "Indian Music • Instrumental Album • Carnatic Healing • Soothing Melodies & Ancient Ragas", "thumb": "https://i.ytimg.com/vi/opXVCKFwufM/mqdefault.jpg", "dur": "1:20:29"}, {"id": "NT92m9actR0", "title": "Timeless Raga Journey | Indian Folk & Meditative Rhythms", "thumb": "https://i.ytimg.com/vi/NT92m9actR0/mqdefault.jpg", "dur": "1:06:45"}, {"id": "eeomXgsEimQ", "title": "Timeless Indian Ragas | Spiritual Temple Music & Village Melodies", "thumb": "https://i.ytimg.com/vi/eeomXgsEimQ/mqdefault.jpg", "dur": "1:06:34"}, {"id": "3du2AVmg3RQ", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 15", "thumb": "https://i.ytimg.com/vi/3du2AVmg3RQ/mqdefault.jpg", "dur": "1:08:42"}, {"id": "jkJ8v0qYAIo", "title": "Mystic Raga • Temple Melodies & Traditional Indian Instruments", "thumb": "https://i.ytimg.com/vi/jkJ8v0qYAIo/mqdefault.jpg", "dur": "1:08:35"}, {"id": "ZiAK9Wv7fhA", "title": "Ancient Indian Ragas | Sitar, Tabla & Bansuri Soundscapes", "thumb": "https://i.ytimg.com/vi/ZiAK9Wv7fhA/mqdefault.jpg", "dur": "1:11:32"}, {"id": "Tgpzgbp0X4U", "title": "Evoke the Spirit of India | Traditional Folk Raga Music for Soul & Healing", "thumb": "https://i.ytimg.com/vi/Tgpzgbp0X4U/mqdefault.jpg", "dur": "1:05:50"}, {"id": "AyNGHDDCV7c", "title": "Bansuri & Sitar: Centuries-Old Indian Classical Traditions", "thumb": "https://i.ytimg.com/vi/AyNGHDDCV7c/mqdefault.jpg", "dur": "1:03:23"}, {"id": "ZiTYwZT88S0", "title": "Traditional Indian Instruments | Healing Ragas & Village Folk Melodies", "thumb": "https://i.ytimg.com/vi/ZiTYwZT88S0/mqdefault.jpg", "dur": "1:08:19"}, {"id": "WtZigVvG5KM", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 9", "thumb": "https://i.ytimg.com/vi/WtZigVvG5KM/mqdefault.jpg", "dur": "1:07:47"}, {"id": "6rcDmaLRK9E", "title": "Village Melodies from India | Sitar Bansuri Meditation Music", "thumb": "https://i.ytimg.com/vi/6rcDmaLRK9E/mqdefault.jpg", "dur": "1:33:21"}, {"id": "rJLgq7ic1O8", "title": "Indian Folk Traditions • Rustic Village Songs & Classical Ragas Combined", "thumb": "https://i.ytimg.com/vi/rJLgq7ic1O8/mqdefault.jpg", "dur": "1:28:02"}, {"id": "8Lng51FQpC0", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 6", "thumb": "https://i.ytimg.com/vi/8Lng51FQpC0/mqdefault.jpg", "dur": "1:31:44"}, {"id": "mXdZRrY-kDI", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 5", "thumb": "https://i.ytimg.com/vi/mXdZRrY-kDI/mqdefault.jpg", "dur": "1:37:58"}, {"id": "wjyl_F5YBDY", "title": "Indian Folk Traditions Reimagined | Sitar, Bansuri & Tabla Masterpieces", "thumb": "https://i.ytimg.com/vi/wjyl_F5YBDY/mqdefault.jpg", "dur": "1:28:45"}, {"id": "Xa4VIw3HEJ8", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 3", "thumb": "https://i.ytimg.com/vi/Xa4VIw3HEJ8/mqdefault.jpg", "dur": "1:31:55"}, {"id": "BvmHWExSXMs", "title": "Ancient Temple Melodies • Indian Raga • Sitar, Bansuri & Tabla • Timeless Sounds", "thumb": "https://i.ytimg.com/vi/BvmHWExSXMs/mqdefault.jpg", "dur": "1:36:23"}, {"id": "gQ2Tlpt2hiM", "title": "Indian Music • Instrumental Album • Indian Folk • Mystic Raga • Timeless Sounds & Sacred Rhythms 1", "thumb": "https://i.ytimg.com/vi/gQ2Tlpt2hiM/mqdefault.jpg", "dur": "1:26:33"}, {"id": "SDE6NEgZgds", "title": "Dhol & Kartal • Indian Folk Celebration • Echoes of India • Festival Rhythms", "thumb": "https://i.ytimg.com/vi/SDE6NEgZgds/mqdefault.jpg", "dur": "1:27:23"}, {"id": "iKzac6f0zfQ", "title": "Traditional Indian Rhythms | Escape to India's Festivals & Villages", "thumb": "https://i.ytimg.com/vi/iKzac6f0zfQ/mqdefault.jpg", "dur": "1:26:26"}, {"id": "L7S5jmW3xSM", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 48 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/L7S5jmW3xSM/mqdefault.jpg", "dur": "1:26:30"}, {"id": "xLBuWLM9gs4", "title": "Sitar & Sarangi Magic • Indian Folk Music • Echoes of India 47", "thumb": "https://i.ytimg.com/vi/xLBuWLM9gs4/mqdefault.jpg", "dur": "1:31:05"}, {"id": "TDkbPqDW8KA", "title": "Lost in India's Folk Magic | Instrumental Journey Through Villages & Temples", "thumb": "https://i.ytimg.com/vi/TDkbPqDW8KA/mqdefault.jpg", "dur": "1:29:58"}, {"id": "DEJipzqev2c", "title": "Traditional Indian Music | Sitar, Tabla & Bansuri | Village Melodies of India", "thumb": "https://i.ytimg.com/vi/DEJipzqev2c/mqdefault.jpg", "dur": "1:30:47"}, {"id": "Qm6lNzL4FLk", "title": "Indian Folk Instruments • Sitar, Sarangi, Tabla | Timeless Melodies", "thumb": "https://i.ytimg.com/vi/Qm6lNzL4FLk/mqdefault.jpg", "dur": "1:34:18"}, {"id": "acODt9uAnEo", "title": "Ethnic Fusion • Modern Meets Traditional Indian Folk • Echoes of India 43", "thumb": "https://i.ytimg.com/vi/acODt9uAnEo/mqdefault.jpg", "dur": "1:31:05"}, {"id": "lCoQbnwytYg", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 42 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/lCoQbnwytYg/mqdefault.jpg", "dur": "1:29:28"}, {"id": "r_dJbSSIvZU", "title": "Village Melodies of India | Traditional Folk Instruments & Ancient Rhythms", "thumb": "https://i.ytimg.com/vi/r_dJbSSIvZU/mqdefault.jpg", "dur": "1:29:22"}, {"id": "Ov-noQmh_qo", "title": "Traditional Indian Rhythms | Sitar, Sarangi & Tabla Masterpiece", "thumb": "https://i.ytimg.com/vi/Ov-noQmh_qo/mqdefault.jpg", "dur": "1:29:35"}, {"id": "0OcC9qHPQcc", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 39 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/0OcC9qHPQcc/mqdefault.jpg", "dur": "1:31:59"}, {"id": "neSxXIuHhiQ", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 38 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/neSxXIuHhiQ/mqdefault.jpg", "dur": "1:30:18"}, {"id": "PSU8ybjhfag", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 37 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/PSU8ybjhfag/mqdefault.jpg", "dur": "1:29:35"}, {"id": "viUNsPGe8KU", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 36 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/viUNsPGe8KU/mqdefault.jpg", "dur": "1:25:44"}, {"id": "w5auRuLKjxM", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 35 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/w5auRuLKjxM/mqdefault.jpg", "dur": "1:27:06"}, {"id": "WyrpUFCHtjE", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 34 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/WyrpUFCHtjE/mqdefault.jpg", "dur": "1:33:31"}, {"id": "oRVBYPF_nZM", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 33 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/oRVBYPF_nZM/mqdefault.jpg", "dur": "1:32:21"}, {"id": "O2Vk_unfjLQ", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 32 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/O2Vk_unfjLQ/mqdefault.jpg", "dur": "1:31:38"}, {"id": "9sou6LvDayI", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 31 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/9sou6LvDayI/mqdefault.jpg", "dur": "1:28:48"}, {"id": "Blx_7cvovLM", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 30 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/Blx_7cvovLM/mqdefault.jpg", "dur": "1:29:20"}, {"id": "-UQX8U2egZc", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 29 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/-UQX8U2egZc/mqdefault.jpg", "dur": "1:26:42"}, {"id": "h_cHhc_vq2o", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 28 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/h_cHhc_vq2o/mqdefault.jpg", "dur": "1:26:42"}, {"id": "SIqdiF5bLTE", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 27 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/SIqdiF5bLTE/mqdefault.jpg", "dur": "1:26:41"}, {"id": "BhSwMzshlL0", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 26 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/BhSwMzshlL0/mqdefault.jpg", "dur": "1:26:56"}, {"id": "sHlyyAmJCg4", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 25 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/sHlyyAmJCg4/mqdefault.jpg", "dur": "1:23:44"}, {"id": "dR_FYMBKxIM", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 24 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/dR_FYMBKxIM/mqdefault.jpg", "dur": "1:27:40"}, {"id": "u6p_wFfgXAo", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 23 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/u6p_wFfgXAo/mqdefault.jpg", "dur": "1:30:10"}, {"id": "04XjT6OUfY8", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 22 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/04XjT6OUfY8/mqdefault.jpg", "dur": "1:26:40"}, {"id": "DtQwBXOB-RQ", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 21 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/DtQwBXOB-RQ/mqdefault.jpg", "dur": "1:25:55"}, {"id": "3nfHIG-r9lU", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 20 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/3nfHIG-r9lU/mqdefault.jpg", "dur": "1:31:04"}, {"id": "_LOk-7bnmkU", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 19 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/_LOk-7bnmkU/mqdefault.jpg", "dur": "1:26:31"}, {"id": "EpDnv6QVZo0", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 18 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/EpDnv6QVZo0/mqdefault.jpg", "dur": "1:27:52"}, {"id": "I9ulqFNwmVk", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 17 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/I9ulqFNwmVk/mqdefault.jpg", "dur": "1:30:51"}, {"id": "_TmCDZaFOTQ", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 16 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/_TmCDZaFOTQ/mqdefault.jpg", "dur": "1:29:17"}, {"id": "pRRwwVAc66k", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 15 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/pRRwwVAc66k/mqdefault.jpg", "dur": "1:26:05"}, {"id": "-vAJrId8NtI", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 14 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/-vAJrId8NtI/mqdefault.jpg", "dur": "1:28:31"}, {"id": "rRH_IREbRIs", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 13 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/rRH_IREbRIs/mqdefault.jpg", "dur": "1:32:16"}, {"id": "_dL9kcgCYys", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 12 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/_dL9kcgCYys/mqdefault.jpg", "dur": "1:31:54"}, {"id": "F2M3MkJ2ePo", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 11 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/F2M3MkJ2ePo/mqdefault.jpg", "dur": "1:31:42"}, {"id": "-AchJK3JFfc", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 10 • Traditional Melody & Rhythms", "thumb": "https://i.ytimg.com/vi/-AchJK3JFfc/mqdefault.jpg", "dur": "1:31:24"}, {"id": "xx7-9q7rjJo", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 9 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/xx7-9q7rjJo/mqdefault.jpg", "dur": "1:20:47"}, {"id": "D7TOI5euAvY", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 8 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/D7TOI5euAvY/mqdefault.jpg", "dur": "1:33:32"}, {"id": "S3ySy2zDAeE", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 7 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/S3ySy2zDAeE/mqdefault.jpg", "dur": "1:35:01"}, {"id": "XD_JoU97WP4", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 6 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/XD_JoU97WP4/mqdefault.jpg", "dur": "1:30:55"}, {"id": "w9700jiJ3Ro", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 5 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/w9700jiJ3Ro/mqdefault.jpg", "dur": "1:30:33"}, {"id": "IcS1q2yXoSA", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 4 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/IcS1q2yXoSA/mqdefault.jpg", "dur": "1:21:00"}, {"id": "AFHftzo8DzQ", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 3 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/AFHftzo8DzQ/mqdefault.jpg", "dur": "1:24:18"}, {"id": "NnO1UOB-GrE", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India 2 • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/NnO1UOB-GrE/mqdefault.jpg", "dur": "1:38:18"}, {"id": "digVriv7F74", "title": "Indian Music • Instrumental Album • Indian Folk • Echoes of India • Traditional Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/digVriv7F74/mqdefault.jpg", "dur": "1:41:12"}, {"id": "aZltJheH0u4", "title": "Persian Music • Instrumental • Persian Folk • Treasures of Persia 2 • Mystical Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/aZltJheH0u4/mqdefault.jpg", "dur": "38:52"}, {"id": "dQ1Qc_ny0vU", "title": "Persian Music • Instrumental • Persian Folk • Treasures of Persia • Mystical Melodies & Rhythms", "thumb": "https://i.ytimg.com/vi/dQ1Qc_ny0vU/mqdefault.jpg", "dur": "1:28:06"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

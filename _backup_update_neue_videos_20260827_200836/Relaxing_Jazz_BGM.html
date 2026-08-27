@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relaxing Jazz BGM</title>
+<!-- categories: Jazz, Smooth Jazz -->
+<!-- channel-id: UCxPXeETTmIw6xtzCuR8NTow -->
+<!-- channel-url: https://www.youtube.com/@relaxingjazzbgm79 -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Relaxing_Jazz_BGM.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/wlh4hfDwVjl5GdA7utBEc62KUD3ZKmvLhyD3r8yqaP_UtY_LbYWZq0lluZq4Qs7OuJBsBJvF=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Relaxing Jazz BGM</div>
+      <div class="channel-count">297 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Relaxing Jazz BGM";
+const KANAL = "Relaxing_Jazz_BGM.html";
+const ORIG_CATEGORIES = "Jazz, Smooth Jazz";
+const VIDEOS = [{"id": "38oVpyanfFc", "title": "Ethereal Piano Late Night Jazz - Slow Jazz Music - Soft Jazz Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/38oVpyanfFc/mqdefault_live.jpg", "dur": ""}, {"id": "G2bjfji9nCs", "title": "Tender Nightly Sleep Jazz Music - Soft Jazz Instrumental Music - Jazz Relaxing Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/G2bjfji9nCs/mqdefault.jpg", "dur": "1:46:43"}, {"id": "2hwtqw-p4Uc", "title": "Soothing Jazz Night Music - Relaxing Piano Jazz Music for Stress Relief, Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/2hwtqw-p4Uc/mqdefault.jpg", "dur": "11:55:00"}, {"id": "tubeyfcpoD8", "title": "Relaxing Jazz Piano Music for a Cozy Evening - Night Jazz Music for Focus, Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/tubeyfcpoD8/mqdefault_live.jpg", "dur": ""}, {"id": "9SMxoPd3wz0", "title": "Soothing of Night Jazz - Exquisite Jazz Piano Music - Calm Background Music for Relax, Chill, Sleep", "thumb": "https://i.ytimg.com/vi/9SMxoPd3wz0/mqdefault_live.jpg", "dur": ""}, {"id": "P7Ikr_hcivc", "title": "Tender Nightly Sleep Jazz Music - Soft Jazz Instrumental Music - Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/P7Ikr_hcivc/mqdefault.jpg", "dur": "1:33:13"}, {"id": "yF9xLK-30ZU", "title": "Ethereal Piano Late Night Jazz - Calm Jazz Instrumental - Delicate Piano Jazz Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/yF9xLK-30ZU/mqdefault.jpg", "dur": "1:37:04"}, {"id": "yREV5fuZCTk", "title": "Relaxing Jazz Music - Ethereal Piano Late Night Jazz - Smooth Jazz Instrumental Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/yREV5fuZCTk/mqdefault.jpg", "dur": "1:32:04"}, {"id": "B4rUM89gkpI", "title": "Ethereal Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Gentle Jazz Music - Good Night", "thumb": "https://i.ytimg.com/vi/B4rUM89gkpI/mqdefault.jpg", "dur": "1:32:04"}, {"id": "xPDMjfh1nXI", "title": "Beautiful Night June Music with Delicate Jazz Piano Melodies for Good Sleep and Soothing Relaxation", "thumb": "https://i.ytimg.com/vi/xPDMjfh1nXI/mqdefault.jpg", "dur": "1:45:52"}, {"id": "ANOWE7mTBxs", "title": "Relaxing Jazz Instrumental Music at Night - Ethereal Jazz Music - Smooth of Sleep Jazz Piano Music", "thumb": "https://i.ytimg.com/vi/ANOWE7mTBxs/mqdefault.jpg", "dur": "1:36:54"}, {"id": "5SLFc4IAujo", "title": "Late Night Jazz - Soothing Jazz Instrumental - A Quiet Night for Gently Unwind, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/5SLFc4IAujo/mqdefault.jpg", "dur": "1:45:35"}, {"id": "6a7wmM5JQEc", "title": "Sleep Jazz - Relaxing Jazz Piano Music & Background Jazz for Stress Relief, Deep Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/6a7wmM5JQEc/mqdefault.jpg", "dur": "1:45:18"}, {"id": "FnDSKAv5_ME", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Relax, Focus, Stress Relief", "thumb": "https://i.ytimg.com/vi/FnDSKAv5_ME/mqdefault.jpg", "dur": "11:54:59"}, {"id": "pn6jCOal0J4", "title": "Late Night Smooth Jazz Instrumental Music - Relaxing Sleep Jazz Piano Music - Calm Background Music", "thumb": "https://i.ytimg.com/vi/pn6jCOal0J4/mqdefault.jpg", "dur": "1:44:23"}, {"id": "FALTf-Db07o", "title": "Quiet Night Jazz - Relaxing Jazz Piano Music - Delicate Jazz Music for Study, Focus & Deep Sleep", "thumb": "https://i.ytimg.com/vi/FALTf-Db07o/mqdefault.jpg", "dur": "11:54:59"}, {"id": "G9uzYkQzRcA", "title": "Exquisite Night Jazz - Relaxing Jazz Instrumental Music & Soft Jazz Piano Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/G9uzYkQzRcA/mqdefault.jpg", "dur": "1:39:56"}, {"id": "FO-h5hqZ09k", "title": "Soothing Night Jazz Sleep Music - Relaxing Jazz Piano Music - Ethereal Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/FO-h5hqZ09k/mqdefault.jpg", "dur": "11:54:59"}, {"id": "qYS8stbxLXw", "title": "Romantic Evening Jazz Sleep - Calm Piano Jazz Instrumentals for Slow Nights & Peaceful Mood", "thumb": "https://i.ytimg.com/vi/qYS8stbxLXw/mqdefault.jpg", "dur": "1:50:16"}, {"id": "B_U7oRm9Clg", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Ethereal Jazz Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/B_U7oRm9Clg/mqdefault.jpg", "dur": "11:55:00"}, {"id": "9xZNX3UgbX4", "title": "Soothing Night Jazz Piano Music - Instrumental Jazz Relaxing Music & Calm Jazz Music for Sleep Tight", "thumb": "https://i.ytimg.com/vi/9xZNX3UgbX4/mqdefault.jpg", "dur": "1:32:00"}, {"id": "cpLzViAOwK4", "title": "Smooth Night Jazz Piano - Deep Sleep Music, Relaxing Sleep Music, Relaxing Music to Help you Sleep", "thumb": "https://i.ytimg.com/vi/cpLzViAOwK4/mqdefault.jpg", "dur": "1:37:06"}, {"id": "-pNWWyFpMb8", "title": "Elegant Jazz Piano in Paris Cozy Apartment Ambience - Calm Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/-pNWWyFpMb8/mqdefault.jpg", "dur": "11:49:06"}, {"id": "mGvKF-USwNA", "title": "Late Night Jazz Piano Music - Soothing of Sleep Jazz Piano Music - Calm Background Music for Relax", "thumb": "https://i.ytimg.com/vi/mGvKF-USwNA/mqdefault.jpg", "dur": "1:39:15"}, {"id": "RzuWRS4tUFA", "title": "Soothing Night Jazz - Ethereal Sleep Jazz Piano & Relaxing Ambience for Focus, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/RzuWRS4tUFA/mqdefault.jpg", "dur": "11:54:59"}, {"id": "swXL2tZfHkg", "title": "Ethereal Sleep Jazz Piano Music - Relaxing Night Jazz - Delicate Jazz Piano Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/swXL2tZfHkg/mqdefault.jpg", "dur": "1:40:26"}, {"id": "2jFQGYvSzeI", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Relax, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/2jFQGYvSzeI/mqdefault.jpg", "dur": "1:55:17"}, {"id": "pwc1p64lbaI", "title": "Tender Sleep Nightly Jazz & Smooth Jazz Piano Music - Peaceful Fireplace Ambience for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/pwc1p64lbaI/mqdefault.jpg", "dur": "11:54:59"}, {"id": "Oi2wMIqkz5A", "title": "Luxury Bedroom In A Tranquil Apartment And Soothing Jazz – Delicate Jazz That Promotes Sleep, Relax", "thumb": "https://i.ytimg.com/vi/Oi2wMIqkz5A/mqdefault.jpg", "dur": "1:41:57"}, {"id": "yvkW9f7gPqk", "title": "Exquisite Night Jazz Sleep Piano Music - Smooth Jazz Background Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/yvkW9f7gPqk/mqdefault.jpg", "dur": "11:49:59"}, {"id": "YIxW7HbiaTY", "title": "Night Slow Sleep Jazz Piano Music - Comfort Elegant Jazz Music - Embrace the Peaceful of Calm Night", "thumb": "https://i.ytimg.com/vi/YIxW7HbiaTY/mqdefault.jpg", "dur": "1:32:02"}, {"id": "9wXiKJDFQds", "title": "Soothing Jazz Sleep Music - Relaxing Jazz Piano Music for Calm Mind, Release Tension, Deep Sleep", "thumb": "https://i.ytimg.com/vi/9wXiKJDFQds/mqdefault.jpg", "dur": "11:54:59"}, {"id": "s2XJzje6ZdE", "title": "Exquisite Relaxing Night Piano Jazz - Smooth Jazz Instrumental Music - Calm Jazz BGM to Deep Sleep", "thumb": "https://i.ytimg.com/vi/s2XJzje6ZdE/mqdefault.jpg", "dur": "1:44:56"}, {"id": "stv1oo2dP5M", "title": "Ethereal Night Jazz Music - Relaxing Smooth Piano Jazz Music - Soft Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/stv1oo2dP5M/mqdefault.jpg", "dur": "11:54:58"}, {"id": "7j6I-Uh-bAY", "title": "Sleep Soothing Night Jazz Music - Comfort Piano Jazz Instrumental for Focus, Deep Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/7j6I-Uh-bAY/mqdefault.jpg", "dur": "1:50:49"}, {"id": "YTgIiSqO49A", "title": "Smooth Night Jazz Melodies - Serene Piano Jazz Music to Sleep and Nighttime Relaxation - Calm Night", "thumb": "https://i.ytimg.com/vi/YTgIiSqO49A/mqdefault.jpg", "dur": "11:54:58"}, {"id": "7xkh17ZLiWI", "title": "Late Night Jazz - Relaxing Soothing Background Music for Focus - Melody Piano Jazz for Deep Sleep", "thumb": "https://i.ytimg.com/vi/7xkh17ZLiWI/mqdefault.jpg", "dur": "1:36:14"}, {"id": "tjxj62zg_NA", "title": "Ethereal Piano Late Night Jazz - Smooth Piano Jazz Music - Soft Background Music for Sleep, Relax", "thumb": "https://i.ytimg.com/vi/tjxj62zg_NA/mqdefault.jpg", "dur": "11:54:58"}, {"id": "0AviBmHFwjY", "title": "Night Jazz - Ethereal Calm Piano Jazz Music - Tender Jazz Music helps Relax, Stress, Deep Sleep", "thumb": "https://i.ytimg.com/vi/0AviBmHFwjY/mqdefault.jpg", "dur": "1:32:01"}, {"id": "0yaV63rNsOo", "title": "Late Night Jazz - Smooth Piano Jazz Instrumental Music - Relaxing Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/0yaV63rNsOo/mqdefault.jpg", "dur": "11:54:59"}, {"id": "A5q1eEoRrqA", "title": "Night Jazz Sleep - Jazz Relaxing Music - Ethereal Jazz Piano - Soft Background Music - Calm Night", "thumb": "https://i.ytimg.com/vi/A5q1eEoRrqA/mqdefault.jpg", "dur": "1:41:53"}, {"id": "y8GYqEJuviU", "title": "Elegant Night Jazz - Gentle Jazz Piano Music for Stress Relief, Deep Sleep - Relaxing Jazz BGM", "thumb": "https://i.ytimg.com/vi/y8GYqEJuviU/mqdefault.jpg", "dur": "11:54:58"}, {"id": "OOF9CdeABFo", "title": "Urban Night Jazz - Soft Jazz Instrumental Music - Relaxing Jazz Piano Music for Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/OOF9CdeABFo/mqdefault.jpg", "dur": "1:46:20"}, {"id": "GfiTeuw0csE", "title": "Jazz Piano Night - Gentle and Delicate Jazz Music & Relaxing Jazz Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/GfiTeuw0csE/mqdefault.jpg", "dur": "11:55:00"}, {"id": "9poEDunSwno", "title": "Nighttime of Soft Jazz Piano Music - Sleep Jazz Instrumental Music - Ethereal Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/9poEDunSwno/mqdefault.jpg", "dur": "1:44:49"}, {"id": "IzVmCS8o10U", "title": "Slow Night Jazz in City - Soothing Jazz Piano Music - Background Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/IzVmCS8o10U/mqdefault.jpg", "dur": "11:09:33"}, {"id": "XwpZhr4KxpA", "title": "Ethereal Piano Late Night Jazz - Smooth Jazz Music - Relaxing Jazz Instrumental Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/XwpZhr4KxpA/mqdefault.jpg", "dur": "1:32:13"}, {"id": "1R3z9mKFWhA", "title": "Exquisite Night Jazz Sleep Piano Music - Relaxing Jazz Background Music for Deep Sleep - Calm Night", "thumb": "https://i.ytimg.com/vi/1R3z9mKFWhA/mqdefault.jpg", "dur": "1:50:37"}, {"id": "NJg9zb9NfoU", "title": "Deep Sleep Jazz Piano - Soothing Jazz Instrumental - A Quiet Night for Gently Unwind, Stress Relief", "thumb": "https://i.ytimg.com/vi/NJg9zb9NfoU/mqdefault.jpg", "dur": "1:44:11"}, {"id": "3gUxWd7t0Tg", "title": "Night Jazz Sleep - Smooth Exquisite Piano Jazz Music - Soft Background Music for Relax, Focus, Sleep", "thumb": "https://i.ytimg.com/vi/3gUxWd7t0Tg/mqdefault.jpg", "dur": "1:46:51"}, {"id": "-W6aHeEDhtg", "title": "Calm Late Night Jazz Music - Relaxing Jazz BGM - Soothing Piano Jazz Music for Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/-W6aHeEDhtg/mqdefault.jpg", "dur": "1:37:02"}, {"id": "VmcBHx2C-RY", "title": "Night of Smooth Piano Jazz Music - Jazz Relaxing Music - Soft Jazz Background Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/VmcBHx2C-RY/mqdefault.jpg", "dur": "1:43:51"}, {"id": "YyVyxf95MIE", "title": "Night Jazz Sleep - Sweet Exquisite Piano Jazz Music - Calm Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/YyVyxf95MIE/mqdefault.jpg", "dur": "1:37:09"}, {"id": "-plNhP-TcJg", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Relaxation , Stress Relief", "thumb": "https://i.ytimg.com/vi/-plNhP-TcJg/mqdefault.jpg", "dur": "1:46:50"}, {"id": "oJgxJaSgA4c", "title": "Night Jazz Sleep - Sweet Exquisite Piano Jazz Music - Calm Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/oJgxJaSgA4c/mqdefault.jpg", "dur": "1:32:12"}, {"id": "qiVHsXyjSeI", "title": "Late Night Smooth Jazz Instrumental Music - Relaxing Sleep Jazz Piano Music - Soft Background Music", "thumb": "https://i.ytimg.com/vi/qiVHsXyjSeI/mqdefault.jpg", "dur": "1:53:17"}, {"id": "McsT8uakub0", "title": "Relaxing Night Jazz Piano - Smooth Jazz Instrumental Music & Calm Background Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/McsT8uakub0/mqdefault.jpg", "dur": "1:31:34"}, {"id": "6jNZWQC3C2s", "title": "Warm Sleep Night Jazz - Tender Piano Jazz - Relaxing Comfortable Jazz Music | Soft Background Music", "thumb": "https://i.ytimg.com/vi/6jNZWQC3C2s/mqdefault.jpg", "dur": "1:50:09"}, {"id": "dhhkdE9DjJc", "title": "Sleep Jazz Music - Slow Piano Music in Cozy Ambience | Relaxing Jazz Piano Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/dhhkdE9DjJc/mqdefault.jpg", "dur": "1:43:18"}, {"id": "EDYBW6Pbjfw", "title": "Calm Late Night Jazz Music - Instrumental Piano Jazz BGM - Relaxing Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/EDYBW6Pbjfw/mqdefault.jpg", "dur": "1:26:11"}, {"id": "y79JsUPGSI0", "title": "Relaxing Night Jazz Piano - Smooth Jazz Instrumental Music & Calm Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/y79JsUPGSI0/mqdefault.jpg", "dur": "1:39:00"}, {"id": "2g2kCTp57FI", "title": "Late Night Jazz - Relaxing Soothing Background Music - Melody Piano Jazz Music for Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/2g2kCTp57FI/mqdefault.jpg", "dur": "1:44:35"}, {"id": "4_MjHPlKUQ0", "title": "Nighttime Sleep Jazz Music - Smooth Piano Jazz Instrumental Music - Calm Background Music for Relax", "thumb": "https://i.ytimg.com/vi/4_MjHPlKUQ0/mqdefault.jpg", "dur": "1:52:59"}, {"id": "4txYW_1KDhY", "title": "Slow Night Jazz in City - Soothing Jazz Piano Music - Background Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/4txYW_1KDhY/mqdefault.jpg", "dur": "1:48:32"}, {"id": "zh-dhD6lrac", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Piano Jazz Music - MidNight Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/zh-dhD6lrac/mqdefault.jpg", "dur": "1:36:27"}, {"id": "WeMYMUOO9K4", "title": "Ethereal Night Jazz Sleep Piano Music - Soft Jazz Background Music - Calm Background Music for Relax", "thumb": "https://i.ytimg.com/vi/WeMYMUOO9K4/mqdefault.jpg", "dur": "1:41:06"}, {"id": "NwC_pyAXxug", "title": "Relaxing Jazz Piano Music for a Cozy Evening - Night Jazz Music for Focus, Deep Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/NwC_pyAXxug/mqdefault.jpg", "dur": "1:31:59"}, {"id": "P2c01UWJcT8", "title": "Elegant Jazz Relaxing Music - Soft Tender Night Jazz Music - Calm Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/P2c01UWJcT8/mqdefault.jpg", "dur": "1:32:01"}, {"id": "o7Pv9DBIsV8", "title": "Relaxing Delicate Sleep Jazz Music - Ethereal Jazz and Soft Piano at Night helps Chill out & Focus", "thumb": "https://i.ytimg.com/vi/o7Pv9DBIsV8/mqdefault.jpg", "dur": "1:46:44"}, {"id": "Fmna7QKKwyg", "title": "Nighttime of Soft Jazz Music - Soothing Piano Jazz BGM - Sleep Jazz Instrumental Music - Good Night", "thumb": "https://i.ytimg.com/vi/Fmna7QKKwyg/mqdefault.jpg", "dur": "1:42:47"}, {"id": "JPPCfQ5lgWg", "title": "Jazz Piano Night - Relaxing Jazz Instrumental Music - Calm Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/JPPCfQ5lgWg/mqdefault.jpg", "dur": "1:37:14"}, {"id": "4LuuHZDdqw0", "title": "Late Night Mood Jazz - Soothing of Sleep Jazz Piano Music - Background Jazz Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/4LuuHZDdqw0/mqdefault.jpg", "dur": "1:51:25"}, {"id": "RSHhvzrVBEw", "title": "Calm Night Jazz - Elegant Piano Jazz Music for Relax, Study & Sleep - Smooth Jazz Instrumental Music", "thumb": "https://i.ytimg.com/vi/RSHhvzrVBEw/mqdefault.jpg", "dur": "1:40:43"}, {"id": "tPLKFentOX8", "title": "Ethereal Night Jazz Sleep - Soothing Jazz Piano Music for Insomnia - Relaxing Jazz Background Music", "thumb": "https://i.ytimg.com/vi/tPLKFentOX8/mqdefault.jpg", "dur": "1:45:42"}, {"id": "cTc2keIE2Dw", "title": "Delicate Late Night Jazz - Smooth Jazz Instrumental - Relaxing Piano Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/cTc2keIE2Dw/mqdefault.jpg", "dur": "1:40:48"}, {"id": "nc1tqIAqu0M", "title": "Sleep Night Jazz - Soft Jazz Instrumental Music & Relaxing Jazz Piano Music for Deep Sleep & Focus", "thumb": "https://i.ytimg.com/vi/nc1tqIAqu0M/mqdefault.jpg", "dur": "1:36:48"}, {"id": "SRidKmVRdDI", "title": "Late Night Jazz - Soothing Piano Jazz Music for Sleep, Study, Work | Smooth Jazz Instrumental Music", "thumb": "https://i.ytimg.com/vi/SRidKmVRdDI/mqdefault.jpg", "dur": "1:32:00"}, {"id": "_tO1nvJqeEM", "title": "Relaxing Night Jazz Instrumental Music - Soothing Jazz Piano Music - Soft Background Music for Sleep", "thumb": "https://i.ytimg.com/vi/_tO1nvJqeEM/mqdefault.jpg", "dur": "1:36:54"}, {"id": "pN1eTxEEEx0", "title": "Sleep Jazz Music - Slow Piano Music in Cozy Ambience | Relaxing Jazz Piano Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/pN1eTxEEEx0/mqdefault.jpg", "dur": "1:46:33"}, {"id": "Yq4iVygCInQ", "title": "Exquisite Night Jazz Sleep Piano Music - Sweet Jazz Background Music for Relax, Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/Yq4iVygCInQ/mqdefault.jpg", "dur": "1:48:50"}, {"id": "WaHF_XpdlEM", "title": "Sleep Slow Night Jazz Music - Comfort Piano Jazz Instrumental for Focus, Deep Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/WaHF_XpdlEM/mqdefault.jpg", "dur": "1:32:55"}, {"id": "Wp92EaKRcsk", "title": "Night of Smooth Piano Jazz Music - Jazz Relaxing Music - Soft Jazz Background Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/Wp92EaKRcsk/mqdefault.jpg", "dur": "1:38:55"}, {"id": "1GGkovnUSUs", "title": "Night Sleep Jazz Music – Delicate Smooth Piano Jazz Music for Relaxation, Stress Relief - Calm Night", "thumb": "https://i.ytimg.com/vi/1GGkovnUSUs/mqdefault.jpg", "dur": "1:40:50"}, {"id": "jsgSxvzjohs", "title": "Soft Sleep Night Jazz - Tender Piano Jazz - Relaxing Comfortable Jazz Music | Calm Background Music", "thumb": "https://i.ytimg.com/vi/jsgSxvzjohs/mqdefault.jpg", "dur": "1:35:45"}, {"id": "dM8bHVsI_xw", "title": "Calm of Sleep Jazz Night - A peaceful corner with Soft Jazz Music & Ethereal Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/dM8bHVsI_xw/mqdefault.jpg", "dur": "1:31:55"}, {"id": "E5gUCdlJJao", "title": "Delicate Night Jazz Music - Relaxing Jazz Piano Music - Soft Background Music for Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/E5gUCdlJJao/mqdefault.jpg", "dur": "1:39:10"}, {"id": "UCF9neCiJxo", "title": "Exquisite Sleep Jazz Instrumental Music - Relaxing Night Jazz - Calm Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/UCF9neCiJxo/mqdefault.jpg", "dur": "1:47:54"}, {"id": "tX0A02ogHiU", "title": "Night Jazz Instrumental Music - Soft Piano Jazz Music - Relaxing Jazz BGM for Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/tX0A02ogHiU/mqdefault.jpg", "dur": "1:35:57"}, {"id": "zsssd0We7EM", "title": "Soothing Night Jazz Piano Music & Calm Jazz Music for Sleep Tight - Jazz Relaxing Music - Calm Night", "thumb": "https://i.ytimg.com/vi/zsssd0We7EM/mqdefault.jpg", "dur": "1:44:30"}, {"id": "V3AKEyMBITU", "title": "Tender Late Night Jazz - Relaxing Jazz Piano Music - Exquisite Jazz Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/V3AKEyMBITU/mqdefault.jpg", "dur": "1:38:50"}, {"id": "inBQqe9jd48", "title": "Soothing of Sleep Jazz Piano Music - Relaxing and Romantic Music & Calm Night Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/inBQqe9jd48/mqdefault.jpg", "dur": "1:40:38"}, {"id": "lEYDp2q7XbE", "title": "Late Night Jazz - Relaxing Jazz Instrumental Music - Calm Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/lEYDp2q7XbE/mqdefault.jpg", "dur": "1:46:40"}, {"id": "YFuKnGcdzF0", "title": "Ethereal Jazz Sleep Sounds - Soothing Jazz Piano Instrumental Playlist for Focus, Relax - Calm Night", "thumb": "https://i.ytimg.com/vi/YFuKnGcdzF0/mqdefault.jpg", "dur": "1:35:40"}, {"id": "ZJZY659Gar4", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Instrumental Music at Night - Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/ZJZY659Gar4/mqdefault.jpg", "dur": "1:40:44"}, {"id": "Oe7p-chLfVA", "title": "Smooth Jazz Sleep Night - Delicate Jazz Piano Instrumental Music for Chill out, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/Oe7p-chLfVA/mqdefault.jpg", "dur": "1:34:46"}, {"id": "aYpjhy53hRA", "title": "Sleep Jazz - Ethereal Jazz Piano Night Music & Sweet Ambience for Sleep Deep - Calm Background Music", "thumb": "https://i.ytimg.com/vi/aYpjhy53hRA/mqdefault.jpg", "dur": "1:38:54"}, {"id": "5OsbjLLDpnA", "title": "Relaxing Soothing Sleep Jazz Music - Elegant Jazz and Soft Piano at Night helps Chill out & Focus", "thumb": "https://i.ytimg.com/vi/5OsbjLLDpnA/mqdefault.jpg", "dur": "1:31:47"}, {"id": "arkHV_aGVyU", "title": "Ethereal Sleep Jazz Piano Music at Night helps Relax - Delicate Jazz Music for Stress Relief, Calm", "thumb": "https://i.ytimg.com/vi/arkHV_aGVyU/mqdefault.jpg", "dur": "1:36:55"}, {"id": "UAgBBmkA4Yc", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Focus, Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/UAgBBmkA4Yc/mqdefault.jpg", "dur": "1:27:31"}, {"id": "rWcfrk07alU", "title": "Delicate Piano Late Night Jazz - Relaxing Jazz Music - Smooth Jazz Instrumental Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/rWcfrk07alU/mqdefault.jpg", "dur": "1:41:37"}, {"id": "ma27B6W8_C0", "title": "Elegant Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Ethereal Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/ma27B6W8_C0/mqdefault.jpg", "dur": "1:36:54"}, {"id": "Pbb0TQIBb8M", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Ethereal Piano Jazz Music - Calm Night", "thumb": "https://i.ytimg.com/vi/Pbb0TQIBb8M/mqdefault.jpg", "dur": "1:27:28"}, {"id": "MzlZyysh2b4", "title": "Nightly of Sleep Jazz Instrumental Music - Delicate Jazz Piano Music - Jazz Background for Relax", "thumb": "https://i.ytimg.com/vi/MzlZyysh2b4/mqdefault.jpg", "dur": "1:40:27"}, {"id": "x1dmqixheNI", "title": "Quiet Night Jazz Vibes - Tender Piano Jazz -  Smooth Jazz Instrumental Music for Relax, Focus, Sleep", "thumb": "https://i.ytimg.com/vi/x1dmqixheNI/mqdefault.jpg", "dur": "1:36:17"}, {"id": "lrPLZUn7y4E", "title": "Calm Night Sleep Jazz - Elegant Piano Jazz Music - Smooth Jazz Instrumental Music for Relax & Focus", "thumb": "https://i.ytimg.com/vi/lrPLZUn7y4E/mqdefault.jpg", "dur": "1:41:38"}, {"id": "JW5OB84_dE0", "title": "Late Night Mood Jazz - Warm Smooth Jazz Piano Music - Ethereal Jazz for Relax, Focus, Deep Sleep", "thumb": "https://i.ytimg.com/vi/JW5OB84_dE0/mqdefault.jpg", "dur": "1:31:59"}, {"id": "NNKxdC7hv8k", "title": "Relaxing Sleep Jazz Night Music - Tender Comfort Jazz Piano Music - Sweet Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/NNKxdC7hv8k/mqdefault.jpg", "dur": "1:45:28"}, {"id": "tDZCssLWA1I", "title": "Relaxing of Elegant Night Jazz Music - Smooth Jazz Piano Music  - Jazz Background Music for Sleep", "thumb": "https://i.ytimg.com/vi/tDZCssLWA1I/mqdefault.jpg", "dur": "1:25:53"}, {"id": "hF3S-4UN1L8", "title": "Midnight of Soothing Jazz Piano Music - Comfort Atmosphere and Soft Melodies - Night Jazz Sleep", "thumb": "https://i.ytimg.com/vi/hF3S-4UN1L8/mqdefault.jpg", "dur": "1:35:56"}, {"id": "njUz-gJiP0s", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music - Calm Music of Night", "thumb": "https://i.ytimg.com/vi/njUz-gJiP0s/mqdefault.jpg", "dur": "1:36:02"}, {"id": "fM7cmnmdVt8", "title": "Quiet Night Jazz - Relaxing Jazz Piano Music - Soft Jazz Instrumental Music for Study, Focus & Sleep", "thumb": "https://i.ytimg.com/vi/fM7cmnmdVt8/mqdefault.jpg", "dur": "1:38:37"}, {"id": "9dza1dsNyko", "title": "Cozy Bedroom Jazz - Soothing Night Jazz Piano Music & Delicate Jazz Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/9dza1dsNyko/mqdefault.jpg", "dur": "1:36:38"}, {"id": "4j31iEhdD3U", "title": "Cozy Night In | Jazz Piano Ambience in a Candlelit Bedroom for Relax, Focus, Deep Sleep - Calm Night", "thumb": "https://i.ytimg.com/vi/4j31iEhdD3U/mqdefault.jpg", "dur": "1:26:50"}, {"id": "a5a-OKbr69I", "title": "Soothing Night Jazz Instrumental Music - Delicate Jazz Piano with City Views for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/a5a-OKbr69I/mqdefault.jpg", "dur": "1:36:35"}, {"id": "gWRTGb8j28A", "title": "Soothing Night Jazz Music - Relaxing Jazz Piano Music - Delicate Jazz Music for Sleep - Calm Night", "thumb": "https://i.ytimg.com/vi/gWRTGb8j28A/mqdefault.jpg", "dur": "1:38:22"}, {"id": "pRxCJvgWr9U", "title": "Late Night Jazz - Stunning Night Piano Jazz Music for Stress Relief, Deep Sleep - Smooth Jazz Music", "thumb": "https://i.ytimg.com/vi/pRxCJvgWr9U/mqdefault.jpg", "dur": "1:40:58"}, {"id": "4uodxDmEgyE", "title": "Night Jazz - Melody Jazz Music - Relaxing Ethereal Piano Jazz Instrumental Music for Focus, Sleep", "thumb": "https://i.ytimg.com/vi/4uodxDmEgyE/mqdefault.jpg", "dur": "1:35:27"}, {"id": "jGd9i3KojVo", "title": "Smooth Nightly Jazz Sleep Music - Delicate Piano Jazz BGM | Calm Instrumental Music for Relax, Focus", "thumb": "https://i.ytimg.com/vi/jGd9i3KojVo/mqdefault.jpg", "dur": "1:20:59"}, {"id": "YtzaXnL3gl0", "title": "Exquisite Relaxing Night Piano Jazz - Smooth Jazz Instrumental Music - Sweet Jazz BGM to Deep Sleep", "thumb": "https://i.ytimg.com/vi/YtzaXnL3gl0/mqdefault.jpg", "dur": "1:30:53"}, {"id": "jsFwAXKpNao", "title": "Soothing Piano Late Night Jazz - Delicate Jazz Music for Relax, Stress Relief, Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/jsFwAXKpNao/mqdefault.jpg", "dur": "1:41:27"}, {"id": "IiGvULBl7VI", "title": "Relaxing Night Jazz Music - Chill out slow Piano Jazz Instrumental - Exquisite Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/IiGvULBl7VI/mqdefault.jpg", "dur": "1:27:50"}, {"id": "vUkQElryjhQ", "title": "Soothing Late Jazz Night Piano Music & Ethereal Jazz Tunes for Sleeping Better - Unwind Completely", "thumb": "https://i.ytimg.com/vi/vUkQElryjhQ/mqdefault.jpg", "dur": "1:36:37"}, {"id": "R0RHoPS6tcg", "title": "Relaxing Jazz Instrumental Music at Night - Sleep Jazz Piano Music - Delicate Jazz Music for Focus", "thumb": "https://i.ytimg.com/vi/R0RHoPS6tcg/mqdefault.jpg", "dur": "1:41:31"}, {"id": "SsdMaE3OuYo", "title": "Delicate Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Elegant Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/SsdMaE3OuYo/mqdefault.jpg", "dur": "1:36:35"}, {"id": "2S49z8mTyUs", "title": "Night Jazz - Smooth Piano Jazz Music - Soft Piano Jazz Instrumental Music - Delicate Jazz for Sleep", "thumb": "https://i.ytimg.com/vi/2S49z8mTyUs/mqdefault.jpg", "dur": "1:39:36"}, {"id": "L0qxGcXanQc", "title": "New York Night Jazz - Smooth Jazz Instrumental - Relaxing Tender Piano Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/L0qxGcXanQc/mqdefault.jpg", "dur": "1:36:40"}, {"id": "lvS3TrO5iM0", "title": "Late Night Jazz - Stunning Night Piano Jazz Music for Deep Sleep, Stress Relief - Smooth Jazz Music", "thumb": "https://i.ytimg.com/vi/lvS3TrO5iM0/mqdefault.jpg", "dur": "1:39:38"}, {"id": "bzgJoVQuzlM", "title": "Nightly Sleep Jazz Piano Music - Soft Jazz Instrumental - Calm Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/bzgJoVQuzlM/mqdefault.jpg", "dur": "1:40:59"}, {"id": "iEcJIU-fvkk", "title": "Ethereal Night Jazz - Soft Piano Jazz Music - Smooth Jazz Instrumental Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/iEcJIU-fvkk/mqdefault.jpg", "dur": "1:36:37"}, {"id": "8af5F5LoozA", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Instrumental Music at Night - March Jazz Music", "thumb": "https://i.ytimg.com/vi/8af5F5LoozA/mqdefault.jpg", "dur": "1:20:57"}, {"id": "t6O8gg6Ci3c", "title": "Late Night Mood Jazz - Relaxing Smooth Jazz - Ethereal Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/t6O8gg6Ci3c/mqdefault.jpg", "dur": "1:41:01"}, {"id": "op69QHadrSY", "title": "Elegant Night Jazz - Soothing of Sleep Jazz Piano Music - Soft Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/op69QHadrSY/mqdefault.jpg", "dur": "1:36:10"}, {"id": "ct3zSKEgS3k", "title": "Relaxing of Elegant Night Jazz Music - Smooth Jazz Instrumental Music - Calm Piano Music for Sleep", "thumb": "https://i.ytimg.com/vi/ct3zSKEgS3k/mqdefault.jpg", "dur": "1:36:08"}, {"id": "XZmZ0Jp4ACk", "title": "Calm Night Jazz Sleep - Peaceful Room Ambience to Relax - Jazz Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/XZmZ0Jp4ACk/mqdefault.jpg", "dur": "1:21:01"}, {"id": "qCOyIWQFwxU", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music & Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/qCOyIWQFwxU/mqdefault.jpg", "dur": "1:40:27"}, {"id": "9t6XkjBQNoM", "title": "Soothing of Nightly Jazz Sleep - Smooth Jazz Instrumental Music - Delicate Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/9t6XkjBQNoM/mqdefault.jpg", "dur": "1:38:50"}, {"id": "VhIn1ZmXN7I", "title": "Sleep in Peace - Midnight Feelings with Soft Jazz and Delicate Jazz Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/VhIn1ZmXN7I/mqdefault.jpg", "dur": "1:45:21"}, {"id": "6-bGh1-I8xc", "title": "Late Night Jazz - Jazz Relaxing Music & Ethereal Jazz Piano - Soft Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/6-bGh1-I8xc/mqdefault.jpg", "dur": "1:41:01"}, {"id": "lhCfg6UGXxA", "title": "Calm Night Jazz Music - Relaxing Jazz Piano Music - Smooth Jazz Instrumental Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/lhCfg6UGXxA/mqdefault.jpg", "dur": "1:53:23"}, {"id": "XrOWI5-Lr_c", "title": "Exquisite Night Jazz  for Sleep - Slow Jazz Piano Music - Smooth Jazz Instrumental Music for Relax", "thumb": "https://i.ytimg.com/vi/XrOWI5-Lr_c/mqdefault.jpg", "dur": "1:46:21"}, {"id": "LnNWVTJ_vYw", "title": "Night of Sleep Jazz Piano - Relaxing Jazz Piano Music - Background Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/LnNWVTJ_vYw/mqdefault.jpg", "dur": "1:46:22"}, {"id": "AfTl7W7C6Zs", "title": "Soothing of Sleep Jazz Piano Music - Ethereal Slow Smooth Piano Jazz Music for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/AfTl7W7C6Zs/mqdefault.jpg", "dur": "1:50:15"}, {"id": "oUvCkGwUqFU", "title": "Exquisite Nighttime Jazz with Elegant Sleeping Jazz | Soft Jazz Piano Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/oUvCkGwUqFU/mqdefault.jpg", "dur": "1:36:38"}, {"id": "CIaKQpQPd9M", "title": "Sweet Night Jazz - Smooth Jazz Piano Music - Delicate Jazz Music for Relax, Overcome Stress, Sleep", "thumb": "https://i.ytimg.com/vi/CIaKQpQPd9M/mqdefault.jpg", "dur": "1:25:26"}, {"id": "LZeKkGUtAmA", "title": "❤️ Valentine Jazz – Sweet Jazz Piano Music - Warm Romantic Night Ambience for Relaxation & Love", "thumb": "https://i.ytimg.com/vi/LZeKkGUtAmA/mqdefault.jpg", "dur": "1:30:56"}, {"id": "uZvezsHJwGE", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Piano Music & Background Instrumental for Sleep", "thumb": "https://i.ytimg.com/vi/uZvezsHJwGE/mqdefault.jpg", "dur": "1:35:37"}, {"id": "upWVSEwq50M", "title": "Soothing Night Jazz Music - Slow Jazz Piano Music - Jazz Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/upWVSEwq50M/mqdefault.jpg", "dur": "1:38:50"}, {"id": "qh-uaebAXxA", "title": "Relaxing Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/qh-uaebAXxA/mqdefault.jpg", "dur": "1:41:02"}, {"id": "MmYPkD-FAW8", "title": "Late Night Jazz - Relaxing Soothing Background Music for Sleep and Melody Piano Jazz | Delicate Jazz", "thumb": "https://i.ytimg.com/vi/MmYPkD-FAW8/mqdefault.jpg", "dur": "1:31:42"}, {"id": "8oSd6mraZYo", "title": "Ethereal Nightly Sleep Jazz Music - Soothing Piano Jazz Music for Sleep - Relaxing Piano Jazz Music", "thumb": "https://i.ytimg.com/vi/8oSd6mraZYo/mqdefault.jpg", "dur": "1:22:58"}, {"id": "0ySBK8jXKBc", "title": "Soft Snow Jazz Sleep Music & Smooth Jazz Piano Music for Chill Nights, Calm Mind, Release Tension", "thumb": "https://i.ytimg.com/vi/0ySBK8jXKBc/mqdefault.jpg", "dur": "1:46:22"}, {"id": "pkMK2z7KuF8", "title": "Soothing of Sleep Jazz Piano Music - Soft Night Piano Jazz Instrumental Music - Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/pkMK2z7KuF8/mqdefault.jpg", "dur": "1:41:42"}, {"id": "Enra3NUuhYA", "title": "Nighttime Jazz Relaxing Music - Soothing of Sleep Jazz Piano Music - Jazz for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/Enra3NUuhYA/mqdefault.jpg", "dur": "1:36:38"}, {"id": "v3AGv7l1thk", "title": "Night Slow Sleep Jazz Piano Music - Comfort Elegant Jazz Music - Embrace the Peaceful of Sweet Night", "thumb": "https://i.ytimg.com/vi/v3AGv7l1thk/mqdefault.jpg", "dur": "1:20:57"}, {"id": "nib7_xSFwdk", "title": "Soothing Night Jazz in City - Slow Jazz Piano Music - Background Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/nib7_xSFwdk/mqdefault.jpg", "dur": "1:50:25"}, {"id": "JUH4MkdhBrE", "title": "Jazz Relaxing Music - Sleep Jazz Piano Instrumental on a Quiet Night - Background Chillout Music", "thumb": "https://i.ytimg.com/vi/JUH4MkdhBrE/mqdefault.jpg", "dur": "1:35:32"}, {"id": "NW8Cxc3uh5E", "title": "Ethereal Piano Late Night Jazz - Relaxing Jazz Music - Smooth Jazz Instrumental Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/NW8Cxc3uh5E/mqdefault.jpg", "dur": "1:20:56"}, {"id": "UBELrDpzaWs", "title": "Late Night Jazz - Smooth Jazz Instrumental Music - Relaxing Tender Piano Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/UBELrDpzaWs/mqdefault.jpg", "dur": "1:38:47"}, {"id": "qs1xvI_l8gw", "title": "Late Night Jazz - Soothing Piano Jazz Instrumental Music for Deep Relaxation & Peaceful Sleep", "thumb": "https://i.ytimg.com/vi/qs1xvI_l8gw/mqdefault.jpg", "dur": "1:31:45"}, {"id": "Bn0UKeMY7Vo", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music for Peaceful Sleep", "thumb": "https://i.ytimg.com/vi/Bn0UKeMY7Vo/mqdefault.jpg", "dur": "1:50:36"}, {"id": "nRy3lNm3oYM", "title": "Relaxing Jazz Instrumental Music at Night - Elegant Piano Jazz Instrumental for Sleep - Good Sleep", "thumb": "https://i.ytimg.com/vi/nRy3lNm3oYM/mqdefault.jpg", "dur": "1:20:56"}, {"id": "uH5IWsQoJMk", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Sweet Piano Jazz Music - Happy New Year", "thumb": "https://i.ytimg.com/vi/uH5IWsQoJMk/mqdefault.jpg", "dur": "1:51:24"}, {"id": "0vMJ-91T4Fg", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music & Happy New Year 2026", "thumb": "https://i.ytimg.com/vi/0vMJ-91T4Fg/mqdefault.jpg", "dur": "1:20:57"}, {"id": "kVu6E2Fdeik", "title": "Late Night Jazz for Stress Relief, Sleep - Smooth Jazz Piano Music - Delicate Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/kVu6E2Fdeik/mqdefault.jpg", "dur": "1:27:51"}, {"id": "sEb6ce7OLv4", "title": "Night Jazz Sleep Music - Elegant Piano Jazz Instrumental Music for Relax, Good Sleep - Calm Night", "thumb": "https://i.ytimg.com/vi/sEb6ce7OLv4/mqdefault.jpg", "dur": "1:10:23"}, {"id": "xYPS_ZotK6c", "title": "Relaxing Jazz Instrumental Music at Night - Winter of Sleep Jazz Piano Music & Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/xYPS_ZotK6c/mqdefault.jpg", "dur": "11:54:57"}, {"id": "c8TsBuIjHUo", "title": "Soothing Piano Late Night Jazz - Ethereal of Sleep Jazz Piano Music & Delicate Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/c8TsBuIjHUo/mqdefault.jpg", "dur": "11:55:00"}, {"id": "7IIMDrnGt0s", "title": "Late Night Jazz Sleep Music - Relaxing Jazz Piano Music - Ethereal Piano Jazz Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/7IIMDrnGt0s/mqdefault.jpg", "dur": "1:31:39"}, {"id": "GeAzjV-OFmM", "title": "Comfort Sleep Jazz Night - Smooth Jazz Piano Relaxing Souls - Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/GeAzjV-OFmM/mqdefault.jpg", "dur": "1:41:24"}, {"id": "SsC2v59Rfks", "title": "Paris Night Jazz - Tender Piano Jazz - Relaxing Jazz Instrumental Music | Calm Background Music", "thumb": "https://i.ytimg.com/vi/SsC2v59Rfks/mqdefault.jpg", "dur": "11:54:56"}, {"id": "xiztheIxAlA", "title": "Night Jazz Sleep - Smooth Piano Jazz Instrumental Music - Calm Background Music for Relax,Deep Sleep", "thumb": "https://i.ytimg.com/vi/xiztheIxAlA/mqdefault.jpg", "dur": "1:35:32"}, {"id": "1z9SVU2Ljlg", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Calm Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/1z9SVU2Ljlg/mqdefault.jpg", "dur": "1:31:40"}, {"id": "KD4j9-z6o1k", "title": "Sleep Night Jazz Piano Music - Jazz Relaxing Music - Slow Background Music for Focus, Stress Relief", "thumb": "https://i.ytimg.com/vi/KD4j9-z6o1k/mqdefault.jpg", "dur": "1:36:33"}, {"id": "lDIkhwTrQgk", "title": "Soothing Night Jazz Piano Music & Instrumental Jazz Relaxing Music - Calm Jazz Music for Sleep Tight", "thumb": "https://i.ytimg.com/vi/lDIkhwTrQgk/mqdefault.jpg", "dur": "11:55:00"}, {"id": "QNtXP2RHuRg", "title": "Peaceful Winter Nighttime Ambience - Smooth Sweet Jazz - Soft Jazz Piano Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/QNtXP2RHuRg/mqdefault.jpg", "dur": "1:10:24"}, {"id": "2HZM2DDN2gM", "title": "Gentle Winter Jazz Night - Melodious Jazz Piano Background Music - Ethereal Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/2HZM2DDN2gM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "f9GMT45pFyQ", "title": "Late Night Winter Jazz Sleep Music - Relaxing Calm Jazz Piano BGM - Delicate Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/f9GMT45pFyQ/mqdefault.jpg", "dur": "1:41:32"}, {"id": "E89C2FtPwt8", "title": "Late Night Mood Jazz - Relaxing Jazz Piano Music - Calm Background Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/E89C2FtPwt8/mqdefault.jpg", "dur": "11:54:57"}, {"id": "ENBBklNEMEU", "title": "Relaxing Sleep Jazz Night Music - Tender Comfort Jazz Piano Music - Delicate Jazz Music for Focus", "thumb": "https://i.ytimg.com/vi/ENBBklNEMEU/mqdefault.jpg", "dur": "1:52:28"}, {"id": "ePOxuMsjlTU", "title": "Night of Relaxing Jazz Music - Soothing Piano Jazz BGM - Sleep Jazz Instrumental Music - Good Night", "thumb": "https://i.ytimg.com/vi/ePOxuMsjlTU/mqdefault.jpg", "dur": "1:40:57"}, {"id": "Fin__GLjnzU", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Delicate Piano Jazz Music - Calm Night", "thumb": "https://i.ytimg.com/vi/Fin__GLjnzU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "bC46c_0UfHU", "title": "Soothing Jazz Sleep Music - Relaxing Jazz Piano Music for Calm Mind, Release Tension, Deep Sleep", "thumb": "https://i.ytimg.com/vi/bC46c_0UfHU/mqdefault.jpg", "dur": "11:54:56"}, {"id": "P0IQSe9rBzM", "title": "Night Jazz - Relaxing Jazz Instrumental Music & Ethereal Background Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/P0IQSe9rBzM/mqdefault.jpg", "dur": "1:31:44"}, {"id": "WfeSou5R2qM", "title": "Night Jazz Sleep - Soft Piano Jazz Instrumental Music - Relaxing Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/WfeSou5R2qM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "TRb4A0ekCyU", "title": "Snow Jazz Night for Sleeping - Soft Jazz Instrumental Music - Soothing Background Music for Relax", "thumb": "https://i.ytimg.com/vi/TRb4A0ekCyU/mqdefault.jpg", "dur": "1:31:48"}, {"id": "iA8SkCplr-Y", "title": "Late Night Jazz to Stress Relief, Sleep - Relaxing Piano Jazz Music & Calm Background Instrumental", "thumb": "https://i.ytimg.com/vi/iA8SkCplr-Y/mqdefault.jpg", "dur": "1:31:49"}, {"id": "wyrcVPciFGo", "title": "Sweet Late Night with Relaxing Sleep Jazz Music - Soothing Piano Jazz Music - Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/wyrcVPciFGo/mqdefault.jpg", "dur": "11:54:56"}, {"id": "WnigpKyy_xY", "title": "Jazz Ethereal Music in a Cozy Winter Night Space with Soft Jazz Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/WnigpKyy_xY/mqdefault.jpg", "dur": "1:42:46"}, {"id": "Vxypf_6Y_t0", "title": "Relaxing Delicate Sleep Jazz Music - Ethereal Jazz and Soft Piano at Night helps Chill out & Focus", "thumb": "https://i.ytimg.com/vi/Vxypf_6Y_t0/mqdefault.jpg", "dur": "11:55:00"}, {"id": "LDnT7Erwpis", "title": "Night Jazz Sleep - Smooth Exquisite Piano Jazz Music - Soft Background Music for Relax,Stress Relief", "thumb": "https://i.ytimg.com/vi/LDnT7Erwpis/mqdefault.jpg", "dur": "11:55:00"}, {"id": "hNVst6IuQxQ", "title": "Calm Jazz Piano Music & Tender Sleep Nightly Jazz - Smooth Background Music for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/hNVst6IuQxQ/mqdefault.jpg", "dur": "1:36:39"}, {"id": "jGKoVokj48Q", "title": "Ethereal Piano Late Night Jazz - Warm Winter Jazz - Slow Jazz Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/jGKoVokj48Q/mqdefault.jpg", "dur": "1:50:17"}, {"id": "3q8lEmbrRVw", "title": "Comfort Sweet Winter Night Jazz - Smooth Jazz Piano Instrumental Music - Warm Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/3q8lEmbrRVw/mqdefault.jpg", "dur": "11:54:56"}, {"id": "2vrskrxMinQ", "title": "Tender Sleep Nightly Jazz & Smooth Jazz Piano Music - Calm Background Music for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/2vrskrxMinQ/mqdefault.jpg", "dur": "1:31:41"}, {"id": "n_he0iorl_Q", "title": "Soothing Night Winter Jazz Sleep Music - Relaxing Jazz Piano Music - Ethereal Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/n_he0iorl_Q/mqdefault.jpg", "dur": "11:55:00"}, {"id": "qoa-EtQYCD8", "title": "Relaxing Midnight Jazz & Tender Piano Background Jazz to Heal Your Soul & Sleep Well - Calm Night", "thumb": "https://i.ytimg.com/vi/qoa-EtQYCD8/mqdefault.jpg", "dur": "1:35:38"}, {"id": "m5IQqlzJD-s", "title": "Romantic Jazz at a Night Paris - Soft Jazz Piano Music for Relax, Deep Sleep & Peaceful Paris Nights", "thumb": "https://i.ytimg.com/vi/m5IQqlzJD-s/mqdefault.jpg", "dur": "11:55:00"}, {"id": "2A58pMR5lQg", "title": "Night Jazz Sleep - Smooth Delicate Piano Jazz Music - Soft Background Music for Relax - Good Night", "thumb": "https://i.ytimg.com/vi/2A58pMR5lQg/mqdefault.jpg", "dur": "1:41:06"}, {"id": "uUyuBmRQx8I", "title": "Night of Sleep Jazz Piano - Ethereal Jazz Music for Chillout, Night Moods, Stress Relief, Sleep,...", "thumb": "https://i.ytimg.com/vi/uUyuBmRQx8I/mqdefault.jpg", "dur": "11:54:57"}, {"id": "j28NkMzLlMo", "title": "Cozy Relaxing Jazz Piano Music - Night Jazz by the Fireplace & Warm Winter Ambience for Deep Sleep", "thumb": "https://i.ytimg.com/vi/j28NkMzLlMo/mqdefault.jpg", "dur": "1:31:21"}, {"id": "GY_nL-HC7qs", "title": "Exquisite Jazz Sleep in Quiet Winter - Soft Relaxing Piano Jazz Music for Peaceful Mood, Deep Sleep", "thumb": "https://i.ytimg.com/vi/GY_nL-HC7qs/mqdefault.jpg", "dur": "11:55:00"}, {"id": "W19zi_PngbI", "title": "Late Night Mood Jazz - Relaxing Winter Jazz - Background Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/W19zi_PngbI/mqdefault.jpg", "dur": "1:34:37"}, {"id": "d2LKNdL2Pxs", "title": "Nightly Sleep Jazz Piano Music - Soft Jazz Instrumental - Calm Background Music - Cozy Winter Jazz", "thumb": "https://i.ytimg.com/vi/d2LKNdL2Pxs/mqdefault.jpg", "dur": "1:35:40"}, {"id": "cZKMSo30j7s", "title": "Late Night Winter Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Ethereal Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/cZKMSo30j7s/mqdefault.jpg", "dur": "11:55:00"}, {"id": "WdbQ6P-geGQ", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/WdbQ6P-geGQ/mqdefault.jpg", "dur": "1:40:29"}, {"id": "e0mgCLwhg1Q", "title": "Night of Relaxing Jazz Piano - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music - Calm Night", "thumb": "https://i.ytimg.com/vi/e0mgCLwhg1Q/mqdefault.jpg", "dur": "1:35:44"}, {"id": "Gpl0--SKHs0", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Instrumental Music in Winter Night for Deep Sleep", "thumb": "https://i.ytimg.com/vi/Gpl0--SKHs0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "fWohMHINBKw", "title": "Winter Jazz Night at a New York City - Smooth Jazz Piano Music for Relax, Calm, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/fWohMHINBKw/mqdefault.jpg", "dur": "1:40:35"}, {"id": "vo3wLY9iWe4", "title": "Smooth of Night Jazz Sleep - Relaxing Jazz Piano Music - Soft Background Music - Calm Night Music...", "thumb": "https://i.ytimg.com/vi/vo3wLY9iWe4/mqdefault.jpg", "dur": "11:54:56"}, {"id": "GAa8GqR2xkY", "title": "Exquisite Soft Nighttime Jazz Music - Calm Night with Piano Jazz Instrumental for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/GAa8GqR2xkY/mqdefault.jpg", "dur": "1:35:39"}, {"id": "-aMjwVlvClY", "title": "Elegant Piano Late Night Jazz - Calm Background Music - Jazz Relaxing Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/-aMjwVlvClY/mqdefault.jpg", "dur": "1:40:32"}, {"id": "pqo6KhZIm6U", "title": "Late Night Jazz Sleep Music - Relaxing Soft Jazz Piano BGM - Delicate Piano Jazz Music - Good Night", "thumb": "https://i.ytimg.com/vi/pqo6KhZIm6U/mqdefault.jpg", "dur": "11:54:56"}, {"id": "IpI0q2PXOIA", "title": "Autumn Night Jazz - Relaxing Jazz Piano Music and Cozy Ambience in Fall for Sleep - Soft Jazz Music", "thumb": "https://i.ytimg.com/vi/IpI0q2PXOIA/mqdefault.jpg", "dur": "1:03:40"}, {"id": "4Ua3Nf8uipw", "title": "Delicate Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/4Ua3Nf8uipw/mqdefault.jpg", "dur": "1:35:32"}, {"id": "jzBlOHTcocc", "title": "Soothing Nightfall Jazz Music - Sweet Relaxing Piano Jazz Instrumental Music for Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/jzBlOHTcocc/mqdefault.jpg", "dur": "11:54:59"}, {"id": "mtm8Om3zIGY", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Relax, Stress Relief & Sleep", "thumb": "https://i.ytimg.com/vi/mtm8Om3zIGY/mqdefault.jpg", "dur": "1:40:35"}, {"id": "zw-6oawD6Dc", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Ethereal Piano Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/zw-6oawD6Dc/mqdefault.jpg", "dur": "11:54:56"}, {"id": "eQCxSAZ4XUA", "title": "Tranquil Night Jazz - Exquisite Smooth Jazz Piano Instrumental Music for Sleep, Relax - Good Night", "thumb": "https://i.ytimg.com/vi/eQCxSAZ4XUA/mqdefault.jpg", "dur": "1:30:41"}, {"id": "-VxH3D3Dr0w", "title": "Late Night Jazz Piano in Paris - Soothing of Sleep Jazz Piano Music - Calm Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/-VxH3D3Dr0w/mqdefault.jpg", "dur": "1:31:48"}, {"id": "H3vPrhHRjTE", "title": "Soothing Night Jazz Piano Music & Soft Jazz Music for Sleep Tight - Instrumental Jazz Relaxing Music", "thumb": "https://i.ytimg.com/vi/H3vPrhHRjTE/mqdefault.jpg", "dur": "11:54:56"}, {"id": "ikBdWwlu45Y", "title": "Relaxing Sleep Jazz Autumn - Soft Piano Jazz Music - Midnight Jazz Music for fall asleep immediately", "thumb": "https://i.ytimg.com/vi/ikBdWwlu45Y/mqdefault.jpg", "dur": "1:50:19"}, {"id": "u80IvXQcIs4", "title": "Tender Sleep Nightly Jazz - Smooth Jazz Piano Music - Comfort Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/u80IvXQcIs4/mqdefault.jpg", "dur": "1:31:50"}, {"id": "jOpf6wXG8oA", "title": "Sleep Jazz Music - Slow Piano Music in Read a book Ambience | Relaxing Jazz Piano for Sleep, Study", "thumb": "https://i.ytimg.com/vi/jOpf6wXG8oA/mqdefault.jpg", "dur": "11:54:56"}, {"id": "xGBT_kMbzkk", "title": "Tender Sleep Nightly Jazz & Calm Jazz Piano Music - Smooth Background Music for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/xGBT_kMbzkk/mqdefault.jpg", "dur": "1:50:53"}, {"id": "Y94yKa6tzXc", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Instrumental Music at Night & Positive Jazz Music", "thumb": "https://i.ytimg.com/vi/Y94yKa6tzXc/mqdefault.jpg", "dur": "1:04:57"}, {"id": "5L8Kqy4cFSY", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Smooth Jazz - Background Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/5L8Kqy4cFSY/mqdefault.jpg", "dur": "1:32:20"}, {"id": "FrXu3wA4wMg", "title": "Late Night Jazz for Sleep - Relaxing Smooth Jazz - Delicate Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/FrXu3wA4wMg/mqdefault.jpg", "dur": "1:31:47"}, {"id": "t4dc2YiCm2Q", "title": "Relaxing Night Jazz Piano for Deep Sleep - Peaceful Jazz Music - Soft Background Music for Relax", "thumb": "https://i.ytimg.com/vi/t4dc2YiCm2Q/mqdefault.jpg", "dur": "11:54:56"}, {"id": "UzmLUMO3V5Y", "title": "Night Jazz Sleep Music - Best Relaxing Playlist Piano Jazz for Stress Relief, Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/UzmLUMO3V5Y/mqdefault.jpg", "dur": "1:09:49"}, {"id": "ONZ3qQZBJ60", "title": "Romantic Rome Night Jazz Music - Relaxing Jazz Instrumental Music - Delicate Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/ONZ3qQZBJ60/mqdefault.jpg", "dur": "11:54:57"}, {"id": "efMS9o3YiII", "title": "Soft Jazz Night Piano Music - Elegant Jazz Instrumental - Exquisite Jazz Background Music for Sleep", "thumb": "https://i.ytimg.com/vi/efMS9o3YiII/mqdefault.jpg", "dur": "1:40:35"}, {"id": "-pI23KSiv4M", "title": "Tender Nightly Sleep Jazz Music - Sweet Jazz Music - Piano Jazz BGM - Jazz Relaxing Music for Sleep", "thumb": "https://i.ytimg.com/vi/-pI23KSiv4M/mqdefault.jpg", "dur": "1:04:54"}, {"id": "tErlmRiuogE", "title": "Late Night Piano Jazz Sleep Melody - Exquisite Jazz Music for Eliminates Negative Energy, Deep Sleep", "thumb": "https://i.ytimg.com/vi/tErlmRiuogE/mqdefault.jpg", "dur": "11:54:57"}, {"id": "YuASDCn2lpk", "title": "Night Jazz Piano Instrumental Music - Relaxing Jazz Music - Calm Jazz Music for Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/YuASDCn2lpk/mqdefault.jpg", "dur": "1:40:26"}, {"id": "Y0ZTkzTFNyE", "title": "Relaxing Jazz Instrumental Music at Night - Soft of Sleep Jazz Piano Music -  Calm Background Music", "thumb": "https://i.ytimg.com/vi/Y0ZTkzTFNyE/mqdefault.jpg", "dur": "1:40:30"}, {"id": "l7E-UUVG0Uw", "title": "Slow Soothing Night Jazz - Relaxing Jazz Instrumental Music for Sleep, Stress Relief - Calm Night", "thumb": "https://i.ytimg.com/vi/l7E-UUVG0Uw/mqdefault.jpg", "dur": "11:54:58"}, {"id": "_LzrjxuaZiU", "title": "Soft Night Jazz Sleep Music - Delicate Piano Jazz Instrumental Music - Calm Jazz Music for Sleep", "thumb": "https://i.ytimg.com/vi/_LzrjxuaZiU/mqdefault.jpg", "dur": "1:40:37"}, {"id": "Ua2TKXtslwI", "title": "Soothing Night Jazz Sleep Piano Music ~ Gentle Jazz Background Music for Deep Sleep, Relax, Work,..", "thumb": "https://i.ytimg.com/vi/Ua2TKXtslwI/mqdefault.jpg", "dur": "1:40:26"}, {"id": "TN1Nthcocwk", "title": "Relaxing Jazz Instrumental Music at Night City - Soft of Sleep Jazz Piano Music & Elegant Jazz Music", "thumb": "https://i.ytimg.com/vi/TN1Nthcocwk/mqdefault.jpg", "dur": "11:54:58"}, {"id": "isUv-ZhOIk8", "title": "Late Night City Focus Jazz Music - Relaxing Ambient for Productivity, Study Sessions & Deep Sleep", "thumb": "https://i.ytimg.com/vi/isUv-ZhOIk8/mqdefault.jpg", "dur": "1:01:20"}, {"id": "OpjrJCxHJIc", "title": "Night Jazz - Relaxing Piano Jazz Music - Soft Piano Jazz Instrumental for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/OpjrJCxHJIc/mqdefault.jpg", "dur": "11:06:57"}, {"id": "AzvEcCfD9vc", "title": "Relaxing Autumn Night Jazz 🍂 Tender Piano Jazz Music ~ Ethereal Jazz Instrumental for Sleep, Focus", "thumb": "https://i.ytimg.com/vi/AzvEcCfD9vc/mqdefault.jpg", "dur": "11:54:58"}, {"id": "ieWsdmE04jw", "title": "Smooth of Night Jazz Sleep - Soft Background Music - Jazz Relaxing Music ~ Calm Night Music", "thumb": "https://i.ytimg.com/vi/ieWsdmE04jw/mqdefault.jpg", "dur": "1:38:00"}, {"id": "QbpANpYj_QU", "title": "Soothing Piano Late Night Jazz - Sweet Jazz Piano Music - Warm Bedroom Lights for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/QbpANpYj_QU/mqdefault.jpg", "dur": "1:40:30"}, {"id": "yjHl9_pLQUE", "title": "Sweet Late Night with Relaxing Sleep Jazz Music - Soothing Piano Jazz Music - Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/yjHl9_pLQUE/mqdefault.jpg", "dur": "1:40:22"}, {"id": "METOyEWu0Mk", "title": "Late Night Jazz - Tender Piano Jazz Music - Cofortable Elegant Jazz for Relax, Sleep - Good Night", "thumb": "https://i.ytimg.com/vi/METOyEWu0Mk/mqdefault.jpg", "dur": "1:40:25"}, {"id": "gjVNCpaR1KM", "title": "Nighttime Sleep Jazz Music - Soft Piano Jazz Instrumental Music - Ethereal Jazz Music for Relaxation", "thumb": "https://i.ytimg.com/vi/gjVNCpaR1KM/mqdefault.jpg", "dur": "1:35:30"}, {"id": "2oKERlXW17w", "title": "Calm Night Jazz Music for Deep Sleep, Relax - Elegant Piano Jazz Music - Soft Jazz Background Music", "thumb": "https://i.ytimg.com/vi/2oKERlXW17w/mqdefault.jpg", "dur": "1:35:34"}, {"id": "omDLYpovPzs", "title": "Delicate Jazz Music - Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music", "thumb": "https://i.ytimg.com/vi/omDLYpovPzs/mqdefault.jpg", "dur": "1:40:30"}, {"id": "BF87zZ-_5eM", "title": "Sleep Jazz - Smooth Relaxing Late Jazz Night Piano Music & Delicate Jazz Tunes for Sleeping Better", "thumb": "https://i.ytimg.com/vi/BF87zZ-_5eM/mqdefault.jpg", "dur": "1:40:24"}, {"id": "NdYl-VhTvlI", "title": "Soothing Sleep Jazz Piano Music at Night helps Relax - Delicate Jazz Music for Stress Relief, Calm", "thumb": "https://i.ytimg.com/vi/NdYl-VhTvlI/mqdefault.jpg", "dur": "1:40:18"}, {"id": "04Pr8KgRVns", "title": "Sweet Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Exquisite Jazz Music for Relaxing", "thumb": "https://i.ytimg.com/vi/04Pr8KgRVns/mqdefault.jpg", "dur": "1:43:33"}, {"id": "OSZpU2-_XGQ", "title": "Late Night Jazz Sleep Music - Relaxing Slow Jazz Piano BGM - Ethereal Piano Jazz Music - Good Night", "thumb": "https://i.ytimg.com/vi/OSZpU2-_XGQ/mqdefault.jpg", "dur": "50:17"}, {"id": "QSX1PS5F2yI", "title": "Soothing Jazz Instrumental Music at Night - Relaxing of Sleep Jazz Piano Music & Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/QSX1PS5F2yI/mqdefault.jpg", "dur": "1:40:44"}, {"id": "wg1byyGCdPM", "title": "Late Night Jazz - Tender Piano Jazz Music - Relaxing Comfortable Jazz Music | Calm Background Music", "thumb": "https://i.ytimg.com/vi/wg1byyGCdPM/mqdefault.jpg", "dur": "1:40:30"}, {"id": "I01N4rz8l-U", "title": "Relaxing Ethereal Sleep Jazz Music - Delicate Jazz and Soft Piano at Night helps Chill out & Focus", "thumb": "https://i.ytimg.com/vi/I01N4rz8l-U/mqdefault.jpg", "dur": "1:38:17"}, {"id": "6bmk5tDrt1E", "title": "Late Night Tender Jazz Music - Soothing Jazz Piano Vibes for Relaxing, Sleeping - Elegant Jazz Music", "thumb": "https://i.ytimg.com/vi/6bmk5tDrt1E/mqdefault.jpg", "dur": "1:36:02"}, {"id": "r9j0cIdTcg8", "title": "Relaxing Calm Jazz in a Cozy Nighttime Ambience with Ethereal Piano Jazz Music for Deep Mood, Sleep", "thumb": "https://i.ytimg.com/vi/r9j0cIdTcg8/mqdefault.jpg", "dur": "1:40:40"}, {"id": "MoqfEv73o2g", "title": "Soothing Night Jazz Piano Music & Calm Jazz Music for Sleep Tight - Instrumental Jazz Relaxing Music", "thumb": "https://i.ytimg.com/vi/MoqfEv73o2g/mqdefault.jpg", "dur": "1:46:47"}, {"id": "9A7SUL3E4bY", "title": "Relaxing Instrumental Sleep Jazz at Night & Calm Perfect Jazz for Deep Sleep, Sweet Dreams", "thumb": "https://i.ytimg.com/vi/9A7SUL3E4bY/mqdefault.jpg", "dur": "1:40:43"}, {"id": "2g98e85aaJ0", "title": "Slow Soothing Midnight Jazz - Relaxing Jazz Piano Music for Deep Sleep, Stress Relief - Calm Night", "thumb": "https://i.ytimg.com/vi/2g98e85aaJ0/mqdefault.jpg", "dur": "1:40:35"}, {"id": "w0FVbiKyRKs", "title": "Soothing Jazz Instrumental Music at Night - Relaxing of Sleep Jazz Piano Music & Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/w0FVbiKyRKs/mqdefault.jpg", "dur": "1:51:25"}, {"id": "S9N51FD5NBg", "title": "Sweet Jazz Night for Sleeping - Soft Jazz Instrumental Music - Soothing Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/S9N51FD5NBg/mqdefault.jpg", "dur": "1:40:36"}, {"id": "eWmr5ZCYvws", "title": "Beautiful Piano Melodies - Peaceful Night Piano Jazz  - Soft Background Music for Relax, Deep Sleep", "thumb": "https://i.ytimg.com/vi/eWmr5ZCYvws/mqdefault.jpg", "dur": "1:40:42"}, {"id": "A1pq-okufLE", "title": "Night Jazz Sleep - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music for Relax - Good Night", "thumb": "https://i.ytimg.com/vi/A1pq-okufLE/mqdefault.jpg", "dur": "1:43:00"}, {"id": "RO5dfH2kWRQ", "title": "Soothing of Sleep Jazz Piano Music - Ethereal Jazz Instrumental Music - Night Jazz for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/RO5dfH2kWRQ/mqdefault.jpg", "dur": "1:40:44"}, {"id": "rk9tD6q2rlY", "title": "Ethereal Piano Late Night Jazz - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music for Relax", "thumb": "https://i.ytimg.com/vi/rk9tD6q2rlY/mqdefault.jpg", "dur": "1:40:52"}, {"id": "7TYxa9rikvM", "title": "Cozy Autumn Nightfall with Soothing of Sleep Jazz Piano Music & Delicate Jazz Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/7TYxa9rikvM/mqdefault.jpg", "dur": "1:32:00"}, {"id": "yikZNjisKfo", "title": "Smooth of Sleep Jazz Piano - Good night with Jazz Relaxing Music & Sweet Jazz Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/yikZNjisKfo/mqdefault.jpg", "dur": "1:31:00"}, {"id": "j4HCSXwfiNk", "title": "Night Jazz Sleep - Smooth Exquisite Piano Jazz Music - Soft Background Music for Relax - Good Night", "thumb": "https://i.ytimg.com/vi/j4HCSXwfiNk/mqdefault.jpg", "dur": "1:40:22"}, {"id": "P5bgCOlCjh0", "title": "Exquisite Soft Nighttime Jazz Music - Calm Night with Piano Jazz Instrumental - Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/P5bgCOlCjh0/mqdefault.jpg", "dur": "1:40:08"}, {"id": "A3BJw1f-CJo", "title": "Nighttime Jazz Relaxing Music - Calm Sleep with Elegant Smooth Jazz Music - Jazz for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/A3BJw1f-CJo/mqdefault.jpg", "dur": "1:20:28"}, {"id": "nap9ucMV8Pk", "title": "Night of Smooth Piano Jazz Music - Jazz Relaxing Music & Soft Jazz Background Music for Relax, Sleep", "thumb": "https://i.ytimg.com/vi/nap9ucMV8Pk/mqdefault.jpg", "dur": "1:37:39"}, {"id": "HuoCzLoUblM", "title": "Ethereal Jazz Music - Relaxing Jazz Instrumental Music at Night & Soothing of Sleep Jazz Piano Music", "thumb": "https://i.ytimg.com/vi/HuoCzLoUblM/mqdefault.jpg", "dur": "1:40:02"}, {"id": "0u_0fLzAHN8", "title": "Calm Late Night Jazz Music with Delicate Instrumental Jazz BGM ~ Relaxing Background Music for Sleep", "thumb": "https://i.ytimg.com/vi/0u_0fLzAHN8/mqdefault.jpg", "dur": "1:48:42"}, {"id": "sMHg3s70JsU", "title": "Soft Autumn Nightly Jazz Piano Sleep - Sweet Paris Night & Smooth Jazz Music to Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/sMHg3s70JsU/mqdefault.jpg", "dur": "1:40:03"}, {"id": "MLSIfXamK8Y", "title": "Sleep Soft Jazz Night Music to Unwind - Sweet Sleep Jazz Music and Suitable for Rest & Reflection", "thumb": "https://i.ytimg.com/vi/MLSIfXamK8Y/mqdefault.jpg", "dur": "1:40:07"}, {"id": "lckRzIjYNzc", "title": "Sweet Night Jazz - Gentle Jazz Piano Sleep ~ Jazz Relaxing Music for Deep Sleep & Peaceful Dreams", "thumb": "https://i.ytimg.com/vi/lckRzIjYNzc/mqdefault.jpg", "dur": "1:36:32"}, {"id": "7FUhoQNG8AA", "title": "Night Jazz - Relaxing Sleep Jazz & Piano Jazz Music - Soft Background Jazz Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/7FUhoQNG8AA/mqdefault.jpg", "dur": "1:30:22"}, {"id": "2eX3GGxMr3k", "title": "Soothing Jazz Sleep Sounds - Calm Jazz Piano Instrumental Playlist for Relax, Stress Relief", "thumb": "https://i.ytimg.com/vi/2eX3GGxMr3k/mqdefault.jpg", "dur": "1:23:42"}, {"id": "iklwm-1_FRc", "title": "Smooth Jazz Sleep Night - Calming Jazz Piano Instrumental Music for Chillout, Stress Relief, Sleep", "thumb": "https://i.ytimg.com/vi/iklwm-1_FRc/mqdefault.jpg", "dur": "1:35:16"}, {"id": "zAEVcYElMjQ", "title": "Nightly Sleep Jazz Piano Music with Soft Jazz Instrumental - Calm Background Music for Stress Relief", "thumb": "https://i.ytimg.com/vi/zAEVcYElMjQ/mqdefault.jpg", "dur": "1:40:03"}, {"id": "PgUPgrTcTmY", "title": "Soft Nightly Sleep Jazz Music - Sweet Cozy Jazz Piano Music for Stress Relief, Relax, Good Sleep", "thumb": "https://i.ytimg.com/vi/PgUPgrTcTmY/mqdefault.jpg", "dur": "1:47:44"}, {"id": "-EdRTo61T84", "title": "Relaxing Jazz Instrumental Music at Night - Soothing of Sleep Jazz Piano Music & Delicate Jazz Music", "thumb": "https://i.ytimg.com/vi/-EdRTo61T84/mqdefault.jpg", "dur": "1:40:16"}, {"id": "X_ohwKDelM0", "title": "Night Jazz Music - Relaxing Slow Background Instrumentals for Stress Relief, Sleep, Deep Sleep", "thumb": "https://i.ytimg.com/vi/X_ohwKDelM0/mqdefault.jpg", "dur": "1:40:03"}, {"id": "UsMJQ3hsU68", "title": "Night of Sleep Jazz Piano - Delicate Smooth Jazz for Chillout, Night Moods, Stress Relief, Sleep,...", "thumb": "https://i.ytimg.com/vi/UsMJQ3hsU68/mqdefault.jpg", "dur": "1:07:01"}, {"id": "SVNkorUGEHU", "title": "Late Night Mood Jazz - Relaxing Smooth Jazz - Background Jazz Music for Stress Relief, Deep Sleep", "thumb": "https://i.ytimg.com/vi/SVNkorUGEHU/mqdefault.jpg", "dur": "1:48:54"}, {"id": "J4Hdgdq_fmE", "title": "Night Jazz Sleep - Soothing Piano Jazz Instrumental Music - Relaxing Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/J4Hdgdq_fmE/mqdefault.jpg", "dur": "1:39:07"}, {"id": "rZWNqbubDxk", "title": "Italian Night Jazz - Jazz Relaxing Music & Ethereal Jazz Piano - Calm Background Music for Relaxing", "thumb": "https://i.ytimg.com/vi/rZWNqbubDxk/mqdefault.jpg", "dur": "2:14:14"}, {"id": "8cQ3RT4uo-s", "title": "RELAXING NIGHT JAZZ: Peaceful Evening Piano Jazz - Smooth Instrumental Music for Sleep, Lounge, Rest", "thumb": "https://i.ytimg.com/vi/8cQ3RT4uo-s/mqdefault.jpg", "dur": "1:37:32"}, {"id": "RndcA9DPFRU", "title": "Night Jazz Sleep - Soft Piano Jazz Instrumental Music - Relaxing Background Music for Deep Sleep", "thumb": "https://i.ytimg.com/vi/RndcA9DPFRU/mqdefault.jpg", "dur": "1:48:20"}, {"id": "6Q9087b6g0A", "title": "Soothing of Sleep Jazz Night Piano Music and Soft Jazz Instrumental Music for Sleep, Chill, Work,...", "thumb": "https://i.ytimg.com/vi/6Q9087b6g0A/mqdefault.jpg", "dur": "1:41:53"}, {"id": "0nE1HwqmV9g", "title": "Jazz Ethereal Music in a Cozy Night Space with Soft Background Music for Healing, Relaxing and Sleep", "thumb": "https://i.ytimg.com/vi/0nE1HwqmV9g/mqdefault.jpg", "dur": "1:38:31"}, {"id": "Idv7HVP1xEc", "title": "Sleep Jazz - Ethereal Jazz Piano Night Music & Sweet Ambience for Sleep Deep - Soft Background Music", "thumb": "https://i.ytimg.com/vi/Idv7HVP1xEc/mqdefault.jpg", "dur": "1:32:32"}, {"id": "2Kv7svKXdn4", "title": "Soothing of Sleep Jazz Piano Music - Relaxing Jazz Instrumental Music at Night & Ethereal Jazz Music", "thumb": "https://i.ytimg.com/vi/2Kv7svKXdn4/mqdefault.jpg", "dur": "1:35:49"}, {"id": "LeFbUzwuRm4", "title": "Elegant Night Jazz & Gentle Craking Fireplace by the Window | Relaxing Piano Jazz for Sleep Tight", "thumb": "https://i.ytimg.com/vi/LeFbUzwuRm4/mqdefault.jpg", "dur": "1:30:59"}, {"id": "F_MgnVM8oQw", "title": "Sleep Night Jazz Piano Music with Cozy Bedroom & Soft Jazz Instrumental - Soothing Background Music", "thumb": "https://i.ytimg.com/vi/F_MgnVM8oQw/mqdefault.jpg", "dur": "1:38:17"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

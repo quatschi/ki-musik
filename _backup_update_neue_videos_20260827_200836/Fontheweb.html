@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fontheweb</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCDWIwXaY7oY4441GP0e70CA -->
+<!-- channel-url: https://youtube.com/@fontheweb -->
+<!-- created: 2026-07-09 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Fontheweb.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/1yoCBgFi_8xL1zq291JJP8zU4fHGy__VZhHqbUWcfEr58yscq18Gpsk1sxAuxYIUynlU0uhDPQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Fontheweb</div>
+      <div class="channel-count">70 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Fontheweb";
+const KANAL = "Fontheweb.html";
+const ORIG_CATEGORIES = "Lounge";
+const VIDEOS = [{"id": "Sq1du0Km4xs", "title": "Library Music Vol 3 - Gypsy Groove", "thumb": "https://i.ytimg.com/vi/Sq1du0Km4xs/mqdefault.jpg", "dur": "31:49"}, {"id": "LjeDMVu6BBw", "title": "Library Music Vol 2 - Psychedelic Groove", "thumb": "https://i.ytimg.com/vi/LjeDMVu6BBw/mqdefault.jpg", "dur": "40:25"}, {"id": "nrTitUBi0uQ", "title": "Library Music Vol 1 - Cinema without pictures", "thumb": "https://i.ytimg.com/vi/nrTitUBi0uQ/mqdefault.jpg", "dur": "33:38"}, {"id": "0xVXXGKeCHA", "title": "The Cinematic Groove Vol 3", "thumb": "https://i.ytimg.com/vi/0xVXXGKeCHA/mqdefault.jpg", "dur": "36:27"}, {"id": "rq_LYopTwjw", "title": "West Coast Grooves", "thumb": "https://i.ytimg.com/vi/rq_LYopTwjw/mqdefault.jpg", "dur": "35:58"}, {"id": "KUZwGCInVOE", "title": "The Cinematic Groove Vol 2", "thumb": "https://i.ytimg.com/vi/KUZwGCInVOE/mqdefault.jpg", "dur": "38:34"}, {"id": "T_qmf3SPGZw", "title": "The Cinematic Groove", "thumb": "https://i.ytimg.com/vi/T_qmf3SPGZw/mqdefault.jpg", "dur": "42:04"}, {"id": "eosii5mWGEM", "title": "The Promenade", "thumb": "https://i.ytimg.com/vi/eosii5mWGEM/mqdefault.jpg", "dur": "47:48"}, {"id": "TLaXot-5xgE", "title": "Celtic Horizons", "thumb": "https://i.ytimg.com/vi/TLaXot-5xgE/mqdefault.jpg", "dur": "41:21"}, {"id": "K0xiMUsIIUQ", "title": "Summer Grooves", "thumb": "https://i.ytimg.com/vi/K0xiMUsIIUQ/mqdefault.jpg", "dur": "45:01"}, {"id": "psTNVo_MC58", "title": "Americana Groove", "thumb": "https://i.ytimg.com/vi/psTNVo_MC58/mqdefault.jpg", "dur": "36:46"}, {"id": "xhj1z2lFY_U", "title": "Japanese Funk Vol 2", "thumb": "https://i.ytimg.com/vi/xhj1z2lFY_U/mqdefault.jpg", "dur": "52:18"}, {"id": "680B1nj5pRs", "title": "a simple walk", "thumb": "https://i.ytimg.com/vi/680B1nj5pRs/mqdefault.jpg", "dur": "42:10"}, {"id": "uOV21RUsqjQ", "title": "Soft Groove", "thumb": "https://i.ytimg.com/vi/uOV21RUsqjQ/mqdefault.jpg", "dur": "32:59"}, {"id": "XxrXsOi_MDw", "title": "Soul Jazz Guitar", "thumb": "https://i.ytimg.com/vi/XxrXsOi_MDw/mqdefault.jpg", "dur": "49:59"}, {"id": "HOdJjciIFVA", "title": "The Urban Grooves Vol 2", "thumb": "https://i.ytimg.com/vi/HOdJjciIFVA/mqdefault.jpg", "dur": "38:25"}, {"id": "aqM9UnElNaQ", "title": "Vento e Mar - A Cinematic Bossa Journey", "thumb": "https://i.ytimg.com/vi/aqM9UnElNaQ/mqdefault.jpg", "dur": "33:04"}, {"id": "0bDZjU3tT-I", "title": "Cinematic Soul Groove", "thumb": "https://i.ytimg.com/vi/0bDZjU3tT-I/mqdefault.jpg", "dur": "49:57"}, {"id": "D4Vlx4OWCvA", "title": "Dust & Motion", "thumb": "https://i.ytimg.com/vi/D4Vlx4OWCvA/mqdefault.jpg", "dur": "41:38"}, {"id": "NBLEuQzBCh0", "title": "Cinematic Acid Groove", "thumb": "https://i.ytimg.com/vi/NBLEuQzBCh0/mqdefault.jpg", "dur": "51:01"}, {"id": "NgngGzaGwUM", "title": "Blues for Walking", "thumb": "https://i.ytimg.com/vi/NgngGzaGwUM/mqdefault.jpg", "dur": "41:38"}, {"id": "bNaN1VO8CEo", "title": "Jazz", "thumb": "https://i.ytimg.com/vi/bNaN1VO8CEo/mqdefault.jpg", "dur": "1:01:13"}, {"id": "m2tcI-bhXtk", "title": "Soul Smooth Groove for Walking", "thumb": "https://i.ytimg.com/vi/m2tcI-bhXtk/mqdefault.jpg", "dur": "43:04"}, {"id": "leaPAov2_I8", "title": "Americana for Walking", "thumb": "https://i.ytimg.com/vi/leaPAov2_I8/mqdefault.jpg", "dur": "37:54"}, {"id": "CD0XRtg9pgM", "title": "Passing Through", "thumb": "https://i.ytimg.com/vi/CD0XRtg9pgM/mqdefault.jpg", "dur": "29:00"}, {"id": "MuoE7SUKWvg", "title": "Soul Groove for Walking", "thumb": "https://i.ytimg.com/vi/MuoE7SUKWvg/mqdefault.jpg", "dur": "46:14"}, {"id": "eMcw2zKByaA", "title": "Cinematic Groove For Walking", "thumb": "https://i.ytimg.com/vi/eMcw2zKByaA/mqdefault.jpg", "dur": "41:35"}, {"id": "CpCVE5kLsfI", "title": "Electro Funk for Walking", "thumb": "https://i.ytimg.com/vi/CpCVE5kLsfI/mqdefault.jpg", "dur": "33:01"}, {"id": "q0MjnfemBvE", "title": "Downtempo for Walking", "thumb": "https://i.ytimg.com/vi/q0MjnfemBvE/mqdefault.jpg", "dur": "47:42"}, {"id": "dtHi4r4zDu8", "title": "Lo Fi for Walking", "thumb": "https://i.ytimg.com/vi/dtHi4r4zDu8/mqdefault.jpg", "dur": "27:25"}, {"id": "jRFokpO-8KM", "title": "Love Was A Beautiful Thing...", "thumb": "https://i.ytimg.com/vi/jRFokpO-8KM/mqdefault.jpg", "dur": "38:32"}, {"id": "dq27yk8AGXY", "title": "Smooth Jazz Guitar", "thumb": "https://i.ytimg.com/vi/dq27yk8AGXY/mqdefault.jpg", "dur": "35:56"}, {"id": "WlG0JvBHBsE", "title": "The Urban Grooves", "thumb": "https://i.ytimg.com/vi/WlG0JvBHBsE/mqdefault.jpg", "dur": "37:11"}, {"id": "FQFN3KeT-ZQ", "title": "The Lounge 4", "thumb": "https://i.ytimg.com/vi/FQFN3KeT-ZQ/mqdefault.jpg", "dur": "47:17"}, {"id": "xF8ejb4DLX8", "title": "The Jazz Detective", "thumb": "https://i.ytimg.com/vi/xF8ejb4DLX8/mqdefault.jpg", "dur": "36:35"}, {"id": "1wFKrSTkyLU", "title": "Music For Electric Nights", "thumb": "https://i.ytimg.com/vi/1wFKrSTkyLU/mqdefault.jpg", "dur": "30:59"}, {"id": "k60oYvoHOTI", "title": "The Urban Hikers", "thumb": "https://i.ytimg.com/vi/k60oYvoHOTI/mqdefault.jpg", "dur": "34:27"}, {"id": "ludR8mbkZlo", "title": "Electric Life", "thumb": "https://i.ytimg.com/vi/ludR8mbkZlo/mqdefault.jpg", "dur": "29:47"}, {"id": "VwbHiivbwFI", "title": "Le Tao de la Douceur", "thumb": "https://i.ytimg.com/vi/VwbHiivbwFI/mqdefault.jpg", "dur": "28:48"}, {"id": "LLx6-cwyB-c", "title": "Electric Cosmos", "thumb": "https://i.ytimg.com/vi/LLx6-cwyB-c/mqdefault.jpg", "dur": "33:16"}, {"id": "wAEIb77r08g", "title": "Cosmic Dreams", "thumb": "https://i.ytimg.com/vi/wAEIb77r08g/mqdefault.jpg", "dur": "28:49"}, {"id": "RkVTUGsrFJ4", "title": "The Lounge 3", "thumb": "https://i.ytimg.com/vi/RkVTUGsrFJ4/mqdefault.jpg", "dur": "34:59"}, {"id": "S08SAZ0dOvE", "title": "The Song Of Life", "thumb": "https://i.ytimg.com/vi/S08SAZ0dOvE/mqdefault.jpg", "dur": "35:57"}, {"id": "m7TKrGxfzBY", "title": "The Lounge 2", "thumb": "https://i.ytimg.com/vi/m7TKrGxfzBY/mqdefault.jpg", "dur": "45:36"}, {"id": "gtPhLqyTvwk", "title": "Piano Groove", "thumb": "https://i.ytimg.com/vi/gtPhLqyTvwk/mqdefault.jpg", "dur": "38:26"}, {"id": "hMwqGfED-M0", "title": "The Little Wanderer", "thumb": "https://i.ytimg.com/vi/hMwqGfED-M0/mqdefault.jpg", "dur": "30:38"}, {"id": "gUaICo0XbhA", "title": "The Lounge", "thumb": "https://i.ytimg.com/vi/gUaICo0XbhA/mqdefault.jpg", "dur": "44:55"}, {"id": "DJ0HNMKkH4g", "title": "Country Road", "thumb": "https://i.ytimg.com/vi/DJ0HNMKkH4g/mqdefault.jpg", "dur": "57:57"}, {"id": "hV0lksoIWBA", "title": "Angela Brown", "thumb": "https://i.ytimg.com/vi/hV0lksoIWBA/mqdefault.jpg", "dur": "46:24"}, {"id": "5JX2Hf7ZJHQ", "title": "Everybody Wants To Shine", "thumb": "https://i.ytimg.com/vi/5JX2Hf7ZJHQ/mqdefault.jpg", "dur": "44:16"}, {"id": "BzakzGM4lJI", "title": "The Soul Experience", "thumb": "https://i.ytimg.com/vi/BzakzGM4lJI/mqdefault.jpg", "dur": "28:34"}, {"id": "v-bvg62DdM4", "title": "Indian Trip", "thumb": "https://i.ytimg.com/vi/v-bvg62DdM4/mqdefault.jpg", "dur": "41:25"}, {"id": "TixX62eesOc", "title": "Floating Horizons", "thumb": "https://i.ytimg.com/vi/TixX62eesOc/mqdefault.jpg", "dur": "43:02"}, {"id": "e46De2Xv3kw", "title": "Swing The Solar System", "thumb": "https://i.ytimg.com/vi/e46De2Xv3kw/mqdefault.jpg", "dur": "29:29"}, {"id": "qAupxPd2x7w", "title": "Frontier Beyond The Stars", "thumb": "https://i.ytimg.com/vi/qAupxPd2x7w/mqdefault.jpg", "dur": "1:05:13"}, {"id": "DVE1jors8Lc", "title": "Reggae Life", "thumb": "https://i.ytimg.com/vi/DVE1jors8Lc/mqdefault.jpg", "dur": "1:00:27"}, {"id": "7hFrDTHV0ak", "title": "All Is One", "thumb": "https://i.ytimg.com/vi/7hFrDTHV0ak/mqdefault.jpg", "dur": "33:12"}, {"id": "PtzC46NwSh8", "title": "Hypnotic Guitar", "thumb": "https://i.ytimg.com/vi/PtzC46NwSh8/mqdefault.jpg", "dur": "1:02:07"}, {"id": "vtvIN1ZGTo8", "title": "Living For Today", "thumb": "https://i.ytimg.com/vi/vtvIN1ZGTo8/mqdefault.jpg", "dur": "44:04"}, {"id": "YqJdgDfXQNs", "title": "Tales From The Forbidden Galaxy", "thumb": "https://i.ytimg.com/vi/YqJdgDfXQNs/mqdefault.jpg", "dur": "26:07"}, {"id": "vWMgm8C064E", "title": "Japanese Funk", "thumb": "https://i.ytimg.com/vi/vWMgm8C064E/mqdefault.jpg", "dur": "57:52"}, {"id": "iAuLB0KOFik", "title": "Jazz On A Ironing Board", "thumb": "https://i.ytimg.com/vi/iAuLB0KOFik/mqdefault.jpg", "dur": "23:01"}, {"id": "xwV33jPcjHA", "title": "Mirage Roads", "thumb": "https://i.ytimg.com/vi/xwV33jPcjHA/mqdefault.jpg", "dur": "48:37"}, {"id": "siikoVHvzd4", "title": "Restless Souls", "thumb": "https://i.ytimg.com/vi/siikoVHvzd4/mqdefault.jpg", "dur": "41:07"}, {"id": "aZjwtzYv1og", "title": "Midnight Groove", "thumb": "https://i.ytimg.com/vi/aZjwtzYv1og/mqdefault.jpg", "dur": "43:43"}, {"id": "BusXph0D2_A", "title": "Atomic Space Lounge", "thumb": "https://i.ytimg.com/vi/BusXph0D2_A/mqdefault.jpg", "dur": "1:38:44"}, {"id": "2VZSqqXqTYM", "title": "City Trips", "thumb": "https://i.ytimg.com/vi/2VZSqqXqTYM/mqdefault.jpg", "dur": "25:24"}, {"id": "Kj6EC_gXgq4", "title": "The Walk", "thumb": "https://i.ytimg.com/vi/Kj6EC_gXgq4/mqdefault.jpg", "dur": "31:45"}, {"id": "z42-ibCnCoU", "title": "Funk In AirPlane Mode", "thumb": "https://i.ytimg.com/vi/z42-ibCnCoU/mqdefault.jpg", "dur": "57:28"}, {"id": "ff2637iegD0", "title": "Orbiting Undercover", "thumb": "https://i.ytimg.com/vi/ff2637iegD0/mqdefault.jpg", "dur": "35:49"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

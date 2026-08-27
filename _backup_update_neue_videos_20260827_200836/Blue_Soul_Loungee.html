@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Soul Loungee</title>
+<!-- categories: Blues -->
+<!-- channel-id: UCztwo4ImKMSiM9FbtnbmXAA -->
+<!-- channel-url: https://youtube.com/@blue_soul_lounge -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Blue_Soul_Loungee.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/OrMOuSMJYLC152uH5k1QtLSmpnzMJ5p3_2Zwd24xs3S3Cw35ruPGjHZwLOFtC2Uf6lqvjJd5UZQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Blue Soul Loungee</div>
+      <div class="channel-count">63 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Blue Soul Loungee";
+const KANAL = "Blue_Soul_Loungee.html";
+const ORIG_CATEGORIES = "Blues";
+const VIDEOS = [{"id": "FqfMTeVOu78", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes | Relaxing Night Mood Music for Chill Men", "thumb": "https://i.ytimg.com/vi/FqfMTeVOu78/mqdefault.jpg", "dur": "2:11:45"}, {"id": "72rinl5fkVQ", "title": "Whiskey Night ~ Jazz Blues and Soulful Vibes for Your Perfect Relaxing Night Mood Music No", "thumb": "https://i.ytimg.com/vi/72rinl5fkVQ/mqdefault.jpg", "dur": "2:07:36"}, {"id": "Eqp0iqANf1k", "title": "Whiskey Night Jazz Blues Soulful Vibes | Relaxing Chill Out Night Mood Music Acoustic", "thumb": "https://i.ytimg.com/vi/Eqp0iqANf1k/mqdefault.jpg", "dur": "2:08:49"}, {"id": "JkKv3u8rh_U", "title": "Whiskey Night & Jazz Blues - Soulful Vibes for Night Mood Music - Relaxing Chill Blues Mix", "thumb": "https://i.ytimg.com/vi/JkKv3u8rh_U/mqdefault_live.jpg", "dur": ""}, {"id": "ZsHAjHVBUk4", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for Dark Night Mood Music - Chill Blues", "thumb": "https://i.ytimg.com/vi/ZsHAjHVBUk4/mqdefault.jpg", "dur": "2:06:59"}, {"id": "vh8zcWKVjkg", "title": "Whiskey Night ~ Jazz Blues Soulful Vibes ~ Night Mood Music ~ Chill Blues For Late Midnight", "thumb": "https://i.ytimg.com/vi/vh8zcWKVjkg/mqdefault.jpg", "dur": "2:00:33"}, {"id": "4qgm_nqRPbk", "title": "Whiskey Night Jazz Blues | Soulful Vibes & Chill Blues Music for a Perfect Night Mood", "thumb": "https://i.ytimg.com/vi/4qgm_nqRPbk/mqdefault.jpg", "dur": "2:06:52"}, {"id": "OsGQPf1itB4", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes For Relaxing Late Night Mood Music ~ 01", "thumb": "https://i.ytimg.com/vi/OsGQPf1itB4/mqdefault.jpg", "dur": "2:06:13"}, {"id": "8k--JeSNb_0", "title": "Whiskey Night - Smooth Jazz Blues & Soulful Vibes For Relaxing Night Mood Music To Unwind", "thumb": "https://i.ytimg.com/vi/8k--JeSNb_0/mqdefault.jpg", "dur": "2:07:14"}, {"id": "u6VJkRgVS3U", "title": "Whiskey Night | Jazz Blues & Soulful Vibes | Night Mood Music for Relaxing ~ Chill Blues", "thumb": "https://i.ytimg.com/vi/u6VJkRgVS3U/mqdefault.jpg", "dur": "2:03:55"}, {"id": "Qy6lQjKhL5M", "title": "Whiskey Night & Smooth Jazz Blues ~ Relaxing Soulful Vibes - Midnight Chill Blues Music 01", "thumb": "https://i.ytimg.com/vi/Qy6lQjKhL5M/mqdefault.jpg", "dur": "2:01:46"}, {"id": "mlclaJqA8K0", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for Deep Relaxation - Night Mood Music", "thumb": "https://i.ytimg.com/vi/mlclaJqA8K0/mqdefault_live.jpg", "dur": ""}, {"id": "NYMBpK3haCI", "title": "Whiskey Night Jazz Blues – Soulful Vibes & Chill Mood Music for Relaxation", "thumb": "https://i.ytimg.com/vi/NYMBpK3haCI/mqdefault.jpg", "dur": "2:06:05"}, {"id": "YPK-mcWPrC0", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for Midnight Relaxation & Chill Music", "thumb": "https://i.ytimg.com/vi/YPK-mcWPrC0/mqdefault.jpg", "dur": "2:03:37"}, {"id": "P63A-tgaR14", "title": "Midnight Jazz Blues - Soulful Whiskey Night , Relaxing Night Mood Music For Deep Chill Out", "thumb": "https://i.ytimg.com/vi/P63A-tgaR14/mqdefault.jpg", "dur": "2:07:26"}, {"id": "-DpcTzbmETE", "title": "Midnight Jazz Blues - Soulful Whiskey Night Music - Relaxing Night Mood - Chill Melodies", "thumb": "https://i.ytimg.com/vi/-DpcTzbmETE/mqdefault.jpg", "dur": "2:01:30"}, {"id": "4obavlfMmNQ", "title": "Soulful Jazz Blues - Whiskey Night Music ~ Chill Vibes for Late Night Relaxation and Mood", "thumb": "https://i.ytimg.com/vi/4obavlfMmNQ/mqdefault.jpg", "dur": "2:06:58"}, {"id": "exrK_alXiyE", "title": "Blue Soul Lounge - Smooth Blues Music & Soul Guitar ~ Relaxing Lounge Music for Late Night", "thumb": "https://i.ytimg.com/vi/exrK_alXiyE/mqdefault.jpg", "dur": "2:10:46"}, {"id": "a5PGW54ib68", "title": "Midnight Chill Blues | Whiskey Night Melodies - Soulful Vibes and Relaxing Night Mood Music", "thumb": "https://i.ytimg.com/vi/a5PGW54ib68/mqdefault_live.jpg", "dur": ""}, {"id": "xKJHB_aHvfg", "title": "Smooth Soul Guitar & Blues Music - Relaxing Blue Soul Lounge for Late Night Whiskey Vibes", "thumb": "https://i.ytimg.com/vi/xKJHB_aHvfg/mqdefault.jpg", "dur": "2:05:10"}, {"id": "5SLeNb8o-OU", "title": "Blue Soul Lounge & Blues Music | Soul Guitar Vibes for Relaxation", "thumb": "https://i.ytimg.com/vi/5SLeNb8o-OU/mqdefault.jpg", "dur": "2:06:36"}, {"id": "fYF_e8MrOCo", "title": "Blue Soul Lounge Blues Guitar - Smooth Jazz Lounge Music for Late Night Chill Vibes Only", "thumb": "https://i.ytimg.com/vi/fYF_e8MrOCo/mqdefault.jpg", "dur": "2:11:15"}, {"id": "ngG-0Tqf57I", "title": "Blue Soul Lounge - Smooth Blues Music & Soul Guitar - Relaxing Lounge Music for Late Night", "thumb": "https://i.ytimg.com/vi/ngG-0Tqf57I/mqdefault.jpg", "dur": "2:10:20"}, {"id": "zniqKJdieK0", "title": "Blue Soul Lounge Music | Deep Blues Guitar for Relaxed Evening Vibes", "thumb": "https://i.ytimg.com/vi/zniqKJdieK0/mqdefault.jpg", "dur": "2:01:12"}, {"id": "CxKuLV8qL2E", "title": "Whiskey night | Smooth jazz blues and soulful vibes for deep relaxation ~ Night mood music", "thumb": "https://i.ytimg.com/vi/CxKuLV8qL2E/mqdefault.jpg", "dur": "2:11:41"}, {"id": "pk84FmPWPbE", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for a Relaxing Evening in the Bar Lounge", "thumb": "https://i.ytimg.com/vi/pk84FmPWPbE/mqdefault.jpg", "dur": "2:02:13"}, {"id": "92QuZ9KCg3E", "title": "Relaxing Whiskey Blues Night | Smooth Jazz Guitar, Vintage Bar Ambience & Soulful Midnight Escape", "thumb": "https://i.ytimg.com/vi/92QuZ9KCg3E/mqdefault_live.jpg", "dur": ""}, {"id": "wqGO9nH8zFw", "title": "Whiskey Night & Jazz Blues | Soulful Vibes and Night Mood Music ~ Smooth Chill Blues Tracks", "thumb": "https://i.ytimg.com/vi/wqGO9nH8zFw/mqdefault.jpg", "dur": "2:09:09"}, {"id": "TWCuTyus9Aw", "title": "Sự kiện trực tiếp của Blue Soul Loungee", "thumb": "https://i.ytimg.com/vi/TWCuTyus9Aw/mqdefault_live.jpg", "dur": ""}, {"id": "p3hpykAA7ic", "title": "My Complete Editing Workflow  Transforming Photos and Videos into Professional Content for Social Me", "thumb": "https://i.ytimg.com/vi/p3hpykAA7ic/mqdefault.jpg", "dur": "6:39"}, {"id": "PnnBQ7nHVVA", "title": "Whiskey Night ~ Jazz Blues & Soulful Vibes | Night Mood Music for Relaxing - Chill Blues", "thumb": "https://i.ytimg.com/vi/PnnBQ7nHVVA/mqdefault.jpg", "dur": "2:04:13"}, {"id": "Z_zWxLJzjPc", "title": "Soulful Vibes ~ Whiskey Night - Smooth Jazz Blues ~ Late Night Mood Music ~ Chill Blues", "thumb": "https://i.ytimg.com/vi/Z_zWxLJzjPc/mqdefault.jpg", "dur": "2:06:07"}, {"id": "xuNBG8Ns1mk", "title": "Soulful Vibes for Whiskey Night | Slow Jazz Blues & Night Mood Music - Relaxing After Dark &", "thumb": "https://i.ytimg.com/vi/xuNBG8Ns1mk/mqdefault.jpg", "dur": "2:06:18"}, {"id": "TMVawGa5uo0", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for a Relaxing Night Mood Music Session", "thumb": "https://i.ytimg.com/vi/TMVawGa5uo0/mqdefault.jpg", "dur": "2:06:35"}, {"id": "0huNT9R8W8o", "title": "Smooth Soulful Vibes | Midnight Jazz Blues Mix | Whiskey Night Music | Chill Instrumental", "thumb": "https://i.ytimg.com/vi/0huNT9R8W8o/mqdefault.jpg", "dur": "2:10:18"}, {"id": "6Z7WHoKXJ8w", "title": "Midnight Jazz Blues ~ Soulful Vibes for Whiskey Night ~ Chill Blues & Night Mood Music Mix", "thumb": "https://i.ytimg.com/vi/6Z7WHoKXJ8w/mqdefault.jpg", "dur": "2:07:47"}, {"id": "myUn6P5S5yE", "title": "Whiskey Night Jazz Blues ~ Smooth Soulful Vibes for Deep Chill Night Mood Music", "thumb": "https://i.ytimg.com/vi/myUn6P5S5yE/mqdefault.jpg", "dur": "2:04:47"}, {"id": "PpF8A5gu3p4", "title": "Whiskey Blues | Smooth Jazz Blues Music for Smoky Bar Lounge & Late Night Relaxing Melodies", "thumb": "https://i.ytimg.com/vi/PpF8A5gu3p4/mqdefault.jpg", "dur": "2:09:13"}, {"id": "nOHfxiS4pFc", "title": "Whiskey Blues & Smoky Jazz Lounge - Smooth Midnight Bar Music for Relaxation and Drinking", "thumb": "https://i.ytimg.com/vi/nOHfxiS4pFc/mqdefault.jpg", "dur": "2:01:46"}, {"id": "OurSzrZulQY", "title": "Smooth Whiskey Blues & Smoky Jazz | Deep Night Bar Music to Unwind", "thumb": "https://i.ytimg.com/vi/OurSzrZulQY/mqdefault.jpg", "dur": "2:10:40"}, {"id": "b4fGgg6TMVo", "title": "Whiskey Blues - Smoky Jazz Blues Music for Relaxing at a Midnight Bar Lounge Atmosphere Now", "thumb": "https://i.ytimg.com/vi/b4fGgg6TMVo/mqdefault.jpg", "dur": "2:00:27"}, {"id": "chzHfyKiLHg", "title": "Whiskey Blues - Smooth Jazz Blues Mix for Smoky Nights in a Vintage Bar Lounge Atmosphere", "thumb": "https://i.ytimg.com/vi/chzHfyKiLHg/mqdefault.jpg", "dur": "2:06:15"}, {"id": "H6_WxndLAN8", "title": "Whiskey Blues & Smoky Jazz ~ Smooth Jazz Blues For A Relaxing Night In A Bar Blues Lounge", "thumb": "https://i.ytimg.com/vi/H6_WxndLAN8/mqdefault.jpg", "dur": "2:07:04"}, {"id": "efIWg-smJkY", "title": "Whiskey Blues & Smoky Jazz ~ Immersive Lounge Bar Music for Relaxation", "thumb": "https://i.ytimg.com/vi/efIWg-smJkY/mqdefault.jpg", "dur": "2:09:33"}, {"id": "JyOcP5MuAgI", "title": "Deep Whiskey Jazz Blues | Smoky Guitar Melodies for Relaxing Bar Ambience and Night Chill", "thumb": "https://i.ytimg.com/vi/JyOcP5MuAgI/mqdefault.jpg", "dur": "2:08:13"}, {"id": "MQHG_V5YBfc", "title": "Smoky Whiskey Blues Guitar & Midnight Jazz | Lonely Rain Sounds for Relaxation 2026", "thumb": "https://i.ytimg.com/vi/MQHG_V5YBfc/mqdefault.jpg", "dur": "2:03:43"}, {"id": "2nBfOrCL7CI", "title": "Smoky Blues Lounge Music | Blue Whiskey Jazz, Deep Soul & Slow Guitar Night Vibes", "thumb": "https://i.ytimg.com/vi/2nBfOrCL7CI/mqdefault.jpg", "dur": "2:06:38"}, {"id": "Zqcv0MOlfkQ", "title": "My Photo Editing Process in Photoshop | Complete Step-by-Step Editing Workflow for Beginners", "thumb": "https://i.ytimg.com/vi/Zqcv0MOlfkQ/mqdefault.jpg", "dur": "7:31"}, {"id": "oUk6b0G7YHU", "title": "Whiskey Night & Smooth Jazz Blues ~ Soulful Vibes for Relaxation ~ Slow Chill Night Mood", "thumb": "https://i.ytimg.com/vi/oUk6b0G7YHU/mqdefault.jpg", "dur": "2:10:28"}, {"id": "xbE1BpgB5GI", "title": "Whiskey Night | Smooth Jazz Blues & Soulful Vibes - Relaxing Night Mood Music For Chill", "thumb": "https://i.ytimg.com/vi/xbE1BpgB5GI/mqdefault.jpg", "dur": "2:09:12"}, {"id": "DVxYRtxEk84", "title": "Whiskey Night ~ Smooth Jazz Blues & Soulful Vibes - Relaxing Night Mood Music For Chill", "thumb": "https://i.ytimg.com/vi/DVxYRtxEk84/mqdefault.jpg", "dur": "2:04:43"}, {"id": "Hv2nKu9QB5k", "title": "Whiskey Night & Chill Blues ~ Smooth Jazz for Soulful Vibes & Relaxation Music", "thumb": "https://i.ytimg.com/vi/Hv2nKu9QB5k/mqdefault.jpg", "dur": "2:01:26"}, {"id": "Z8ruesKa2qI", "title": "Whiskey Night Jazz Blues | Soulful Vibes & Chill Music for a Relaxed Evening", "thumb": "https://i.ytimg.com/vi/Z8ruesKa2qI/mqdefault.jpg", "dur": "2:06:41"}, {"id": "hUgARPBnoNE", "title": "Smooth Jazz & Whiskey Night ~ Deep Soulful Vibes for Relaxing Evening Mood Music", "thumb": "https://i.ytimg.com/vi/hUgARPBnoNE/mqdefault.jpg", "dur": "2:04:02"}, {"id": "J4tnh4nlaLE", "title": "Whiskey Night & Jazz Blues | Smooth Soulful Vibes | Mellow Night Mood Music Mix for Unwind 🎶", "thumb": "https://i.ytimg.com/vi/J4tnh4nlaLE/mqdefault.jpg", "dur": "2:01:13"}, {"id": "mydWujfDVlQ", "title": "Whiskey Night JAZZ BLUES – Soulful Vibes & Chill Blues for a Perfect Evening Unwind", "thumb": "https://i.ytimg.com/vi/mydWujfDVlQ/mqdefault.jpg", "dur": "2:03:04"}, {"id": "RxHlRw0XZx8", "title": "Ultimate Whiskey Blues | Smooth Soul Guitar Music for Evening Relaxation, Evening Whiskey Blues", "thumb": "https://i.ytimg.com/vi/RxHlRw0XZx8/mqdefault.jpg", "dur": "2:02:58"}, {"id": "pVqVu3oMUH8", "title": "Vintage Whiskey Room Blues | Smooth Night Jazz, Slow Chill Guitar & Soulful Relax Session", "thumb": "https://i.ytimg.com/vi/pVqVu3oMUH8/mqdefault.jpg", "dur": "1:51:07"}, {"id": "_x8qD8Ds3f0", "title": "Whiskey Lounge Night Mood | Soulful Jazz Blues Music for Deep Relaxation & Chill Late-Night Vibes", "thumb": "https://i.ytimg.com/vi/_x8qD8Ds3f0/mqdefault.jpg", "dur": "2:05:39"}, {"id": "BFLArXtENoE", "title": "Smooth Whiskey Night Jazz Blues | Soulful Vibes for Relaxation & Unwind", "thumb": "https://i.ytimg.com/vi/BFLArXtENoE/mqdefault.jpg", "dur": "2:05:54"}, {"id": "E2cnws3i4bU", "title": "Romantic Blue Whiskey Nights ~ Smooth Blues Guitar & Soulful Melodies for Deep Evening Relaxation", "thumb": "https://i.ytimg.com/vi/E2cnws3i4bU/mqdefault.jpg", "dur": "2:09:03"}, {"id": "aHB3LvqUDU4", "title": "Whiskey Lounge Blue Guitar | Soulful Blues Night Music for Relaxation & Slow Chill Sessions", "thumb": "https://i.ytimg.com/vi/aHB3LvqUDU4/mqdefault.jpg", "dur": "2:04:43"}, {"id": "wuL4BXaxu7Y", "title": "Cozy Evening Blues – Relaxing Soul Guitar & Smooth Jazz Vibes, Soulful Blues Guitar Vibes", "thumb": "https://i.ytimg.com/vi/wuL4BXaxu7Y/mqdefault.jpg", "dur": "1:58:58"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

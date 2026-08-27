@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guitar Jazz Cafe</title>
+<!-- categories: Jazz, Smooth Jazz -->
+<!-- channel-id: UCG15XKDjIqcJAcU0ehL5flA -->
+<!-- channel-url: https://www.youtube.com/@guitar-jazz-cafe -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Guitar_Jazz_Cafe.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/rj9SLy8lU2_ulmzDhKgV_QLQ1ksiw0LKqZInFxaSEni8C9Qe5JJoGV6uD1PGeTTN9Bhj-keePw=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Guitar Jazz Cafe</div>
+      <div class="channel-count">249 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Guitar Jazz Cafe";
+const KANAL = "Guitar_Jazz_Cafe.html";
+const ORIG_CATEGORIES = "Jazz, Smooth Jazz";
+const VIDEOS = [{"id": "8qmBhayhl-8", "title": "Smooth Jazz R&B - Chill Lounge Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/8qmBhayhl-8/mqdefault.jpg", "dur": "2:06:21"}, {"id": "uPa3s-xH5FI", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/uPa3s-xH5FI/mqdefault.jpg", "dur": "2:09:24"}, {"id": "5mYcwWA3YIU", "title": "Sophisticated Jazz Guitar Presentation", "thumb": "https://i.ytimg.com/vi/5mYcwWA3YIU/mqdefault.jpg", "dur": "2:09:46"}, {"id": "tyIF5GZPrmc", "title": "Smooth Jazz Guitar Music – Chill Lounge Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/tyIF5GZPrmc/mqdefault.jpg", "dur": "2:01:21"}, {"id": "1rwOSyJbCok", "title": "Smooth Jazz Guitar Hits ☕ Popular Guitar Melodies for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/1rwOSyJbCok/mqdefault.jpg", "dur": "2:13:59"}, {"id": "OmklkrdewUs", "title": "Smooth Jazz Guitar Cafe Music | Relaxing Vibes for Study & Work • Perfect Background Music", "thumb": "https://i.ytimg.com/vi/OmklkrdewUs/mqdefault.jpg", "dur": "2:05:29"}, {"id": "CzdZhMWB0js", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/CzdZhMWB0js/mqdefault.jpg", "dur": "2:01:03"}, {"id": "jDNvZMa_rPo", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/jDNvZMa_rPo/mqdefault.jpg", "dur": "2:11:47"}, {"id": "Z9NCogQOtog", "title": "Swing Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/Z9NCogQOtog/mqdefault.jpg", "dur": "2:06:54"}, {"id": "ooUBt2T3-3s", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/ooUBt2T3-3s/mqdefault.jpg", "dur": "2:07:11"}, {"id": "9U2ibV9_8c0", "title": "Smooth Jazz R&B - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/9U2ibV9_8c0/mqdefault.jpg", "dur": "2:09:19"}, {"id": "NiQuryainyM", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/NiQuryainyM/mqdefault.jpg", "dur": "2:06:44"}, {"id": "b3t3VSdN3fE", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/b3t3VSdN3fE/mqdefault.jpg", "dur": "2:03:57"}, {"id": "T60fqxWQNxk", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/T60fqxWQNxk/mqdefault.jpg", "dur": "2:03:07"}, {"id": "NZqksyWnvRM", "title": "Swing Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/NZqksyWnvRM/mqdefault.jpg", "dur": "2:14:50"}, {"id": "i8s76gBuAfQ", "title": "Romantic Jazz Guitar Music ☕ Luxury Cafe Ambience for a Romantic Night", "thumb": "https://i.ytimg.com/vi/i8s76gBuAfQ/mqdefault.jpg", "dur": "2:09:12"}, {"id": "vkYmSwSdaQI", "title": "Smooth Jazz R&B - Sophisticated Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/vkYmSwSdaQI/mqdefault.jpg", "dur": "2:02:21"}, {"id": "muN_nYA2CzM", "title": "Sự kiện trực tiếp của Guitar Jazz Cafe", "thumb": "https://i.ytimg.com/vi/muN_nYA2CzM/mqdefault_live.jpg", "dur": ""}, {"id": "cFGIYrRO1ws", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/cFGIYrRO1ws/mqdefault.jpg", "dur": "2:06:07"}, {"id": "_fn28lHLO1I", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/_fn28lHLO1I/mqdefault.jpg", "dur": "2:06:33"}, {"id": "kP1fHneTQqk", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/kP1fHneTQqk/mqdefault.jpg", "dur": "2:11:10"}, {"id": "LezNkEmByCA", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/LezNkEmByCA/mqdefault.jpg", "dur": "2:00:59"}, {"id": "ep-vQhTBicM", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ep-vQhTBicM/mqdefault.jpg", "dur": "2:11:27"}, {"id": "iH4WfqN_okc", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/iH4WfqN_okc/mqdefault.jpg", "dur": "2:08:44"}, {"id": "CbHxtsbI5nE", "title": "Smooth Jazz R&B - Sophisticated Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/CbHxtsbI5nE/mqdefault.jpg", "dur": "2:09:28"}, {"id": "dEw1BLHrPAU", "title": "Smooth Jazz Guitar Music – Warm Cafe Ambiance • Relaxing Guitar Tones for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/dEw1BLHrPAU/mqdefault.jpg", "dur": "2:02:43"}, {"id": "_PIiS1haRr8", "title": "Smooth Jazz Guitar Music – Cool Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/_PIiS1haRr8/mqdefault.jpg", "dur": "2:02:53"}, {"id": "uxPBGskNLCg", "title": "Velvet Jazz Guitar Melodies ☕ Romantic Coffee Shop Atmosphere", "thumb": "https://i.ytimg.com/vi/uxPBGskNLCg/mqdefault.jpg", "dur": "2:07:09"}, {"id": "tZAneCDMoHQ", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/tZAneCDMoHQ/mqdefault.jpg", "dur": "2:01:13"}, {"id": "dAm6WmqLPJ8", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/dAm6WmqLPJ8/mqdefault.jpg", "dur": "2:05:34"}, {"id": "gBIMnWBO8-g", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/gBIMnWBO8-g/mqdefault.jpg", "dur": "2:01:52"}, {"id": "pQpgpxlDVk0", "title": "Smooth Jazz Guitar Music – Beach Cafe Vibes • Perfect Background Music for Work & Study", "thumb": "https://i.ytimg.com/vi/pQpgpxlDVk0/mqdefault.jpg", "dur": "2:01:55"}, {"id": "7jET074A8VE", "title": "Smooth Jazz Guitar Music – Sophisticated Cafe Vibes • Perfect Background Music for Work & Study", "thumb": "https://i.ytimg.com/vi/7jET074A8VE/mqdefault.jpg", "dur": "2:10:32"}, {"id": "eYEiygRsf-k", "title": "Smooth Jazz R&B - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/eYEiygRsf-k/mqdefault.jpg", "dur": "2:08:02"}, {"id": "T6AbUWEG5o8", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/T6AbUWEG5o8/mqdefault.jpg", "dur": "2:00:48"}, {"id": "E3JuerjR0tQ", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/E3JuerjR0tQ/mqdefault.jpg", "dur": "2:04:51"}, {"id": "N4hdlXLTa9s", "title": "Romantic Jazz Guitar Music ☕ Cozy Cafe Ambience for a Romantic Night", "thumb": "https://i.ytimg.com/vi/N4hdlXLTa9s/mqdefault.jpg", "dur": "2:15:19"}, {"id": "77tmDUeaYbo", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/77tmDUeaYbo/mqdefault.jpg", "dur": "2:11:24"}, {"id": "U4ojMoB1qxk", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/U4ojMoB1qxk/mqdefault.jpg", "dur": "2:02:17"}, {"id": "XynDYsvgsXU", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/XynDYsvgsXU/mqdefault.jpg", "dur": "2:04:32"}, {"id": "v8Z-XJwY5kI", "title": "Smooth Jazz R&B - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/v8Z-XJwY5kI/mqdefault.jpg", "dur": "2:05:13"}, {"id": "n52MSCAmKLE", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/n52MSCAmKLE/mqdefault.jpg", "dur": "2:15:38"}, {"id": "iySiW2Ii5F8", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/iySiW2Ii5F8/mqdefault.jpg", "dur": "2:12:09"}, {"id": "AugaQ8BcOcE", "title": "24/7 Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/AugaQ8BcOcE/mqdefault_live.jpg", "dur": ""}, {"id": "Rhg0J-_Lf1c", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/Rhg0J-_Lf1c/mqdefault.jpg", "dur": "2:02:03"}, {"id": "pZqRooDz-lY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/pZqRooDz-lY/mqdefault.jpg", "dur": "2:01:31"}, {"id": "ECXs1zrs-wk", "title": "Romantic Jazz Guitar Music ☕ Cozy Cafe Ambience for a Romantic Night", "thumb": "https://i.ytimg.com/vi/ECXs1zrs-wk/mqdefault.jpg", "dur": "2:03:38"}, {"id": "tLi6xcLC9iw", "title": "Smooth Jazz R&B - Cozy Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/tLi6xcLC9iw/mqdefault.jpg", "dur": "2:09:06"}, {"id": "08xS0LjDLxg", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/08xS0LjDLxg/mqdefault.jpg", "dur": "2:04:28"}, {"id": "QPr5NG8VErI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/QPr5NG8VErI/mqdefault.jpg", "dur": "2:13:09"}, {"id": "TiwxyDkgBeQ", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/TiwxyDkgBeQ/mqdefault.jpg", "dur": "2:11:59"}, {"id": "h0oZFK-ZQaY", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/h0oZFK-ZQaY/mqdefault.jpg", "dur": "2:02:58"}, {"id": "Et1TMh06ZC0", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/Et1TMh06ZC0/mqdefault.jpg", "dur": "2:10:40"}, {"id": "66M6Dbl8wNg", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/66M6Dbl8wNg/mqdefault.jpg", "dur": "2:11:28"}, {"id": "3co7f3nEqk8", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/3co7f3nEqk8/mqdefault.jpg", "dur": "2:01:38"}, {"id": "_tTu3veZWdk", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/_tTu3veZWdk/mqdefault.jpg", "dur": "2:03:20"}, {"id": "Fsp1Na2ngNk", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Fsp1Na2ngNk/mqdefault.jpg", "dur": "2:06:26"}, {"id": "xn3cVut2I-Q", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/xn3cVut2I-Q/mqdefault.jpg", "dur": "2:10:29"}, {"id": "6BjSYnPJLwM", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/6BjSYnPJLwM/mqdefault.jpg", "dur": "2:05:36"}, {"id": "-wOBLUSkMwQ", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/-wOBLUSkMwQ/mqdefault.jpg", "dur": "2:19:18"}, {"id": "aQUspS-U1ak", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/aQUspS-U1ak/mqdefault.jpg", "dur": "2:06:53"}, {"id": "0mYYRm4kA_s", "title": "Smooth Jazz Guitar Music – Chill Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/0mYYRm4kA_s/mqdefault.jpg", "dur": "2:09:40"}, {"id": "ypIFw1rb6vw", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/ypIFw1rb6vw/mqdefault.jpg", "dur": "11:54:58"}, {"id": "mF9oRp90coc", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/mF9oRp90coc/mqdefault.jpg", "dur": "2:07:20"}, {"id": "pSRmb6RaMP0", "title": "Smooth Jazz Guitar Music – Late Night Cafe Vibes 🌙 Relaxing Jazz for Study, Work & Sleep", "thumb": "https://i.ytimg.com/vi/pSRmb6RaMP0/mqdefault.jpg", "dur": "11:54:57"}, {"id": "GbLHawfuI6g", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/GbLHawfuI6g/mqdefault.jpg", "dur": "2:04:36"}, {"id": "t9okC7f5B8A", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/t9okC7f5B8A/mqdefault.jpg", "dur": "11:54:59"}, {"id": "pjljb9p5SR4", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/pjljb9p5SR4/mqdefault.jpg", "dur": "2:10:53"}, {"id": "Qnd_uo9fvBA", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Qnd_uo9fvBA/mqdefault.jpg", "dur": "11:54:57"}, {"id": "ZkPR2QGJw0A", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ZkPR2QGJw0A/mqdefault.jpg", "dur": "2:09:06"}, {"id": "18-3J_0tmhM", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/18-3J_0tmhM/mqdefault.jpg", "dur": "11:55:00"}, {"id": "14xpugC9wHM", "title": "Smooth Jazz Guitar & Piano Music - Cozy Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/14xpugC9wHM/mqdefault.jpg", "dur": "2:08:10"}, {"id": "wpeS_JGk6LI", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/wpeS_JGk6LI/mqdefault.jpg", "dur": "11:54:59"}, {"id": "SP4QeDPeb-k", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/SP4QeDPeb-k/mqdefault.jpg", "dur": "2:03:05"}, {"id": "60IQJKzTBCE", "title": "Smooth Jazz Guitar Music – Peaceful Cafe Jazz ☕ Relaxing Background Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/60IQJKzTBCE/mqdefault.jpg", "dur": "11:55:00"}, {"id": "srl48nGSrtE", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/srl48nGSrtE/mqdefault.jpg", "dur": "2:02:06"}, {"id": "ZVxgy_erSAE", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/ZVxgy_erSAE/mqdefault.jpg", "dur": "11:54:58"}, {"id": "0MnBwCB186w", "title": "Smooth Jazz Guitar Music - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/0MnBwCB186w/mqdefault.jpg", "dur": "2:00:56"}, {"id": "lcbS1M-_6WU", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/lcbS1M-_6WU/mqdefault.jpg", "dur": "11:54:56"}, {"id": "fOti_6M09EA", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/fOti_6M09EA/mqdefault.jpg", "dur": "2:13:49"}, {"id": "fIdL7jDwmos", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/fIdL7jDwmos/mqdefault.jpg", "dur": "11:54:57"}, {"id": "3dhyICw-Z9A", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/3dhyICw-Z9A/mqdefault.jpg", "dur": "2:10:33"}, {"id": "v2gg-rrDCvg", "title": "Smooth Jazz Guitar Music - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/v2gg-rrDCvg/mqdefault.jpg", "dur": "2:06:37"}, {"id": "tXzIbPm1Zjo", "title": "Smooth Jazz Guitar Music – Peaceful Cafe Jazz ☕ Relaxing Background Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/tXzIbPm1Zjo/mqdefault.jpg", "dur": "11:54:58"}, {"id": "xeJrYlyvZEc", "title": "Smooth Jazz Guitar Music - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/xeJrYlyvZEc/mqdefault.jpg", "dur": "2:12:56"}, {"id": "SycEy92jkuI", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/SycEy92jkuI/mqdefault.jpg", "dur": "11:54:57"}, {"id": "jgPsDJ3TRFY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/jgPsDJ3TRFY/mqdefault.jpg", "dur": "2:06:44"}, {"id": "BO8XaVp4r_E", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/BO8XaVp4r_E/mqdefault.jpg", "dur": "11:54:59"}, {"id": "dELb03-Lmb4", "title": "Smooth Jazz Guitar & Piano Music - Rainy Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/dELb03-Lmb4/mqdefault.jpg", "dur": "2:13:29"}, {"id": "dx7vbg3JApo", "title": "Smooth Jazz Guitar Music – Late Night Cafe Vibes 🌙 Relaxing Jazz for Study, Work & Sleep", "thumb": "https://i.ytimg.com/vi/dx7vbg3JApo/mqdefault.jpg", "dur": "11:54:59"}, {"id": "JwmKGw1fVaA", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/JwmKGw1fVaA/mqdefault.jpg", "dur": "2:05:00"}, {"id": "aMj4PcA9hhk", "title": "Smooth Jazz Guitar Music – Peaceful Cafe Jazz ☕ Relaxing Background Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/aMj4PcA9hhk/mqdefault.jpg", "dur": "11:54:58"}, {"id": "X-mn2P3sNY4", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/X-mn2P3sNY4/mqdefault.jpg", "dur": "2:04:11"}, {"id": "5mBTE_XRVTE", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/5mBTE_XRVTE/mqdefault.jpg", "dur": "2:03:34"}, {"id": "WyZzZFYnrcU", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/WyZzZFYnrcU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "EvE2rQ_IiYk", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/EvE2rQ_IiYk/mqdefault.jpg", "dur": "2:07:03"}, {"id": "-ndvfGChxW0", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/-ndvfGChxW0/mqdefault.jpg", "dur": "11:54:57"}, {"id": "m_BMVLrg-Pg", "title": "Smooth Jazz Guitar Music - Rooftop Cafe Vibes 🌆 Relaxing Music for Study & Work", "thumb": "https://i.ytimg.com/vi/m_BMVLrg-Pg/mqdefault.jpg", "dur": "2:06:45"}, {"id": "WxFX5oyx59o", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/WxFX5oyx59o/mqdefault.jpg", "dur": "11:54:59"}, {"id": "hYN41imuyIg", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/hYN41imuyIg/mqdefault.jpg", "dur": "2:05:45"}, {"id": "SI1uo8ek5f0", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/SI1uo8ek5f0/mqdefault.jpg", "dur": "11:54:56"}, {"id": "zF2ck82RqgE", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/zF2ck82RqgE/mqdefault.jpg", "dur": "2:06:21"}, {"id": "0cWxDkTjgkA", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/0cWxDkTjgkA/mqdefault.jpg", "dur": "11:54:57"}, {"id": "xmQV2aEg_XU", "title": "Smooth Jazz Guitar & Piano Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/xmQV2aEg_XU/mqdefault.jpg", "dur": "2:07:27"}, {"id": "LPd-M0PNkCM", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/LPd-M0PNkCM/mqdefault.jpg", "dur": "11:54:58"}, {"id": "VVadRIUmIPo", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/VVadRIUmIPo/mqdefault.jpg", "dur": "2:08:54"}, {"id": "EGJfrgAGoTc", "title": "Smooth Jazz Guitar Music – Peaceful Cafe Jazz ☕ Relaxing Background Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/EGJfrgAGoTc/mqdefault.jpg", "dur": "11:54:57"}, {"id": "Ai0MddFAvZI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Ai0MddFAvZI/mqdefault.jpg", "dur": "2:00:23"}, {"id": "LNYCkmCbnoo", "title": "Smooth Jazz Guitar Music – Peaceful Cafe Jazz ☕ Relaxing Background Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/LNYCkmCbnoo/mqdefault.jpg", "dur": "11:54:59"}, {"id": "BIRBEcsCtRM", "title": "Smooth Jazz R&B - Chill Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/BIRBEcsCtRM/mqdefault.jpg", "dur": "2:00:28"}, {"id": "a0lTrImdAAU", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/a0lTrImdAAU/mqdefault.jpg", "dur": "11:54:56"}, {"id": "XvzIMrcfCLc", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/XvzIMrcfCLc/mqdefault.jpg", "dur": "2:09:16"}, {"id": "c5e18jeROLY", "title": "Smooth Jazz Guitar Music – Late Night Cafe Vibes 🌙 Relaxing Jazz for Study, Work & Sleep", "thumb": "https://i.ytimg.com/vi/c5e18jeROLY/mqdefault.jpg", "dur": "11:55:00"}, {"id": "OSFiM2Hxds0", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/OSFiM2Hxds0/mqdefault.jpg", "dur": "2:00:57"}, {"id": "q0wgeZq0tyI", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/q0wgeZq0tyI/mqdefault.jpg", "dur": "11:54:56"}, {"id": "IdHlWKu9iEU", "title": "Smooth Jazz R&B - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/IdHlWKu9iEU/mqdefault.jpg", "dur": "2:03:58"}, {"id": "Ucx_PT5tkT4", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/Ucx_PT5tkT4/mqdefault.jpg", "dur": "11:55:00"}, {"id": "rr3Q03RUD6w", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/rr3Q03RUD6w/mqdefault.jpg", "dur": "2:01:27"}, {"id": "IR-gvRXka-0", "title": "Smooth Jazz Guitar & Piano Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/IR-gvRXka-0/mqdefault.jpg", "dur": "2:13:21"}, {"id": "EJAMKW5xf8E", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/EJAMKW5xf8E/mqdefault.jpg", "dur": "2:08:30"}, {"id": "OxCxIqXfXvU", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/OxCxIqXfXvU/mqdefault.jpg", "dur": "11:55:00"}, {"id": "oTz4tSx0A-c", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/oTz4tSx0A-c/mqdefault.jpg", "dur": "2:06:57"}, {"id": "h_dHaflH77Q", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/h_dHaflH77Q/mqdefault.jpg", "dur": "11:55:00"}, {"id": "Q43Nvo0pmUs", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Q43Nvo0pmUs/mqdefault.jpg", "dur": "2:02:26"}, {"id": "xrL4oyWcm2s", "title": "Smooth Jazz Guitar Music – Late Night Cafe Vibes 🌙 Relaxing Jazz for Study, Work & Sleep", "thumb": "https://i.ytimg.com/vi/xrL4oyWcm2s/mqdefault.jpg", "dur": "11:54:58"}, {"id": "ZT0FSwet7bI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ZT0FSwet7bI/mqdefault.jpg", "dur": "2:06:47"}, {"id": "bf94q0adXqw", "title": "Smooth Jazz Guitar Music – Relaxing Cafe Ambience ☕ Coffee Shop Jazz for Study, Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/bf94q0adXqw/mqdefault.jpg", "dur": "11:54:59"}, {"id": "KoWKrmVWOWU", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/KoWKrmVWOWU/mqdefault.jpg", "dur": "2:06:56"}, {"id": "5qwUtBALXhQ", "title": "Smooth Jazz Guitar Music – Chill Cafe Ambience 🎶 Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/5qwUtBALXhQ/mqdefault.jpg", "dur": "11:55:00"}, {"id": "04Hc94aEVyI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/04Hc94aEVyI/mqdefault.jpg", "dur": "2:06:59"}, {"id": "n95rlWsNtsE", "title": "Smooth Jazz Guitar Music – Cozy Cafe Vibes ☕ Relaxing Guitar Music for Study, Work & Focus", "thumb": "https://i.ytimg.com/vi/n95rlWsNtsE/mqdefault.jpg", "dur": "11:53:17"}, {"id": "cjwdboxdyTw", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/cjwdboxdyTw/mqdefault.jpg", "dur": "2:07:39"}, {"id": "8s_xXFW1ziQ", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/8s_xXFW1ziQ/mqdefault.jpg", "dur": "2:09:30"}, {"id": "izOjkcO5FOg", "title": "Smooth Jazz Guitar & Piano Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/izOjkcO5FOg/mqdefault.jpg", "dur": "2:07:24"}, {"id": "bpf4587nHss", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/bpf4587nHss/mqdefault.jpg", "dur": "2:04:09"}, {"id": "1L4JSg3gvuc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/1L4JSg3gvuc/mqdefault.jpg", "dur": "2:01:32"}, {"id": "4BB4PituXDQ", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/4BB4PituXDQ/mqdefault.jpg", "dur": "2:06:40"}, {"id": "g3pjZCnKbmE", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/g3pjZCnKbmE/mqdefault.jpg", "dur": "2:00:54"}, {"id": "0lBcLz8DQaM", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/0lBcLz8DQaM/mqdefault.jpg", "dur": "2:16:04"}, {"id": "90zq_N_TleM", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/90zq_N_TleM/mqdefault.jpg", "dur": "2:10:23"}, {"id": "AKr_hJoxZM8", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/AKr_hJoxZM8/mqdefault.jpg", "dur": "2:07:29"}, {"id": "iDs4QTs9PPs", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/iDs4QTs9PPs/mqdefault.jpg", "dur": "2:04:33"}, {"id": "2rCEAQfjvZY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/2rCEAQfjvZY/mqdefault.jpg", "dur": "2:05:38"}, {"id": "z4fHSt6XUBc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/z4fHSt6XUBc/mqdefault.jpg", "dur": "2:07:06"}, {"id": "-f9do-0K63g", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/-f9do-0K63g/mqdefault.jpg", "dur": "2:05:46"}, {"id": "ylZSDeaGbmI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ylZSDeaGbmI/mqdefault.jpg", "dur": "2:08:27"}, {"id": "SVBGWf4dKIA", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/SVBGWf4dKIA/mqdefault.jpg", "dur": "2:11:14"}, {"id": "E2sMjw13N8Q", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/E2sMjw13N8Q/mqdefault.jpg", "dur": "2:03:17"}, {"id": "ualTatutzjc", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ualTatutzjc/mqdefault.jpg", "dur": "2:06:16"}, {"id": "mjBkcYfcBoI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/mjBkcYfcBoI/mqdefault.jpg", "dur": "2:16:16"}, {"id": "241LCbWVOkk", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/241LCbWVOkk/mqdefault.jpg", "dur": "2:26:08"}, {"id": "O4y93hQ67Wc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/O4y93hQ67Wc/mqdefault.jpg", "dur": "2:12:18"}, {"id": "9ashL5hqb34", "title": "Smooth Jazz Guitar & Saxophone Music - Luxury Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/9ashL5hqb34/mqdefault.jpg", "dur": "2:33:58"}, {"id": "btKWXoZbrEY", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/btKWXoZbrEY/mqdefault.jpg", "dur": "2:10:59"}, {"id": "3meSiUGErE8", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/3meSiUGErE8/mqdefault.jpg", "dur": "2:06:42"}, {"id": "agVrBxLp6bI", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/agVrBxLp6bI/mqdefault.jpg", "dur": "2:10:50"}, {"id": "7_I-rngd3zk", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/7_I-rngd3zk/mqdefault.jpg", "dur": "2:05:53"}, {"id": "tUS8EQgAzzo", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/tUS8EQgAzzo/mqdefault.jpg", "dur": "2:32:50"}, {"id": "d4l--q-ugmQ", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/d4l--q-ugmQ/mqdefault.jpg", "dur": "2:03:13"}, {"id": "UkVUbA0qD3U", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/UkVUbA0qD3U/mqdefault.jpg", "dur": "2:10:02"}, {"id": "wvADdoznC6I", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/wvADdoznC6I/mqdefault.jpg", "dur": "2:01:55"}, {"id": "PR5Hye2FY7A", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/PR5Hye2FY7A/mqdefault.jpg", "dur": "2:06:36"}, {"id": "0lRF5q4clF4", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/0lRF5q4clF4/mqdefault.jpg", "dur": "2:21:38"}, {"id": "y0BHUk44oUc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/y0BHUk44oUc/mqdefault.jpg", "dur": "2:11:13"}, {"id": "kGwwL195e6s", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/kGwwL195e6s/mqdefault.jpg", "dur": "2:03:33"}, {"id": "JPicbNuRyR0", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/JPicbNuRyR0/mqdefault.jpg", "dur": "2:12:11"}, {"id": "jEhFaHsGWzE", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/jEhFaHsGWzE/mqdefault.jpg", "dur": "2:04:14"}, {"id": "H9h-PI-_9BM", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/H9h-PI-_9BM/mqdefault.jpg", "dur": "2:24:56"}, {"id": "DyypHIRAAKM", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/DyypHIRAAKM/mqdefault.jpg", "dur": "2:07:13"}, {"id": "LAz5N5aQqD4", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/LAz5N5aQqD4/mqdefault.jpg", "dur": "2:08:33"}, {"id": "LhDsYRWzkoc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/LhDsYRWzkoc/mqdefault.jpg", "dur": "2:07:40"}, {"id": "0WG0O9tPrl4", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/0WG0O9tPrl4/mqdefault.jpg", "dur": "2:12:52"}, {"id": "StgUI-dmWgQ", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/StgUI-dmWgQ/mqdefault.jpg", "dur": "2:10:21"}, {"id": "fctzR9cdIdo", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/fctzR9cdIdo/mqdefault.jpg", "dur": "2:08:28"}, {"id": "UTWmC-S3g1g", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/UTWmC-S3g1g/mqdefault.jpg", "dur": "2:08:06"}, {"id": "n6au83VWHTc", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/n6au83VWHTc/mqdefault.jpg", "dur": "2:20:38"}, {"id": "jLt-7ylyDhU", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/jLt-7ylyDhU/mqdefault.jpg", "dur": "2:13:12"}, {"id": "EXUoC2P8pN0", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/EXUoC2P8pN0/mqdefault.jpg", "dur": "2:14:58"}, {"id": "KY26AIm2t9A", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/KY26AIm2t9A/mqdefault.jpg", "dur": "2:09:57"}, {"id": "vEzQdV9tgAs", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/vEzQdV9tgAs/mqdefault.jpg", "dur": "2:27:00"}, {"id": "jyWCvwlyA8g", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/jyWCvwlyA8g/mqdefault.jpg", "dur": "2:07:36"}, {"id": "VmVtxuERBR8", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/VmVtxuERBR8/mqdefault.jpg", "dur": "2:01:33"}, {"id": "8swL2cOqFHQ", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/8swL2cOqFHQ/mqdefault.jpg", "dur": "2:06:13"}, {"id": "OxFNUlRhH-8", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/OxFNUlRhH-8/mqdefault.jpg", "dur": "2:16:43"}, {"id": "35vY5frtmak", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/35vY5frtmak/mqdefault.jpg", "dur": "2:07:12"}, {"id": "SKovkBGOQxk", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/SKovkBGOQxk/mqdefault.jpg", "dur": "2:02:06"}, {"id": "HF5-iLUdFJY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/HF5-iLUdFJY/mqdefault.jpg", "dur": "2:14:28"}, {"id": "_qGCyoZxc10", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/_qGCyoZxc10/mqdefault.jpg", "dur": "2:05:35"}, {"id": "pnalvD54ACU", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/pnalvD54ACU/mqdefault.jpg", "dur": "2:06:12"}, {"id": "T8PwonZkZ1c", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/T8PwonZkZ1c/mqdefault.jpg", "dur": "2:00:48"}, {"id": "my7i254_264", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/my7i254_264/mqdefault.jpg", "dur": "2:00:43"}, {"id": "SDMTxMAx9Hs", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/SDMTxMAx9Hs/mqdefault.jpg", "dur": "2:27:37"}, {"id": "W8Z0fAnltMY", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/W8Z0fAnltMY/mqdefault.jpg", "dur": "2:02:34"}, {"id": "NBLWJPuTdow", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/NBLWJPuTdow/mqdefault.jpg", "dur": "2:00:39"}, {"id": "pQETBl2CaBA", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/pQETBl2CaBA/mqdefault.jpg", "dur": "2:06:45"}, {"id": "kR4qGjoUFu0", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/kR4qGjoUFu0/mqdefault.jpg", "dur": "2:06:10"}, {"id": "NBWjN9p5lE0", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/NBWjN9p5lE0/mqdefault.jpg", "dur": "2:00:14"}, {"id": "K0cHBiy59co", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/K0cHBiy59co/mqdefault.jpg", "dur": "2:04:08"}, {"id": "ZSFUieHU46s", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/ZSFUieHU46s/mqdefault.jpg", "dur": "2:07:26"}, {"id": "BeoXzMAPgJo", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/BeoXzMAPgJo/mqdefault.jpg", "dur": "2:03:32"}, {"id": "49WHViNC3L0", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/49WHViNC3L0/mqdefault.jpg", "dur": "2:04:24"}, {"id": "o4YyerLAzlM", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/o4YyerLAzlM/mqdefault.jpg", "dur": "2:10:23"}, {"id": "2AD3gLuxyXg", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/2AD3gLuxyXg/mqdefault.jpg", "dur": "2:06:30"}, {"id": "a_VaQwz9Fts", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/a_VaQwz9Fts/mqdefault.jpg", "dur": "2:06:23"}, {"id": "4zivPo7R4cg", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/4zivPo7R4cg/mqdefault.jpg", "dur": "2:07:05"}, {"id": "OXh3C3zMn84", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/OXh3C3zMn84/mqdefault.jpg", "dur": "2:02:09"}, {"id": "_9vtyaSw3oo", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/_9vtyaSw3oo/mqdefault.jpg", "dur": "2:05:52"}, {"id": "zmdyLtoQL5Y", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/zmdyLtoQL5Y/mqdefault.jpg", "dur": "2:00:34"}, {"id": "fqeZV6rRYIs", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/fqeZV6rRYIs/mqdefault.jpg", "dur": "2:03:18"}, {"id": "L6HWyowWLI4", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/L6HWyowWLI4/mqdefault.jpg", "dur": "2:04:19"}, {"id": "B4taP_SXeQg", "title": "Smooth Jazz Guitar & Saxophone Music - Cool Cafe Vibes • Relaxing Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/B4taP_SXeQg/mqdefault.jpg", "dur": "2:03:42"}, {"id": "IUaFC8Mf_YY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/IUaFC8Mf_YY/mqdefault.jpg", "dur": "2:02:43"}, {"id": "p7t3J30nw4M", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/p7t3J30nw4M/mqdefault.jpg", "dur": "2:04:07"}, {"id": "5fdliG61hBY", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/5fdliG61hBY/mqdefault.jpg", "dur": "2:03:47"}, {"id": "SENJJ855iEo", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/SENJJ855iEo/mqdefault.jpg", "dur": "2:06:39"}, {"id": "xFYFQDILQ4Y", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/xFYFQDILQ4Y/mqdefault.jpg", "dur": "2:02:46"}, {"id": "xSVwEmlUzeU", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/xSVwEmlUzeU/mqdefault.jpg", "dur": "2:09:08"}, {"id": "gZqoCyaeEfo", "title": "Smooth Jazz Guitar Music - Luxury Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/gZqoCyaeEfo/mqdefault.jpg", "dur": "2:10:05"}, {"id": "B7LGs-BAzGE", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/B7LGs-BAzGE/mqdefault.jpg", "dur": "2:02:01"}, {"id": "opzywVt3Gvg", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/opzywVt3Gvg/mqdefault.jpg", "dur": "2:07:16"}, {"id": "bpbSfQ8_aeg", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/bpbSfQ8_aeg/mqdefault.jpg", "dur": "2:02:49"}, {"id": "Wo8RhpariS4", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Wo8RhpariS4/mqdefault.jpg", "dur": "2:05:58"}, {"id": "Q0SdUu8MV9g", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/Q0SdUu8MV9g/mqdefault.jpg", "dur": "2:02:20"}, {"id": "PemWOAnfdo4", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/PemWOAnfdo4/mqdefault.jpg", "dur": "2:05:47"}, {"id": "BDvgciG3yyk", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/BDvgciG3yyk/mqdefault.jpg", "dur": "2:03:24"}, {"id": "X7EGBihxFIc", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/X7EGBihxFIc/mqdefault.jpg", "dur": "2:04:30"}, {"id": "gmOJlZ--O6o", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/gmOJlZ--O6o/mqdefault.jpg", "dur": "2:01:41"}, {"id": "64dG9npie6s", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/64dG9npie6s/mqdefault.jpg", "dur": "2:04:56"}, {"id": "WqOcbRqwf0M", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/WqOcbRqwf0M/mqdefault.jpg", "dur": "2:03:05"}, {"id": "UzVs7_KY88c", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/UzVs7_KY88c/mqdefault.jpg", "dur": "2:05:29"}, {"id": "NuKBrz50zBY", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/NuKBrz50zBY/mqdefault.jpg", "dur": "2:00:28"}, {"id": "dgJrjb3N_lk", "title": "Smooth Jazz Guitar Music - Cool Cafe Vibes • Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/dgJrjb3N_lk/mqdefault.jpg", "dur": "2:02:08"}, {"id": "6P0amKOmLLM", "title": "🎇 Smooth Jazz New Year 🎇 Relaxing Guitar Music to Welcome a Beautiful New Year", "thumb": "https://i.ytimg.com/vi/6P0amKOmLLM/mqdefault.jpg", "dur": "2:02:08"}, {"id": "XVysE3sXLXM", "title": "🎇 Smooth Jazz New Year 🎇 Relaxing Guitar Music to Welcome a Beautiful New Year", "thumb": "https://i.ytimg.com/vi/XVysE3sXLXM/mqdefault.jpg", "dur": "2:04:47"}, {"id": "_cpfL_BG2UI", "title": "🎇 Smooth Jazz New Year 🎇 Relaxing Guitar Music to Welcome a Beautiful New Year", "thumb": "https://i.ytimg.com/vi/_cpfL_BG2UI/mqdefault.jpg", "dur": "2:03:58"}, {"id": "2cvNYwXqu-0", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/2cvNYwXqu-0/mqdefault.jpg", "dur": "2:08:00"}, {"id": "mMvLeA9jW_M", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/mMvLeA9jW_M/mqdefault.jpg", "dur": "2:00:42"}, {"id": "JbUo6ULxd0Y", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/JbUo6ULxd0Y/mqdefault.jpg", "dur": "2:06:46"}, {"id": "FFJokSZx8vQ", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/FFJokSZx8vQ/mqdefault.jpg", "dur": "2:05:27"}, {"id": "uciqedkmQAA", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/uciqedkmQAA/mqdefault.jpg", "dur": "2:06:18"}, {"id": "fWrA2gc1vXk", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/fWrA2gc1vXk/mqdefault.jpg", "dur": "2:09:24"}, {"id": "OXbKKJOCBnM", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/OXbKKJOCBnM/mqdefault.jpg", "dur": "2:02:15"}, {"id": "nQ8AP-WQwDY", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/nQ8AP-WQwDY/mqdefault.jpg", "dur": "2:04:10"}, {"id": "sovEgSqPjk8", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/sovEgSqPjk8/mqdefault.jpg", "dur": "2:11:10"}, {"id": "6DPhkhbYtIg", "title": "🎄 Smooth Jazz Christmas 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/6DPhkhbYtIg/mqdefault.jpg", "dur": "2:05:53"}, {"id": "LPyDCQFJB8Q", "title": "🎄 Smooth Jazz Christmas Carols 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/LPyDCQFJB8Q/mqdefault.jpg", "dur": "2:02:27"}, {"id": "6yfRvMYyrTg", "title": "🎄 Smooth Jazz Christmas Carols 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/6yfRvMYyrTg/mqdefault.jpg", "dur": "2:08:08"}, {"id": "K9jRQJg3_Y0", "title": "🎄 Smooth Jazz Christmas Carols 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/K9jRQJg3_Y0/mqdefault.jpg", "dur": "2:04:16"}, {"id": "a5C4PloTOZQ", "title": "🎄 Smooth Jazz Christmas Carols 🎄 Relaxing Guitar Music for Cafe, Study & Work", "thumb": "https://i.ytimg.com/vi/a5C4PloTOZQ/mqdefault.jpg", "dur": "2:00:58"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rhythm & Form</title>
+<!-- categories: Lounge -->
+<!-- channel-id: UCxfzbOh_0bMagReGmrceVrw -->
+<!-- channel-url: https://www.youtube.com/@rhythmandform -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Rhythm__Form.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/vUYBB-QqNSAnioHRIgNv-A6hC0uVFmOgMtGgUQv6qkSzG1yfm8N3PF-dRXPhyjLB6M6IodpSCB4=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Rhythm & Form</div>
+      <div class="channel-count">130 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Rhythm & Form";
+const KANAL = "Rhythm__Form.html";
+const ORIG_CATEGORIES = "Lounge";
+const VIDEOS = [{"id": "Dk_assRbp8E", "title": "''Better Days'' - Afro House Jazz Mix | Midnight Deep Grooves for Work & Focus Mix", "thumb": "https://i.ytimg.com/vi/Dk_assRbp8E/mqdefault.jpg", "dur": "2:19:50"}, {"id": "_NnMG5_8HbE", "title": "The After Hours Room | Afro House Jazz Mix | Deep Grooves for Late Nights", "thumb": "https://i.ytimg.com/vi/_NnMG5_8HbE/mqdefault.jpg", "dur": "2:22:23"}, {"id": "klMqpqGLLtQ", "title": "''Island Shades, Lagos'' — Afro House Jazz Mix | Deep Groove Session for Work & Focus", "thumb": "https://i.ytimg.com/vi/klMqpqGLLtQ/mqdefault.jpg", "dur": "3:03:36"}, {"id": "RiGoCzZIcX0", "title": "Afro House Jazz Mix — ''The Summer Shades'' | Smooth Grooves for Work & Chill", "thumb": "https://i.ytimg.com/vi/RiGoCzZIcX0/mqdefault.jpg", "dur": "2:01:59"}, {"id": "AE1TWsTtlYc", "title": "Afro House Jazz Mix — ''Lagos Summer Nights'' | Smooth Grooves for Chill & Focus", "thumb": "https://i.ytimg.com/vi/AE1TWsTtlYc/mqdefault.jpg", "dur": "2:01:36"}, {"id": "UPVYm9OAWHE", "title": "''Miami Summer Room'' | Afro House Jazz Mix | After Hours Grooves for Late Nights and Focus", "thumb": "https://i.ytimg.com/vi/UPVYm9OAWHE/mqdefault.jpg", "dur": "2:08:51"}, {"id": "0tFwwhA3i1E", "title": "\"Passionfruit Lake\" | Afro House Jazz Mix | Smooth Grooves for Chill & Focus", "thumb": "https://i.ytimg.com/vi/0tFwwhA3i1E/mqdefault.jpg", "dur": "2:32:59"}, {"id": "gQbPK-5Eh84", "title": "''Ocean Breeze in Lagos'' | Afro House Jazz Mix | Morning Grooves for Work & Productivity", "thumb": "https://i.ytimg.com/vi/gQbPK-5Eh84/mqdefault.jpg", "dur": "2:04:46"}, {"id": "nTTWsAIJHnU", "title": "The Private Room | Afro House Jazz Mix | Deep Grooves Session, Ideal for Chill & Focus", "thumb": "https://i.ytimg.com/vi/nTTWsAIJHnU/mqdefault.jpg", "dur": "2:10:45"}, {"id": "YZ-VDjyNkV0", "title": "The Tribal Room | Afro House Jazz Mix | Deep Grooves for Focus & Work", "thumb": "https://i.ytimg.com/vi/YZ-VDjyNkV0/mqdefault.jpg", "dur": "2:02:59"}, {"id": "scdUNtoB9Gk", "title": "The Midnight Room | Afro House Jazz Mix | Deep Jazz Grooves for Chill & Focus", "thumb": "https://i.ytimg.com/vi/scdUNtoB9Gk/mqdefault.jpg", "dur": "2:20:21"}, {"id": "d-vKfXDB8cc", "title": "Afro House Jazz Mix | (Soulful Energy) Warm Grooves Session | Ideal for Focus  & Productivity", "thumb": "https://i.ytimg.com/vi/d-vKfXDB8cc/mqdefault.jpg", "dur": "2:24:51"}, {"id": "cgubdzQmWus", "title": "''The Jazz Room'' | Afro House Jazz Mix | After Hours Grooves for Chill & Focus", "thumb": "https://i.ytimg.com/vi/cgubdzQmWus/mqdefault.jpg", "dur": "2:08:44"}, {"id": "yFcoJAnlNd4", "title": "''No Noise, Just Focus'' | Afro House Jazz Mix — Deep Groove Session for Work & Productivity", "thumb": "https://i.ytimg.com/vi/yFcoJAnlNd4/mqdefault.jpg", "dur": "2:09:17"}, {"id": "RiIALZvfvx4", "title": "Afro House Jazz Mix | Jungle Focus | After Hours Grooves for Late Nights", "thumb": "https://i.ytimg.com/vi/RiIALZvfvx4/mqdefault.jpg", "dur": "1:37:43"}, {"id": "I9nLR0F9p6g", "title": "Focus Feels Better Like This | Afro House Jazz Mix for Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/I9nLR0F9p6g/mqdefault.jpg", "dur": "2:11:39"}, {"id": "tHun401hL6U", "title": "''The Chill Room'' —Afro House Jazz Mix | Deep Grooves for Focus & Flow", "thumb": "https://i.ytimg.com/vi/tHun401hL6U/mqdefault.jpg", "dur": "2:03:29"}, {"id": "DuwcAbkNdO0", "title": "Afro House Jazz Mix | ''Work Better With Rhythm'' | Deep Focus Grooves", "thumb": "https://i.ytimg.com/vi/DuwcAbkNdO0/mqdefault.jpg", "dur": "2:02:06"}, {"id": "sEX8sX2-0-s", "title": "The Lagos Room | Afro House Jazz Mix | Deep Groove Session. Ideal for Work & Study", "thumb": "https://i.ytimg.com/vi/sEX8sX2-0-s/mqdefault.jpg", "dur": "2:01:24"}, {"id": "iXDVemlyvLA", "title": "The Summer Room | Afro House Jazz Mix — Morning Grooves, Ideal for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/iXDVemlyvLA/mqdefault.jpg", "dur": "2:05:05"}, {"id": "_-gbn349jXo", "title": "Leopard Club | Afro House Jazz Mix — Deep Grooves for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/_-gbn349jXo/mqdefault.jpg", "dur": "2:02:31"}, {"id": "n6ffTeceizM", "title": "The Clear Room | Afro House Jazz Mix — Morning Grooves for Work & Concentration", "thumb": "https://i.ytimg.com/vi/n6ffTeceizM/mqdefault.jpg", "dur": "2:09:52"}, {"id": "GDvROqlKfR8", "title": "''Start the Day Focused'' | Afro House Jazz Mix —  Deep Grooves for Focus and Work", "thumb": "https://i.ytimg.com/vi/GDvROqlKfR8/mqdefault.jpg", "dur": "2:03:54"}, {"id": "FyaO7_Oi7s0", "title": "The Elegant Room | Afro House Jazz Mix — Deep Groove Session for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/FyaO7_Oi7s0/mqdefault.jpg", "dur": "2:05:38"}, {"id": "Pne36JvvScw", "title": "The Panther Room | Afro House Jazz Mix — Deep Grooves for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/Pne36JvvScw/mqdefault.jpg", "dur": "2:02:50"}, {"id": "wpdJC0uKww8", "title": "Afro House Jazz Mix | (After 3AM) Warm Groove Session | Ideal for Work & Focus", "thumb": "https://i.ytimg.com/vi/wpdJC0uKww8/mqdefault.jpg", "dur": "2:06:50"}, {"id": "xGwE1_cWP6c", "title": "The Study Lounge | Afro House Jazz Mix — Deep Grooves for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/xGwE1_cWP6c/mqdefault.jpg", "dur": "2:14:11"}, {"id": "slQ4NZZpNfQ", "title": "Afro House Jazz Mix | (Summer in Lagos) Tribal Groove Session for Deep Focus & Work", "thumb": "https://i.ytimg.com/vi/slQ4NZZpNfQ/mqdefault.jpg", "dur": "2:02:47"}, {"id": "XOuoSxZs68w", "title": "The Tigers Room | Afro House Jazz Mix | Deep Groove Session for Work & Focus", "thumb": "https://i.ytimg.com/vi/XOuoSxZs68w/mqdefault.jpg", "dur": "2:03:28"}, {"id": "HNLAAfaPQSs", "title": "''Focus Without Noise'' | Afro House Jazz Mix — Deep Grooves Ideal for Late Night & Work", "thumb": "https://i.ytimg.com/vi/HNLAAfaPQSs/mqdefault.jpg", "dur": "2:04:36"}, {"id": "dxvwflSGIRI", "title": "''The Rhythm Panther'' | Afro House Jazz Mix — Deep Tribal Groove Session for Focus & Work", "thumb": "https://i.ytimg.com/vi/dxvwflSGIRI/mqdefault.jpg", "dur": "2:04:07"}, {"id": "YazePA8rwhE", "title": "The Work Room | Afro House Jazz Mix — Deep Groove Session, Ideal for Focus", "thumb": "https://i.ytimg.com/vi/YazePA8rwhE/mqdefault.jpg", "dur": "1:57:18"}, {"id": "9CERSP6R2ns", "title": "The Monday Room | Afro House Jazz Mix — Deep Focus Grooves for Study & Work", "thumb": "https://i.ytimg.com/vi/9CERSP6R2ns/mqdefault.jpg", "dur": "2:20:55"}, {"id": "rWvvO6RQ-xs", "title": "Press Play & Focus | Afro House Jazz Mix — Deep Tribal Grooves for Work", "thumb": "https://i.ytimg.com/vi/rWvvO6RQ-xs/mqdefault.jpg", "dur": "2:22:13"}, {"id": "lQ10qCecCT0", "title": "Afro House Jazz Mix | (Stay Focused) Deep Groove Session | Ideal for Productivity and Work", "thumb": "https://i.ytimg.com/vi/lQ10qCecCT0/mqdefault.jpg", "dur": "2:09:15"}, {"id": "ljONPfiQCYw", "title": "The Productivity Room | Afro House Jazz Mix — Deep Afro Grooves for Focus & Work", "thumb": "https://i.ytimg.com/vi/ljONPfiQCYw/mqdefault.jpg", "dur": "2:04:54"}, {"id": "7W-S0Ibk8aU", "title": "The Focus Room | Afro House Jazz Mix | Deep Groove Session for Work & Study", "thumb": "https://i.ytimg.com/vi/7W-S0Ibk8aU/mqdefault.jpg", "dur": "2:02:30"}, {"id": "hxjzvb8kk-A", "title": "Afro House Jazz Mix | (Tropical Motion) Sunset Groove Session | Ideal for Chill & Focus", "thumb": "https://i.ytimg.com/vi/hxjzvb8kk-A/mqdefault.jpg", "dur": "2:05:25"}, {"id": "UeXd1avI1lE", "title": "The Afro Room | Afro House Jazz Mix — Tribal Groove Session | Ideal for Chill & Relax", "thumb": "https://i.ytimg.com/vi/UeXd1avI1lE/mqdefault.jpg", "dur": "2:00:09"}, {"id": "P02hnmfHzCU", "title": "Afro House Jazz Mix | (5AM Energy) Morning Groove Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/P02hnmfHzCU/mqdefault.jpg", "dur": "2:11:23"}, {"id": "vFBFE2kf6Ns", "title": "The Flow Room | Afro House Jazz Mix — Deep Rhythm Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/vFBFE2kf6Ns/mqdefault.jpg", "dur": "2:15:20"}, {"id": "oCqZYR3OLaI", "title": "The Sun Room | Afro House Jazz Mix — Tribal Groove Session | Ideal for Chill & Focus", "thumb": "https://i.ytimg.com/vi/oCqZYR3OLaI/mqdefault.jpg", "dur": "2:12:25"}, {"id": "JMMpcz79wJg", "title": "Afro House Jazz Mix | (The Rhythm Shades) Nighttime Groove Session | Ideal for Focus & Chill", "thumb": "https://i.ytimg.com/vi/JMMpcz79wJg/mqdefault.jpg", "dur": "2:05:19"}, {"id": "pVyMrCgfrc4", "title": "The Golden Room | Afro House Jazz Mix — Deep Rhythm for Focus & Chill", "thumb": "https://i.ytimg.com/vi/pVyMrCgfrc4/mqdefault.jpg", "dur": "2:00:11"}, {"id": "L_bi5E9Odos", "title": "Afro House Jazz Mix | (After Dark) Night Groove Session | Ideal for Chill & Focus", "thumb": "https://i.ytimg.com/vi/L_bi5E9Odos/mqdefault.jpg", "dur": "2:06:03"}, {"id": "mLd7kSLrtI8", "title": "Afro House Jazz Mix | ''Coconut Moon'' Warm Groove Session | Ideal for Focus & Late Night Vibes", "thumb": "https://i.ytimg.com/vi/mLd7kSLrtI8/mqdefault.jpg", "dur": "2:14:22"}, {"id": "LPfBXSvskX8", "title": "Afro House Jazz Mix | (Pink Mischief) Deep Groove Session | Ideal for Focus & Chill", "thumb": "https://i.ytimg.com/vi/LPfBXSvskX8/mqdefault.jpg", "dur": "2:11:37"}, {"id": "iHZ2U1LdGtE", "title": "Afro House Jazz Mix | (Easy Morning) Smooth Groove Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/iHZ2U1LdGtE/mqdefault.jpg", "dur": "2:09:40"}, {"id": "YXyLgzJI-hY", "title": "The Hidden Room, Lagos — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/YXyLgzJI-hY/mqdefault.jpg", "dur": "2:01:07"}, {"id": "RCyxF9G2f0Q", "title": "Afro House Jazz Mix | (Savanna After Dark) Night Groove Session | Chill Mix", "thumb": "https://i.ytimg.com/vi/RCyxF9G2f0Q/mqdefault.jpg", "dur": "2:00:52"}, {"id": "F88cMsCqzxY", "title": "Afro House Jazz Mix | (Velvet Motion) Morning Groove Session | Ideal for Chill & Focus", "thumb": "https://i.ytimg.com/vi/F88cMsCqzxY/mqdefault.jpg", "dur": "2:05:23"}, {"id": "fK7STuLGYw8", "title": "Afro House Jazz Mix | (Still Burning) Nighttime Session | Ideal Focus & Late Hours", "thumb": "https://i.ytimg.com/vi/fK7STuLGYw8/mqdefault.jpg", "dur": "1:53:14"}, {"id": "NxEcRGLVOGg", "title": "Afro House Jazz Mix | (3AM Motion) Nighttime Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/NxEcRGLVOGg/mqdefault.jpg", "dur": "2:01:27"}, {"id": "rKhnx0boHiQ", "title": "Afro House Jazz Mix | ''After the Noise'' Night Groove Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/rKhnx0boHiQ/mqdefault.jpg", "dur": "2:08:45"}, {"id": "0B1WjUhsr9Y", "title": "Afro House Jazz Mix | (After Hours Only) Night Groove Session | Focus & Chill", "thumb": "https://i.ytimg.com/vi/0B1WjUhsr9Y/mqdefault.jpg", "dur": "2:02:45"}, {"id": "OZMMmwUGXvA", "title": "The Red Room, Lagos — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/OZMMmwUGXvA/mqdefault.jpg", "dur": "2:04:07"}, {"id": "zH3YB8BLUjo", "title": "Pulse City, Lagos — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/zH3YB8BLUjo/mqdefault.jpg", "dur": "1:46:29"}, {"id": "nyxwjcsDegA", "title": "5AM in Africa — Afro House Jazz Mix | Morning Groove Session | Focus & Chill", "thumb": "https://i.ytimg.com/vi/nyxwjcsDegA/mqdefault.jpg", "dur": "2:06:50"}, {"id": "tEC2UHidz8g", "title": "Afro House Jazz Mix — ''Cocoa Breeze'' | Warm Groove Session | Study & Chill", "thumb": "https://i.ytimg.com/vi/tEC2UHidz8g/mqdefault.jpg", "dur": "1:59:50"}, {"id": "Ik-9-VulHv8", "title": "The Listening Room, Lagos — Afro House Jazz Mix | Deep Groove Session | Chill & Focus", "thumb": "https://i.ytimg.com/vi/Ik-9-VulHv8/mqdefault.jpg", "dur": "1:41:41"}, {"id": "uxh1_VO7MFY", "title": "Afro House Jazz Mix | (Flow State) Night Groove Session | Ideal for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/uxh1_VO7MFY/mqdefault.jpg", "dur": "2:18:11"}, {"id": "hANUiAYoHNU", "title": "Afro House Jazz Mix | (Slow Energy) Night Groove Session | Relax & Unwind", "thumb": "https://i.ytimg.com/vi/hANUiAYoHNU/mqdefault.jpg", "dur": "2:04:22"}, {"id": "J5r_U9OHvQk", "title": "Afro House Jazz Mix — Letters I Never Sent | Deep Mix | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/J5r_U9OHvQk/mqdefault.jpg", "dur": "1:59:06"}, {"id": "rn0FgtW862Y", "title": "Afro House Jazz Mix — Lagos at Midnight | Deep Groove Mix | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/rn0FgtW862Y/mqdefault.jpg", "dur": "1:46:09"}, {"id": "DDqfNGJUpGg", "title": "Afro House Jazz Mix | (Slow and Easy) Morning Groove Session | Ideal for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/DDqfNGJUpGg/mqdefault.jpg", "dur": "2:03:05"}, {"id": "BHuzJysdTLE", "title": "Island Pulse, Zanzibar — Afro House Jazz Mix | Smooth Groove Session | Work & Productivity", "thumb": "https://i.ytimg.com/vi/BHuzJysdTLE/mqdefault.jpg", "dur": "1:45:30"}, {"id": "fYQaZ9MArXE", "title": "Soft Currents, Nairobi — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus & Productivity", "thumb": "https://i.ytimg.com/vi/fYQaZ9MArXE/mqdefault.jpg", "dur": "1:45:27"}, {"id": "8HCiktiAPI8", "title": "Afro House Jazz Mix — Desert Bloom, Marrakech | Warm Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/8HCiktiAPI8/mqdefault.jpg", "dur": "1:41:36"}, {"id": "m4jnE_rUO7A", "title": "Silk Nights, Lagos — Afro House Jazz Mix | Nighttime Groove Session | Ideal for Late Hours & Focus", "thumb": "https://i.ytimg.com/vi/m4jnE_rUO7A/mqdefault.jpg", "dur": "1:59:39"}, {"id": "pHVqqOJ5PbA", "title": "Palm Club, Dakar — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/pHVqqOJ5PbA/mqdefault.jpg", "dur": "1:52:41"}, {"id": "jZPxZIKOCcU", "title": "Palm Shadows, Ghana 3AM — Afro House Jazz Mix | Deep Groove Session | Focus & Study", "thumb": "https://i.ytimg.com/vi/jZPxZIKOCcU/mqdefault.jpg", "dur": "1:53:14"}, {"id": "Mnm-RfTgsoI", "title": "Afro House Jazz Mix — After Hours, Cape Town | Nighttime Groove Session | Perfect for Work & Focus", "thumb": "https://i.ytimg.com/vi/Mnm-RfTgsoI/mqdefault.jpg", "dur": "1:44:46"}, {"id": "s8j_poWwXpw", "title": "Afro House Jazz Mix | Pattern & Groove III | Hypnotic Tribal Groove", "thumb": "https://i.ytimg.com/vi/s8j_poWwXpw/mqdefault.jpg", "dur": "1:51:10"}, {"id": "uVUhJgICc7A", "title": "Rhythm Room, Lagos — Afro House Jazz Mix | Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/uVUhJgICc7A/mqdefault.jpg", "dur": "1:50:35"}, {"id": "ztX5R7YehaY", "title": "Afro House Jazz Mix | (Late Flow) Nighttime Session | Ideal for Late Hours & Work", "thumb": "https://i.ytimg.com/vi/ztX5R7YehaY/mqdefault.jpg", "dur": "1:41:55"}, {"id": "Lt4r1gdXuSY", "title": "Calm Pulse | Afro House Jazz Mix — Night Groove Session | Ideal for Focus & Work", "thumb": "https://i.ytimg.com/vi/Lt4r1gdXuSY/mqdefault.jpg", "dur": "1:34:17"}, {"id": "M9bs0RjL7sU", "title": "Afro House Jazz Mix | (Inner Motion) Night Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/M9bs0RjL7sU/mqdefault.jpg", "dur": "1:52:06"}, {"id": "HgeVnj6QEnY", "title": "Afro House Jazz Mix | (Morning Focus) Groove Session | Ideal for Work", "thumb": "https://i.ytimg.com/vi/HgeVnj6QEnY/mqdefault.jpg", "dur": "1:42:20"}, {"id": "wiE3Q8VdnhU", "title": "Afro House Jazz Mix | (Weekend Mood) Night Groove Session | Built for Chill", "thumb": "https://i.ytimg.com/vi/wiE3Q8VdnhU/mqdefault.jpg", "dur": "1:44:00"}, {"id": "A4PsOlrxMu0", "title": "Afro House Jazz Mix | (Friday After Hours) Deep Groove Session | Perfect for Focus", "thumb": "https://i.ytimg.com/vi/A4PsOlrxMu0/mqdefault.jpg", "dur": "1:43:50"}, {"id": "tI6xDofNuSc", "title": "Afro House Jazz Mix | (Monaco Nights) After Hours Groove | Perfect for Late Nights & Flow", "thumb": "https://i.ytimg.com/vi/tI6xDofNuSc/mqdefault.jpg", "dur": "1:39:56"}, {"id": "jZIDMnQqeZs", "title": "Afro House Jazz Mix | (Slow) Nighttime Groove | Perfect for Late Nights", "thumb": "https://i.ytimg.com/vi/jZIDMnQqeZs/mqdefault.jpg", "dur": "1:40:50"}, {"id": "KyswkSg8tbU", "title": "Afro House Jazz Mix | (City Lights) Deep Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/KyswkSg8tbU/mqdefault.jpg", "dur": "1:41:07"}, {"id": "s5sB4vZb_BQ", "title": "Afro House Jazz Mix | (3AM Energy) After Hours Groove | Ideal for Late Nights", "thumb": "https://i.ytimg.com/vi/s5sB4vZb_BQ/mqdefault.jpg", "dur": "1:38:09"}, {"id": "52QGQlSug5o", "title": "Afro House Jazz Mix | (Late Session) After Hours Groove | Ideal for Work", "thumb": "https://i.ytimg.com/vi/52QGQlSug5o/mqdefault.jpg", "dur": "1:34:29"}, {"id": "Ue0-8cGaxh0", "title": "Afro House Jazz Mix | (Body & Rhythm II) Nighttime Groove Session", "thumb": "https://i.ytimg.com/vi/Ue0-8cGaxh0/mqdefault.jpg", "dur": "1:27:26"}, {"id": "rugzKnrL3ic", "title": "Afro House Jazz Mix | (City at Night) Night Groove Session | Ideal for Flow", "thumb": "https://i.ytimg.com/vi/rugzKnrL3ic/mqdefault.jpg", "dur": "1:23:57"}, {"id": "JZc66inOURo", "title": "Late Night | Afro House Jazz Mix — Nighttime Session | Ideal for Late Nights", "thumb": "https://i.ytimg.com/vi/JZc66inOURo/mqdefault.jpg", "dur": "1:34:22"}, {"id": "3wrxS1KYtvY", "title": "Afro House Jazz Mix | (Rooftop Vibes) Night Groove Session | Ideal for Late Hours", "thumb": "https://i.ytimg.com/vi/3wrxS1KYtvY/mqdefault.jpg", "dur": "1:35:04"}, {"id": "Og1WwQFkrtA", "title": "Afro House Jazz Mix | (Night Pulse Theory) Deep Groove Session | Built for Late Hours", "thumb": "https://i.ytimg.com/vi/Og1WwQFkrtA/mqdefault.jpg", "dur": "1:29:45"}, {"id": "Lz8dz3JscH8", "title": "Afro House Jazz Mix | (Rhythm Night) After Hours Groove | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/Lz8dz3JscH8/mqdefault.jpg", "dur": "1:31:29"}, {"id": "hDjIHiMKuRk", "title": "Afro House Jazz Mix | (Slow Burn II) Nighttime Session | Ideal for Late Hours & Flow", "thumb": "https://i.ytimg.com/vi/hDjIHiMKuRk/mqdefault.jpg", "dur": "1:39:04"}, {"id": "LzoAbim29Og", "title": "Afro House Jazz Mix | (Endless Groove) After Hours Session | Ideal for Flow", "thumb": "https://i.ytimg.com/vi/LzoAbim29Og/mqdefault.jpg", "dur": "1:41:44"}, {"id": "5lpph9J1LkU", "title": "Afro House Jazz Mix | (Rhythm After Dark) Night Groove Session | Perfect for Flow", "thumb": "https://i.ytimg.com/vi/5lpph9J1LkU/mqdefault.jpg", "dur": "1:36:41"}, {"id": "EPEG3YfJkoY", "title": "Afro House Jazz Mix | (Midnight in Monaco) Night Groove Session | Ideal for Late Hours", "thumb": "https://i.ytimg.com/vi/EPEG3YfJkoY/mqdefault.jpg", "dur": "1:42:40"}, {"id": "OPVL8I17uuY", "title": "Nightwalk Groove | Afro House Jazz Mix — Deep Groove Session | Perfect for Flow", "thumb": "https://i.ytimg.com/vi/OPVL8I17uuY/mqdefault.jpg", "dur": "1:30:13"}, {"id": "ffL1Z4c83cY", "title": "Afro House Jazz Mix | (Sunset at the Beach) Tropical Groove Session | Perfect for Summer Evenings", "thumb": "https://i.ytimg.com/vi/ffL1Z4c83cY/mqdefault.jpg", "dur": "1:28:11"}, {"id": "LtxTgx6g8s8", "title": "Afro House Jazz Mix | (Echo Rhythm) Smooth Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/LtxTgx6g8s8/mqdefault.jpg", "dur": "1:26:19"}, {"id": "UtuQSEiy4M0", "title": "Afro House Jazz Mix | Body Language — Nighttime Groove Session | Ideal for Late Hours", "thumb": "https://i.ytimg.com/vi/UtuQSEiy4M0/mqdefault.jpg", "dur": "1:28:54"}, {"id": "hEhjPLRvtDI", "title": "Afro House Jazz Mix | (Shadow Groove) After Dark Session | Perfect for Late Hours", "thumb": "https://i.ytimg.com/vi/hEhjPLRvtDI/mqdefault.jpg", "dur": "1:26:22"}, {"id": "k8tZOSyCDes", "title": "Afro House Jazz Mix | (Night Vision) After Dark Groove | Perfect for Late Hours", "thumb": "https://i.ytimg.com/vi/k8tZOSyCDes/mqdefault.jpg", "dur": "1:34:10"}, {"id": "2hbEVVk9gwE", "title": "Afro House Jazz Mix | (Night Mode) Smooth Groove Session | Perfect for Focus", "thumb": "https://i.ytimg.com/vi/2hbEVVk9gwE/mqdefault.jpg", "dur": "1:47:58"}, {"id": "2KUKycJIDBQ", "title": "Afro House Jazz Mix | (Midnight Shades) Nighttime Session | Perfect for Late Nights & Flow", "thumb": "https://i.ytimg.com/vi/2KUKycJIDBQ/mqdefault.jpg", "dur": "1:32:25"}, {"id": "hIo4k1MjZ90", "title": "Afro House Jazz Mix | (Rhythm on Heels) After Hours Groove | Built for Late Nights", "thumb": "https://i.ytimg.com/vi/hIo4k1MjZ90/mqdefault.jpg", "dur": "1:31:30"}, {"id": "TLXxT3dy0Ro", "title": "Afro House Jazz Mix | (3AM at New York) After Hours Groove | Built for Deep Focus", "thumb": "https://i.ytimg.com/vi/TLXxT3dy0Ro/mqdefault.jpg", "dur": "1:26:06"}, {"id": "anLlWBanm1U", "title": "Private Dining | Afro House Jazz Mix — After Dark Grooves Crafted for Long Nights", "thumb": "https://i.ytimg.com/vi/anLlWBanm1U/mqdefault.jpg", "dur": "1:31:01"}, {"id": "TmQfkkXxoGY", "title": "Afro House Jazz Mix 2026 | (Chrome Nights) Groove Session | For After Hours & Chill", "thumb": "https://i.ytimg.com/vi/TmQfkkXxoGY/mqdefault.jpg", "dur": "1:17:21"}, {"id": "mCWXQ4J9DDc", "title": "(After Dark Flow) Afro House Jazz Mix | Ideal for Late Listening", "thumb": "https://i.ytimg.com/vi/mCWXQ4J9DDc/mqdefault.jpg", "dur": "1:26:52"}, {"id": "RrTGbENX85w", "title": "Afro House Jazz Mix | (Under City Lights) After Hours Groove | Ideal for Chill", "thumb": "https://i.ytimg.com/vi/RrTGbENX85w/mqdefault.jpg", "dur": "1:41:09"}, {"id": "TNvkAdILi3A", "title": "Afro House Jazz Mix | (Hidden After Hours) Night Groove Session | Ideal for Focus", "thumb": "https://i.ytimg.com/vi/TNvkAdILi3A/mqdefault.jpg", "dur": "1:41:29"}, {"id": "cjwV2xj6FRU", "title": "City at 2AM – Afro House Jazz Mix for Late Work Sessions", "thumb": "https://i.ytimg.com/vi/cjwV2xj6FRU/mqdefault.jpg", "dur": "1:38:30"}, {"id": "BrqK1JXIFqA", "title": "Afro House Jazz Mix | (Dancing Midnight) Deep Groove Session | Best for Focus", "thumb": "https://i.ytimg.com/vi/BrqK1JXIFqA/mqdefault.jpg", "dur": "1:37:15"}, {"id": "j2WmhEV84_o", "title": "Afro House Jazz Mix | (Slow Burn) Nighttime Session | Ideal for Late Hours & Flow", "thumb": "https://i.ytimg.com/vi/j2WmhEV84_o/mqdefault.jpg", "dur": "1:47:14"}, {"id": "y9U6USPTJDc", "title": "Afro House Jazz Mix 2026 | (Dark Mode) After Hours Session | Best for Late Night Focus", "thumb": "https://i.ytimg.com/vi/y9U6USPTJDc/mqdefault.jpg", "dur": "1:44:46"}, {"id": "frWFOuuxYcQ", "title": "After Midnight III - Afro House Jazz Mix 2026 | Perfect for Late Hours", "thumb": "https://i.ytimg.com/vi/frWFOuuxYcQ/mqdefault.jpg", "dur": "1:35:31"}, {"id": "u7td4LTloEM", "title": "Afro House Jazz Mix | (Hidden Groove) Nighttime Groove Session | Ideal for Night Focus", "thumb": "https://i.ytimg.com/vi/u7td4LTloEM/mqdefault.jpg", "dur": "1:15:42"}, {"id": "hxSD4ZFM9zY", "title": "Velvet Nights – A Late-Night Afro House Jazz Session", "thumb": "https://i.ytimg.com/vi/hxSD4ZFM9zY/mqdefault.jpg", "dur": "1:34:46"}, {"id": "W26Gd6hzxxw", "title": "Afro House Jazz Mix | (Under Warm Lights) Night Flow Session | Ideal for Aperitivo & Late Hours", "thumb": "https://i.ytimg.com/vi/W26Gd6hzxxw/mqdefault.jpg", "dur": "1:27:30"}, {"id": "YPf3tI5yc0c", "title": "Valentine's Late Night - Afro House Jazz Night Session", "thumb": "https://i.ytimg.com/vi/YPf3tI5yc0c/mqdefault.jpg", "dur": "1:28:39"}, {"id": "0-hVmTEo_Ew", "title": "Late Hours - Afro House Jazz Mix 2026 | Deep Night Groove", "thumb": "https://i.ytimg.com/vi/0-hVmTEo_Ew/mqdefault.jpg", "dur": "1:26:12"}, {"id": "hi--EeGLnpw", "title": "Afro House Jazz Mix | (After Midnight II) Perfect for Late Hours & Focus", "thumb": "https://i.ytimg.com/vi/hi--EeGLnpw/mqdefault.jpg", "dur": "1:22:57"}, {"id": "lqSAAuxBJps", "title": "Afro House Jazz Mix | (Deep Focus) Deep Groove Session | Best for Work & Chill", "thumb": "https://i.ytimg.com/vi/lqSAAuxBJps/mqdefault.jpg", "dur": "1:31:33"}, {"id": "acUgQkrsrPU", "title": "Body & Rhythm - Afro House Jazz Mix | After Hours Groove | Perfect for Chill", "thumb": "https://i.ytimg.com/vi/acUgQkrsrPU/mqdefault.jpg", "dur": "1:35:48"}, {"id": "TZ_L4c5hGFU", "title": "Afro House Jazz Mix | (After Midnight) Nighttime Groove Session | Ideal for Late Hours & Focus", "thumb": "https://i.ytimg.com/vi/TZ_L4c5hGFU/mqdefault.jpg", "dur": "1:42:16"}, {"id": "nPy5DKPn3ao", "title": "Pattern & Groove II – Afro House Jazz Mix |  Rhythm Study", "thumb": "https://i.ytimg.com/vi/nPy5DKPn3ao/mqdefault.jpg", "dur": "1:15:18"}, {"id": "yyvJXcndpqg", "title": "Afro House Jazz Mix 2026 | (In Motion) After Hours Groove Session | For Smooth Night Sessions", "thumb": "https://i.ytimg.com/vi/yyvJXcndpqg/mqdefault.jpg", "dur": "1:07:55"}, {"id": "0fX4LEqKjgE", "title": "Warm Night Grooves - Afro House Jazz Mix | Suited for Late Hours & After Hours", "thumb": "https://i.ytimg.com/vi/0fX4LEqKjgE/mqdefault.jpg", "dur": "1:11:41"}, {"id": "t4qYKw8fPSk", "title": "Rhythm & Motion - Afro House Jazz Mix | For Smooth Night Sessions", "thumb": "https://i.ytimg.com/vi/t4qYKw8fPSk/mqdefault.jpg", "dur": "1:01:17"}, {"id": "fpu7jztI5Fs", "title": "Pattern & Groove - Afro House Jazz Mix | Deep Groove Session | Best for Late Flow", "thumb": "https://i.ytimg.com/vi/fpu7jztI5Fs/mqdefault.jpg", "dur": "1:05:58"}, {"id": "pIqTYo5EFD0", "title": "Afro House Jazz Mix | (Body & Rhythm) Nighttime Groove Session | Ideal for Late Hours & Focus", "thumb": "https://i.ytimg.com/vi/pIqTYo5EFD0/mqdefault.jpg", "dur": "1:06:57"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

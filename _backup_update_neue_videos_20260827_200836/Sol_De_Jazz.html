@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sol De Jazz</title>
+<!-- categories: Lounge, Jazz -->
+<!-- channel-id: UCAP7Is5Qb2Ln0vpmPDvXWrg -->
+<!-- channel-url: https://www.youtube.com/@soldejazz -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Sol_De_Jazz.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/isB3sEgorvHiA_zyqMb5jQY55-28zapRSNPyb1Yz46aZaZSAvo1Oe75fzhxRyxNVlXBRgJMm=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Sol De Jazz</div>
+      <div class="channel-count">75 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Sol De Jazz";
+const KANAL = "Sol_De_Jazz.html";
+const ORIG_CATEGORIES = "Lounge, Jazz";
+const VIDEOS = [{"id": "0qrP-P3S_HY", "title": "Modern Latin Jazz Instrumental – Stylish Lounge Background Music / Jazz Latin", "thumb": "https://i.ytimg.com/vi/0qrP-P3S_HY/mqdefault.jpg", "dur": "3:07:01"}, {"id": "b8y53DGn-sY", "title": "Latin Jazz Relaxation Therapy 🌊 Peaceful Instrumental Music for Stress Relief / Jazz Latin", "thumb": "https://i.ytimg.com/vi/b8y53DGn-sY/mqdefault.jpg", "dur": "3:12:01"}, {"id": "yhBVO0SwoaI", "title": "Luxury Latin Jazz Lounge ✨ Elegant Instrumental Music for Classy Moments / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/yhBVO0SwoaI/mqdefault.jpg", "dur": "2:55:01"}, {"id": "uqSjyP-SH5o", "title": "Mature Jazz Lounge Experience 🥂 Sophisticated Latin Instrumentals for Quiet Nights / Jazz Latin", "thumb": "https://i.ytimg.com/vi/uqSjyP-SH5o/mqdefault.jpg", "dur": "3:06:01"}, {"id": "RW6kltOjSNw", "title": "Latin Jazz Relaxation Session Calm Instrumental Music for Stress Relief & Peaceful Moment Jazz Latin", "thumb": "https://i.ytimg.com/vi/RW6kltOjSNw/mqdefault.jpg", "dur": "2:44:01"}, {"id": "RCrPlxg3rdc", "title": "Weekend Speakeasy Jazz Vibes – Moody Instrumental Music for Late Night Unwind / Jazz Latin", "thumb": "https://i.ytimg.com/vi/RCrPlxg3rdc/mqdefault.jpg", "dur": "2:56:01"}, {"id": "_5o2NUUdZfQ", "title": "Buenos Aires Vintage Jazz Club – Luxury Instrumental Music for City Nightlife Ambience/ Jazz Latin", "thumb": "https://i.ytimg.com/vi/_5o2NUUdZfQ/mqdefault.jpg", "dur": "2:53:01"}, {"id": "Jx2s-zsEbLs", "title": "Vienna Chandelier Jazz Night – Luxury Instrumental Music for VIP Lounge Ambience / Jazz Latin", "thumb": "https://i.ytimg.com/vi/Jx2s-zsEbLs/mqdefault.jpg", "dur": "2:50:01"}, {"id": "A-atv_34Q88", "title": "Rooftop Bar Jazz Instrumental – Smooth Saxophone & Piano for Sunset Cocktail Hour / Jazz Latin", "thumb": "https://i.ytimg.com/vi/A-atv_34Q88/mqdefault.jpg", "dur": "2:59:01"}, {"id": "ycwFRkXSy8U", "title": "Buenos Aires Bar Jazz Club – Luxury Instrumental Music for City Nightlife Ambience / Jazz Latin", "thumb": "https://i.ytimg.com/vi/ycwFRkXSy8U/mqdefault.jpg", "dur": "2:52:01"}, {"id": "n_WrM1Pszqo", "title": "New York City Jazz Bar – Luxury Latin Jazz Instrumental for Late Night Focus / Jazz Latin", "thumb": "https://i.ytimg.com/vi/n_WrM1Pszqo/mqdefault.jpg", "dur": "2:39:01"}, {"id": "u8O2mL9RVWU", "title": "Paris Midnight Jazz Lounge Elegant Piano & Saxophone Instrumental for Fine Dining / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/u8O2mL9RVWU/mqdefault.jpg", "dur": "2:59:01"}, {"id": "DX5OF2rma9s", "title": "Havana Sunset Terrace – Warm Latin Jazz Instrumental for afternoon Relaxation / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/DX5OF2rma9s/mqdefault.jpg", "dur": "2:44:01"}, {"id": "TVWG2S59vk8", "title": "Marina Yacht Latin Jazz ⚓ Luxury Instrumentals by the Harbor at Golden Hour / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/TVWG2S59vk8/mqdefault.jpg", "dur": "3:07:01"}, {"id": "AzuPv1_hnLc", "title": "Platinum Dining Latin Jazz ✨ Timeless Instrumentals for Luxury Dining Experiences / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/AzuPv1_hnLc/mqdefault.jpg", "dur": "2:46:01"}, {"id": "rAl-GIMTjw0", "title": "Weekend Morning Latin Jazz 🌞 Smooth Instrumentals to Start a Beautiful Day / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/rAl-GIMTjw0/mqdefault.jpg", "dur": "3:11:01"}, {"id": "pxeGMOBbF4Y", "title": "Imperial Ballroom Latin Jazz 👑 Refined Instrumental Music for a Night of Prestige / Jazz Latin", "thumb": "https://i.ytimg.com/vi/pxeGMOBbF4Y/mqdefault.jpg", "dur": "2:53:01"}, {"id": "tKceYBrRS_A", "title": "Golden Hour Jazz Latin🌅 Smooth Instrumental Music for Warm Evenings & Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/tKceYBrRS_A/mqdefault.jpg", "dur": "2:53:01"}, {"id": "k4_tFYz4f-g", "title": "Luxury Casino Latin Jazz 🎰 Elegant Instrumental Music for High-End Casino Nights / Jazz Latin", "thumb": "https://i.ytimg.com/vi/k4_tFYz4f-g/mqdefault.jpg", "dur": "3:16:01"}, {"id": "NX3c4KIHPtM", "title": "Smooth Jazz at the Luxury Art Gallery 🎨 Elegant Instrumental Music for Relaxing Morning / Jazz Latin", "thumb": "https://i.ytimg.com/vi/NX3c4KIHPtM/mqdefault.jpg", "dur": "3:04:01"}, {"id": "0SEryZopQjU", "title": "Luxury Jazz Latin Presidential Hotel🌿 Elegant Latin Instrumentals Surrounded by Glass and Greenery", "thumb": "https://i.ytimg.com/vi/0SEryZopQjU/mqdefault.jpg", "dur": "2:54:01"}, {"id": "yGI1nzD56Ds", "title": "Private Yacht Latin Jazz 🥂 Luxury Instrumental Music for an Exclusive Mediterranean Escape", "thumb": "https://i.ytimg.com/vi/yGI1nzD56Ds/mqdefault.jpg", "dur": "3:00:01"}, {"id": "yT8uyKvmvBU", "title": "Skyline Penthouse Latin Jazz 🌆 Luxury Instrumental Music Above the Glittering City / Jazz Latin", "thumb": "https://i.ytimg.com/vi/yT8uyKvmvBU/mqdefault.jpg", "dur": "2:41:01"}, {"id": "RDKOUsF-BYg", "title": "Champagne Ballroom Latin Jazz 🥂 Elegant Instrumentals for Luxurious Celebrations  / Jazz Latin", "thumb": "https://i.ytimg.com/vi/RDKOUsF-BYg/mqdefault.jpg", "dur": "2:44:01"}, {"id": "EvndVcMIrMA", "title": "Chateau Latin Jazz 🏰 Timeless Instrumentals for a Grand European Escape / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/EvndVcMIrMA/mqdefault.jpg", "dur": "2:37:01"}, {"id": "vPJPdYMke1k", "title": "Vegas Nights Latin Jazz ✨ Sophisticated Instrumentals Beneath Neon Dreams / Smooth Jazz Latin Casino", "thumb": "https://i.ytimg.com/vi/vPJPdYMke1k/mqdefault.jpg", "dur": "3:02:01"}, {"id": "znLqYxLslFw", "title": "Crystal Candlelight Latin Jazz 🕯️ Romantic Instrumentals for an Elegant Evening Affair / Jazz Latin", "thumb": "https://i.ytimg.com/vi/znLqYxLslFw/mqdefault.jpg", "dur": "3:21:01"}, {"id": "xzjBIg_CNOc", "title": "Luxury Concierge Latin Jazz ✨ Smooth Instrumentals for a World of Privilege and Elegance  Jazz Latin", "thumb": "https://i.ytimg.com/vi/xzjBIg_CNOc/mqdefault.jpg", "dur": "3:16:01"}, {"id": "Pl1D06GBqFY", "title": "Weekend Hideaway Latin Jazz 🌅 Smooth Instrumental Music for Quiet Luxury Escapes  Jazz Latina", "thumb": "https://i.ytimg.com/vi/Pl1D06GBqFY/mqdefault.jpg", "dur": "3:09:01"}, {"id": "qDXEKRBHVT0", "title": "Golden Ballroom Latin Jazz Festival ✨ Timeless Instrumentals for Grand Evening Elegance Jazz Latina", "thumb": "https://i.ytimg.com/vi/qDXEKRBHVT0/mqdefault.jpg", "dur": "3:14:01"}, {"id": "bGcL3rwqjkk", "title": "Grand Estate Latin Jazz 🥂 Luxury Instrumental Music for an Evening of Pure Refinement / Jazz Latin", "thumb": "https://i.ytimg.com/vi/bGcL3rwqjkk/mqdefault.jpg", "dur": "3:02:01"}, {"id": "2lk0nJX9Cio", "title": "Casino Royale Latin Jazz 🍸 Elegant Instrumental Music with Timeless Luxury Atmosphere / Jazz Latin", "thumb": "https://i.ytimg.com/vi/2lk0nJX9Cio/mqdefault.jpg", "dur": "2:32:01"}, {"id": "Gl2kh8hzm34", "title": "Penthouse Suite Latin Jazz 🍽️ Luxury Instrumentals Inspired by an Exclusive Chef's Table  Jazz Latin", "thumb": "https://i.ytimg.com/vi/Gl2kh8hzm34/mqdefault.jpg", "dur": "2:43:01"}, {"id": "5yBBO93ROpw", "title": "Paris Midnight Latin Jazz 🕯️ Romantic Instrumentals for a Candlelit Dinner Experience / Jazz Latina", "thumb": "https://i.ytimg.com/vi/5yBBO93ROpw/mqdefault.jpg", "dur": "2:48:01"}, {"id": "QsZ-F8qjCa0", "title": "Paris Romance Latin Jazz ❤️ Timeless Instrumental Music for Magical Evening Escapes / Jazz Latina", "thumb": "https://i.ytimg.com/vi/QsZ-F8qjCa0/mqdefault.jpg", "dur": "2:54:01"}, {"id": "HH6Q_sT0zOs", "title": "Latin Jazz Art Gallery 🎨 Elegant Instrumental Ambience for Creative Inspiration / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/HH6Q_sT0zOs/mqdefault.jpg", "dur": "3:05:01"}, {"id": "3lbXOXocLVI", "title": "Latin Jazz Weekend Brunch ☕ Smooth Instrumentals for Slow Mornings & Good Company /Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/3lbXOXocLVI/mqdefault.jpg", "dur": "2:59:01"}, {"id": "kFg_Tt0nMHw", "title": "Latin Jazz Champagne Lounge 🥂 Luxury Instrumental Music for Celebrations & Elegant Nights", "thumb": "https://i.ytimg.com/vi/kFg_Tt0nMHw/mqdefault.jpg", "dur": "3:17:01"}, {"id": "RBSBbUPrwik", "title": "Golden Hour Latin Jazz Café ☕ Warm Instrumentals for Sophisticated Coffee Moments / Jazz Latin", "thumb": "https://i.ytimg.com/vi/RBSBbUPrwik/mqdefault.jpg", "dur": "3:07:01"}, {"id": "y-xoDuTEDrY", "title": "Midnight Latin Jazz Club 🌙 Elegant No Vocal Instrumentals for Exclusive Nights / Jazz Latin", "thumb": "https://i.ytimg.com/vi/y-xoDuTEDrY/mqdefault.jpg", "dur": "3:27:01"}, {"id": "hOl_Smd60Rs", "title": "Latin Jazz Wine Cellar 🍷 Timeless Instrumentals for Refined Tastes / Jazz Latin", "thumb": "https://i.ytimg.com/vi/hOl_Smd60Rs/mqdefault.jpg", "dur": "3:11:01"}, {"id": "ZCnWkjeGHA8", "title": "Latin Jazz Yacht Club ⚓ Luxury Instrumental Music for Coastal Elegance & Leisure / Jazz Latin", "thumb": "https://i.ytimg.com/vi/ZCnWkjeGHA8/mqdefault.jpg", "dur": "3:19:01"}, {"id": "QSYLzsLZe7g", "title": "Sophisticated Latin Jazz Escape ✨ Luxury Instrumental Ambience for Cocktail Lovers / Jazz Latin", "thumb": "https://i.ytimg.com/vi/QSYLzsLZe7g/mqdefault.jpg", "dur": "3:22:01"}, {"id": "-s9umitia8Y", "title": "Elegant Latin Jazz Cocktail Bar 🍸 Sophisticated Instrumentals for Relaxation & Luxury Living / Jazz", "thumb": "https://i.ytimg.com/vi/-s9umitia8Y/mqdefault.jpg", "dur": "4:11:07"}, {"id": "3NmC2xLQZjY", "title": "Premium Latin Jazz Café Experience 🍷 Refined Instrumental Music for Upscale Ambience / Jazz Latin", "thumb": "https://i.ytimg.com/vi/3NmC2xLQZjY/mqdefault.jpg", "dur": "3:26:01"}, {"id": "Usj1Yv6MccQ", "title": "Vintage Latin Jazz Café 📀 Timeless Instrumentals for Coffee, Relaxation & Memories / Jazz Latin", "thumb": "https://i.ytimg.com/vi/Usj1Yv6MccQ/mqdefault.jpg", "dur": "3:12:01"}, {"id": "pVnZS2rbcr4", "title": "Luxury Latin Jazz Lounge 🍷 Sophisticated Café Instrumentals for Elegant Relaxation", "thumb": "https://i.ytimg.com/vi/pVnZS2rbcr4/mqdefault.jpg", "dur": "3:31:01"}, {"id": "5x3iNQGO4MM", "title": "Vintage Latin Jazz Collection 🎷 Timeless Instrumental Classics for Relaxing Evenings / Jazz Latin", "thumb": "https://i.ytimg.com/vi/5x3iNQGO4MM/mqdefault.jpg", "dur": "2:21:01"}, {"id": "1WPKCM_V05A", "title": "Romantic Latin Jazz Classics 🌹 Beautiful Instrumentals for Couples & Evening Dining / Jazz Latin", "thumb": "https://i.ytimg.com/vi/1WPKCM_V05A/mqdefault.jpg", "dur": "2:37:01"}, {"id": "u-XoRTD1Nus", "title": "Latin Jazz Dinner Music 🍽️ Sophisticated Instrumental Ambience for Elegant Gatherings / Jazz Latin", "thumb": "https://i.ytimg.com/vi/u-XoRTD1Nus/mqdefault.jpg", "dur": "2:02:01"}, {"id": "QqroE4fIUuM", "title": "Live Jazz Sunset Ambiance | Smooth Latin Instrumental to Elevate Your Mood", "thumb": "https://i.ytimg.com/vi/QqroE4fIUuM/mqdefault.jpg", "dur": "2:12:01"}, {"id": "cYbCJxSARQo", "title": "Latin Jazz Background Music 🎶 Smooth Instrumental Playlist for Work, Lounge & Dining / Jazz Latin", "thumb": "https://i.ytimg.com/vi/cYbCJxSARQo/mqdefault.jpg", "dur": "1:56:24"}, {"id": "fG54rKfn_JM", "title": "Flamenco Jazz Fusion 🎸 Passionate Latin Instrumental Experience with Smooth Rhythms / Jazz Latin", "thumb": "https://i.ytimg.com/vi/fG54rKfn_JM/mqdefault.jpg", "dur": "1:59:57"}, {"id": "flT-XSh0RiQ", "title": "Tropical Jazz Music 🌺 Sunny Latin Instrumentals for Beach Cafe & Summer Relaxation / Jazz Latin", "thumb": "https://i.ytimg.com/vi/flT-XSh0RiQ/mqdefault.jpg", "dur": "2:02:29"}, {"id": "U_Vx95Gs9xo", "title": "Vintage Latin Jazz Vinyl 🎷 Old School Instrumental Cafe Ambience / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/U_Vx95Gs9xo/mqdefault.jpg", "dur": "2:05:34"}, {"id": "-shHqCDQQkE", "title": "Cuban Jazz Instrumental Nights 🇨🇺 Smooth Trumpet & Piano Latin Vibes / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/-shHqCDQQkE/mqdefault.jpg", "dur": "2:11:01"}, {"id": "kVQAI7Z1xyY", "title": "Red Wine Latin Jazz Instrumental – Sophisticated Evening Lounge Music / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/kVQAI7Z1xyY/mqdefault.jpg", "dur": "2:16:01"}, {"id": "lZekTvL_W80", "title": "Latin Jazz Cafe Instrumental ☕ Relaxing Bossa & Smooth Jazz for Morning Coffee / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/lZekTvL_W80/mqdefault.jpg", "dur": "2:24:01"}, {"id": "V8HWVch3cN4", "title": "Paris Midnight Latin Jazz Instrumental – Romantic Luxury Cafe Music / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/V8HWVch3cN4/mqdefault.jpg", "dur": "2:50:01"}, {"id": "39EZ5OPM-Sw", "title": "Old Money Latin Jazz Instrumental – Luxury Night Lounge for Elite Vibes / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/39EZ5OPM-Sw/mqdefault.jpg", "dur": "2:32:01"}, {"id": "1v67kOHoNeE", "title": "Latin Jazz Instrumental for Expensive Taste – Classy Cocktail Ambience / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/1v67kOHoNeE/mqdefault.jpg", "dur": "2:55:01"}, {"id": "oIuR6khkWGs", "title": "Candlelight Latin Jazz Instrumental – Romantic Luxury Dinner Music / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/oIuR6khkWGs/mqdefault.jpg", "dur": "2:44:01"}, {"id": "BdYCK8LJGdk", "title": "Casino Lounge Latin Jazz Instrumental – Elegant Nightlife Background Music / Jazz Latin Chill", "thumb": "https://i.ytimg.com/vi/BdYCK8LJGdk/mqdefault.jpg", "dur": "2:40:01"}, {"id": "E0cDRR8PI4M", "title": "Luxury Coffeehouse Latin Jazz Instrumental – Calm Morning Elegance / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/E0cDRR8PI4M/mqdefault.jpg", "dur": "1:02:18"}, {"id": "uxM0NVVFLqk", "title": "Ultra Smooth Latin Jazz Instrumental – VIP Lounge Background Music/ Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/uxM0NVVFLqk/mqdefault.jpg", "dur": "2:57:01"}, {"id": "RGPPV2TCW2w", "title": "Miami Style Latin Jazz Instrumental – Luxury Beach Lounge Vibes / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/RGPPV2TCW2w/mqdefault.jpg", "dur": "2:38:01"}, {"id": "6ybuXV0rXG4", "title": "Golden Hour Latin Jazz Instrumental – Chill Sunset Cocktail Music / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/6ybuXV0rXG4/mqdefault.jpg", "dur": "2:58:01"}, {"id": "IpfMEzOi8zM", "title": "Latin Jazz Instrumental for Rich Lifestyle – Elegant Cafe Music / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/IpfMEzOi8zM/mqdefault.jpg", "dur": "2:44:01"}, {"id": "RbnJYVyrckU", "title": "Sexy Latin Jazz Instrumental – Midnight Saxophone & Piano Vibes / Jazz Latin Chill Vibes", "thumb": "https://i.ytimg.com/vi/RbnJYVyrckU/mqdefault.jpg", "dur": "2:53:01"}, {"id": "SxsZVoIGDy8", "title": "Vintage Latin Jazz Instrumental – Classic Havana Lounge Vibes // Jazz Latin No Vocal", "thumb": "https://i.ytimg.com/vi/SxsZVoIGDy8/mqdefault.jpg", "dur": "2:57:01"}, {"id": "-e4ZFS2g_I8", "title": "Latin Jazz Cafe Instrumental – Cozy Coffee Shop Ambience Music / Jazz Latin No vocal", "thumb": "https://i.ytimg.com/vi/-e4ZFS2g_I8/mqdefault.jpg", "dur": "2:51:01"}, {"id": "wt4iC9melUE", "title": "Upbeat Latin Jazz Instrumental – Positive Morning Energy Music / Jazz latin Chill vibes No Vocal", "thumb": "https://i.ytimg.com/vi/wt4iC9melUE/mqdefault.jpg", "dur": "2:59:01"}, {"id": "wCQgkByU_m4", "title": "Luxury Latin Jazz Instrumental – Elegant Cocktail Bar Ambience Music / Jazz Latin No Vocal", "thumb": "https://i.ytimg.com/vi/wCQgkByU_m4/mqdefault.jpg", "dur": "1:03:16"}, {"id": "k2KPixk3I0I", "title": "Latin Jazz Instrumental for Relaxing Evening – Smooth Chill Bar Vibe / NO VOCAL", "thumb": "https://i.ytimg.com/vi/k2KPixk3I0I/mqdefault.jpg", "dur": "1:03:16"}, {"id": "ORDRoiuhQyQ", "title": "🌞 Sunny Brazilian Jazz Playlist: Feel-Good Instrumental Jazz Fusion / Latin Jazz No Vocal", "thumb": "https://i.ytimg.com/vi/ORDRoiuhQyQ/mqdefault.jpg", "dur": "59:01"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japanese Classic Soundscapes</title>
+<!-- categories: Bossa Nova, Jazz -->
+<!-- channel-id: UCa68bMFXqusS5yxjqj1lZgw -->
+<!-- channel-url: https://www.youtube.com/@JapaneseClassicSoundscapes -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Japanese_Classic_Soundscapes.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/Yp2UCQJprK0iQNCMhdXN7k734T_IxayXmKc01FkMMn809gzKqQ2W818B3bOXIPSyNfg59rrhztg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Japanese Classic Soundscapes</div>
+      <div class="channel-count">74 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Japanese Classic Soundscapes";
+const KANAL = "Japanese_Classic_Soundscapes.html";
+const ORIG_CATEGORIES = "Bossa Nova, Jazz";
+const VIDEOS = [{"id": "hTexoizo9mc", "title": "Japanese Jazz 1970s | 彼女は名前を呼ばなかった / She Never Called His Name", "thumb": "https://i.ytimg.com/vi/hTexoizo9mc/mqdefault.jpg", "dur": "1:11:41"}, {"id": "1xqVbSc4A9c", "title": "Japanese Bossa Nova Jazz | 終わらない夜に / On a Night That Won't End", "thumb": "https://i.ytimg.com/vi/1xqVbSc4A9c/mqdefault.jpg", "dur": "1:30:35"}, {"id": "ZI8eT268o08", "title": "Japanese Dark Jazz 1970s | 一管の夜 / Night of One Flute", "thumb": "https://i.ytimg.com/vi/ZI8eT268o08/mqdefault.jpg", "dur": "1:50:34"}, {"id": "tLqWiAqRCEg", "title": "Japanese Bossa Nova Jazz 1960s | Salt in the Air 🌊", "thumb": "https://i.ytimg.com/vi/tLqWiAqRCEg/mqdefault.jpg", "dur": "1:36:51"}, {"id": "3JV40zqgZt4", "title": "Japanese Summer Reggae Jazz 1980s | 彼女は片道切符で来た / She Came on a One-Way Ticket", "thumb": "https://i.ytimg.com/vi/3JV40zqgZt4/mqdefault.jpg", "dur": "1:36:50"}, {"id": "KNe_n-WoS40", "title": "Japanese Dark Jazz 1970s | 彼女は名乗らなかった / She Wouldn't Say Her Name", "thumb": "https://i.ytimg.com/vi/KNe_n-WoS40/mqdefault.jpg", "dur": "1:33:48"}, {"id": "DtqImKeq6vM", "title": "Japanese Bossa Nova Jazz | 終わらない夜に / On a Night That Won't End", "thumb": "https://i.ytimg.com/vi/DtqImKeq6vM/mqdefault.jpg", "dur": "1:35:51"}, {"id": "58HmODEzURU", "title": "Bossa Nova Jazz| 彼女はコーヒー越しに微笑んだ / She Smiled Over Coffee", "thumb": "https://i.ytimg.com/vi/58HmODEzURU/mqdefault.jpg", "dur": "1:33:38"}, {"id": "T23oXD4cFms", "title": "Japanese Bossa Nova Jazz 1960s | コーヒーが冷める頃に / When the Coffee Went Cold", "thumb": "https://i.ytimg.com/vi/T23oXD4cFms/mqdefault.jpg", "dur": "2:21:05"}, {"id": "OOwx-aoDSlc", "title": "Japanese Bossa Nova Jazz| 時間よ止まれ / Stay a Little Longer", "thumb": "https://i.ytimg.com/vi/OOwx-aoDSlc/mqdefault.jpg", "dur": "1:24:47"}, {"id": "QyCWMZknRjs", "title": "Japanese Bossa Nova Jazz 1960s | She Left in the Middle of August", "thumb": "https://i.ytimg.com/vi/QyCWMZknRjs/mqdefault.jpg", "dur": "1:28:26"}, {"id": "U69SDrcgG4g", "title": "Japanese Dark Jazz 1970s | 夜に消えたい / Want to Disappear into the Night", "thumb": "https://i.ytimg.com/vi/U69SDrcgG4g/mqdefault.jpg", "dur": "1:38:00"}, {"id": "iWWQjWFPWQE", "title": "Japanese Bossa Nova Jazz 1960s | She Said See You Next Year", "thumb": "https://i.ytimg.com/vi/iWWQjWFPWQE/mqdefault.jpg", "dur": "1:29:24"}, {"id": "45fe19-pO34", "title": "Japanese Dark Jazz 1970s | 現像されなかった夜 / The Night That Was Never Developed", "thumb": "https://i.ytimg.com/vi/45fe19-pO34/mqdefault.jpg", "dur": "1:39:40"}, {"id": "xVgoU4jM_fE", "title": "Japanese Café Jazz | ずっと雨でいい / I Hope It Keeps Raining", "thumb": "https://i.ytimg.com/vi/xVgoU4jM_fE/mqdefault.jpg", "dur": "1:37:39"}, {"id": "MnSOHAr069k", "title": "Japanese Café Jazz | 六月の海 / The June Sea", "thumb": "https://i.ytimg.com/vi/MnSOHAr069k/mqdefault.jpg", "dur": "1:27:36"}, {"id": "WmpO4jz4Yos", "title": "Japanese Dark Jazz 1970s | What the Wisteria Knows", "thumb": "https://i.ytimg.com/vi/WmpO4jz4Yos/mqdefault.jpg", "dur": "1:33:33"}, {"id": "9Dr4kENEDwA", "title": "Japanese Bossa Nova Jazz 1960s | 東京の午後 / A Tokyo Afternoon", "thumb": "https://i.ytimg.com/vi/9Dr4kENEDwA/mqdefault.jpg", "dur": "1:30:29"}, {"id": "18lv03dOQb0", "title": "Japanese Bossa Nova Jazz 1960s | 彼女と思い出の朝 / Her & a Morning to Remember", "thumb": "https://i.ytimg.com/vi/18lv03dOQb0/mqdefault.jpg", "dur": "1:33:28"}, {"id": "aM7fMT6IKE8", "title": "Japanese Bossa Nova Jazz 1960s | She Never Looks Back", "thumb": "https://i.ytimg.com/vi/aM7fMT6IKE8/mqdefault.jpg", "dur": "1:34:13"}, {"id": "qdBTySA1cbI", "title": "Japanese Bossa Nova Jazz 1960s | Two Sugars, No Hurry", "thumb": "https://i.ytimg.com/vi/qdBTySA1cbI/mqdefault.jpg", "dur": "1:38:47"}, {"id": "oo8uaSShcDY", "title": "Japanese Dark Jazz 1970s | You and I", "thumb": "https://i.ytimg.com/vi/oo8uaSShcDY/mqdefault.jpg", "dur": "1:24:40"}, {"id": "WhLFjMbg5jo", "title": "Japanese Dark Jazz 1970s | From Dusk to Daybreak", "thumb": "https://i.ytimg.com/vi/WhLFjMbg5jo/mqdefault.jpg", "dur": "1:28:28"}, {"id": "fVi0_2BY1aY", "title": "Japanese Dark Jazz | The Gray Sun", "thumb": "https://i.ytimg.com/vi/fVi0_2BY1aY/mqdefault.jpg", "dur": "1:25:25"}, {"id": "CAJ8aFsQaY4", "title": "Japanese Dark Jazz | She Never Came Back", "thumb": "https://i.ytimg.com/vi/CAJ8aFsQaY4/mqdefault.jpg", "dur": "1:15:07"}, {"id": "Kx8PyaH8jE8", "title": "Japanese Bossa Nova Jazz 1960s | Citrus & Sunlight", "thumb": "https://i.ytimg.com/vi/Kx8PyaH8jE8/mqdefault.jpg", "dur": "59:12"}, {"id": "uRx2yR7yKmM", "title": "Japanese Dark Jazz 1970s | A Cold Walk Home", "thumb": "https://i.ytimg.com/vi/uRx2yR7yKmM/mqdefault.jpg", "dur": "2:00:04"}, {"id": "0cRrNJJwyS0", "title": "Japanese Dark Jazz 1970s | Echoes of a Vanished World", "thumb": "https://i.ytimg.com/vi/0cRrNJJwyS0/mqdefault.jpg", "dur": "1:34:43"}, {"id": "KtflOe5C7RM", "title": "Japanese Dark Jazz 1970s | She Wore a Black Kimono", "thumb": "https://i.ytimg.com/vi/KtflOe5C7RM/mqdefault.jpg", "dur": "1:24:39"}, {"id": "kS0eZVnQEb4", "title": "Japanese Bossa Nova Jazz 1960s — A Night When the Nostalgic Wind Blows", "thumb": "https://i.ytimg.com/vi/kS0eZVnQEb4/mqdefault.jpg", "dur": "1:12:30"}, {"id": "5dDFdf01y6c", "title": "Japanese Bossa Nova Jazz 1960s | Sunny Days ~ Bright Café Morning", "thumb": "https://i.ytimg.com/vi/5dDFdf01y6c/mqdefault.jpg", "dur": "1:02:59"}, {"id": "sFoLabkfV-Q", "title": "Japanese Dark Jazz - Night Fog Over Tokyo | Showa Era Jazz 1960s-70s", "thumb": "https://i.ytimg.com/vi/sFoLabkfV-Q/mqdefault.jpg", "dur": "56:09"}, {"id": "hi6bOAStC0s", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | A Girl's Daydream", "thumb": "https://i.ytimg.com/vi/hi6bOAStC0s/mqdefault.jpg", "dur": "1:03:03"}, {"id": "Tc7WwYZN6Ao", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | Pure Bliss ~ Relaxing Café Music", "thumb": "https://i.ytimg.com/vi/Tc7WwYZN6Ao/mqdefault.jpg", "dur": "1:21:34"}, {"id": "TyU4rH6Cxv0", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | Firefly Nights", "thumb": "https://i.ytimg.com/vi/TyU4rH6Cxv0/mqdefault.jpg", "dur": "1:22:47"}, {"id": "C529l-WyX2Q", "title": "Japanese Jazz 1970s｜When Japan Paused to Breathe", "thumb": "https://i.ytimg.com/vi/C529l-WyX2Q/mqdefault.jpg", "dur": "1:37:14"}, {"id": "qQhgWkcx6A0", "title": "Japanese Dark Jazz 1970s | Full Mix · 22 Tracks · Showa Noir", "thumb": "https://i.ytimg.com/vi/qQhgWkcx6A0/mqdefault.jpg", "dur": "1:29:20"}, {"id": "I-4fCjEpyXg", "title": "Japanese Bossa Nova Jazz 1960s | 20 Rare Tracks to Soothe Your Soul", "thumb": "https://i.ytimg.com/vi/I-4fCjEpyXg/mqdefault.jpg", "dur": "1:06:21"}, {"id": "46wbSKxSlyI", "title": "Japanese Jazz 1960s — Vintage Tokyo Nights | Late Night Jazz for Studying & Relaxing", "thumb": "https://i.ytimg.com/vi/46wbSKxSlyI/mqdefault.jpg", "dur": "1:30:48"}, {"id": "vRUDJjFDgEc", "title": "Japanese Bossa Nova Jazz 1960s | A Journey Through Japan's Four Seasons", "thumb": "https://i.ytimg.com/vi/vRUDJjFDgEc/mqdefault.jpg", "dur": "1:08:14"}, {"id": "P7cTN09V4BE", "title": "Japanese Dark Jazz - Melancholy Acoustic Guitar & Upright Bass", "thumb": "https://i.ytimg.com/vi/P7cTN09V4BE/mqdefault.jpg", "dur": "1:03:50"}, {"id": "kLMIr4wJnIA", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | Sunday Morning at a Retro Tokyo Cafe ☕ | Relaxing Vintage Playlist", "thumb": "https://i.ytimg.com/vi/kLMIr4wJnIA/mqdefault.jpg", "dur": "1:30:54"}, {"id": "TBVFNkEDMz0", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | A Quiet Morning in Tokyo ☕ 2-Hour Relaxing Café BGM", "thumb": "https://i.ytimg.com/vi/TBVFNkEDMz0/mqdefault.jpg", "dur": "2:06:00"}, {"id": "_Jx8bbD8u-E", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | A Forgotten Love Story in Tokyo ☕️", "thumb": "https://i.ytimg.com/vi/_Jx8bbD8u-E/mqdefault.jpg", "dur": "1:09:20"}, {"id": "FxV6KMwUIW0", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | Tokyo Café ☕ 90 Minutes of Chill Jazz BGM", "thumb": "https://i.ytimg.com/vi/FxV6KMwUIW0/mqdefault.jpg", "dur": "1:30:49"}, {"id": "uIeGfzvNAb0", "title": "Japanese Bossa Nova Jazz 1960s | Spring Afternoon Cafe ☕ Relaxing BGM", "thumb": "https://i.ytimg.com/vi/uIeGfzvNAb0/mqdefault.jpg", "dur": "59:19"}, {"id": "K2nLUAcFlJc", "title": "JAPANESE BOSSA NOVA JAZZ 1960s | Sophisticated Spring Afternoon Cafe Jazz Lounge", "thumb": "https://i.ytimg.com/vi/K2nLUAcFlJc/mqdefault.jpg", "dur": "1:01:42"}, {"id": "4XPTKf_FqCc", "title": "JAPANESE BOSSA NOVA JAZZ 1960s", "thumb": "https://i.ytimg.com/vi/4XPTKf_FqCc/mqdefault.jpg", "dur": "1:02:26"}, {"id": "6WqZg2tVY1A", "title": "1970s Japanese Back-Alley", "thumb": "https://i.ytimg.com/vi/6WqZg2tVY1A/mqdefault.jpg", "dur": "35:22"}, {"id": "YZhQlXuj4SM", "title": "Underground Japanese Jazz 1970s— 昭和ノワール / Showa Noir", "thumb": "https://i.ytimg.com/vi/YZhQlXuj4SM/mqdefault.jpg", "dur": "1:06:00"}, {"id": "EvkA9KCAKw4", "title": "Late Night NYC Jazz Club POV | Relaxing Jazz & Chill Ambience [Work/Study] | Authentic Roots Sound", "thumb": "https://i.ytimg.com/vi/EvkA9KCAKw4/mqdefault.jpg", "dur": "48:03"}, {"id": "gd2kWKPAnjQ", "title": "Midnight Lounge POV: Cool Jazz Vibes", "thumb": "https://i.ytimg.com/vi/gd2kWKPAnjQ/mqdefault.jpg", "dur": "1:04:45"}, {"id": "dCg4l3wPqGk", "title": "JAPANESE JAZZ | 1970s Underground - Vintage Tokyo Vol.4 [Chill Study Music]", "thumb": "https://i.ytimg.com/vi/dCg4l3wPqGk/mqdefault.jpg", "dur": "1:00:18"}, {"id": "PvYjEiCgIeI", "title": "JAPANESE JAZZ | 1970s Underground - Vintage Tokyo Vol.3 [Chill Study Music]", "thumb": "https://i.ytimg.com/vi/PvYjEiCgIeI/mqdefault.jpg", "dur": "1:02:51"}, {"id": "l6ime1PPF88", "title": "JAPANESE JAZZ | 1970s Underground - Vintage Tokyo Vol.2 [Chill Study Music]", "thumb": "https://i.ytimg.com/vi/l6ime1PPF88/mqdefault.jpg", "dur": "1:01:26"}, {"id": "In7rPVDFSbA", "title": "Sophisticated Hard Bop: Late 50s Cool Vibes", "thumb": "https://i.ytimg.com/vi/In7rPVDFSbA/mqdefault.jpg", "dur": "1:43:06"}, {"id": "4UidebafraI", "title": "JAPANESE JAZZ | 1970s Underground - Vintage Tokyo Vol.1 [Chill Study Music]", "thumb": "https://i.ytimg.com/vi/4UidebafraI/mqdefault.jpg", "dur": "1:02:49"}, {"id": "94uoTEX5BG4", "title": "Sophisticated Modal Hard Bop: Late 50s Cool Vibes", "thumb": "https://i.ytimg.com/vi/94uoTEX5BG4/mqdefault.jpg", "dur": "1:15:01"}, {"id": "FNEi-x91Ym4", "title": "Midnight Bar Jazz 🥃 Relaxing Dark Jazz & Smooth Piano for Drinking, Chill", "thumb": "https://i.ytimg.com/vi/FNEi-x91Ym4/mqdefault.jpg", "dur": "1:48:16"}, {"id": "v-AK8BRoGfU", "title": "[Chill & Relax] Pure Acoustic Jazz Piano for Deep Focus & Study ☕️", "thumb": "https://i.ytimg.com/vi/v-AK8BRoGfU/mqdefault.jpg", "dur": "1:02:56"}, {"id": "5WcTlTXwVDI", "title": "[Morning Jazz BGM] Premium Cafe Music to Start Your Best Day ☕️", "thumb": "https://i.ytimg.com/vi/5WcTlTXwVDI/mqdefault.jpg", "dur": "1:55:57"}, {"id": "LhLjEUtzA5k", "title": "☕ Vintage Piano Lounge: Upbeat Cafe Jazz for Coffee & Good Vibes", "thumb": "https://i.ytimg.com/vi/LhLjEUtzA5k/mqdefault.jpg", "dur": "1:16:16"}, {"id": "0ZWkypLYu6A", "title": "Late Night Minor Key Jazz 🥃 1960s Melancholic Hard Bop [Reading / Drinks / Relax BGM]", "thumb": "https://i.ytimg.com/vi/0ZWkypLYu6A/mqdefault.jpg", "dur": "56:48"}, {"id": "Yg71KoQpMYI", "title": "Sophisticated Modal Hard Bop: Late 50s Cool Vibes", "thumb": "https://i.ytimg.com/vi/Yg71KoQpMYI/mqdefault.jpg", "dur": "1:16:25"}, {"id": "vYSJbvuvmRM", "title": "1-Hour Soulful & Rhythmic Hard Bop Jazz Session", "thumb": "https://i.ytimg.com/vi/vYSJbvuvmRM/mqdefault.jpg", "dur": "1:09:14"}, {"id": "XYKthy1bT44", "title": "Midnight Lounge POV: Cool Jazz Vibes | 1950s Blue Note Style BGM", "thumb": "https://i.ytimg.com/vi/XYKthy1bT44/mqdefault.jpg", "dur": "54:45"}, {"id": "_TW1EzuCytI", "title": "Midnight Lounge POV: Cool Jazz Vibes", "thumb": "https://i.ytimg.com/vi/_TW1EzuCytI/mqdefault.jpg", "dur": "1:51:57"}, {"id": "iALiX2MqQBg", "title": "Cozy Piano Lounge: Smooth Vintage Jazz to Relax & Unwind (1 Hour)", "thumb": "https://i.ytimg.com/vi/iALiX2MqQBg/mqdefault.jpg", "dur": "1:01:04"}, {"id": "W4u-monkpKs", "title": "Late Night Jazz Club Mix: Smooth Vintage Music to Relax & Unwind (1 Hour)", "thumb": "https://i.ytimg.com/vi/W4u-monkpKs/mqdefault.jpg", "dur": "1:09:43"}, {"id": "AZMyJpQM94g", "title": "[Relaxing Jazz] Late Night NYC Jazz Club POV - Chill Ambience", "thumb": "https://i.ytimg.com/vi/AZMyJpQM94g/mqdefault.jpg", "dur": "49:20"}, {"id": "o8OZtwoYnn0", "title": "Hard Bop Anthems: Authentic New York Jazz Groove & Bebop Session", "thumb": "https://i.ytimg.com/vi/o8OZtwoYnn0/mqdefault.jpg", "dur": "59:32"}, {"id": "q1mhpyYrzvk", "title": "[Study/Work] Bebop Jazz Lounge Mix — Upbeat Focus Music", "thumb": "https://i.ytimg.com/vi/q1mhpyYrzvk/mqdefault.jpg", "dur": "24:17"}, {"id": "2cwEcE1cWGc", "title": "Japanese Jazz for Relaxation | Smooth Tokyo Night Vibes", "thumb": "https://i.ytimg.com/vi/2cwEcE1cWGc/mqdefault.jpg", "dur": "36:45"}, {"id": "E5HZpCcmD60", "title": "The Bebop Lounge — Midnight Groove Session | Smooth Bebop Jazz BGM", "thumb": "https://i.ytimg.com/vi/E5HZpCcmD60/mqdefault.jpg", "dur": "1:17:10"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

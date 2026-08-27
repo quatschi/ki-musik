@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinyl Tropical</title>
+<!-- categories: Bossa Nova, Latin Jazz -->
+<!-- channel-id: UCmCJgGoBqOcVHOZSjMTZLmQ -->
+<!-- channel-url: https://www.youtube.com/@vinyl.tropical -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Vinyl_Tropical.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/rAczapz3JgqoEiiZF7TerH3sy2fRBBh9QYNUAiFFSjobEAIOODclA3BQRZ_dLFrc3B0zxaqw1Zc=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Vinyl Tropical</div>
+      <div class="channel-count">76 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Vinyl Tropical";
+const KANAL = "Vinyl_Tropical.html";
+const ORIG_CATEGORIES = "Bossa Nova, Latin Jazz";
+const VIDEOS = [{"id": "rPlRG11MC0g", "title": "🇧🇷 Rio em Bossa 🌴 16 Vintage Bossa Nova Vocal Songs | Relaxing Samba, Brazilian Jazz & Lounge", "thumb": "https://i.ytimg.com/vi/rPlRG11MC0g/mqdefault.jpg", "dur": "56:53"}, {"id": "69qztietXS4", "title": "🇧🇷 A Rua das Acácias | Vintage Bossa Nova Vocal | Samba Jazz & The Sound of Brazil", "thumb": "https://i.ytimg.com/vi/69qztietXS4/mqdefault.jpg", "dur": "4:28"}, {"id": "2OkHDULzlfQ", "title": "🌴 Rumba en la Esquina Vieja – Cuban Rumba 1950s | Vintage Havana Street Dance", "thumb": "https://i.ytimg.com/vi/2OkHDULzlfQ/mqdefault.jpg", "dur": "3:15"}, {"id": "S0pJuHMxCTg", "title": "Jardim de Manhã 🇧🇷 | Vintage Bossa Nova & Samba Jazz | Relaxing Brazilian Lounge Music (1960s Style)", "thumb": "https://i.ytimg.com/vi/S0pJuHMxCTg/mqdefault.jpg", "dur": "3:16"}, {"id": "Ml-I622TX5o", "title": "🇧🇷 Limão e Botão 🌴 | Vintage Samba & Bossa Nova from Rio | Brazilian Jazz Lounge Music", "thumb": "https://i.ytimg.com/vi/Ml-I622TX5o/mqdefault.jpg", "dur": "3:26"}, {"id": "9jVRriN5WX0", "title": "🎵 A Luz da Janela 🇧🇷 | Vintage Samba & Bossa Nova Jazz • Rio de Janeiro Lounge Music (60s Style)", "thumb": "https://i.ytimg.com/vi/9jVRriN5WX0/mqdefault.jpg", "dur": "5:18"}, {"id": "7CVMl3zswHc", "title": "🎵 A Caixa de Fósforos 🇧🇷 | Vintage Samba & Bossa Nova Jazz • Elegant Brazilian Music (60s Style)", "thumb": "https://i.ytimg.com/vi/7CVMl3zswHc/mqdefault.jpg", "dur": "3:17"}, {"id": "LD5YGfoji-g", "title": "🇧🇷 Brasil Jazz Café ☕ | Vintage Brazilian Jazz, Samba & Bossa Nova | Relaxing Coffee Shop Music", "thumb": "https://i.ytimg.com/vi/LD5YGfoji-g/mqdefault.jpg", "dur": "1:00:35"}, {"id": "FDOparIjnso", "title": "🌅 Luz da Manhã | Vintage Bossa Nova & Samba Jazz | The Warm Sound of Brazil", "thumb": "https://i.ytimg.com/vi/FDOparIjnso/mqdefault.jpg", "dur": "3:54"}, {"id": "zBJZoixgohE", "title": "Son de la Madrugada 🌙 | Vintage Son Cubano from Havana 🇨🇺 | Oro y Ritmo", "thumb": "https://i.ytimg.com/vi/zBJZoixgohE/mqdefault.jpg", "dur": "3:01"}, {"id": "FJGfE8fjr8A", "title": "O Chapéu Vermelho 🇧🇷 Samba & Bossa Nova | Vintage Brazilian Music (1960s Style)", "thumb": "https://i.ytimg.com/vi/FJGfE8fjr8A/mqdefault.jpg", "dur": "3:30"}, {"id": "kh6AY7nMYmc", "title": "🎵 A Xícara na Mesa 🇧🇷 | Vintage Bossa Nova & Samba Jazz • Coffeehouse Lounge Music (60s Style)", "thumb": "https://i.ytimg.com/vi/kh6AY7nMYmc/mqdefault.jpg", "dur": "3:50"}, {"id": "hUFpTauDEkU", "title": "A Caixa de Botões 🇧🇷 | Vintage Bossa Nova & Samba Jazz • Elegant Brazilian Lounge Music (60s Style)", "thumb": "https://i.ytimg.com/vi/hUFpTauDEkU/mqdefault.jpg", "dur": "3:08"}, {"id": "4fA4ibyz8X8", "title": "Son de Medianoche 🌙 | Authentic Cuban Son Cubano | Vintage Havana Night Music", "thumb": "https://i.ytimg.com/vi/4fA4ibyz8X8/mqdefault.jpg", "dur": "3:27"}, {"id": "4KWRSkjmczY", "title": "Holiday in Rio 🇧🇷 | 🛵 Samba & Bossa-Nova | Vintage Brazilian Classics | (12 Songs)", "thumb": "https://i.ytimg.com/vi/4KWRSkjmczY/mqdefault.jpg", "dur": "44:16"}, {"id": "9i_17rayYOg", "title": "A Garrafa Azul 🇧🇷 | Vintage Bossa Nova & Samba Jazz • Elegant Rio de Janeiro Music (60s Style)", "thumb": "https://i.ytimg.com/vi/9i_17rayYOg/mqdefault.jpg", "dur": "4:28"}, {"id": "VVjpKdFsyL0", "title": "O Relógio da Papelaria ☕📚 | Vintage Samba, Bossa Nova & Jazz from Brazil (60s Atmosphere)", "thumb": "https://i.ytimg.com/vi/VVjpKdFsyL0/mqdefault.jpg", "dur": "3:57"}, {"id": "RacvyasNafo", "title": "Cuba Libre Bajito – Son Cubano 🇨🇺 | Ritmo, Libertad y Sueños de La Habana", "thumb": "https://i.ytimg.com/vi/RacvyasNafo/mqdefault.jpg", "dur": "4:08"}, {"id": "kFJnocgNzw8", "title": "Quando Você Volta 🇧🇷 | Classic Bossa Nova & Samba | Vintage Brazilian Music | 1960s Inspired", "thumb": "https://i.ytimg.com/vi/kFJnocgNzw8/mqdefault.jpg", "dur": "3:22"}, {"id": "ywpW_7z41qg", "title": "A Janela da Cozinha 🌿 | Authentic 1959 Bossa Nova & Samba | Vintage Brazilian Music", "thumb": "https://i.ytimg.com/vi/ywpW_7z41qg/mqdefault.jpg", "dur": "3:16"}, {"id": "30Z_Up6oNno", "title": "🇧🇷 O Mapa Perdido | Authentic 1960s Brazilian Music | Bossa-Nova & Samba", "thumb": "https://i.ytimg.com/vi/30Z_Up6oNno/mqdefault.jpg", "dur": "3:19"}, {"id": "4z6hHu00juI", "title": "🇨🇺 Luna Sobre La Habana | Son, Mambo & Cha-Cha-Cha | Full Album (12 Cuban Dance Classics)", "thumb": "https://i.ytimg.com/vi/4z6hHu00juI/mqdefault.jpg", "dur": "41:54"}, {"id": "veKnZfi0g-A", "title": "🇧🇷 Rádio da Barbearia | Vintage Bossa Nova & Samba Jazz from Brazil", "thumb": "https://i.ytimg.com/vi/veKnZfi0g-A/mqdefault.jpg", "dur": "4:18"}, {"id": "0cugisjBUEg", "title": "🇧🇷 A Janela Número Três | Vintage Samba, Bossa Nova & Brazilian Jazz (1962 Style)", "thumb": "https://i.ytimg.com/vi/0cugisjBUEg/mqdefault.jpg", "dur": "5:04"}, {"id": "os-zw899ars", "title": "Brasil in Silence 🌴 Quiet Bossa Nova Instrumentals | Relaxing Brazilian Lounge Music", "thumb": "https://i.ytimg.com/vi/os-zw899ars/mqdefault.jpg", "dur": "50:45"}, {"id": "ksYruq1RBxM", "title": "Mambo No. 5 – Hecho en Cuba 🇨🇺 | Vintage 1950s Mambo, Cuban Dance Music & Latin Jazz", "thumb": "https://i.ytimg.com/vi/ksYruq1RBxM/mqdefault.jpg", "dur": "3:55"}, {"id": "LzAeT_Ib5ro", "title": "Vaso Vigilante 🍸🌅 | Vintage Samba & Bossa Nova | Sunset Lounge Music from Rio", "thumb": "https://i.ytimg.com/vi/LzAeT_Ib5ro/mqdefault.jpg", "dur": "3:32"}, {"id": "zC4zFUvAHxk", "title": "Mira Cómo Va – Cuban Son 1950s 🔥 Ritmo Cubano Bailable | Vintage Havana Sound", "thumb": "https://i.ytimg.com/vi/zC4zFUvAHxk/mqdefault.jpg", "dur": "5:16"}, {"id": "RBDJsK6YbTs", "title": "🎵 A Cortina Sozinha | Samba, Bossa Nova & Jazz Brasileiro (1962 Style)", "thumb": "https://i.ytimg.com/vi/RBDJsK6YbTs/mqdefault.jpg", "dur": "3:50"}, {"id": "JuSu264TlTo", "title": "O Banco da Praça Quatro 🇧🇷 | Vintage Samba & Bossa Nova Jazz from Brazil (1962 Style)", "thumb": "https://i.ytimg.com/vi/JuSu264TlTo/mqdefault.jpg", "dur": "4:00"}, {"id": "TCh1c33dsIg", "title": "Quase Tudo Sumiço 🌙 | Vintage Bossa Nova & Samba 60s", "thumb": "https://i.ytimg.com/vi/TCh1c33dsIg/mqdefault.jpg", "dur": "3:38"}, {"id": "yCHHhul-wjY", "title": "Lola del Salón – Authentic Son Cubano 🇨🇺 from Old Havana", "thumb": "https://i.ytimg.com/vi/yCHHhul-wjY/mqdefault.jpg", "dur": "4:05"}, {"id": "e4VXKXHNfO0", "title": "Dale con el Son 🇨🇺 | Cuban Son Music | Vintage Latin Dance 1950s", "thumb": "https://i.ytimg.com/vi/e4VXKXHNfO0/mqdefault.jpg", "dur": "3:06"}, {"id": "v_7TDxeNAME", "title": "Brasil in Blue – Samba, Bossa Nova & Jazz (Vintage 60s Brazilian Sound)", "thumb": "https://i.ytimg.com/vi/v_7TDxeNAME/mqdefault.jpg", "dur": "49:54"}, {"id": "H7Gpy1MOTDo", "title": "Piel y Son – Vintage Cuban Instrumental (1950s Style) | Ritmo Cubano Bailable", "thumb": "https://i.ytimg.com/vi/H7Gpy1MOTDo/mqdefault.jpg", "dur": "3:38"}, {"id": "x8-qcKJTN5k", "title": "Baila Isabel – Cuban Cha-Cha-Cha 1950s | Vintage Havana Dance Music", "thumb": "https://i.ytimg.com/vi/x8-qcKJTN5k/mqdefault.jpg", "dur": "3:51"}, {"id": "a1E2vEftJfM", "title": "1950s Cuban Son – Flauta De Ron (Havana Dance Music)", "thumb": "https://i.ytimg.com/vi/a1E2vEftJfM/mqdefault.jpg", "dur": "3:23"}, {"id": "m-jPbtiYGGw", "title": "Satin & Samba   Bossa Nova, Samba & Jazz", "thumb": "https://i.ytimg.com/vi/m-jPbtiYGGw/mqdefault.jpg", "dur": "1:20:16"}, {"id": "2ojgy8cK46E", "title": "Solar de la Habana - Son y Cha Cha Cha", "thumb": "https://i.ytimg.com/vi/2ojgy8cK46E/mqdefault.jpg", "dur": "51:36"}, {"id": "N6H9ACBbW3g", "title": "Tarde em Ipanema - Bossa Nova Instrumental - 60s, Rio Lounge Sessions", "thumb": "https://i.ytimg.com/vi/N6H9ACBbW3g/mqdefault.jpg", "dur": "1:29:43"}, {"id": "A03igDm9X2U", "title": "Candela en el Solar - Son Cubano", "thumb": "https://i.ytimg.com/vi/A03igDm9X2U/mqdefault.jpg", "dur": "4:02"}, {"id": "jxTKpu6n4SM", "title": "Cha Cha del Puerto", "thumb": "https://i.ytimg.com/vi/jxTKpu6n4SM/mqdefault.jpg", "dur": "3:09"}, {"id": "xcnpa6nViAQ", "title": "Ritmos de Cuba   Son y Cha Cha Cha", "thumb": "https://i.ytimg.com/vi/xcnpa6nViAQ/mqdefault.jpg", "dur": "48:07"}, {"id": "210mqHKSfEM", "title": "1950s Cuban Son Music – Ritmos de la Habana (Vintage Dance Album)", "thumb": "https://i.ytimg.com/vi/210mqHKSfEM/mqdefault.jpg", "dur": "1:01:13"}, {"id": "noKvWt2GdLU", "title": "Oro y Ritmo - Cha Cha Cha de la Habana", "thumb": "https://i.ytimg.com/vi/noKvWt2GdLU/mqdefault.jpg", "dur": "49:35"}, {"id": "ARy8taX9Pek", "title": "Café do Brasil 🇧🇷 – Samba Bossa Nova Jazz Lounge | Vintage Brazilian Instrumental Music", "thumb": "https://i.ytimg.com/vi/ARy8taX9Pek/mqdefault.jpg", "dur": "1:25:37"}, {"id": "w8r3fX2fHQk", "title": "Brisa do Mar- Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/w8r3fX2fHQk/mqdefault.jpg", "dur": "1:30:41"}, {"id": "80T2h6nNELE", "title": "Brisa da Tape - Samba, Bossa Nova & Jazz", "thumb": "https://i.ytimg.com/vi/80T2h6nNELE/mqdefault.jpg", "dur": "1:30:35"}, {"id": "fHLSH70ez7s", "title": "Tarde no Rio - Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/fHLSH70ez7s/mqdefault.jpg", "dur": "1:23:36"}, {"id": "6G3KQ3dR7wU", "title": "Sombras da Lua - Bossa Nova Brasileira", "thumb": "https://i.ytimg.com/vi/6G3KQ3dR7wU/mqdefault.jpg", "dur": "1:26:11"}, {"id": "sj23rzrXEwY", "title": "Brasil em Veludo – Jazz, Samba & Bossa Nova - Instrumental", "thumb": "https://i.ytimg.com/vi/sj23rzrXEwY/mqdefault.jpg", "dur": "1:48:55"}, {"id": "Ie7R40q_lHA", "title": "Oro y Ritmo - Cha Cha Cha de Cuba", "thumb": "https://i.ytimg.com/vi/Ie7R40q_lHA/mqdefault.jpg", "dur": "1:22:02"}, {"id": "tBU58xlrpuA", "title": "Sabor del Barrio - Son Cubano de la Calle", "thumb": "https://i.ytimg.com/vi/tBU58xlrpuA/mqdefault.jpg", "dur": "54:43"}, {"id": "EPMe21LqhNs", "title": "Luzes de Copacabana – Bossa Nova & Samba Lounge", "thumb": "https://i.ytimg.com/vi/EPMe21LqhNs/mqdefault.jpg", "dur": "2:38:42"}, {"id": "Rn71ehju9Xo", "title": "Humo y Ron - Cuban Son Instrumental", "thumb": "https://i.ytimg.com/vi/Rn71ehju9Xo/mqdefault.jpg", "dur": "1:48:42"}, {"id": "jBJhlSahlN0", "title": "Veludo da Meia Noite - Bossa nova Brasileira", "thumb": "https://i.ytimg.com/vi/jBJhlSahlN0/mqdefault.jpg", "dur": "1:35:22"}, {"id": "5vYaD6RP8Bo", "title": "Sueño Cubano – Son de la Habana", "thumb": "https://i.ytimg.com/vi/5vYaD6RP8Bo/mqdefault.jpg", "dur": "1:00:28"}, {"id": "JtNyX01ufpo", "title": "La Habana Morena - Son Callejero de Cuba", "thumb": "https://i.ytimg.com/vi/JtNyX01ufpo/mqdefault.jpg", "dur": "50:49"}, {"id": "E6zUu0VFFHw", "title": "Rincón Cubano – Instrumental Vol. 2", "thumb": "https://i.ytimg.com/vi/E6zUu0VFFHw/mqdefault.jpg", "dur": "1:14:23"}, {"id": "rOeuaINIETs", "title": "Rincón Cubano – Instrumental Vol. 1", "thumb": "https://i.ytimg.com/vi/rOeuaINIETs/mqdefault.jpg", "dur": "1:13:20"}, {"id": "4dvOk0vyPTk", "title": "Alma Brasileira - Bossa Nova", "thumb": "https://i.ytimg.com/vi/4dvOk0vyPTk/mqdefault.jpg", "dur": "1:34:32"}, {"id": "9rmh32R46Xg", "title": "Luz de Ipanema - Bossa Nova", "thumb": "https://i.ytimg.com/vi/9rmh32R46Xg/mqdefault.jpg", "dur": "1:38:57"}, {"id": "iFv5pL4Zlgs", "title": "Noites de Bossa - Brazilian Bossa Nova", "thumb": "https://i.ytimg.com/vi/iFv5pL4Zlgs/mqdefault.jpg", "dur": "2:22:37"}, {"id": "LvKDsmazyCg", "title": "Samba Bossa do Rio", "thumb": "https://i.ytimg.com/vi/LvKDsmazyCg/mqdefault.jpg", "dur": "1:12:56"}, {"id": "0XPfduhFgXA", "title": "Son de La Habana Vieja - Vol. 2", "thumb": "https://i.ytimg.com/vi/0XPfduhFgXA/mqdefault.jpg", "dur": "1:12:04"}, {"id": "Kg5CfjO7Soc", "title": "Son de La Habana Vieja - Vol. 1", "thumb": "https://i.ytimg.com/vi/Kg5CfjO7Soc/mqdefault.jpg", "dur": "1:19:04"}, {"id": "YvrOINNNmtc", "title": "Samba Carioca - Vol. 3", "thumb": "https://i.ytimg.com/vi/YvrOINNNmtc/mqdefault.jpg", "dur": "1:12:20"}, {"id": "AajQ3hz0kO8", "title": "Samba Carioca - Vol. 2", "thumb": "https://i.ytimg.com/vi/AajQ3hz0kO8/mqdefault.jpg", "dur": "1:28:47"}, {"id": "QNVTL7d64_0", "title": "Samba Carioca - Vol. 1", "thumb": "https://i.ytimg.com/vi/QNVTL7d64_0/mqdefault.jpg", "dur": "1:29:03"}, {"id": "dsdn-u_JwK0", "title": "Noites Bossa Infinita - Instrumental", "thumb": "https://i.ytimg.com/vi/dsdn-u_JwK0/mqdefault.jpg", "dur": "1:39:17"}, {"id": "eAJmMusiu5Y", "title": "Samba & Bossa Nova Lounge Vol.  2", "thumb": "https://i.ytimg.com/vi/eAJmMusiu5Y/mqdefault.jpg", "dur": "1:06:54"}, {"id": "tiKgWYaf3yE", "title": "Samba & Bossa Nova Lounge Vol. 1", "thumb": "https://i.ytimg.com/vi/tiKgWYaf3yE/mqdefault.jpg", "dur": "1:06:56"}, {"id": "Hmq6UETuQOQ", "title": "Noites de Samba Infinito Vol.  1", "thumb": "https://i.ytimg.com/vi/Hmq6UETuQOQ/mqdefault.jpg", "dur": "57:23"}, {"id": "t1VDPKv5XPg", "title": "Midnight in Copacabana", "thumb": "https://i.ytimg.com/vi/t1VDPKv5XPg/mqdefault.jpg", "dur": "1:54:34"}, {"id": "Eb0-Q6dPHjE", "title": "Bossa Nova, Samba, & Latin Jazz Vol. 2", "thumb": "https://i.ytimg.com/vi/Eb0-Q6dPHjE/mqdefault.jpg", "dur": "2:39:24"}, {"id": "iEZ9Zu1-cW4", "title": "Bossa Nova, Samba, & Latin Jazz Vol. 1", "thumb": "https://i.ytimg.com/vi/iEZ9Zu1-cW4/mqdefault.jpg", "dur": "2:11:50"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

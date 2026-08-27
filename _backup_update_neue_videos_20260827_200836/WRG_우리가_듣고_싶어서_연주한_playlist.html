@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WRG 우리가 듣고 싶어서 연주한 playlist</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCHCyX77xqN9OVjLzMpAZvXw -->
+<!-- channel-url: https://youtube.com/@wrgplaylist -->
+<!-- created: 2026-07-10 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=WRG_우리가_듣고_싶어서_연주한_playlist.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/KMChuHQBNnExTTiQsSHT8xHfqONOQLKt8ztgPyNGGB5zv0aR2gEKT3tIBjLDI4IjlnUrPzAgnQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">WRG 우리가 듣고 싶어서 연주한 playlist</div>
+      <div class="channel-count">94 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "WRG 우리가 듣고 싶어서 연주한 playlist";
+const KANAL = "WRG_우리가_듣고_싶어서_연주한_playlist.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "5HXa35dnTMo", "title": "소파에 기댄듯.. 🛋️ 복잡한 머릿 속이 10분 안에 비워지는 재즈  | Sofa Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/5HXa35dnTMo/mqdefault.jpg", "dur": "1:02:12"}, {"id": "d9fGgxd_EVI", "title": "눕자마자 잠이 솔솔.. 마법처럼 잠에 드는 재즈, 직접 작곡하고 연주했어요. | Sleep Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/d9fGgxd_EVI/mqdefault.jpg", "dur": "1:05:24"}, {"id": "jWOcXOWq6-w", "title": "[Playlist] 아무것도 하기 싫은 날, 오늘은 그냥 이 곡 들으며 편히 쉬어요. | Cozy Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/jWOcXOWq6-w/mqdefault.jpg", "dur": "1:03:47"}, {"id": "4GGpQrxNtVg", "title": "위로가 필요한 밤, 따스하고 부드럽게 안는 재즈 | Comfort Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/4GGpQrxNtVg/mqdefault.jpg", "dur": "1:14:49"}, {"id": "LjD-HoJtmZE", "title": "[Playlist] 평범한 재택근무를 호텔 라운지로 바꿔주는 재즈 | Work & Study Jazz", "thumb": "https://i.ytimg.com/vi/LjD-HoJtmZE/mqdefault.jpg", "dur": "1:05:50"}, {"id": "3JL-Or3bHAU", "title": "[Playlist] 달달한 디저트와 커피, 그리고 재즈 🎶☕️", "thumb": "https://i.ytimg.com/vi/3JL-Or3bHAU/mqdefault.jpg", "dur": "1:04:27"}, {"id": "N4q4b0YxghY", "title": "[Playlist] 보사노바를 좋아하는 당신은 비주류인가요…", "thumb": "https://i.ytimg.com/vi/N4q4b0YxghY/mqdefault.jpg", "dur": "1:06:04"}, {"id": "WOMwBx4l9KU", "title": "[Playlist] 딴 거 필요 없어! 이거 틀면 그냥 시험기간 초집중! 📚 | 집중 안 될 때 듣기 좋은 재즈 플리 Jazz BGM | Work & Jazz Study Focus", "thumb": "https://i.ytimg.com/vi/WOMwBx4l9KU/mqdefault.jpg", "dur": "1:24:08"}, {"id": "jIXR3TfUCd4", "title": "[Playlist] 일할때 & 공부할 때 틀어놓기 좋은 편안한 재즈 플리 | Work & Jazz 카페 공부 독서 재택 코딩", "thumb": "https://i.ytimg.com/vi/jIXR3TfUCd4/mqdefault.jpg", "dur": "1:03:45"}, {"id": "YfS0MB40wyY", "title": "[Playlist] 아무도 모르는 나만의 아늑한 방, 그리고 재즈 | Work & Study Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/YfS0MB40wyY/mqdefault.jpg", "dur": "8:12:08"}, {"id": "1f0PoDxYmKw", "title": "[Playlist] 생각 많고 아무 것도 하기 싫은 날, 가만히 듣는 잔잔한 재즈 | Cozy Jazz | 중간광고없음 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/1f0PoDxYmKw/mqdefault.jpg", "dur": "1:20:37"}, {"id": "HP8apfQ65ow", "title": "[Playlist] 아무 생각하기 싫을 때, 공부할 때 틀어두기 좋은 잔잔한 재즈 | Cozy Jazz | 중간광고없음 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/HP8apfQ65ow/mqdefault.jpg", "dur": "1:04:52"}, {"id": "cqi_ODcxK_c", "title": "[Playlist] 유난히 하루가 길게 느껴지는 날, 가만히 틀어두는 잔잔한 재즈 | AI 음악 아님 🙅🏻‍♀️ | Cozy Jazz ☕ | Background Music", "thumb": "https://i.ytimg.com/vi/cqi_ODcxK_c/mqdefault.jpg", "dur": "1:04:03"}, {"id": "UTp7Dw9K1Hk", "title": "[Playlist] 하루가 너무 길게 느껴질 때, 그냥 틀어두기 좋은 잔잔한 재즈 | Cozy Jazz ☕️ | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/UTp7Dw9K1Hk/mqdefault.jpg", "dur": "1:03:31"}, {"id": "Qct1XWSrhCA", "title": "잠들기 전 틀어두면 바로 잠드는 조용한 재즈 🎷 | 듣다 보면 눈이 감겨요 | 🙅🏻‍♀️ AI 음악 아님 | Sleep Jazz | Relaxing", "thumb": "https://i.ytimg.com/vi/Qct1XWSrhCA/mqdefault.jpg", "dur": "1:13:30"}, {"id": "cYvQ9Lknxfk", "title": "잘때 듣는 조용한 재즈 음악.. 듣기만 해도 스르르 잠이 와요 | 🙅🏻‍♀️ AI 음악 아님 | Sleep Jazz | Relaxing", "thumb": "https://i.ytimg.com/vi/cYvQ9Lknxfk/mqdefault.jpg", "dur": "1:07:09"}, {"id": "B0SOQ3duBB4", "title": "잘때 듣기 좋은 음악.. 10분 안에 잠이 솔솔 옵니다 | 🙅🏻‍♀️ AI 음악 아님 | Sleep Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/B0SOQ3duBB4/mqdefault.jpg", "dur": "1:05:17"}, {"id": "k808C2OsyPE", "title": "잠이 솔솔.. 10분 안에 잠드는 잠잘때 듣는 음악 재즈 | 🙅🏻‍♀️ AI 음악 아님  | Sleep Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/k808C2OsyPE/mqdefault.jpg", "dur": "1:03:24"}, {"id": "k6PyOrGVJvM", "title": "[Playlist] 크리스마스에 딱 틀기 좋은 재즈 플리🎄 | 겨울에 듣기 좋은 | Christmas Jazz Relax Music", "thumb": "https://i.ytimg.com/vi/k6PyOrGVJvM/mqdefault.jpg", "dur": "1:41:10"}, {"id": "ooNheOGL0V8", "title": "[Playlist] 듣자마자 기분 좋아지는… 디즈니 재즈 플리 🧞‍♂️💛 | Disney Jazz Relax Music", "thumb": "https://i.ytimg.com/vi/ooNheOGL0V8/mqdefault.jpg", "dur": "3:54:32"}, {"id": "9juBWwvTE84", "title": "[Playlist] 무심코 켰을 뿐인데… 🎄 크리스마스 밤 감성에 잠겨버렸다 | 겨울에 듣기 좋은 재즈 | Christmas Jazz Relax Music", "thumb": "https://i.ytimg.com/vi/9juBWwvTE84/mqdefault.jpg", "dur": "1:14:09"}, {"id": "U_0gdqJrugo", "title": "☁️ 들으면 그냥 빠져든다... 직접 연주한 지브리 재즈 🎹 듣는 순간 마음이 몽글몽글 | Ghibli Jazz Cover | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/U_0gdqJrugo/mqdefault.jpg", "dur": "1:14:33"}, {"id": "Byy1rcrndHk", "title": "[Jazz Playlist] 이걸 듣는 사람들이 좋은 성적 나오면 좋겠어요 💯 | 중간광고없음 | Work & Study | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/Byy1rcrndHk/mqdefault.jpg", "dur": "8:00:29"}, {"id": "a9jkgsQ5qzs", "title": "잠이 솔솔.. 잠잘때 듣는 포근한 수면 재즈 | Sleep Jazz | 1hours | 중간광고없음 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/a9jkgsQ5qzs/mqdefault.jpg", "dur": "1:02:24"}, {"id": "LP6RYVBmAgI", "title": "[수험생 Playlist] 2025년은 나의 해가 되길 간절히 바라며, 버티자!", "thumb": "https://i.ytimg.com/vi/LP6RYVBmAgI/mqdefault.jpg", "dur": "8:02:13"}, {"id": "Kptwra5xj74", "title": "[수험생 Playlist] 미리 축하해, 너 합격하더라", "thumb": "https://i.ytimg.com/vi/Kptwra5xj74/mqdefault.jpg", "dur": "8:14:35"}, {"id": "KEjyxgQJyIQ", "title": "[Playlist] 올 여름은 스페인 해변에서, 청량 산뜻하게 마무리 ⛱️🍃  | Summer Bossa Jazz | Cafe Focus Study Work", "thumb": "https://i.ytimg.com/vi/KEjyxgQJyIQ/mqdefault.jpg", "dur": "3:12:33"}, {"id": "LLXt1u7lyIg", "title": "🛌 자기 전에 듣기 좋은 슈베르트 재즈 자장가 1시간 | 중간광고없음 | Sleep Jazz | 수면유도음악 피아노 숙면 꿀잠 Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/LLXt1u7lyIg/mqdefault.jpg", "dur": "1:09:21"}, {"id": "TKVIWoBio38", "title": "[Playlist] 일하면서 듣기 좋은 카페 음악 재즈 플레이리스트 🎶 | 중간광고없음 | Cafe & Jazz | 공부 책 업무 작업", "thumb": "https://i.ytimg.com/vi/TKVIWoBio38/mqdefault.jpg", "dur": "9:38:24"}, {"id": "0QmTzpr7qGY", "title": "[Playlist] 독서할 때 듣는 집중력 높이는 음악 🎶 (중간광고없음) | Book & Jazz | 공부 책 업무 작업", "thumb": "https://i.ytimg.com/vi/0QmTzpr7qGY/mqdefault.jpg", "dur": "7:58:14"}, {"id": "aeLcG3EQjcc", "title": "[Playlist] 이 노래 몰라? 유명한 재즈만 모았어 🎶 (중간광고없음) | Swing Jazz", "thumb": "https://i.ytimg.com/vi/aeLcG3EQjcc/mqdefault.jpg", "dur": "8:02:07"}, {"id": "4UDNkGrHUMo", "title": "[Playlist] 독서할 때 듣는 재즈 음악 🎹 생각 없이 그저 틀어만 놓으세요", "thumb": "https://i.ytimg.com/vi/4UDNkGrHUMo/mqdefault.jpg", "dur": "8:16:07"}, {"id": "pyRyrdiMtDE", "title": "[Jazz Playlist] 호텔 무드로 몰입하고 싶은 때 | Hotel work vibes with jazz", "thumb": "https://i.ytimg.com/vi/pyRyrdiMtDE/mqdefault.jpg", "dur": "8:04:14"}, {"id": "txpmntCsXAA", "title": "[Playlist] ☔️ 비오는 날 그냥 틀어두는 재즈 플리 | 중간광고없음 | Rainy Jazz Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/txpmntCsXAA/mqdefault.jpg", "dur": "1:09:41"}, {"id": "t0oNsOiWbsU", "title": "[Playlist] 직접 연주한 Close To You 로 시작해볼게요 🎹 | 독서 재즈 1시간 | 중간광고없음", "thumb": "https://i.ytimg.com/vi/t0oNsOiWbsU/mqdefault.jpg", "dur": "1:04:31"}, {"id": "4_3j2aqfw-U", "title": "[Playlist] 3시간 버전 🎶 공부할 때 듣는 재즈 모음 | Work & Study Focus Jazz | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/4_3j2aqfw-U/mqdefault.jpg", "dur": "3:08:35"}, {"id": "tvOvu1xegcI", "title": "[Playlist] 딱 집중해서 과제 끝내볼까요? | Study & Work Focus Jazz | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/tvOvu1xegcI/mqdefault.jpg", "dur": "1:16:34"}, {"id": "rbFZKx4MwOA", "title": "[Playlist] 30분 동안 집중해서 공부해볼까요? | Study & Work Focus Jazz | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/rbFZKx4MwOA/mqdefault.jpg", "dur": "32:59"}, {"id": "SqMps0X7AOw", "title": "[Playlist] 듣자 마자 스르르.. 잠이 오는 수면 재즈 | Sleep Jazz | 잘때 듣는 음악 | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/SqMps0X7AOw/mqdefault.jpg", "dur": "30:41"}, {"id": "6UmGdkmmqlk", "title": "[Playlist] 집중할 때 듣기 좋은 잔잔한 카페 재즈 | Cafe Jazz | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/6UmGdkmmqlk/mqdefault.jpg", "dur": "30:42"}, {"id": "1_nYx_2BrOY", "title": "[Playlist] 책 읽으며 듣는, 편안하고 감미로운 재즈 모음 | Cozy Jazz | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/1_nYx_2BrOY/mqdefault.jpg", "dur": "1:04:24"}, {"id": "hyDbXii2pKs", "title": "[Playlist] 에어팟 챙겨서 생각없이 걸어나 볼까", "thumb": "https://i.ytimg.com/vi/hyDbXii2pKs/mqdefault.jpg", "dur": "32:52"}, {"id": "26abEtBYNQM", "title": "[Jazz Playlist] 아무 생각 없고 싶을 때, 첫 음부터 빠져드는 재즈 플리 | 중간광고없음 | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/26abEtBYNQM/mqdefault.jpg", "dur": "37:35"}, {"id": "vnoZQEQB7Do", "title": "[Playlist] 따스한 봄을 부르는 봄 재즈 | 중간광고없음 | Spring Jazz | Relax Cozy Background Music", "thumb": "https://i.ytimg.com/vi/vnoZQEQB7Do/mqdefault.jpg", "dur": "1:14:34"}, {"id": "YSz0ZfXKuCo", "title": "💤 10분 안에 솔솔… 꿀잠드는 1시간 Sleep Jazz | 중간광고 없음", "thumb": "https://i.ytimg.com/vi/YSz0ZfXKuCo/mqdefault.jpg", "dur": "1:08:13"}, {"id": "QaiihSBng0M", "title": "[Playlist] 조용한 혼자만의 시간과 함께 흐르는 잔잔한 재즈 플레이리스트 | 중간광고없음 | Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/QaiihSBng0M/mqdefault.jpg", "dur": "1:03:21"}, {"id": "-15mB0QcoBo", "title": "[Playlist] 긍정적인 아침의 기분을 위해 듣는 재즈 플리 | Positive Mood Jazz | Relaxing Music for Work & Study", "thumb": "https://i.ytimg.com/vi/-15mB0QcoBo/mqdefault.jpg", "dur": "1:00:10"}, {"id": "1IdtN-gWjUc", "title": "어느새 얼어붙은 겨울, 포근함을 전하며 | Winter Cozy Jazz | 중간광고없음", "thumb": "https://i.ytimg.com/vi/1IdtN-gWjUc/mqdefault.jpg", "dur": "1:00:24"}, {"id": "XFY7pFlRuYw", "title": "겨울, 좋아하세요? | 중간광고없음 | Winter Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/XFY7pFlRuYw/mqdefault.jpg", "dur": "1:03:00"}, {"id": "rS9EPOI9b44", "title": "이번 과제 A+ 받으러 1시간만 딱 집중해보자구요 | 중간광고없음 | Study & Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/rS9EPOI9b44/mqdefault.jpg", "dur": "1:01:48"}, {"id": "SoelPG7aqZA", "title": "[Playlist] 아무 생각 않고 가만히 듣기 좋은 코지한 크리스마스 재즈 캐롤 🎄 | Christmas Jazz 2024 | Cozy Relax Sleep Piano", "thumb": "https://i.ytimg.com/vi/SoelPG7aqZA/mqdefault.jpg", "dur": "3:29:04"}, {"id": "bCfEb40Rp0s", "title": "[Playlist] 집중해서 공부할 때 듣기 좋은 잔잔한 재즈 플리 | 중간광고없음 | Book & Study Jazz | cozy Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/bCfEb40Rp0s/mqdefault.jpg", "dur": "3:13:28"}, {"id": "c7-81aUdLTI", "title": "너무 조용하지도, 너무 들뜨지도 않아 듣기 좋은 재즈 | 공부, 집중, 코딩, 작업 | 3 hour | Cozy Focus & Study Jazz", "thumb": "https://i.ytimg.com/vi/c7-81aUdLTI/mqdefault.jpg", "dur": "3:07:24"}, {"id": "MKt3sp2R8dk", "title": "[Playlist] 커피향이 솔솔~ ☕️ 스타벅스 카페 매장 음악 | 중간광고없음 | Starbucks Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/MKt3sp2R8dk/mqdefault.jpg", "dur": "6:03:44"}, {"id": "o2CM1MeAJVI", "title": "🍷 감미로운 재즈와 함께 고급스러운 호텔에 와 있는 듯한 기분 | 중간광고없음 | LOUNGE JAZZ | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/o2CM1MeAJVI/mqdefault.jpg", "dur": "6:24:49"}, {"id": "DdGIGlGLYXg", "title": "[Playlist] 시원하고 청량하게, 여름을 위해 만든 재즈 한 스푼 ⛱️ | 중간광고없음 | Vacation Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/DdGIGlGLYXg/mqdefault.jpg", "dur": "3:10:50"}, {"id": "0ZKFy7o7f6M", "title": "잠들기 전, 마음이 평온해지는 Sleep Jazz | 중간광고없음 | Cozy Relax Background Music", "thumb": "https://i.ytimg.com/vi/0ZKFy7o7f6M/mqdefault.jpg", "dur": "1:07:36"}, {"id": "77SfkU1oJhU", "title": "[Playlist] 축제의 계절, 청량감 가득한 페스티벌 재즈 플리 | Festival Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/77SfkU1oJhU/mqdefault.jpg", "dur": "50:25"}, {"id": "kH7XA1m4Tt4", "title": "[Playlist] 한강의 계절, 피크닉하며 듣기 좋은 재즈 플리 | Han River Jazz | Relaxing Background Music | 카페 음악", "thumb": "https://i.ytimg.com/vi/kH7XA1m4Tt4/mqdefault.jpg", "dur": "1:35:10"}, {"id": "xxTu95VdhcE", "title": "토닥토닥, 5분 안에 깊은 잠에 드는 자장가 재즈 (중간광고없음) | Lullaby Jazz for Deep Sleep", "thumb": "https://i.ytimg.com/vi/xxTu95VdhcE/mqdefault.jpg", "dur": "3:05:28"}, {"id": "TPQqO_Rwii4", "title": "[Playlist] 감미로운 보사노바 선율, 조빔과 함께  | Bossa Nova Jazz Jobim | Work & Study | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/TPQqO_Rwii4/mqdefault.jpg", "dur": "8:01:38"}, {"id": "nc-EjHmNw9I", "title": "[Playlist] 퇴근 후, 기분전환하고 싶을 때 듣는 산뜻한 Jazz | Get off work | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/nc-EjHmNw9I/mqdefault.jpg", "dur": "1:12:30"}, {"id": "YhyBXm9HKC4", "title": "[Playlist] 일하면서 틀어 놓기 좋은 재즈 플리 | Work & Sudy Jazz | 중간광고없음 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/YhyBXm9HKC4/mqdefault.jpg", "dur": "8:07:12"}, {"id": "nBJRYtF5CwM", "title": "[Playlist] 듣기만 해도 설레는 크리스마스 캐롤 재즈 플레이리스트 | Christmas Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/nBJRYtF5CwM/mqdefault.jpg", "dur": "8:01:46"}, {"id": "Llour2YvsiI", "title": "[Playlist] 아무 생각하기 싫을 때 가만히 듣기 좋은 잔잔한 재즈 | Cozy Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/Llour2YvsiI/mqdefault.jpg", "dur": "1:00:31"}, {"id": "GA1XW6HJTD0", "title": "[Playlist] 재즈라 쓰고 가을이라 읽는 🍁| 11 Hours | Autumn Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/GA1XW6HJTD0/mqdefault.jpg", "dur": "10:54:53"}, {"id": "JZ_HcuJJpZ4", "title": "잔잔한 밤하늘과 함께, 느긋하게 즐기는 미드나잇 재즈 | Midnight Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/JZ_HcuJJpZ4/mqdefault.jpg", "dur": "1:00:20"}, {"id": "cl7s1J8izs8", "title": "퇴근길, 노을지는 해질녘 드라이브하며 듣기 좋은 재즈 | Sunset Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/cl7s1J8izs8/mqdefault.jpg", "dur": "1:00:22"}, {"id": "-XH9_Rn7SD4", "title": "비 오는 날, 카페에서 작업하면서 듣기 좋은 재즈 | Rainy Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/-XH9_Rn7SD4/mqdefault.jpg", "dur": "1:05:35"}, {"id": "MVsKzefq1no", "title": "집에서 듣기 좋은 편안한 마음과 휴식을 위한 재즈 | Rest Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/MVsKzefq1no/mqdefault.jpg", "dur": "1:03:49"}, {"id": "3jbUnuOV7xE", "title": "[Playlist] 잠잘때 듣는 포근한 수면 재즈 | Sleep Jazz | 3hours | 중간광고없음 | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/3jbUnuOV7xE/mqdefault.jpg", "dur": "3:03:05"}, {"id": "BgNsGtoOTvw", "title": "[Playlist] 듣기만 해도 시원해지는, 여름 재즈 모음 | Summer Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/BgNsGtoOTvw/mqdefault.jpg", "dur": "8:01:31"}, {"id": "p5UCYFGfWS4", "title": "브루노 메이저 한 입 어때요? | Bruno Major - Regent's Park | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/p5UCYFGfWS4/mqdefault.jpg", "dur": "1:05:09"}, {"id": "HjagNSnWHPw", "title": "[Playlist] 헤드셋으로 꼭 들어봐야 하는, 작업할 때 듣기 좋은 가사없는 재즈 | Work & Study Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/HjagNSnWHPw/mqdefault.jpg", "dur": "8:03:09"}, {"id": "HG_aezdiD2I", "title": "1시간 정도, 책장 넘기기 좋은 산뜻한 독서 재즈 | Book & Reading Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/HG_aezdiD2I/mqdefault.jpg", "dur": "1:03:40"}, {"id": "JYPIDIQSvb8", "title": "위로가 필요한 밤, 따스하게 안아줄 재즈 | Comfort Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/JYPIDIQSvb8/mqdefault.jpg", "dur": "1:00:11"}, {"id": "ql-o3FCJz6Q", "title": "[Playlist] 고소한 보사노바 향기와 함께, 너의 오후가 조금 더 행복하길 바라 | Cafe Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/ql-o3FCJz6Q/mqdefault.jpg", "dur": "12:32:31"}, {"id": "uTuuz__8gUM", "title": "[Playlist] 오롯이 혼자인 방 안에서, 그리고 재즈 | Work & Study Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/uTuuz__8gUM/mqdefault.jpg", "dur": "8:02:27"}, {"id": "4-pEhTqspk4", "title": "고막에 달콤한 버터 한 스푼🥄🧈 내 방을 파리의 한 카페로 만들어버리는 차분한 재즈 | Cafe Jazz | Relaxing Cozy Background Music", "thumb": "https://i.ytimg.com/vi/4-pEhTqspk4/mqdefault.jpg", "dur": "1:00:27"}, {"id": "q-w7QkCoGTY", "title": "듣자마자 추억에 젖어 버리는 서랍 속에서 흘러나온 재즈 | Jazz in A Drawer | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/q-w7QkCoGTY/mqdefault.jpg", "dur": "1:02:00"}, {"id": "xZbjgsE-Vlo", "title": "잠이 솔솔.. 10분 안에 잠드는 꿀잠 수면 재즈 (중간광고 없음) | Sleep Jazz", "thumb": "https://i.ytimg.com/vi/xZbjgsE-Vlo/mqdefault.jpg", "dur": "1:04:50"}, {"id": "kivwHdv2Vgc", "title": "서서히 다가오는 봄, 그리고 기분 좋은 하루의 시작 | Spring & Morning Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/kivwHdv2Vgc/mqdefault.jpg", "dur": "1:05:52"}, {"id": "G_TJZ4KPqpA", "title": "1시간 동안 집중력 최대치로 올려주는 재즈 노동요 | Work & Study Jazz | Relaxing Background Music", "thumb": "https://i.ytimg.com/vi/G_TJZ4KPqpA/mqdefault.jpg", "dur": "1:02:36"}, {"id": "fyVXHxXB8HE", "title": "[Playlist] 🎄 포근한 크리스마스 재즈 찬송가 Relaxing Christmas Jazz Hymn Carol Music | 3 Hours", "thumb": "https://i.ytimg.com/vi/fyVXHxXB8HE/mqdefault.jpg", "dur": "3:17:30"}, {"id": "WM7S317ebLM", "title": "[Playlist]  ❄️ 수족냉증 있는 사람도 스르르 녹일 따뜻하고 포근한 크리스마스 재즈 🎄 캐롤 모음 | Relaxing Christmas Carol | 8 Hours", "thumb": "https://i.ytimg.com/vi/WM7S317ebLM/mqdefault.jpg", "dur": "8:14:49"}, {"id": "wcIf3huwFhc", "title": "[Playlist] 분명 재택근무였는데 호텔에서 일하는 기분나는 재즈 플리 | Work & Study Jazz", "thumb": "https://i.ytimg.com/vi/wcIf3huwFhc/mqdefault.jpg", "dur": "6:01:03"}, {"id": "Sllp_eTV7Ks", "title": "퇴근 후 밤 열한시, 잠들기 아쉬워 연주해본 감성 재즈 | Night & Jazz | 수면 카페 공부 독서 재택 코딩", "thumb": "https://i.ytimg.com/vi/Sllp_eTV7Ks/mqdefault.jpg", "dur": "1:03:45"}, {"id": "j-ilw4moEpQ", "title": "해가 저무는 뉴욕이 생각나는 감미로운 감성 재즈  New York Jazz | 집중 공부 카페 매장 음악 수면 태교", "thumb": "https://i.ytimg.com/vi/j-ilw4moEpQ/mqdefault.jpg", "dur": "1:01:41"}, {"id": "HfaIcB4Ogxk", "title": "[Playlist] 일하면서 틀어 놓기 좋은 잔잔한 8시간 재즈 플레이리스트 | Jazz 노래모음 카페 공부 독서 재택 코딩", "thumb": "https://i.ytimg.com/vi/HfaIcB4Ogxk/mqdefault.jpg", "dur": "8:17:04"}, {"id": "T3bwDIg2Lf0", "title": "여유로움과 함께 독서하기 좋은 계절, 감성 Jazz | My romance | 공부, 집중, 휴식, 카페, 책 | work & study", "thumb": "https://i.ytimg.com/vi/T3bwDIg2Lf0/mqdefault.jpg", "dur": "1:04:27"}, {"id": "Y1iFfnVGK5w", "title": "파리의 한적한 오후가 그리워서 연주해본 Jazz | Cozy relaxing piano | Work & Study", "thumb": "https://i.ytimg.com/vi/Y1iFfnVGK5w/mqdefault.jpg", "dur": "59:28"}, {"id": "a_322C80nKU", "title": "비가 오는 날 사랑하는 이를 떠올리며 듣는 재즈 | My One And Only Love | 카페, 공부, 독서, 수면, 재택", "thumb": "https://i.ytimg.com/vi/a_322C80nKU/mqdefault.jpg", "dur": "1:02:04"}, {"id": "X6H4PXKgZOM", "title": "가을 분위기를 담은 재즈 Everything Happens to Me l Autumn Jazz l 카페 음악, 공부, 독서, 수면, 재택", "thumb": "https://i.ytimg.com/vi/X6H4PXKgZOM/mqdefault.jpg", "dur": "1:01:58"}, {"id": "kGiQsm1MkaU", "title": "퇴근 후 잔잔한 마음으로 듣는 Misty l Cozy Jazz l 카페 재즈 음악 l 1시간 재생", "thumb": "https://i.ytimg.com/vi/kGiQsm1MkaU/mqdefault.jpg", "dur": "1:02:09"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

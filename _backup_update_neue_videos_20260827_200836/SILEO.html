@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SILEO</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCI49VO9_0LM9mydUYhXJ3xw -->
+<!-- channel-url: https://youtube.com/@architectureofsileo -->
+<!-- created: 2026-07-05 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=SILEO.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/w9QWgkRcCdfdJL7JuWpGf6qKp4Zl9J6IxBRKVZexZibUbJNpJn_2XSTyQJhTYMDzKUOBwDbVkg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">SILEO</div>
+      <div class="channel-count">198 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "SILEO";
+const KANAL = "SILEO.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "jJon8wjrfoc", "title": "quiet house jazz for deep concentration.", "thumb": "https://i.ytimg.com/vi/jJon8wjrfoc/mqdefault.jpg", "dur": "2:00:01"}, {"id": "rjhTAO_60uI", "title": "interior jazz for the high performer.", "thumb": "https://i.ytimg.com/vi/rjhTAO_60uI/mqdefault.jpg", "dur": "2:00:01"}, {"id": "qRi1QsOGMUM", "title": "low cortisol jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/qRi1QsOGMUM/mqdefault.jpg", "dur": "2:00:01"}, {"id": "VreM_GYBHAU", "title": "architectural jazz for mental clarity.", "thumb": "https://i.ytimg.com/vi/VreM_GYBHAU/mqdefault.jpg", "dur": "2:00:01"}, {"id": "tLrcGC1Qg-c", "title": "interior jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/tLrcGC1Qg-c/mqdefault.jpg", "dur": "2:00:01"}, {"id": "tXdui6q3tVg", "title": "architectural jazz for cognitive relief.", "thumb": "https://i.ytimg.com/vi/tXdui6q3tVg/mqdefault.jpg", "dur": "2:00:01"}, {"id": "--7oV2yp5nk", "title": "quiet house jazz for deep concentration.", "thumb": "https://i.ytimg.com/vi/--7oV2yp5nk/mqdefault.jpg", "dur": "2:00:01"}, {"id": "Moe5mGRIF2A", "title": "architectural jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/Moe5mGRIF2A/mqdefault.jpg", "dur": "2:00:01"}, {"id": "JCI4wYmDJMw", "title": "interior jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/JCI4wYmDJMw/mqdefault.jpg", "dur": "2:00:01"}, {"id": "UBSJpbnQg8w", "title": "interior jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/UBSJpbnQg8w/mqdefault.jpg", "dur": "2:00:01"}, {"id": "PxCtE7djCdk", "title": "abstract jazz for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/PxCtE7djCdk/mqdefault.jpg", "dur": "2:00:01"}, {"id": "h_Dbyqi9xXY", "title": "architectural jazz for mental clarity.", "thumb": "https://i.ytimg.com/vi/h_Dbyqi9xXY/mqdefault.jpg", "dur": "2:00:01"}, {"id": "OU_7RpE5Nb0", "title": "quiet house jazz for deep concentration.", "thumb": "https://i.ytimg.com/vi/OU_7RpE5Nb0/mqdefault.jpg", "dur": "2:00:01"}, {"id": "MSlKW--UBaE", "title": "architectural jazz for elevated concentration.", "thumb": "https://i.ytimg.com/vi/MSlKW--UBaE/mqdefault.jpg", "dur": "2:00:01"}, {"id": "o3sPRmLf6RU", "title": "abstract jazz for cognitive relief.", "thumb": "https://i.ytimg.com/vi/o3sPRmLf6RU/mqdefault.jpg", "dur": "2:00:01"}, {"id": "jR6bWlWqo04", "title": "quiet house jazz for mental clarity.", "thumb": "https://i.ytimg.com/vi/jR6bWlWqo04/mqdefault.jpg", "dur": "2:00:01"}, {"id": "UOclf2_ofWk", "title": "abstract jazz for cognitive relief.", "thumb": "https://i.ytimg.com/vi/UOclf2_ofWk/mqdefault.jpg", "dur": "2:00:01"}, {"id": "YfBvcw3E_qU", "title": "architectural jazz for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/YfBvcw3E_qU/mqdefault.jpg", "dur": "2:00:01"}, {"id": "hVQ_EqWj3Gs", "title": "architectural jazz for psychological stillness.", "thumb": "https://i.ytimg.com/vi/hVQ_EqWj3Gs/mqdefault.jpg", "dur": "2:00:01"}, {"id": "ylxtCO-7wPo", "title": "architectural jazz for cognitive relief.", "thumb": "https://i.ytimg.com/vi/ylxtCO-7wPo/mqdefault.jpg", "dur": "2:00:01"}, {"id": "lnX3EqrwcxE", "title": "abstract jazz for reflective deep work.", "thumb": "https://i.ytimg.com/vi/lnX3EqrwcxE/mqdefault.jpg", "dur": "2:00:01"}, {"id": "n2wUXnZ0L4U", "title": "interior jazz for mental clarity.", "thumb": "https://i.ytimg.com/vi/n2wUXnZ0L4U/mqdefault.jpg", "dur": "2:00:01"}, {"id": "R0SfuH-3Lrc", "title": "quiet house jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/R0SfuH-3Lrc/mqdefault.jpg", "dur": "2:00:01"}, {"id": "ouzF0QqkkqI", "title": "architectural jazz for cognitive ease.", "thumb": "https://i.ytimg.com/vi/ouzF0QqkkqI/mqdefault.jpg", "dur": "2:00:01"}, {"id": "mkSOeKZNlRg", "title": "abstract jazz for mental steadiness.", "thumb": "https://i.ytimg.com/vi/mkSOeKZNlRg/mqdefault.jpg", "dur": "2:00:01"}, {"id": "SEho9pM7B4k", "title": "interior jazz for reflective focus.", "thumb": "https://i.ytimg.com/vi/SEho9pM7B4k/mqdefault.jpg", "dur": "2:00:01"}, {"id": "EkwUPhEX30Q", "title": "architectural jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/EkwUPhEX30Q/mqdefault.jpg", "dur": "2:00:01"}, {"id": "VwFSZmpfrS0", "title": "interior jazz for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/VwFSZmpfrS0/mqdefault.jpg", "dur": "2:00:01"}, {"id": "Joi3cKeiqI8", "title": "quiet house jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/Joi3cKeiqI8/mqdefault.jpg", "dur": "2:00:01"}, {"id": "0IFFQtcZbQ4", "title": "abstract jazz for deep concentration.", "thumb": "https://i.ytimg.com/vi/0IFFQtcZbQ4/mqdefault.jpg", "dur": "1:59:49"}, {"id": "OY4xUV7ha74", "title": "the system behind deep focus │ © SILEO Minimal Jazz for Deep Work", "thumb": "https://i.ytimg.com/vi/OY4xUV7ha74/mqdefault.jpg", "dur": "2:00:02"}, {"id": "jUIln7Ks9dY", "title": "intellectual thinkers prefer environments like this │ © SILEO Jazz for Work, Focus, Productivity", "thumb": "https://i.ytimg.com/vi/jUIln7Ks9dY/mqdefault.jpg", "dur": "2:00:02"}, {"id": "ARoMW4PVy_w", "title": "the visual psychology of deep focus │ © SILEO 2 Hour Deep Work Environment", "thumb": "https://i.ytimg.com/vi/ARoMW4PVy_w/mqdefault.jpg", "dur": "2:00:02"}, {"id": "PZWBA-nw9tA", "title": "the room where high performers recover │ © SILEO Minimal Jazz for Deep Focus", "thumb": "https://i.ytimg.com/vi/PZWBA-nw9tA/mqdefault.jpg", "dur": "2:00:02"}, {"id": "V5_e1MJzhYk", "title": "the quiet hour for analysts │ © SILEO Abstract Jazz for Deep Work", "thumb": "https://i.ytimg.com/vi/V5_e1MJzhYk/mqdefault.jpg", "dur": "2:00:02"}, {"id": "RhbboTdUX7w", "title": "the strategist’s recovery room│© SILEO Deep House Jazz for Deep Concentration", "thumb": "https://i.ytimg.com/vi/RhbboTdUX7w/mqdefault.jpg", "dur": "2:00:02"}, {"id": "-cA-rLKSELI", "title": "the antidote to cognitive overload │ © SILEO Deep House Jazz for Deep Work", "thumb": "https://i.ytimg.com/vi/-cA-rLKSELI/mqdefault.jpg", "dur": "2:00:02"}, {"id": "S3KJB4dtZ6M", "title": "the cure for fragmented focus │ © SILEO Original Minimal Jazz for Deep Concentration", "thumb": "https://i.ytimg.com/vi/S3KJB4dtZ6M/mqdefault.jpg", "dur": "2:00:03"}, {"id": "ynoWLjSg-tU", "title": "the room that cures overthinking│ © SILEO Original 2 Hour Quiet Productivity Rhythms", "thumb": "https://i.ytimg.com/vi/ynoWLjSg-tU/mqdefault.jpg", "dur": "2:00:03"}, {"id": "HBISsK2G9WY", "title": "the calmest interior on the internet │ © SILEO Original 2 Hour Deep Focus Environment", "thumb": "https://i.ytimg.com/vi/HBISsK2G9WY/mqdefault.jpg", "dur": "2:00:03"}, {"id": "iokepTvH2RY", "title": "this is where overthinkers recover │ © SILEO Original 2 Hour ADHD Focus Music ", "thumb": "https://i.ytimg.com/vi/iokepTvH2RY/mqdefault.jpg", "dur": "2:00:03"}, {"id": "aFSh6EaD08A", "title": "the space every overthinker needs │ © SILEO Original 2 Hour ADHD Focus Music", "thumb": "https://i.ytimg.com/vi/aFSh6EaD08A/mqdefault.jpg", "dur": "2:00:03"}, {"id": "zBIU2y76YdY", "title": "jazz for architects of solitude │ © SILEO Original 2 Hour Quiet Productivity Rhythms", "thumb": "https://i.ytimg.com/vi/zBIU2y76YdY/mqdefault.jpg", "dur": "2:00:03"}, {"id": "btuf6XXB88o", "title": "minimalist soundscape for architects │ © SILEO Original 2 Hour Deep Work Environment", "thumb": "https://i.ytimg.com/vi/btuf6XXB88o/mqdefault.jpg", "dur": "2:00:03"}, {"id": "Bd_7QNbghJA", "title": "the therapeutic focus environment │ © SILEO Original 2 Hours of Spatial Jazz", "thumb": "https://i.ytimg.com/vi/Bd_7QNbghJA/mqdefault.jpg", "dur": "2:00:03"}, {"id": "_Per_H8Mu_s", "title": "minimal jazz for elevated concentration │ © SILEO 2 Hour Focus Room", "thumb": "https://i.ytimg.com/vi/_Per_H8Mu_s/mqdefault.jpg", "dur": "2:00:03"}, {"id": "ZeRTQpktVUU", "title": "atmospheric lofi for cognitive ease│© SILEO 2 Hour Focus Room", "thumb": "https://i.ytimg.com/vi/ZeRTQpktVUU/mqdefault.jpg", "dur": "2:00:03"}, {"id": "w-jmWDKuy5Q", "title": "elevated classical for mental clairity│ © SILEO 2 Hour Focus Room", "thumb": "https://i.ytimg.com/vi/w-jmWDKuy5Q/mqdefault.jpg", "dur": "2:00:00"}, {"id": "lbZARrq3zvY", "title": "lucid classical for mental clarity │© SILEO 2 Hour Still Focus Architecture", "thumb": "https://i.ytimg.com/vi/lbZARrq3zvY/mqdefault.jpg", "dur": "2:00:00"}, {"id": "qrqM6jv-sT8", "title": "classical lofi for deep concentration│ © SILEO 2 Hour Co-Working Space", "thumb": "https://i.ytimg.com/vi/qrqM6jv-sT8/mqdefault.jpg", "dur": "2:00:00"}, {"id": "qiW4nDd3h38", "title": "atmospheric lofi for mental fatigue│© SILEO 2 Hour Co-Working Space", "thumb": "https://i.ytimg.com/vi/qiW4nDd3h38/mqdefault.jpg", "dur": "2:00:00"}, {"id": "l25sS4idPZo", "title": "minimal jazz for enhanced focus│© SILEO Original", "thumb": "https://i.ytimg.com/vi/l25sS4idPZo/mqdefault.jpg", "dur": "2:00:00"}, {"id": "BOmb6A_jKVk", "title": "abstract jazz for cognitive ease │© SILEO Original", "thumb": "https://i.ytimg.com/vi/BOmb6A_jKVk/mqdefault.jpg", "dur": "3:00:04"}, {"id": "JobjZ9D4-UY", "title": "this restores cognitive clarity.│© SILEO Original Classical Focus Music", "thumb": "https://i.ytimg.com/vi/JobjZ9D4-UY/mqdefault.jpg", "dur": "2:00:00"}, {"id": "-jWhgl3nUGQ", "title": "orchestral textures for cognitive clarity│© SILEO Original", "thumb": "https://i.ytimg.com/vi/-jWhgl3nUGQ/mqdefault.jpg", "dur": "2:00:08"}, {"id": "wSoitqcHxBw", "title": "this is what deep work sounds like.│© SILEO Original 2 Hour Orchestral Jazz", "thumb": "https://i.ytimg.com/vi/wSoitqcHxBw/mqdefault.jpg", "dur": "2:00:41"}, {"id": "uQwvNNvylZE", "title": "jazz that quiets the mind│© SILEO Original Ambient Experience ", "thumb": "https://i.ytimg.com/vi/uQwvNNvylZE/mqdefault.jpg", "dur": "1:58:26"}, {"id": "fFz9ZyiZZA4", "title": "minimal jazz for deep thinkers︱© SILEO Original 2 Hour Deep Work Experience", "thumb": "https://i.ytimg.com/vi/fFz9ZyiZZA4/mqdefault.jpg", "dur": "2:04:28"}, {"id": "0yCQlqAxr2w", "title": "abstract jazz for deep concentration︱© SILEO Original", "thumb": "https://i.ytimg.com/vi/0yCQlqAxr2w/mqdefault.jpg", "dur": "1:01:41"}, {"id": "KH6atvmQtJA", "title": "lucid lofi for deep focus.", "thumb": "https://i.ytimg.com/vi/KH6atvmQtJA/mqdefault.jpg", "dur": "1:03:23"}, {"id": "oQ9MEc1BGIM", "title": "organic lofi for burnout recovery.", "thumb": "https://i.ytimg.com/vi/oQ9MEc1BGIM/mqdefault.jpg", "dur": "1:03:23"}, {"id": "asct2Hz2VZg", "title": "meditative lofi for deep thinkers.", "thumb": "https://i.ytimg.com/vi/asct2Hz2VZg/mqdefault.jpg", "dur": "1:03:23"}, {"id": "yegZ7wNaOvs", "title": "lucid tones for overthinkers.", "thumb": "https://i.ytimg.com/vi/yegZ7wNaOvs/mqdefault.jpg", "dur": "1:03:23"}, {"id": "3wKQzFonnVc", "title": "lucid lofi for mental clarity.", "thumb": "https://i.ytimg.com/vi/3wKQzFonnVc/mqdefault.jpg", "dur": "1:01:39"}, {"id": "o50AV91HVRs", "title": "minimal lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/o50AV91HVRs/mqdefault.jpg", "dur": "1:01:39"}, {"id": "x8vXhknGKns", "title": "meditative lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/x8vXhknGKns/mqdefault.jpg", "dur": "1:01:39"}, {"id": "VY12UxUNWXU", "title": "lucid lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/VY12UxUNWXU/mqdefault.jpg", "dur": "1:03:05"}, {"id": "PUP0MidnhKE", "title": "lucid lofi for analytical minds.", "thumb": "https://i.ytimg.com/vi/PUP0MidnhKE/mqdefault.jpg", "dur": "1:02:56"}, {"id": "MleYUyN4gog", "title": "oceanside spatial lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/MleYUyN4gog/mqdefault.jpg", "dur": "1:02:56"}, {"id": "6I6H7O78W7M", "title": "oceanside lofi for for deep thinkers.", "thumb": "https://i.ytimg.com/vi/6I6H7O78W7M/mqdefault.jpg", "dur": "1:02:56"}, {"id": "RTGlIHFQS4Y", "title": "meditative lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/RTGlIHFQS4Y/mqdefault.jpg", "dur": "1:02:56"}, {"id": "4N4JtrJ9k-U", "title": "organic lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/4N4JtrJ9k-U/mqdefault.jpg", "dur": "1:03:24"}, {"id": "fQdBmrUeEKY", "title": "lucid lofi for for anxious thinkers.", "thumb": "https://i.ytimg.com/vi/fQdBmrUeEKY/mqdefault.jpg", "dur": "59:49"}, {"id": "NMn9IwsGHJA", "title": "weightless lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/NMn9IwsGHJA/mqdefault.jpg", "dur": "59:49"}, {"id": "-WP302l-Wxs", "title": "spatial lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/-WP302l-Wxs/mqdefault.jpg", "dur": "59:49"}, {"id": "JG3aMjDQm94", "title": "lucid lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/JG3aMjDQm94/mqdefault.jpg", "dur": "59:49"}, {"id": "eIyfu1RRHpY", "title": "weightless lofi for quiet thinking.", "thumb": "https://i.ytimg.com/vi/eIyfu1RRHpY/mqdefault.jpg", "dur": "59:49"}, {"id": "d87t3NxjpVQ", "title": "lucid lakeside lofi for deep work.", "thumb": "https://i.ytimg.com/vi/d87t3NxjpVQ/mqdefault.jpg", "dur": "59:49"}, {"id": "GRbHqw3wELA", "title": "spatial lofi for mental clarity.", "thumb": "https://i.ytimg.com/vi/GRbHqw3wELA/mqdefault.jpg", "dur": "1:00:01"}, {"id": "7Of4dW7qQw4", "title": "oceanside spatial lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/7Of4dW7qQw4/mqdefault.jpg", "dur": "55:55"}, {"id": "N7NZGWWUD2Y", "title": "lucid lofi for deep work.", "thumb": "https://i.ytimg.com/vi/N7NZGWWUD2Y/mqdefault.jpg", "dur": "1:06:35"}, {"id": "GXSucHj0MAg", "title": "lucid classical lofi for quiet thinking.", "thumb": "https://i.ytimg.com/vi/GXSucHj0MAg/mqdefault.jpg", "dur": "1:05:32"}, {"id": "a1U8BARANHM", "title": "lucid classical tones for overthinkers.", "thumb": "https://i.ytimg.com/vi/a1U8BARANHM/mqdefault.jpg", "dur": "1:05:32"}, {"id": "mwMEjXzEKl4", "title": "classical lofi for deep work.", "thumb": "https://i.ytimg.com/vi/mwMEjXzEKl4/mqdefault.jpg", "dur": "1:05:32"}, {"id": "IuijxRpB2iE", "title": "classical lofi for mental clarity.", "thumb": "https://i.ytimg.com/vi/IuijxRpB2iE/mqdefault.jpg", "dur": "1:05:32"}, {"id": "7OxH0wOcEKE", "title": "atmospheric classical lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/7OxH0wOcEKE/mqdefault.jpg", "dur": "1:05:32"}, {"id": "eO-lNGmXw00", "title": "lucid classical tones for overthinkers.", "thumb": "https://i.ytimg.com/vi/eO-lNGmXw00/mqdefault.jpg", "dur": "1:06:15"}, {"id": "n8OWf134-C8", "title": "modern classical lofi for sustained study.", "thumb": "https://i.ytimg.com/vi/n8OWf134-C8/mqdefault.jpg", "dur": "1:06:15"}, {"id": "poXKKxu_GXk", "title": "elevated classical lofi for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/poXKKxu_GXk/mqdefault.jpg", "dur": "1:06:15"}, {"id": "YRyQ97DjOMQ", "title": "meditative lofi jazz for concentration.", "thumb": "https://i.ytimg.com/vi/YRyQ97DjOMQ/mqdefault.jpg", "dur": "1:06:15"}, {"id": "Q4-43N8hZLE", "title": "atmospheric lofi for overthinkers.", "thumb": "https://i.ytimg.com/vi/Q4-43N8hZLE/mqdefault.jpg", "dur": "1:04:09"}, {"id": "Y8cE4oP2Q2s", "title": "architectural lofi jazz for deep work.", "thumb": "https://i.ytimg.com/vi/Y8cE4oP2Q2s/mqdefault.jpg", "dur": "1:04:09"}, {"id": "9SBkgGncZDg", "title": "spatial lofi & café architecture for deep work.", "thumb": "https://i.ytimg.com/vi/9SBkgGncZDg/mqdefault.jpg", "dur": "1:04:09"}, {"id": "staQKJfxwYc", "title": "classical lofi for mental clarity.", "thumb": "https://i.ytimg.com/vi/staQKJfxwYc/mqdefault.jpg", "dur": "1:04:09"}, {"id": "3Cx5Aq2YpO4", "title": "baroque jazz for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/3Cx5Aq2YpO4/mqdefault.jpg", "dur": "1:05:28"}, {"id": "9VhH_yvAoXM", "title": "orchestral textures for cognitive clarity.", "thumb": "https://i.ytimg.com/vi/9VhH_yvAoXM/mqdefault.jpg", "dur": "1:05:28"}, {"id": "AUEeNjIlUxU", "title": "symphony jazz for deep work.", "thumb": "https://i.ytimg.com/vi/AUEeNjIlUxU/mqdefault.jpg", "dur": "1:05:28"}, {"id": "MYsiorE3Vs8", "title": "architectural sound for sustained study.", "thumb": "https://i.ytimg.com/vi/MYsiorE3Vs8/mqdefault.jpg", "dur": "1:05:28"}, {"id": "YccUoUwDH48", "title": "classical atmospheres for overactive minds.", "thumb": "https://i.ytimg.com/vi/YccUoUwDH48/mqdefault.jpg", "dur": "1:05:19"}, {"id": "h9E-MTOi6RI", "title": "classical depth for reduced mental noise.", "thumb": "https://i.ytimg.com/vi/h9E-MTOi6RI/mqdefault.jpg", "dur": "1:05:19"}, {"id": "LxKilPKJYPI", "title": "orchestral jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/LxKilPKJYPI/mqdefault.jpg", "dur": "1:05:19"}, {"id": "71rv0j0s6I8", "title": "orchestral textures for mental steadiness.", "thumb": "https://i.ytimg.com/vi/71rv0j0s6I8/mqdefault.jpg", "dur": "1:05:19"}, {"id": "RGeoIVpDk1A", "title": "weightless jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/RGeoIVpDk1A/mqdefault.jpg", "dur": "1:05:19"}, {"id": "T32dQnuK5RE", "title": "harp textured jazz for uninterrupted study.", "thumb": "https://i.ytimg.com/vi/T32dQnuK5RE/mqdefault.jpg", "dur": "1:03:06"}, {"id": "CjNecBuqbYw", "title": "lucid jazz for focus flow states.", "thumb": "https://i.ytimg.com/vi/CjNecBuqbYw/mqdefault.jpg", "dur": "1:05:19"}, {"id": "11RllLlwx2E", "title": "architectural jazz for modern thinkers.", "thumb": "https://i.ytimg.com/vi/11RllLlwx2E/mqdefault.jpg", "dur": "1:05:19"}, {"id": "A9n6yIUHxqY", "title": "jazz engineered to reduce mental noise.", "thumb": "https://i.ytimg.com/vi/A9n6yIUHxqY/mqdefault.jpg", "dur": "1:05:19"}, {"id": "OHWBityslhI", "title": "jazz tones for uninterrupted focus.", "thumb": "https://i.ytimg.com/vi/OHWBityslhI/mqdefault.jpg", "dur": "1:05:19"}, {"id": "t3keZT5g5Oc", "title": "oceanside jazz for clearing mental overload.", "thumb": "https://i.ytimg.com/vi/t3keZT5g5Oc/mqdefault.jpg", "dur": "1:05:19"}, {"id": "2Ba3c_IQs2E", "title": "lucid jazz for cognitive ease.", "thumb": "https://i.ytimg.com/vi/2Ba3c_IQs2E/mqdefault.jpg", "dur": "1:03:59"}, {"id": "bc8k8KG3QiQ", "title": "oceanside architecture & jazz for mindful work.", "thumb": "https://i.ytimg.com/vi/bc8k8KG3QiQ/mqdefault.jpg", "dur": "1:03:59"}, {"id": "_X4oUvcUqD4", "title": "architectural jazz that feels like quiet luxury.", "thumb": "https://i.ytimg.com/vi/_X4oUvcUqD4/mqdefault.jpg", "dur": "1:03:59"}, {"id": "IHgZioLmG8I", "title": "meditative jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/IHgZioLmG8I/mqdefault.jpg", "dur": "1:03:59"}, {"id": "AdJw7m8gXIU", "title": "lucid jazz for mental steadiness.", "thumb": "https://i.ytimg.com/vi/AdJw7m8gXIU/mqdefault.jpg", "dur": "1:02:01"}, {"id": "pYWkNCVHm9E", "title": "meditative jazz for deep concentration.", "thumb": "https://i.ytimg.com/vi/pYWkNCVHm9E/mqdefault.jpg", "dur": "1:02:01"}, {"id": "hDGeP6u0MWY", "title": "architectural jazz for modern thinkers.", "thumb": "https://i.ytimg.com/vi/hDGeP6u0MWY/mqdefault.jpg", "dur": "1:02:01"}, {"id": "X0WM5JjTZqY", "title": "minimal jazz for cognitive ease.", "thumb": "https://i.ytimg.com/vi/X0WM5JjTZqY/mqdefault.jpg", "dur": "1:02:01"}, {"id": "AuMzK2nQsZQ", "title": "meditative jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/AuMzK2nQsZQ/mqdefault.jpg", "dur": "1:05:27"}, {"id": "f-4KtZwC3oM", "title": "weightless jazz for focused work sessions.", "thumb": "https://i.ytimg.com/vi/f-4KtZwC3oM/mqdefault.jpg", "dur": "1:05:27"}, {"id": "Zmyi8GbQIvs", "title": "spatial jazz for uninterrupted focus.", "thumb": "https://i.ytimg.com/vi/Zmyi8GbQIvs/mqdefault.jpg", "dur": "1:05:27"}, {"id": "vmWMq5JHxpQ", "title": "lucid jazz for focused thinking.", "thumb": "https://i.ytimg.com/vi/vmWMq5JHxpQ/mqdefault.jpg", "dur": "1:05:27"}, {"id": "Z6PbkXQ7Jtk", "title": "minimal jazz for minds at capacity.", "thumb": "https://i.ytimg.com/vi/Z6PbkXQ7Jtk/mqdefault.jpg", "dur": "1:05:27"}, {"id": "GqoUAXeEZIY", "title": "weightless jazz & rainfall for deep work.", "thumb": "https://i.ytimg.com/vi/GqoUAXeEZIY/mqdefault.jpg", "dur": "1:03:59"}, {"id": "g9UpITXky4I", "title": "oceanside spatial jazz for sustained concentration.", "thumb": "https://i.ytimg.com/vi/g9UpITXky4I/mqdefault.jpg", "dur": "1:03:59"}, {"id": "y0U1YWB6eDg", "title": "architectural jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/y0U1YWB6eDg/mqdefault.jpg", "dur": "1:02:22"}, {"id": "BERCIX4Ydj0", "title": "architectural jazz for effortless focus.", "thumb": "https://i.ytimg.com/vi/BERCIX4Ydj0/mqdefault.jpg", "dur": "1:02:22"}, {"id": "GzzxdGfQHlI", "title": "cinematic jazz for focused work.", "thumb": "https://i.ytimg.com/vi/GzzxdGfQHlI/mqdefault.jpg", "dur": "1:02:22"}, {"id": "JjSaZET8Ic8", "title": "architectural jazz for deep work.", "thumb": "https://i.ytimg.com/vi/JjSaZET8Ic8/mqdefault.jpg", "dur": "1:02:22"}, {"id": "Kp-ve9VzGeQ", "title": "jazz designed for the overthinkers.", "thumb": "https://i.ytimg.com/vi/Kp-ve9VzGeQ/mqdefault.jpg", "dur": "1:02:22"}, {"id": "HDlOaad5pko", "title": "spatial jazz for deep focus.", "thumb": "https://i.ytimg.com/vi/HDlOaad5pko/mqdefault.jpg", "dur": "1:02:22"}, {"id": "Ov23kaM6ax8", "title": "magnetic jazz for overthinkers.", "thumb": "https://i.ytimg.com/vi/Ov23kaM6ax8/mqdefault.jpg", "dur": "1:02:22"}, {"id": "Lf-eeLtlZZc", "title": "cinematic jazz for mental fatigue.", "thumb": "https://i.ytimg.com/vi/Lf-eeLtlZZc/mqdefault.jpg", "dur": "1:02:22"}, {"id": "yLq8C5ZtI8I", "title": "architectural jazz for minds at capacity.", "thumb": "https://i.ytimg.com/vi/yLq8C5ZtI8I/mqdefault.jpg", "dur": "1:02:22"}, {"id": "xOAsV1Mk6Z4", "title": "architectural jazz for quiet productivity.", "thumb": "https://i.ytimg.com/vi/xOAsV1Mk6Z4/mqdefault.jpg", "dur": "1:02:22"}, {"id": "FrBzvBjLv6s", "title": "magnetic jazz for deep work.", "thumb": "https://i.ytimg.com/vi/FrBzvBjLv6s/mqdefault.jpg", "dur": "1:02:22"}, {"id": "NZyieze_qHk", "title": "jazz tones for elevated concentration.", "thumb": "https://i.ytimg.com/vi/NZyieze_qHk/mqdefault.jpg", "dur": "1:02:22"}, {"id": "Zci-Z1uxuDk", "title": "architectural jazz for effortless focus.", "thumb": "https://i.ytimg.com/vi/Zci-Z1uxuDk/mqdefault.jpg", "dur": "1:02:22"}, {"id": "FjqO5BU5IF8", "title": "winter jazz shaped for gentle focus.", "thumb": "https://i.ytimg.com/vi/FjqO5BU5IF8/mqdefault.jpg", "dur": "1:02:22"}, {"id": "vBEMtJewKB4", "title": "enter a grounding winter jazz refuge.", "thumb": "https://i.ytimg.com/vi/vBEMtJewKB4/mqdefault.jpg", "dur": "1:02:22"}, {"id": "CZHHpYLCkKQ", "title": "enter a winter ambience tuned for gentle concentration.", "thumb": "https://i.ytimg.com/vi/CZHHpYLCkKQ/mqdefault.jpg", "dur": "1:02:22"}, {"id": "7Tx_rFdBaRE", "title": "gentle winter jazz ambience that steadies you.", "thumb": "https://i.ytimg.com/vi/7Tx_rFdBaRE/mqdefault.jpg", "dur": "1:02:22"}, {"id": "htQXVZ6FxFE", "title": "winter jazz built to quiet the mind.", "thumb": "https://i.ytimg.com/vi/htQXVZ6FxFE/mqdefault.jpg", "dur": "1:02:22"}, {"id": "gM8Arpaa32c", "title": "fireplace ambience for deep mental clarity.", "thumb": "https://i.ytimg.com/vi/gM8Arpaa32c/mqdefault.jpg", "dur": "1:02:07"}, {"id": "3p5nvUruvG8", "title": "enter a gentle architecture for uninterrupted thinking.", "thumb": "https://i.ytimg.com/vi/3p5nvUruvG8/mqdefault.jpg", "dur": "1:02:07"}, {"id": "53XBx3Hhm1Q", "title": "enter the winter refuge that rebuilds your focus.", "thumb": "https://i.ytimg.com/vi/53XBx3Hhm1Q/mqdefault.jpg", "dur": "1:02:07"}, {"id": "vthsKaV5qCE", "title": "magnetic jazz that feels like mental stillness.", "thumb": "https://i.ytimg.com/vi/vthsKaV5qCE/mqdefault.jpg", "dur": "1:02:07"}, {"id": "2brI-fSdBsw", "title": "winter jazz that removes every distraction.", "thumb": "https://i.ytimg.com/vi/2brI-fSdBsw/mqdefault.jpg", "dur": "1:02:07"}, {"id": "3hD6SRCEYrw", "title": "winter jazz that turns a quiet room into clarity.", "thumb": "https://i.ytimg.com/vi/3hD6SRCEYrw/mqdefault.jpg", "dur": "1:02:42"}, {"id": "hfZMfSeyG6E", "title": "jazz built to warm the places stress collects.", "thumb": "https://i.ytimg.com/vi/hfZMfSeyG6E/mqdefault.jpg", "dur": "1:02:03"}, {"id": "5sIw0YAQCss", "title": "organic jazz that feels quietly celestial.", "thumb": "https://i.ytimg.com/vi/5sIw0YAQCss/mqdefault.jpg", "dur": "1:02:03"}, {"id": "KVLZkHq-ZiQ", "title": "jazz tones built for elevated concentration.", "thumb": "https://i.ytimg.com/vi/KVLZkHq-ZiQ/mqdefault.jpg", "dur": "1:02:03"}, {"id": "xNt9kF8b7-0", "title": "organic jazz that feels like an invitation to breathe.", "thumb": "https://i.ytimg.com/vi/xNt9kF8b7-0/mqdefault.jpg", "dur": "1:01:52"}, {"id": "Z0AWjGwgY0Y", "title": "architectural jazz engineered for effortless focus.", "thumb": "https://i.ytimg.com/vi/Z0AWjGwgY0Y/mqdefault.jpg", "dur": "1:01:36"}, {"id": "VEmkBONxqPY", "title": "architectural jazz that heals mental fatigue.", "thumb": "https://i.ytimg.com/vi/VEmkBONxqPY/mqdefault.jpg", "dur": "1:01:39"}, {"id": "CVwvWGU_yaM", "title": "architectural lofi designed for overthinkers.", "thumb": "https://i.ytimg.com/vi/CVwvWGU_yaM/mqdefault.jpg", "dur": "1:02:56"}, {"id": "q5_LqYQTi-Q", "title": "minimal lofi engineered for minds at capacity.", "thumb": "https://i.ytimg.com/vi/q5_LqYQTi-Q/mqdefault.jpg", "dur": "1:02:56"}, {"id": "yhobdbdOgis", "title": "architectural lofi engineered for modern thinkers.", "thumb": "https://i.ytimg.com/vi/yhobdbdOgis/mqdefault.jpg", "dur": "1:02:56"}, {"id": "eSMe8Or9MSE", "title": "abstract lofi crafted for quiet discipline.", "thumb": "https://i.ytimg.com/vi/eSMe8Or9MSE/mqdefault.jpg", "dur": "1:02:56"}, {"id": "3XLUvP3ZA0k", "title": "lofi rhythms composed for mental clarity.", "thumb": "https://i.ytimg.com/vi/3XLUvP3ZA0k/mqdefault.jpg", "dur": "1:02:56"}, {"id": "OMlTKJVj6AQ", "title": "modern jazz designed for stillness.", "thumb": "https://i.ytimg.com/vi/OMlTKJVj6AQ/mqdefault.jpg", "dur": "1:04:04"}, {"id": "r0wxUG2Ds34", "title": "jazz textures formulated for deep focus.", "thumb": "https://i.ytimg.com/vi/r0wxUG2Ds34/mqdefault.jpg", "dur": "1:04:04"}, {"id": "kPhRtzFkxdI", "title": "modern jazz built for uninterrupted thinking.", "thumb": "https://i.ytimg.com/vi/kPhRtzFkxdI/mqdefault.jpg", "dur": "1:04:04"}, {"id": "XC1eZO0K3kw", "title": "minimalist jazz composed for disciplined focus.", "thumb": "https://i.ytimg.com/vi/XC1eZO0K3kw/mqdefault.jpg", "dur": "1:04:04"}, {"id": "4OAF-dgPmYs", "title": "evening jazz composed for gentle restoration.", "thumb": "https://i.ytimg.com/vi/4OAF-dgPmYs/mqdefault.jpg", "dur": "1:04:04"}, {"id": "h3DPy7-pZM8", "title": "jazz textures designed for reflection.", "thumb": "https://i.ytimg.com/vi/h3DPy7-pZM8/mqdefault.jpg", "dur": "1:04:04"}, {"id": "sOmCiPSb_zs", "title": "minimal jazz that evokes environmental clarity.", "thumb": "https://i.ytimg.com/vi/sOmCiPSb_zs/mqdefault.jpg", "dur": "1:04:04"}, {"id": "JzBUMttYeGg", "title": "lofi tones designed for intentional becoming.", "thumb": "https://i.ytimg.com/vi/JzBUMttYeGg/mqdefault.jpg", "dur": "1:02:34"}, {"id": "HhFBzoZVwyM", "title": "architectural lofi composed for mental reset.", "thumb": "https://i.ytimg.com/vi/HhFBzoZVwyM/mqdefault.jpg", "dur": "1:02:34"}, {"id": "GknrgMdK2aQ", "title": "architectural lofi engineered to restore focus.", "thumb": "https://i.ytimg.com/vi/GknrgMdK2aQ/mqdefault.jpg", "dur": "1:02:34"}, {"id": "5Yw1vra8Xcc", "title": "morning lofi composed for quiet productivity.", "thumb": "https://i.ytimg.com/vi/5Yw1vra8Xcc/mqdefault.jpg", "dur": "1:01:23"}, {"id": "N7OvLc4Wv3s", "title": "ambient lofi designed for nervous system reset.", "thumb": "https://i.ytimg.com/vi/N7OvLc4Wv3s/mqdefault.jpg", "dur": "1:01:23"}, {"id": "1tmxTteXkRA", "title": "abstract lofi built for grounded focus.", "thumb": "https://i.ytimg.com/vi/1tmxTteXkRA/mqdefault.jpg", "dur": "1:01:11"}, {"id": "ZQyUaG3fWDQ", "title": "reflective lofi composed for deep focus.", "thumb": "https://i.ytimg.com/vi/ZQyUaG3fWDQ/mqdefault.jpg", "dur": "1:01:11"}, {"id": "VnOCTzNbBHQ", "title": "lofi tones designed for the overstimulated.", "thumb": "https://i.ytimg.com/vi/VnOCTzNbBHQ/mqdefault.jpg", "dur": "1:00:29"}, {"id": "rMAWqydsy3M", "title": "abstract lofi built to convert noise into clarity.", "thumb": "https://i.ytimg.com/vi/rMAWqydsy3M/mqdefault.jpg", "dur": "1:00:24"}, {"id": "UbDIUEMxMmE", "title": "minimal lofi engineered for grounded focus.", "thumb": "https://i.ytimg.com/vi/UbDIUEMxMmE/mqdefault.jpg", "dur": "1:00:24"}, {"id": "d1Ax79Bg7mQ", "title": "reflective lofi composed for deep focus.", "thumb": "https://i.ytimg.com/vi/d1Ax79Bg7mQ/mqdefault.jpg", "dur": "1:00:15"}, {"id": "txhacf2Rw-Y", "title": "abstract lofi crafted for mental clarity.", "thumb": "https://i.ytimg.com/vi/txhacf2Rw-Y/mqdefault.jpg", "dur": "1:01:10"}, {"id": "2nbjDJvEVxw", "title": "ambient lofi formulated for mental reset.", "thumb": "https://i.ytimg.com/vi/2nbjDJvEVxw/mqdefault.jpg", "dur": "1:00:15"}, {"id": "X4Y4RvEufec", "title": "lofi engineered to clear the overwhelmed mind.", "thumb": "https://i.ytimg.com/vi/X4Y4RvEufec/mqdefault.jpg", "dur": "1:01:54"}, {"id": "8es31tyH-Sk", "title": "lofi designed for nervous system restoration.", "thumb": "https://i.ytimg.com/vi/8es31tyH-Sk/mqdefault.jpg", "dur": "59:36"}, {"id": "tkvEtGAqLcg", "title": "lofi engineered to restore quiet productivity.", "thumb": "https://i.ytimg.com/vi/tkvEtGAqLcg/mqdefault.jpg", "dur": "1:00:36"}, {"id": "0_S4nMIqUCI", "title": "abstract lofi composed for quiet clarity.", "thumb": "https://i.ytimg.com/vi/0_S4nMIqUCI/mqdefault.jpg", "dur": "1:00:01"}, {"id": "ErL4efyog-s", "title": "quiet lofi crafted for deep concentration.", "thumb": "https://i.ytimg.com/vi/ErL4efyog-s/mqdefault.jpg", "dur": "1:00:06"}, {"id": "6qnco73kPzk", "title": "organic lofi built for restorative balance.", "thumb": "https://i.ytimg.com/vi/6qnco73kPzk/mqdefault.jpg", "dur": "1:01:36"}, {"id": "qYAELmAm9Yg", "title": "brutalist lofi engineered for emotional clarity.", "thumb": "https://i.ytimg.com/vi/qYAELmAm9Yg/mqdefault.jpg", "dur": "1:02:03"}, {"id": "Tx_OPjvNYbs", "title": "abstract lofi composed for uninterrupted study.", "thumb": "https://i.ytimg.com/vi/Tx_OPjvNYbs/mqdefault.jpg", "dur": "1:00:19"}, {"id": "lCzt7UkWiLQ", "title": "architectural lofi designed for reflective focus.", "thumb": "https://i.ytimg.com/vi/lCzt7UkWiLQ/mqdefault.jpg", "dur": "1:02:26"}, {"id": "u_sXwpns8no", "title": "meditative lofi designed for deep focus.", "thumb": "https://i.ytimg.com/vi/u_sXwpns8no/mqdefault.jpg", "dur": "1:01:29"}, {"id": "AmN0HLwQPoQ", "title": "architectural lofi that feels like quiet luxury.", "thumb": "https://i.ytimg.com/vi/AmN0HLwQPoQ/mqdefault.jpg", "dur": "1:01:19"}, {"id": "ZXsKdDUXIzE", "title": "architectural lofi engineered for mindful work.", "thumb": "https://i.ytimg.com/vi/ZXsKdDUXIzE/mqdefault.jpg", "dur": "1:00:05"}, {"id": "oqhBdngGQQ8", "title": "ambient lofi designed for mental reset.", "thumb": "https://i.ytimg.com/vi/oqhBdngGQQ8/mqdefault.jpg", "dur": "55:16"}, {"id": "8vQZGh8EDq0", "title": "architectural lofi built for deep work.", "thumb": "https://i.ytimg.com/vi/8vQZGh8EDq0/mqdefault.jpg", "dur": "55:16"}, {"id": "tFifVZ2qnnQ", "title": "minimal lofi crafted for intellectual stillness.", "thumb": "https://i.ytimg.com/vi/tFifVZ2qnnQ/mqdefault.jpg", "dur": "55:16"}, {"id": "Ttnc8sYxvKo", "title": "abstract lofi composed for quiet clarity.", "thumb": "https://i.ytimg.com/vi/Ttnc8sYxvKo/mqdefault.jpg", "dur": "55:16"}, {"id": "Fw51MFAdQIs", "title": "jazz designed for emotional reset.", "thumb": "https://i.ytimg.com/vi/Fw51MFAdQIs/mqdefault.jpg", "dur": "53:58"}, {"id": "aBY9-w8PH2k", "title": "brutalist lofi engineered for nervous system reset.", "thumb": "https://i.ytimg.com/vi/aBY9-w8PH2k/mqdefault.jpg", "dur": "54:11"}, {"id": "-czZw0zr3CE", "title": "jazz tones composed for deep focus.", "thumb": "https://i.ytimg.com/vi/-czZw0zr3CE/mqdefault.jpg", "dur": "59:29"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

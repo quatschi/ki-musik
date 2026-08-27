@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Putumayo</title>
+<!-- categories: Weltmusik -->
+<!-- channel-id: UCiTw2f7FJHEcX9YxqbHg74A -->
+<!-- channel-url: https://youtube.com/@putumayoworldmusic -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Putumayo.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/tTrRV52QENkUncMPv2x8dlczW92wtZdfh0KtVGXWhA58F7ccWHOtm8P5n1bMRmMXLigniRuqHQU=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Putumayo</div>
+      <div class="channel-count">273 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Putumayo";
+const KANAL = "Putumayo.html";
+const ORIG_CATEGORIES = "Weltmusik";
+const VIDEOS = [{"id": "g0S1cjVMIpU", "title": "South Pacific Islands (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/g0S1cjVMIpU/mqdefault.jpg", "dur": "59:12"}, {"id": "OiMRfwSD50U", "title": "Club Putumayo (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/OiMRfwSD50U/mqdefault.jpg", "dur": "29:46"}, {"id": "okJ6C5-lwvg", "title": "Groove Africa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/okJ6C5-lwvg/mqdefault.jpg", "dur": "34:43"}, {"id": "RPq-UZg32SE", "title": "European Escapade (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/RPq-UZg32SE/mqdefault.jpg", "dur": "32:34"}, {"id": "okEawHdHv3A", "title": "A New Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/okEawHdHv3A/mqdefault.jpg", "dur": "1:08:30"}, {"id": "LF2QkemzZZE", "title": "African Sojourn (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/LF2QkemzZZE/mqdefault.jpg", "dur": "39:12"}, {"id": "pwyHzMq0uOQ", "title": "Afro-Brazil (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/pwyHzMq0uOQ/mqdefault.jpg", "dur": "31:17"}, {"id": "7K3ZfX_5wzc", "title": "Lotus Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/7K3ZfX_5wzc/mqdefault.jpg", "dur": "38:08"}, {"id": "kLrLyJsvn0s", "title": "Calypso (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/kLrLyJsvn0s/mqdefault.jpg", "dur": "1:08:47"}, {"id": "gC4hlWi8yvo", "title": "Italian Musical Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/gC4hlWi8yvo/mqdefault.jpg", "dur": "1:22:11"}, {"id": "fU-hev2houg", "title": "Latin Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/fU-hev2houg/mqdefault.jpg", "dur": "1:05:35"}, {"id": "oWDwUT7D080", "title": "American Roots (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/oWDwUT7D080/mqdefault.jpg", "dur": "35:22"}, {"id": "mLIAtHuX1Xs", "title": "Global Soul (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/mLIAtHuX1Xs/mqdefault.jpg", "dur": "1:14:13"}, {"id": "yISPYXurDdk", "title": "Love Songs Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/yISPYXurDdk/mqdefault.jpg", "dur": "35:36"}, {"id": "AK_xPD8IylI", "title": "Global Guitars (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/AK_xPD8IylI/mqdefault.jpg", "dur": "41:35"}, {"id": "WKZvUfwYLy4", "title": "Café Feminina (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/WKZvUfwYLy4/mqdefault.jpg", "dur": "38:49"}, {"id": "f8g3GrdMeA8", "title": "Mali (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/f8g3GrdMeA8/mqdefault.jpg", "dur": "1:08:27"}, {"id": "J2tKr-5gl8A", "title": "Celtic Voices (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/J2tKr-5gl8A/mqdefault.jpg", "dur": "39:52"}, {"id": "Ce5Zcp0BAfg", "title": "Global Reggae (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Ce5Zcp0BAfg/mqdefault.jpg", "dur": "41:17"}, {"id": "FrPbe2RHnnk", "title": "Fiesta Latina (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/FrPbe2RHnnk/mqdefault.jpg", "dur": "38:36"}, {"id": "qpDpE6pczA4", "title": "Caribbean Cruise (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/qpDpE6pczA4/mqdefault.jpg", "dur": "39:38"}, {"id": "RlL9uLbxMgQ", "title": "French Bossa Nova (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/RlL9uLbxMgQ/mqdefault.jpg", "dur": "32:30"}, {"id": "kIInszdzxE8", "title": "Cafe Nomadica (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/kIInszdzxE8/mqdefault.jpg", "dur": "35:57"}, {"id": "z3BTxOo9TK0", "title": "Folk Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/z3BTxOo9TK0/mqdefault.jpg", "dur": "36:58"}, {"id": "OxHOo2NWD30", "title": "Nordic Nights (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/OxHOo2NWD30/mqdefault.jpg", "dur": "34:29"}, {"id": "W8AjeGUsaT8", "title": "Global Celebration (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/W8AjeGUsaT8/mqdefault.jpg", "dur": "38:58"}, {"id": "o6RQLyT4oTE", "title": "Tropical Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/o6RQLyT4oTE/mqdefault.jpg", "dur": "39:26"}, {"id": "1-_xLf090c4", "title": "Desert Blues (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/1-_xLf090c4/mqdefault.jpg", "dur": "39:18"}, {"id": "SzPk1N1vcQQ", "title": "Global Indie (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/SzPk1N1vcQQ/mqdefault.jpg", "dur": "34:29"}, {"id": "AtpX2vHkFkA", "title": "Reggae Dance Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/AtpX2vHkFkA/mqdefault.jpg", "dur": "38:40"}, {"id": "0yNWYFdoRAE", "title": "Acoustic Christmas (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/0yNWYFdoRAE/mqdefault.jpg", "dur": "45:39"}, {"id": "_CGG-EeoSCs", "title": "World Road Trip (Official Putumayo Verison)", "thumb": "https://i.ytimg.com/vi/_CGG-EeoSCs/mqdefault.jpg", "dur": "34:41"}, {"id": "PKngDjJd3lg", "title": "Coffee Culture (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/PKngDjJd3lg/mqdefault.jpg", "dur": "34:02"}, {"id": "dnoRfmNLpMg", "title": "Latin Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/dnoRfmNLpMg/mqdefault.jpg", "dur": "1:06:36"}, {"id": "gmBiptk9uM4", "title": "Global Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/gmBiptk9uM4/mqdefault.jpg", "dur": "36:03"}, {"id": "sg01wRuZWZY", "title": "Global Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/sg01wRuZWZY/mqdefault.jpg", "dur": "37:20"}, {"id": "JR139N92i9E", "title": "Acoustic Coffeehouse (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/JR139N92i9E/mqdefault.jpg", "dur": "34:31"}, {"id": "o1HJSD0ymqQ", "title": "Latin Chill (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/o1HJSD0ymqQ/mqdefault.jpg", "dur": "35:59"}, {"id": "6jKXLyzx6ag", "title": "Instrumental Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/6jKXLyzx6ag/mqdefault.jpg", "dur": "39:49"}, {"id": "IimVmJwWHKk", "title": "Afro-Portuguesa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/IimVmJwWHKk/mqdefault.jpg", "dur": "37:22"}, {"id": "dLGVkJUICrI", "title": "Café du Monde (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/dLGVkJUICrI/mqdefault.jpg", "dur": "35:44"}, {"id": "fTmxGIFjFxU", "title": "African Celebration (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/fTmxGIFjFxU/mqdefault.jpg", "dur": "39:35"}, {"id": "FVbjIZOOmEA", "title": "Dream World - Soothing Songs from Around the Globe (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/FVbjIZOOmEA/mqdefault.jpg", "dur": "38:48"}, {"id": "chqYCbtI2rI", "title": "French Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/chqYCbtI2rI/mqdefault.jpg", "dur": "32:53"}, {"id": "zpCajHcbdR4", "title": "Caribbean Celebration (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/zpCajHcbdR4/mqdefault.jpg", "dur": "37:43"}, {"id": "d0Ou1ng3c6k", "title": "Café Brazil (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/d0Ou1ng3c6k/mqdefault.jpg", "dur": "33:51"}, {"id": "fO3xsmLQdxk", "title": "World Love Songs (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/fO3xsmLQdxk/mqdefault.jpg", "dur": "36:18"}, {"id": "lkVCdqNedDk", "title": "Acoustic Europe (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/lkVCdqNedDk/mqdefault.jpg", "dur": "35:01"}, {"id": "jP4z7j4SB1s", "title": "Acoustic Latino (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/jP4z7j4SB1s/mqdefault.jpg", "dur": "38:29"}, {"id": "4jcycv1InR8", "title": "World Beach Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/4jcycv1InR8/mqdefault.jpg", "dur": "35:11"}, {"id": "YKQ__tYu6Ns", "title": "Café Africa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/YKQ__tYu6Ns/mqdefault.jpg", "dur": "39:29"}, {"id": "E35hk4z0sH0", "title": "Reggae Routes (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/E35hk4z0sH0/mqdefault.jpg", "dur": "39:11"}, {"id": "pFUQLsc7hr4", "title": "Latin American Women (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/pFUQLsc7hr4/mqdefault.jpg", "dur": "31:53"}, {"id": "dbmUkDRdmOs", "title": "Brazilian Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/dbmUkDRdmOs/mqdefault.jpg", "dur": "35:39"}, {"id": "pipWqEP6Css", "title": "Mediterranean Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/pipWqEP6Css/mqdefault.jpg", "dur": "36:59"}, {"id": "ca0rSdOzcRI", "title": "African Acoustic (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/ca0rSdOzcRI/mqdefault.jpg", "dur": "44:54"}, {"id": "E1ryj3CkwXE", "title": "Jazz World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/E1ryj3CkwXE/mqdefault.jpg", "dur": "38:43"}, {"id": "PZ_eYLUU9is", "title": "Acoustic Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/PZ_eYLUU9is/mqdefault.jpg", "dur": "48:35"}, {"id": "BAYajkkDOZc", "title": "Reggae Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/BAYajkkDOZc/mqdefault.jpg", "dur": "39:43"}, {"id": "-wQt1PtSabA", "title": "Brazilian Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/-wQt1PtSabA/mqdefault.jpg", "dur": "55:53"}, {"id": "VESjKz0cJ6A", "title": "Lounge du Monde (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/VESjKz0cJ6A/mqdefault.jpg", "dur": "33:59"}, {"id": "z7qdm3wy0B8", "title": "Café Europa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/z7qdm3wy0B8/mqdefault.jpg", "dur": "30:27"}, {"id": "i-nVK-KRSXQ", "title": "Latin Dance Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/i-nVK-KRSXQ/mqdefault.jpg", "dur": "33:29"}, {"id": "3dCZU6YLYiw", "title": "Tango Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/3dCZU6YLYiw/mqdefault.jpg", "dur": "43:55"}, {"id": "PY21YHYuyso", "title": "Euro Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/PY21YHYuyso/mqdefault.jpg", "dur": "53:34"}, {"id": "-OhzfDCaHBI", "title": "World Reggae (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/-OhzfDCaHBI/mqdefault.jpg", "dur": "1:02:32"}, {"id": "15xX72vExz4", "title": "Blues Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/15xX72vExz4/mqdefault.jpg", "dur": "59:46"}, {"id": "_6pp9Tf0NN4", "title": "Celtic Crossroads (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/_6pp9Tf0NN4/mqdefault.jpg", "dur": "53:13"}, {"id": "NpQI6Ax0ouQ", "title": "Latin Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/NpQI6Ax0ouQ/mqdefault.jpg", "dur": "31:37"}, {"id": "9P0HyQnzqKw", "title": "Global Women (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/9P0HyQnzqKw/mqdefault.jpg", "dur": "33:17"}, {"id": "dth1dQuOOCo", "title": "Scandinavia (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/dth1dQuOOCo/mqdefault.jpg", "dur": "36:55"}, {"id": "dWoVkMqkmiY", "title": "Groove World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/dWoVkMqkmiY/mqdefault.jpg", "dur": "34:56"}, {"id": "NCqo_xBk5Zc", "title": "Global Yoga (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/NCqo_xBk5Zc/mqdefault.jpg", "dur": "56:38"}, {"id": "6zZiax51WwM", "title": "Cultural Crossroads (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/6zZiax51WwM/mqdefault.jpg", "dur": "35:36"}, {"id": "SbPmZ-IaGmw", "title": "Women of the World: International (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/SbPmZ-IaGmw/mqdefault.jpg", "dur": "1:05:55"}, {"id": "n9K-vrFqLKQ", "title": "Café International (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/n9K-vrFqLKQ/mqdefault.jpg", "dur": "31:36"}, {"id": "Lv3lzUcj6X8", "title": "Global Dinner Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Lv3lzUcj6X8/mqdefault.jpg", "dur": "33:12"}, {"id": "BaUxdwVtQz4", "title": "Rhythm and Blues (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/BaUxdwVtQz4/mqdefault.jpg", "dur": "54:51"}, {"id": "9rG6Vl3qxCY", "title": "España (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/9rG6Vl3qxCY/mqdefault.jpg", "dur": "46:14"}, {"id": "6cv922RBrQ4", "title": "Lounge World by Putumayo (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/6cv922RBrQ4/mqdefault.jpg", "dur": "38:35"}, {"id": "Qv5Kpepcm8I", "title": "Jazz Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Qv5Kpepcm8I/mqdefault.jpg", "dur": "1:05:21"}, {"id": "AB-3XBViIJs", "title": "A Putumayo World Christmas (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/AB-3XBViIJs/mqdefault.jpg", "dur": "51:05"}, {"id": "47-8Jhk1cfM", "title": "Italia (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/47-8Jhk1cfM/mqdefault.jpg", "dur": "47:42"}, {"id": "rsB3Ue1Wq9k", "title": "African Reggae (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/rsB3Ue1Wq9k/mqdefault.jpg", "dur": "1:04:27"}, {"id": "BU1P7G6JSuQ", "title": "Rumba Flamenco by Putumayo", "thumb": "https://i.ytimg.com/vi/BU1P7G6JSuQ/mqdefault.jpg", "dur": "47:04"}, {"id": "Fhh9hHKzN6E", "title": "A Celtic Collection (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Fhh9hHKzN6E/mqdefault.jpg", "dur": "1:04:52"}, {"id": "tbqS5SC0kQA", "title": "Shelter: The Best of Contemporary Singer-Songwriters (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/tbqS5SC0kQA/mqdefault.jpg", "dur": "2:05:38"}, {"id": "FLLoKu9Juao", "title": "World Dance Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/FLLoKu9Juao/mqdefault.jpg", "dur": "1:15:14"}, {"id": "YsChFGGgfAI", "title": "The Best of World Music: Reggae (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/YsChFGGgfAI/mqdefault.jpg", "dur": "1:20:21"}, {"id": "7gvg59Jk_RA", "title": "The Best of World Music: African (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/7gvg59Jk_RA/mqdefault.jpg", "dur": "1:21:15"}, {"id": "yqYOjOxXJuQ", "title": "The Best of Folk Music (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/yqYOjOxXJuQ/mqdefault.jpg", "dur": "1:05:42"}, {"id": "4YBLIWd4nQg", "title": "Asian Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/4YBLIWd4nQg/mqdefault.jpg", "dur": "1:05:18"}, {"id": "MyM4eAtiI5o", "title": "The Best of World Music: Instrumental (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/MyM4eAtiI5o/mqdefault.jpg", "dur": "1:00:35"}, {"id": "bXAx7mva4cI", "title": "Acoustic Brazil (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/bXAx7mva4cI/mqdefault.jpg", "dur": "54:41"}, {"id": "GlCua3BxqUI", "title": "Samba Bossa Nova (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/GlCua3BxqUI/mqdefault.jpg", "dur": "1:01:56"}, {"id": "qf7nvcX7pSo", "title": "French Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/qf7nvcX7pSo/mqdefault.jpg", "dur": "52:24"}, {"id": "o0csqLzNo0o", "title": "African Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/o0csqLzNo0o/mqdefault.jpg", "dur": "1:04:39"}, {"id": "1hVcfWlF2SQ", "title": "New World Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/1hVcfWlF2SQ/mqdefault.jpg", "dur": "1:06:28"}, {"id": "Vm5CC0eSBH0", "title": "Québec (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Vm5CC0eSBH0/mqdefault.jpg", "dur": "48:54"}, {"id": "5CD2ueGTuJU", "title": "Brazilian Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/5CD2ueGTuJU/mqdefault.jpg", "dur": "55:17"}, {"id": "lsdH2zxFECU", "title": "¡Salsa! (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/lsdH2zxFECU/mqdefault.jpg", "dur": "1:06:21"}, {"id": "KFVU6fXpTaM", "title": "Euro Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/KFVU6fXpTaM/mqdefault.jpg", "dur": "1:04:01"}, {"id": "YYZ4G-LEsKY", "title": "Acoustic America (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/YYZ4G-LEsKY/mqdefault.jpg", "dur": "53:10"}, {"id": "HGG_5ofNPvs", "title": "Music From the Chocolate Lands (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/HGG_5ofNPvs/mqdefault.jpg", "dur": "1:03:07"}, {"id": "tdwx5K4xFl0", "title": "African Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/tdwx5K4xFl0/mqdefault.jpg", "dur": "1:02:59"}, {"id": "Bkex-trq4nA", "title": "The Caribbean (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Bkex-trq4nA/mqdefault.jpg", "dur": "1:05:47"}, {"id": "xxKjh_bLnQQ", "title": "Acoustic France (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/xxKjh_bLnQQ/mqdefault.jpg", "dur": "48:31"}, {"id": "yja0iyNHlQ4", "title": "Women of the World: Acoustic (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/yja0iyNHlQ4/mqdefault.jpg", "dur": "1:03:24"}, {"id": "MmrUtm45UVE", "title": "Latin Reggae (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/MmrUtm45UVE/mqdefault.jpg", "dur": "58:17"}, {"id": "enVtXyQ2GEE", "title": "North African Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/enVtXyQ2GEE/mqdefault.jpg", "dur": "55:31"}, {"id": "XD6qtQJJzgc", "title": "Asian Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/XD6qtQJJzgc/mqdefault.jpg", "dur": "1:00:17"}, {"id": "lC_s3UWqa_E", "title": "Radio Latino (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/lC_s3UWqa_E/mqdefault.jpg", "dur": "48:44"}, {"id": "acLj_HOZ2xg", "title": "Festa Brasil (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/acLj_HOZ2xg/mqdefault.jpg", "dur": "43:07"}, {"id": "d-Vt7UhJmCk", "title": "Sahara Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/d-Vt7UhJmCk/mqdefault.jpg", "dur": "1:04:04"}, {"id": "IRgnS5w5-K8", "title": "Blues Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/IRgnS5w5-K8/mqdefault.jpg", "dur": "45:54"}, {"id": "MnVdi4muXp4", "title": "¡Baila! A Latin Dance Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/MnVdi4muXp4/mqdefault.jpg", "dur": "59:41"}, {"id": "00tk956pTuE", "title": "Brazilian Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/00tk956pTuE/mqdefault.jpg", "dur": "53:53"}, {"id": "q3X-1b_nVpA", "title": "Nuevo Latino (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/q3X-1b_nVpA/mqdefault.jpg", "dur": "54:21"}, {"id": "UAW_JTTSPy8", "title": "One World, Many Cultures (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/UAW_JTTSPy8/mqdefault.jpg", "dur": "52:45"}, {"id": "IyfuQYm65BU", "title": "African Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/IyfuQYm65BU/mqdefault.jpg", "dur": "1:20:12"}, {"id": "SDIAY8UTFAs", "title": "Women of Brazil (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/SDIAY8UTFAs/mqdefault.jpg", "dur": "56:59"}, {"id": "-w1gmF9Asw8", "title": "Women of Jazz (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/-w1gmF9Asw8/mqdefault.jpg", "dur": "46:41"}, {"id": "1kr0LBL89-4", "title": "Women of the World: Celtic (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/1kr0LBL89-4/mqdefault.jpg", "dur": "1:02:26"}, {"id": "_q7hZkq0N4o", "title": "Women of Latin America (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/_q7hZkq0N4o/mqdefault.jpg", "dur": "49:58"}, {"id": "rKwi5p0eTt0", "title": "Women of Africa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/rKwi5p0eTt0/mqdefault.jpg", "dur": "56:50"}, {"id": "zmLbmvoPiL4", "title": "Cape Verde (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/zmLbmvoPiL4/mqdefault.jpg", "dur": "59:27"}, {"id": "6J-7VWnjl24", "title": "Jazz (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/6J-7VWnjl24/mqdefault.jpg", "dur": "53:39"}, {"id": "K5CwcGxhrJ4", "title": "Romantica: Great Love Songs from Around the World (Official Album Recreation Video)", "thumb": "https://i.ytimg.com/vi/K5CwcGxhrJ4/mqdefault.jpg", "dur": "50:48"}, {"id": "3yNysvhks1k", "title": "Carnival (Official Putumayo Album Recreation)", "thumb": "https://i.ytimg.com/vi/3yNysvhks1k/mqdefault.jpg", "dur": "1:02:42"}, {"id": "jftRC5c4oQM", "title": "New Orleans (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/jftRC5c4oQM/mqdefault.jpg", "dur": "57:06"}, {"id": "qhS4xJDxRtA", "title": "Acoustic Arabia (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/qhS4xJDxRtA/mqdefault.jpg", "dur": "1:02:00"}, {"id": "ApReQvu5JfQ", "title": "One World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/ApReQvu5JfQ/mqdefault.jpg", "dur": "1:30:27"}, {"id": "oRQv7bsUHXA", "title": "Café Cubano (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/oRQv7bsUHXA/mqdefault.jpg", "dur": "1:00:03"}, {"id": "X3WIna2TKQ4", "title": "Music from the Coffee Lands (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/X3WIna2TKQ4/mqdefault.jpg", "dur": "1:20:16"}, {"id": "_GIBx_R2WWU", "title": "World Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/_GIBx_R2WWU/mqdefault.jpg", "dur": "1:02:51"}, {"id": "JNqUx_2WB0M", "title": "An Afro-Portuguese Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/JNqUx_2WB0M/mqdefault.jpg", "dur": "1:17:56"}, {"id": "GMcJnyDHM2o", "title": "Latin Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/GMcJnyDHM2o/mqdefault.jpg", "dur": "52:40"}, {"id": "ty8X8s4nF1A", "title": "Jazz Christmas (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/ty8X8s4nF1A/mqdefault.jpg", "dur": "40:27"}, {"id": "v3OaMCAgEm4", "title": "Blues Christmas (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/v3OaMCAgEm4/mqdefault.jpg", "dur": "45:58"}, {"id": "TKjZtSYovYk", "title": "A Family Christmas (Official Version)", "thumb": "https://i.ytimg.com/vi/TKjZtSYovYk/mqdefault.jpg", "dur": "42:35"}, {"id": "SP2LAEiOx-g", "title": "French Christmas (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/SP2LAEiOx-g/mqdefault.jpg", "dur": "30:24"}, {"id": "rB3IGr77IpI", "title": "Christmas Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/rB3IGr77IpI/mqdefault.jpg", "dur": "50:36"}, {"id": "65lGBewyGxM", "title": "A Native American Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/65lGBewyGxM/mqdefault.jpg", "dur": "55:25"}, {"id": "uf7_DlSErHY", "title": "Sing Along with Putumayo (Official Putumayo Kids Version)", "thumb": "https://i.ytimg.com/vi/uf7_DlSErHY/mqdefault.jpg", "dur": "51:58"}, {"id": "PM_JHh0U_t0", "title": "Paris (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/PM_JHh0U_t0/mqdefault.jpg", "dur": "56:28"}, {"id": "aZYIwKqMlso", "title": "¡Mo'Vida! (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/aZYIwKqMlso/mqdefault.jpg", "dur": "54:23"}, {"id": "uexjWkEcGA4", "title": "Music from the Wine Lands (Official Putumayo Video)", "thumb": "https://i.ytimg.com/vi/uexjWkEcGA4/mqdefault.jpg", "dur": "58:23"}, {"id": "nNLzwp_J49k", "title": "Afro-Latino (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/nNLzwp_J49k/mqdefault.jpg", "dur": "1:12:08"}, {"id": "Gt9Swb4sJnU", "title": "Gardens of Eden (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Gt9Swb4sJnU/mqdefault.jpg", "dur": "1:13:02"}, {"id": "Y4AQyvajIeU", "title": "A Mediterranean Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Y4AQyvajIeU/mqdefault.jpg", "dur": "1:00:26"}, {"id": "9NnCyVElFOU", "title": "India (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/9NnCyVElFOU/mqdefault.jpg", "dur": "53:38"}, {"id": "bz7jWVPq85c", "title": "Puerto Rico (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/bz7jWVPq85c/mqdefault.jpg", "dur": "1:12:58"}, {"id": "xqFqoxoClIQ", "title": "Jamaica (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/xqFqoxoClIQ/mqdefault.jpg", "dur": "50:53"}, {"id": "8Gwbohz3SQ4", "title": "Music from the Tea Lands (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/8Gwbohz3SQ4/mqdefault.jpg", "dur": "1:01:25"}, {"id": "5LBtqlB-1zM", "title": "Mississippi Blues (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/5LBtqlB-1zM/mqdefault.jpg", "dur": "50:20"}, {"id": "saHKhYwLlF4", "title": "Republica Dominicana (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/saHKhYwLlF4/mqdefault.jpg", "dur": "46:58"}, {"id": "9qJAZsOpQh0", "title": "Arabic Groove (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/9qJAZsOpQh0/mqdefault.jpg", "dur": "58:34"}, {"id": "2Iz3_ifOIU8", "title": "Caribe! Caribe! (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/2Iz3_ifOIU8/mqdefault.jpg", "dur": "58:29"}, {"id": "tPjc1GD8sLA", "title": "Africa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/tPjc1GD8sLA/mqdefault.jpg", "dur": "1:17:26"}, {"id": "4p-vNG_3SjI", "title": "¡Latino! ¡Latino! (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/4p-vNG_3SjI/mqdefault.jpg", "dur": "1:02:30"}, {"id": "IuiC2uj7Tao", "title": "Putumayo Discovery Presents - Tafa Mi-Soleil \"Lakou\"", "thumb": "https://i.ytimg.com/vi/IuiC2uj7Tao/mqdefault.jpg", "dur": "3:23"}, {"id": "5dToeKshDys", "title": "Mexico (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/5dToeKshDys/mqdefault.jpg", "dur": "48:09"}, {"id": "Gcupdp75ZVg", "title": "A Jewish Odyssey (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Gcupdp75ZVg/mqdefault.jpg", "dur": "47:20"}, {"id": "ge2ksssNoZk", "title": "Women of Spirit (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/ge2ksssNoZk/mqdefault.jpg", "dur": "1:18:48"}, {"id": "kp2BozEQ_x8", "title": "Dublin to Dakar (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/kp2BozEQ_x8/mqdefault.jpg", "dur": "52:56"}, {"id": "EHTvmm1wPPQ", "title": "Mali to Memphis (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/EHTvmm1wPPQ/mqdefault.jpg", "dur": "1:16:46"}, {"id": "EKDKnaASCCY", "title": "Latinas: Women of Latin America (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/EKDKnaASCCY/mqdefault.jpg", "dur": "1:01:45"}, {"id": "1Ombztz7NYo", "title": "Caribbean Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/1Ombztz7NYo/mqdefault.jpg", "dur": "52:54"}, {"id": "DpJrYAzX24k", "title": "The Best of World Music Volume 1: World Vocal (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/DpJrYAzX24k/mqdefault.jpg", "dur": "1:00:24"}, {"id": "f_R_ltROFGY", "title": "Latin Jazz (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/f_R_ltROFGY/mqdefault.jpg", "dur": "1:12:56"}, {"id": "mLBLPlowLS8", "title": "A World Instrumental Collection (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/mLBLPlowLS8/mqdefault.jpg", "dur": "1:02:49"}, {"id": "7kyhkQBW3UE", "title": "French Caribbean (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/7kyhkQBW3UE/mqdefault.jpg", "dur": "1:06:10"}, {"id": "phf9pDyuuDU", "title": "American Blues (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/phf9pDyuuDU/mqdefault.jpg", "dur": "1:04:12"}, {"id": "cC5ACdtEqfs", "title": "Celtic Tides (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/cC5ACdtEqfs/mqdefault.jpg", "dur": "1:08:41"}, {"id": "91B391jmqQs", "title": "Reggae Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/91B391jmqQs/mqdefault.jpg", "dur": "1:09:46"}, {"id": "e_tUZo5J0NI", "title": "Afro-Latin Party (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/e_tUZo5J0NI/mqdefault.jpg", "dur": "1:02:35"}, {"id": "nqbxOnyloSU", "title": "Cairo to Casablanca (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/nqbxOnyloSU/mqdefault.jpg", "dur": "1:08:11"}, {"id": "y0Qax0ofERo", "title": "Salsa Around the World (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/y0Qax0ofERo/mqdefault.jpg", "dur": "1:08:56"}, {"id": "Yf4qu9Whix0", "title": "World Lounge (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/Yf4qu9Whix0/mqdefault.jpg", "dur": "1:08:32"}, {"id": "JaaC4wrdACA", "title": "Putumayo Discovery Presents:  Family Folk Chorale & Pihcintu Multicultural Chorus - One Day", "thumb": "https://i.ytimg.com/vi/JaaC4wrdACA/mqdefault.jpg", "dur": "3:55"}, {"id": "amfAAzhjC0E", "title": "Congo to Cuba (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/amfAAzhjC0E/mqdefault.jpg", "dur": "1:17:37"}, {"id": "TpxoXlY6pE8", "title": "Putumayo Presents: Bossa Nova - Orquestra Bamba Social - \"Começa com S\" (Begins With S)", "thumb": "https://i.ytimg.com/vi/TpxoXlY6pE8/mqdefault.jpg", "dur": "4:02"}, {"id": "p_KxCQq7jUI", "title": "Italian Café (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/p_KxCQq7jUI/mqdefault.jpg", "dur": "52:27"}, {"id": "fri_nPFXr0g", "title": "Acoustic Africa (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/fri_nPFXr0g/mqdefault.jpg", "dur": "1:09:01"}, {"id": "WTCRYQEPq3Q", "title": "Islands (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/WTCRYQEPq3Q/mqdefault.jpg", "dur": "1:03:59"}, {"id": "aJhiUbhb1YY", "title": "Brasileiro (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/aJhiUbhb1YY/mqdefault.jpg", "dur": "58:43"}, {"id": "fcWLjSEU2GE", "title": "Putumayo Discovery Presents - Mariaa Siga \"Le Murmure des Anges\"", "thumb": "https://i.ytimg.com/vi/fcWLjSEU2GE/mqdefault.jpg", "dur": "4:08"}, {"id": "V8H0qO8bDO8", "title": "Putumayo Discovery Presents - Noordpool Orkest; Janne Schra \"Als daar muziek voor is\"", "thumb": "https://i.ytimg.com/vi/V8H0qO8bDO8/mqdefault.jpg", "dur": "3:14"}, {"id": "FFREYpjY8-s", "title": "Putumayo Discovery Presents - Sonia De Los Santos \"Yo Volaré (I'll Fly Away)\"", "thumb": "https://i.ytimg.com/vi/FFREYpjY8-s/mqdefault.jpg", "dur": "3:33"}, {"id": "KmuYv110pQQ", "title": "Cuba (Official Putumayo Version)", "thumb": "https://i.ytimg.com/vi/KmuYv110pQQ/mqdefault.jpg", "dur": "48:26"}, {"id": "c6d6Djg8hc4", "title": "Putumayo Discovery Presents - Brek \"Hálftómt glas\"", "thumb": "https://i.ytimg.com/vi/c6d6Djg8hc4/mqdefault.jpg", "dur": "4:15"}, {"id": "vaG2SEQzV90", "title": "Putumayo Discovery Presents - Yohann Le Ferrand Yeko & Tina \"Dunia\"", "thumb": "https://i.ytimg.com/vi/vaG2SEQzV90/mqdefault.jpg", "dur": "4:22"}, {"id": "eFK0ZbOvGIk", "title": "Putumayo Discovery Presents - Minuk \"Madre de Luz\"", "thumb": "https://i.ytimg.com/vi/eFK0ZbOvGIk/mqdefault.jpg", "dur": "6:17"}, {"id": "lQMEg-yQVbE", "title": "Putumayo Discovery Presents - Melane \"Kimia\"", "thumb": "https://i.ytimg.com/vi/lQMEg-yQVbE/mqdefault.jpg", "dur": "3:31"}, {"id": "FWnjDN31ZPc", "title": "Putumayo Discovery Presents - Erella \"Origami\"", "thumb": "https://i.ytimg.com/vi/FWnjDN31ZPc/mqdefault.jpg", "dur": "4:02"}, {"id": "kwPwSgiVNJ4", "title": "Putumayo Discovery Presents - Nadine Altounji & Pedro Martín Díaz Ubillús  \"No Lo Olviden\"", "thumb": "https://i.ytimg.com/vi/kwPwSgiVNJ4/mqdefault.jpg", "dur": "4:26"}, {"id": "alWA53dpFU4", "title": "Putumayo Discovery Presents - Volodia  \"Toute Mon Âme\"", "thumb": "https://i.ytimg.com/vi/alWA53dpFU4/mqdefault.jpg", "dur": "3:38"}, {"id": "lfBy1X_SPjU", "title": "Putumayo Discovery Presents - Ian Lasserre \"Minha Bahia\"", "thumb": "https://i.ytimg.com/vi/lfBy1X_SPjU/mqdefault.jpg", "dur": "3:20"}, {"id": "dkH_CTdCkt8", "title": "Putumayo Discovery Presents - Melane \"Pona Libela\"", "thumb": "https://i.ytimg.com/vi/dkH_CTdCkt8/mqdefault.jpg", "dur": "3:12"}, {"id": "2V6TgZGQPr0", "title": "Putumayo Discovery Presents - Regina Souza \"Vento\"", "thumb": "https://i.ytimg.com/vi/2V6TgZGQPr0/mqdefault.jpg", "dur": "4:20"}, {"id": "UZnzJFkHWeg", "title": "Putumayo Discovery Presents - Fred Deshayes \"Ewa\" feat. Methi's", "thumb": "https://i.ytimg.com/vi/UZnzJFkHWeg/mqdefault.jpg", "dur": "3:12"}, {"id": "N2tpM1Z-YiU", "title": "Putumayo Discovery Presents - Francesco Pariset \"Blanco León (Pinta de Amor)\"", "thumb": "https://i.ytimg.com/vi/N2tpM1Z-YiU/mqdefault.jpg", "dur": "5:18"}, {"id": "ITiaysYHpuk", "title": "Feels Like Home: Linda Ronstadt's Musical Odyssey - Los Cenzontles \"Palomas Que Andan Volando\"", "thumb": "https://i.ytimg.com/vi/ITiaysYHpuk/mqdefault.jpg", "dur": "3:28"}, {"id": "I2PvPkssR8k", "title": "Putumayo Discovery Presents - Philippe Lossen & Cocobamboo Feat Sino \"Au bout de tes rêves\"", "thumb": "https://i.ytimg.com/vi/I2PvPkssR8k/mqdefault.jpg", "dur": "3:46"}, {"id": "SCYHso2cagc", "title": "Putumayo Presents Afro-Cubano - Neto Amado \"Santomense\"", "thumb": "https://i.ytimg.com/vi/SCYHso2cagc/mqdefault.jpg", "dur": "3:06"}, {"id": "h0MVpppGUWs", "title": "Putumayo Discovery Presents - Lunau & Sund \"En Seng Af Guld\"", "thumb": "https://i.ytimg.com/vi/h0MVpppGUWs/mqdefault.jpg", "dur": "3:47"}, {"id": "RHOXev-aHhM", "title": "Putumayo Discovery Presents - Lisza \"Canta Querida\"", "thumb": "https://i.ytimg.com/vi/RHOXev-aHhM/mqdefault.jpg", "dur": "3:18"}, {"id": "I2Rm_wgT9RE", "title": "Putumayo Discovery Presents - Kimi Djabaté \"Dindin\"", "thumb": "https://i.ytimg.com/vi/I2Rm_wgT9RE/mqdefault.jpg", "dur": "4:16"}, {"id": "_bfgM6ieHZI", "title": "Putumayo Discovery Presents - Dobet Gnahoré \"Lagô\" feat. Kajeem", "thumb": "https://i.ytimg.com/vi/_bfgM6ieHZI/mqdefault.jpg", "dur": "3:14"}, {"id": "8x1oDJAjDCA", "title": "Putumayo Discovery Presents - Michael Oloyede & Native Brains \"Fàlàlà\"", "thumb": "https://i.ytimg.com/vi/8x1oDJAjDCA/mqdefault.jpg", "dur": "4:52"}, {"id": "DacKOarxVUc", "title": "Putumayo Discovery Presents - Cheikh Ibra Fam \"Yolele\"", "thumb": "https://i.ytimg.com/vi/DacKOarxVUc/mqdefault.jpg", "dur": "3:33"}, {"id": "1mxH-RPd08Y", "title": "Putumayo Discovery Presents - Paula Mel \"Definição\"", "thumb": "https://i.ytimg.com/vi/1mxH-RPd08Y/mqdefault.jpg", "dur": "3:18"}, {"id": "L0VfKFaEdqU", "title": "Putumayo Discovery Presents - Língua Terra \"Cumplicidades\"", "thumb": "https://i.ytimg.com/vi/L0VfKFaEdqU/mqdefault.jpg", "dur": "4:30"}, {"id": "QAhZ2hyXwFw", "title": "Acoustic Paris - Scotch & Sofa with Fabien B \"Tu Es Le Roi\"", "thumb": "https://i.ytimg.com/vi/QAhZ2hyXwFw/mqdefault.jpg", "dur": "3:30"}, {"id": "sGiegiWgrNE", "title": "Acoustic Paris - Coco Briaval \"Papoum Song\"", "thumb": "https://i.ytimg.com/vi/sGiegiWgrNE/mqdefault.jpg", "dur": "5:07"}, {"id": "bBSaWBbZfbM", "title": "Putumayo World Café - Alessandro D'Orazi \"Profumo di Caffè\"", "thumb": "https://i.ytimg.com/vi/bBSaWBbZfbM/mqdefault.jpg", "dur": "3:37"}, {"id": "1wKwWpEFHJ8", "title": "Yoga Dreamland Album Launch & Live Yoga Class for Kids and Families", "thumb": "https://i.ytimg.com/vi/1wKwWpEFHJ8/mqdefault.jpg", "dur": "20:41"}, {"id": "X4VkQtEElV4", "title": "Putumayo Presents Brazil – Sandália de Prata \"Sapato de Ouro\"", "thumb": "https://i.ytimg.com/vi/X4VkQtEElV4/mqdefault.jpg", "dur": "3:35"}, {"id": "Gs_8PO1xTbQ", "title": "Putumayo Presents Brazil – Bïa \"Beijo\"", "thumb": "https://i.ytimg.com/vi/Gs_8PO1xTbQ/mqdefault.jpg", "dur": "4:04"}, {"id": "SFFy5AwTF-Q", "title": "Putumayo Presents Celtic Women – Cara Dillon \"The Hill of Thieves\"", "thumb": "https://i.ytimg.com/vi/SFFy5AwTF-Q/mqdefault.jpg", "dur": "4:26"}, {"id": "HtF6WFS-P1g", "title": "Putumayo Presents World Peace - David Broza & Wyclef Jean \"East Jerusalem/West Jerusalem\"", "thumb": "https://i.ytimg.com/vi/HtF6WFS-P1g/mqdefault.jpg", "dur": "3:44"}, {"id": "6VFA7TsXQQI", "title": "Putumayo Presents World Peace – Playing for Change \"Imagine\"", "thumb": "https://i.ytimg.com/vi/6VFA7TsXQQI/mqdefault.jpg", "dur": "4:06"}, {"id": "MVILVaatW3A", "title": "Putumayo Presents World Peace – India.Arie \"One\"", "thumb": "https://i.ytimg.com/vi/MVILVaatW3A/mqdefault.jpg", "dur": "5:26"}, {"id": "fV8eyEET52s", "title": "Putumayo Presents Acoustic Women – Canan Uzerli \"Zaman\"", "thumb": "https://i.ytimg.com/vi/fV8eyEET52s/mqdefault.jpg", "dur": "3:36"}, {"id": "97zzCLIsTIo", "title": "Putumayo Presents African Café – Yoro Ndiaye \"Namm Naa Leen\"", "thumb": "https://i.ytimg.com/vi/97zzCLIsTIo/mqdefault.jpg", "dur": "3:33"}, {"id": "BfQevPNiA6M", "title": "Putumayo Presents African Café – Winyo \"Odongo\"", "thumb": "https://i.ytimg.com/vi/BfQevPNiA6M/mqdefault.jpg", "dur": "3:33"}, {"id": "r1AMDlPovQ8", "title": "Putumayo Kids Presents Kid's African Party – Jabali Afrika \"Nakumbuka\"", "thumb": "https://i.ytimg.com/vi/r1AMDlPovQ8/mqdefault.jpg", "dur": "4:15"}, {"id": "iM5O_rNRok4", "title": "Putumayo Presents Indian Groove – Niraj Chag ft. Japjit Kaur \"Rang Diya\"", "thumb": "https://i.ytimg.com/vi/iM5O_rNRok4/mqdefault.jpg", "dur": "3:43"}, {"id": "gDodZODw9XA", "title": "Putumayo Presents Cuba! Cuba! – PALO! \"Al Monte\"", "thumb": "https://i.ytimg.com/vi/gDodZODw9XA/mqdefault.jpg", "dur": "5:17"}, {"id": "k_PXmhiBt6c", "title": "Putumayo Presents Cuban Playground -- Adonis Puentes \"Tumbando Mangos\"", "thumb": "https://i.ytimg.com/vi/k_PXmhiBt6c/mqdefault.jpg", "dur": "4:38"}, {"id": "ut5Ac-IgFL8", "title": "Putumayo Presents Cuba! Cuba! – Jose Conde \"Puente a Mi Gente\"", "thumb": "https://i.ytimg.com/vi/ut5Ac-IgFL8/mqdefault.jpg", "dur": "6:06"}, {"id": "S2Fzs4eQFn8", "title": "Putumayo Presents Italian Playground – Camera a Sud “Pippo non lo sa”", "thumb": "https://i.ytimg.com/vi/S2Fzs4eQFn8/mqdefault.jpg", "dur": "3:16"}, {"id": "BpbG8d_YlGI", "title": "Putumayo Presents African Rumba – Harold Lopez-Nussa & Alune Wade “Aminata”", "thumb": "https://i.ytimg.com/vi/BpbG8d_YlGI/mqdefault.jpg", "dur": "4:33"}, {"id": "LIE8GkbNF-E", "title": "Putumayo Presents Australian Playground – Bob Brown \"Give Me a Home Among the Gumtrees\"", "thumb": "https://i.ytimg.com/vi/LIE8GkbNF-E/mqdefault.jpg", "dur": "3:01"}, {"id": "NjnrrW_KFTA", "title": "Putumayo Presents Native America – Jessica Martinez Maxey \"All My Blessings\"", "thumb": "https://i.ytimg.com/vi/NjnrrW_KFTA/mqdefault.jpg", "dur": "3:17"}, {"id": "a63WRTwDqbE", "title": "Putumayo Presents Acoustic America – Forest Sun “Change My Tune”", "thumb": "https://i.ytimg.com/vi/a63WRTwDqbE/mqdefault.jpg", "dur": "3:47"}, {"id": "DRA1b8tAmdg", "title": "Putumayo Presents Women of Brazil – Flavia Coelho \"A Foto\"", "thumb": "https://i.ytimg.com/vi/DRA1b8tAmdg/mqdefault.jpg", "dur": "3:32"}, {"id": "WkHLDugJi2U", "title": "Putumayo Presents World Yoga – Quentin Dujardin \"1977\"", "thumb": "https://i.ytimg.com/vi/WkHLDugJi2U/mqdefault.jpg", "dur": "4:04"}, {"id": "YAOIjwwbXdw", "title": "Putumayo Presents Bluegrass – Frank Solivan \"Across the Great Divide\"", "thumb": "https://i.ytimg.com/vi/YAOIjwwbXdw/mqdefault.jpg", "dur": "4:24"}, {"id": "Pt24A89pVQQ", "title": "Putumayo Presents Bluegrass – Town Mountain \"Diggin on the Mountainside\"", "thumb": "https://i.ytimg.com/vi/Pt24A89pVQQ/mqdefault.jpg", "dur": "4:12"}, {"id": "4WrUH-krILo", "title": "Putumayo Presents Acoustic Café – Jon and Roy \"Any Day Now\"", "thumb": "https://i.ytimg.com/vi/4WrUH-krILo/mqdefault.jpg", "dur": "4:08"}, {"id": "GvToSERI-64", "title": "Putumayo Presents African Beat – Fredy Massamba \"Zonza\"", "thumb": "https://i.ytimg.com/vi/GvToSERI-64/mqdefault.jpg", "dur": "3:55"}, {"id": "W4FgffjXvHg", "title": "Putumayo Presents Latin Beat – Jontre \"Locuraleza\"", "thumb": "https://i.ytimg.com/vi/W4FgffjXvHg/mqdefault.jpg", "dur": "4:16"}, {"id": "Vb3sfex_M8s", "title": "Putumayo Presents Latin Party – Mas Bajo \"Rico Montuno\" (Live)", "thumb": "https://i.ytimg.com/vi/Vb3sfex_M8s/mqdefault.jpg", "dur": "3:42"}, {"id": "eLvhdkD6O3Y", "title": "The Jazz Playground Tour Oran Etkin, Live from Philly!", "thumb": "https://i.ytimg.com/vi/eLvhdkD6O3Y/mqdefault.jpg", "dur": "7:36"}, {"id": "r3VLgfsF7pQ", "title": "Artist Spotlight Kiran Ahluwalia from India (Putumayo)", "thumb": "https://i.ytimg.com/vi/r3VLgfsF7pQ/mqdefault.jpg", "dur": "3:50"}, {"id": "PN7rfUQmsu0", "title": "Putumayo Presents India – Niraj Chag \"Khwaab\"", "thumb": "https://i.ytimg.com/vi/PN7rfUQmsu0/mqdefault.jpg", "dur": "3:56"}, {"id": "8LR1tdx92GU", "title": "Putumayo Presents Brazilian Playground – Gui Tavares \"Pancada\"", "thumb": "https://i.ytimg.com/vi/8LR1tdx92GU/mqdefault.jpg", "dur": "4:24"}, {"id": "Oov_GvTDY6U", "title": "Elmo Talks About Sesame Street Playground & Putumayo on the Bonnie Hunt Show", "thumb": "https://i.ytimg.com/vi/Oov_GvTDY6U/mqdefault.jpg", "dur": "4:04"}, {"id": "Yf5rHMQLdVo", "title": "Sesame Street Playground EPK", "thumb": "https://i.ytimg.com/vi/Yf5rHMQLdVo/mqdefault.jpg", "dur": "3:29"}, {"id": "dY9_Ds38ET8", "title": "Putumayo Presents Cafe Cubano – Rene Ferrer \"Como a Cada Mañana\"", "thumb": "https://i.ytimg.com/vi/dY9_Ds38ET8/mqdefault.jpg", "dur": "3:44"}, {"id": "qga4l9DOASQ", "title": "Putumayo Presents Quebec – DobaCaracol \"Étrange\"", "thumb": "https://i.ytimg.com/vi/qga4l9DOASQ/mqdefault.jpg", "dur": "3:38"}, {"id": "JMAuLKkjmsE", "title": "Putumayo Presents Quebec – Mathieu Mathieu \"Cette Ville\"", "thumb": "https://i.ytimg.com/vi/JMAuLKkjmsE/mqdefault.jpg", "dur": "3:23"}, {"id": "itssriWmI-4", "title": "Putumayo Presents Quebec – Myreille Bédard \"Il Fait Dimanche\" (Live)", "thumb": "https://i.ytimg.com/vi/itssriWmI-4/mqdefault.jpg", "dur": "4:33"}, {"id": "MiprHnIpqnY", "title": "Putumayo World Music Electronic Press Kit", "thumb": "https://i.ytimg.com/vi/MiprHnIpqnY/mqdefault.jpg", "dur": "6:54"}, {"id": "coYoQkGb5L4", "title": "Putumayo Presents Latin Reggae – Go Lem System \"Pura Sangre\"", "thumb": "https://i.ytimg.com/vi/coYoQkGb5L4/mqdefault.jpg", "dur": "3:33"}, {"id": "3uIHaxtJ1Jc", "title": "Putumayo Kids Electronic Press Kit", "thumb": "https://i.ytimg.com/vi/3uIHaxtJ1Jc/mqdefault.jpg", "dur": "7:33"}, {"id": "K4VRGALZdBA", "title": "Putumayo Presents Africa – Habib Koite \"Wassiye\" (Live)", "thumb": "https://i.ytimg.com/vi/K4VRGALZdBA/mqdefault.jpg", "dur": "6:51"}, {"id": "NIa2d6ooLfM", "title": "Putumayo - Sing Along EPK", "thumb": "https://i.ytimg.com/vi/NIa2d6ooLfM/mqdefault.jpg", "dur": "5:22"}, {"id": "HbxB9NdY__c", "title": "Putumayo Presents New Orleans Brass – Ingrid Lucia/Irvin Mayfield \"Do They Play Jazz in Heaven?\"", "thumb": "https://i.ytimg.com/vi/HbxB9NdY__c/mqdefault.jpg", "dur": "3:10"}, {"id": "2iuG8ho31IM", "title": "Putumayo Presents African Odyssey – Bidinte \"Ke Cu Minino Na Tchora\"", "thumb": "https://i.ytimg.com/vi/2iuG8ho31IM/mqdefault.jpg", "dur": "3:16"}, {"id": "PBLqN9Yuxs4", "title": "Putumayo Presents Latin Lounge – Wagner Pa & Brazuca Matraca \"Folia\"", "thumb": "https://i.ytimg.com/vi/PBLqN9Yuxs4/mqdefault.jpg", "dur": "3:38"}, {"id": "gKlGKFX-mQA", "title": "Putumayo Presents Salsa Around the World – Toure Kunda \"Rapada\"", "thumb": "https://i.ytimg.com/vi/gKlGKFX-mQA/mqdefault.jpg", "dur": "3:50"}, {"id": "LO2oPBA6KZM", "title": "Putumayo Presents Radio Latino – Sacha Nairobi \"Princesa\"", "thumb": "https://i.ytimg.com/vi/LO2oPBA6KZM/mqdefault.jpg", "dur": "3:08"}, {"id": "DhRMowd8Vrs", "title": "Putumayo Presents Nuevo Latino – Raul Paz \"Mulata\"", "thumb": "https://i.ytimg.com/vi/DhRMowd8Vrs/mqdefault.jpg", "dur": "4:02"}, {"id": "Hpx6_QKnbjg", "title": "Putumayo Presents Radio Latino – Los Pinguos \"Cielo Escarlata\"", "thumb": "https://i.ytimg.com/vi/Hpx6_QKnbjg/mqdefault.jpg", "dur": "3:42"}, {"id": "GYQZzPnlobs", "title": "Putumayo Presents World Hits – Johnny Clegg & Savuka \"Scatterlings of Africa\"", "thumb": "https://i.ytimg.com/vi/GYQZzPnlobs/mqdefault.jpg", "dur": "3:52"}, {"id": "XOhtOhqXmIk", "title": "Putumayo Presents Israel – Idan Raichel \"Mi Ma'amakim\"", "thumb": "https://i.ytimg.com/vi/XOhtOhqXmIk/mqdefault.jpg", "dur": "4:43"}, {"id": "ZFBo62VZ8HA", "title": "Putumayo Presents World Lounge – Gotan Project \"Santa Maria\"", "thumb": "https://i.ytimg.com/vi/ZFBo62VZ8HA/mqdefault.jpg", "dur": "3:34"}, {"id": "P9GyFmQxUOg", "title": "Putumayo Presents Brasileiro – Chico Cesar \"Mama Africa\"", "thumb": "https://i.ytimg.com/vi/P9GyFmQxUOg/mqdefault.jpg", "dur": "4:17"}, {"id": "buBZbcJbfnI", "title": "Putumayo Presents Turkish Groove – Bendeniz \"Kirmizi Biber\"", "thumb": "https://i.ytimg.com/vi/buBZbcJbfnI/mqdefault.jpg", "dur": "3:07"}, {"id": "ZcCKuW1nuHU", "title": "Putumayo Presents World Reggae – Apache Indian \"Om Numah Shivaya\"", "thumb": "https://i.ytimg.com/vi/ZcCKuW1nuHU/mqdefault.jpg", "dur": "4:34"}, {"id": "ac8AjlP5CQE", "title": "Putumayo Presents North African Groove – Amr Diab \"Nour El Ain\"", "thumb": "https://i.ytimg.com/vi/ac8AjlP5CQE/mqdefault.jpg", "dur": "5:03"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

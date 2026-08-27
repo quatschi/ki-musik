@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JazzVintage92</title>
+<!-- categories: Jazz, Lounge -->
+<!-- channel-id: UC2LIddMCfU72Y4gpwV6fEZA -->
+<!-- channel-url: https://youtube.com/@jazzvintage92 -->
+<!-- created: 2026-07-05 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=JazzVintage92.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/bj87mWZTW5SrJmL__0XOxp3_BUKs9fGBFxL2ndR9V3CUWhjcIflDNOKiKQdgB_oLJuiiAMj3Dg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">JazzVintage92</div>
+      <div class="channel-count">146 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "JazzVintage92";
+const KANAL = "JazzVintage92.html";
+const ORIG_CATEGORIES = "Jazz, Lounge";
+const VIDEOS = [{"id": "PzoYKNaYqvA", "title": "[playlist] 지중해 바다를 바라보며, 서두르지 않아도 좋은 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/PzoYKNaYqvA/mqdefault.jpg", "dur": "2:31:51"}, {"id": "XGoGK43XVW0", "title": "[playlist] 호숫가 파라솔 아래, 아무것도 하지 않아도 좋은 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/XGoGK43XVW0/mqdefault.jpg", "dur": "2:29:55"}, {"id": "d3Z2dfBlozs", "title": "[playlist] 숲속에 불 켜진 서재, 말없이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/d3Z2dfBlozs/mqdefault.jpg", "dur": "2:31:37"}, {"id": "WSzQAlwuUXg", "title": "[playlist] 여름 소나무숲 창가, 잠시 숨을 고르는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/WSzQAlwuUXg/mqdefault.jpg", "dur": "2:29:50"}, {"id": "PzCd7p7p_G4", "title": "[playlist] 여름빛 머무는 카페, 잠시 쉬어가는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/PzCd7p7p_G4/mqdefault.jpg", "dur": "2:31:14"}, {"id": "O5-P8rqaYHs", "title": "[playlist] 바다가 보이는 서재 창가, 조용히 머물고 싶은 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/O5-P8rqaYHs/mqdefault.jpg", "dur": "2:30:15"}, {"id": "dlmArqfx2IQ", "title": "[playlist] 푸른 바다 앞 창가, 혼자 생각에 잠기는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/dlmArqfx2IQ/mqdefault.jpg", "dur": "2:31:07"}, {"id": "7WCV9IO4KNM", "title": "[playlist] 여름빛이 스며드는 서재, 창밖을 보며 쉬어가는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/7WCV9IO4KNM/mqdefault.jpg", "dur": "2:32:36"}, {"id": "ZWgkGQbTJxQ", "title": "[playlist] 바다가 보이는 카페 창가, 아무 생각 없이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/ZWgkGQbTJxQ/mqdefault.jpg", "dur": "2:12:07"}, {"id": "aYcAWiUxXNc", "title": "[playlist] 숲이 내다보이는 카페 창가, 아무 생각 없이 머무는 휴식 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/aYcAWiUxXNc/mqdefault.jpg", "dur": "2:30:33"}, {"id": "8rQ3Q4nzCM8", "title": "[playlist] 초록 숲 그늘 아래, 아무 생각 없이 쉬어가는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/8rQ3Q4nzCM8/mqdefault.jpg", "dur": "3:28:09"}, {"id": "jDy6sDEwL7E", "title": "[playlist] 하얀 침실 창가, 마음이 조용히 쉬어가는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/jDy6sDEwL7E/mqdefault.jpg", "dur": "3:31:46"}, {"id": "laRCjrj2wmM", "title": "[playlist] 숲속 작은 카페, 아무 생각 없이 쉬어가는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/laRCjrj2wmM/mqdefault.jpg", "dur": "3:28:25"}, {"id": "01atKjxwjvQ", "title": "[playlist] 넓은 창 너머 초록 숲, 조용히 쉬어가는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/01atKjxwjvQ/mqdefault.jpg", "dur": "3:25:32"}, {"id": "CqgA2HaDVTQ", "title": "[playlist] 초록 정원을 마주한 서재, 고요히 스며드는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/CqgA2HaDVTQ/mqdefault.jpg", "dur": "3:29:48"}, {"id": "P-JNVa0ha6c", "title": "[playlist] 여름 바닷가, 파라솔 그늘 아래 쉬어가는 빈티지 재즈 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/P-JNVa0ha6c/mqdefault.jpg", "dur": "3:31:15"}, {"id": "kPgTeqJRxbM", "title": "[playlist] 조용한 바다 앞 테라스, 느긋하게 쉬어가는 빈티지 재즈 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/kPgTeqJRxbM/mqdefault.jpg", "dur": "3:30:38"}, {"id": "YDM72-jDT_M", "title": "[playlist] 파리의 조용한 공원, 느긋하게 쉬어가는 빈티지 재즈 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/YDM72-jDT_M/mqdefault.jpg", "dur": "3:30:11"}, {"id": "w5wNoY2WP5o", "title": "[playlist] 창문 가득 푸른 바다, 서두를 것 하나 없는 오후 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/w5wNoY2WP5o/mqdefault.jpg", "dur": "3:32:34"}, {"id": "Ytova1-RSeg", "title": "[playlist] 뭉게구름 아래 작은 집, 서두를 것 하나 없는 오후 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/Ytova1-RSeg/mqdefault.jpg", "dur": "3:32:31"}, {"id": "UZKvd05cMfY", "title": "[playlist] 호숫가 나무 그늘, 생각이 잠시 멈추는 오후 | JazzVintage92 · Summer Notes", "thumb": "https://i.ytimg.com/vi/UZKvd05cMfY/mqdefault.jpg", "dur": "3:30:48"}, {"id": "Jnx1dXx78hI", "title": "[playlist] 푸른 바다 위 작은 요트, 바람에 몸을 맡기는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/Jnx1dXx78hI/mqdefault.jpg", "dur": "3:31:46"}, {"id": "1oBJGxPql20", "title": "[playlist] 창문 열린 하얀 침실, 하루가 조용히 시작되는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/1oBJGxPql20/mqdefault.jpg", "dur": "3:29:43"}, {"id": "-k31qD1GnkE", "title": "[playlist] 바다 앞 빈티지 카페, 하루가 조용히 저무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/-k31qD1GnkE/mqdefault.jpg", "dur": "3:29:30"}, {"id": "UDe8ThTL9z4", "title": "[playlist] 푸른 바다 앞 빈자리, 아무 계획 없이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/UDe8ThTL9z4/mqdefault.jpg", "dur": "3:32:59"}, {"id": "NTnQACmG2WM", "title": "[playlist] 숲이 보이는 카페 창가, 아무 계획 없이 머무는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/NTnQACmG2WM/mqdefault.jpg", "dur": "3:29:16"}, {"id": "r4sKCpsQhqA", "title": "[playlist] 물가에 불 켜진 집, 마음이 조용히 쉬어가는 밤 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/r4sKCpsQhqA/mqdefault.jpg", "dur": "3:32:05"}, {"id": "lXA7z9keA44", "title": "[playlist] 초여름 바다 앞, 아무 계획 없이 쉬어가는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/lXA7z9keA44/mqdefault.jpg", "dur": "3:29:42"}, {"id": "bwq_Gkzh3DA", "title": "[playlist] 잔디밭 한가운데, 생각이 잠시 멈춘 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/bwq_Gkzh3DA/mqdefault.jpg", "dur": "3:28:51"}, {"id": "gcEl8XX-VNw", "title": "[playlist] 숲이 보이는 작은 방, 혼자 있는 시간이 편안해지는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/gcEl8XX-VNw/mqdefault.jpg", "dur": "3:30:11"}, {"id": "T9p93T9bZqM", "title": "[playlist] 호숫가 벤치, 혼자여도 충분한 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/T9p93T9bZqM/mqdefault.jpg", "dur": "3:31:25"}, {"id": "OFNFSlUTq8M", "title": "[playlist] 잔디밭 그늘 아래, 말이 필요 없어진 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/OFNFSlUTq8M/mqdefault.jpg", "dur": "3:31:32"}, {"id": "Je3RXBeNROE", "title": "[playlist] 바다가 보이는 거실, 온전한 나만의 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/Je3RXBeNROE/mqdefault.jpg", "dur": "3:31:10"}, {"id": "pEhH0jF84e8", "title": "[playlist] 넓은 창 가득 초록 산, 조용히 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/pEhH0jF84e8/mqdefault.jpg", "dur": "3:32:37"}, {"id": "7reVxDOEZpc", "title": "[playlist] 유리창 너머 바다, 무거운 하루를 비워내는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/7reVxDOEZpc/mqdefault.jpg", "dur": "3:31:59"}, {"id": "8XkPQaLIDgc", "title": "[playlist] 초록 숲 앞 빈자리, 아무 생각 없이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/8XkPQaLIDgc/mqdefault.jpg", "dur": "3:30:33"}, {"id": "nehpPIRLu3I", "title": "[playlist] 뉴욕 도심 속 공원, 조용히 쉬어가는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/nehpPIRLu3I/mqdefault.jpg", "dur": "3:32:22"}, {"id": "P_ritHcxKEM", "title": "[playlist] 조용한 침실, 아무것도 하고 싶지 않은 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/P_ritHcxKEM/mqdefault.jpg", "dur": "3:33:55"}, {"id": "zZXRjlpG9o8", "title": "[playlist] 불 켜진 작은 방, 혼자 조용히 있고 싶은 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/zZXRjlpG9o8/mqdefault.jpg", "dur": "3:29:08"}, {"id": "aa9YSLkxDkg", "title": "[playlist] 잠들지 않는 뉴욕, 조용히 흐르는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/aa9YSLkxDkg/mqdefault.jpg", "dur": "3:30:44"}, {"id": "in88RSQ_WlU", "title": "[playlist] 유리창 너머 바다, 천천히 마음을 비워내는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/in88RSQ_WlU/mqdefault.jpg", "dur": "3:30:40"}, {"id": "ybfuOwlidC8", "title": "[playlist] 유리창 너머 작은 카페, 조용히 스며드는 불빛 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/ybfuOwlidC8/mqdefault.jpg", "dur": "3:30:49"}, {"id": "GgMf-0__li4", "title": "[playlist] 잔잔한 호수 위, 여유가 머무는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/GgMf-0__li4/mqdefault.jpg", "dur": "3:33:13"}, {"id": "EazUs02HcEE", "title": "[playlist] 초록빛 드리운 침실, 조용히 온기가 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/EazUs02HcEE/mqdefault.jpg", "dur": "3:31:12"}, {"id": "y2R9Hjbwrwo", "title": "[playlist] 가로등 비친 밤바다, 조용히 여운이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/y2R9Hjbwrwo/mqdefault.jpg", "dur": "3:30:41"}, {"id": "XiIZNOT8Vgo", "title": "[playlist] 깊은 숲의 저택, 고요가 스며드는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/XiIZNOT8Vgo/mqdefault.jpg", "dur": "3:30:23"}, {"id": "y60uDI_NVNQ", "title": "[playlist] 여름이 스며드는 창가의 빈티지 재즈 | JazzVintage92 · Spring Notes", "thumb": "https://i.ytimg.com/vi/y60uDI_NVNQ/mqdefault.jpg", "dur": "3:31:10"}, {"id": "CitT3Jx-KVM", "title": "[playlist] 파리의 낭만, 차분히 번지는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/CitT3Jx-KVM/mqdefault.jpg", "dur": "3:30:44"}, {"id": "q7iz_PKc740", "title": "[playlist] 숲, 오후, 온전히 나를 위한 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/q7iz_PKc740/mqdefault.jpg", "dur": "3:33:30"}, {"id": "fwKGv9ct044", "title": "[playlist] 바다 앞 가장 조용한 오후, 아무 생각 없이 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/fwKGv9ct044/mqdefault.jpg", "dur": "3:31:09"}, {"id": "QyfbiiS35dE", "title": "[playlist] 벚꽃 하늘 아래, 고요히 흐르는 시간 | JazzVintage92 · Spring Notes", "thumb": "https://i.ytimg.com/vi/QyfbiiS35dE/mqdefault.jpg", "dur": "3:29:48"}, {"id": "wsoJ61BwjS0", "title": "[playlist] 벚꽃 나무 아래, 봄날의 여유 | JazzVintage92 · Spring Notes", "thumb": "https://i.ytimg.com/vi/wsoJ61BwjS0/mqdefault.jpg", "dur": "3:31:52"}, {"id": "1vzvqDEn3b8", "title": "[playlist] 벚꽃 돌담길, 담장 너머의 그리움 | JazzVintage92 · Spring Notes", "thumb": "https://i.ytimg.com/vi/1vzvqDEn3b8/mqdefault.jpg", "dur": "3:32:27"}, {"id": "Yff6_8h0CYs", "title": "[playlist] 벚꽃잎 흩날리는 거리, 나를 위한 느린 봄 | JazzVintage92 · Spring Notes", "thumb": "https://i.ytimg.com/vi/Yff6_8h0CYs/mqdefault.jpg", "dur": "3:29:34"}, {"id": "a2szWAdheoY", "title": "[playlist] 푸른 여름 바다를 보며, 잠시 멈춰 서는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/a2szWAdheoY/mqdefault.jpg", "dur": "3:31:00"}, {"id": "zROecYw9oUY", "title": "[playlist] 고요한 숲길, 방해받지 않는 나만의 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/zROecYw9oUY/mqdefault.jpg", "dur": "3:34:58"}, {"id": "OuhoYCdIt_E", "title": "[playlist] 커튼 너머 초록빛, 고요한 작업실 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/OuhoYCdIt_E/mqdefault.jpg", "dur": "3:37:09"}, {"id": "1KMpnvBEMoM", "title": "[playlist] 햇살 머문 정원, 나를 위한 느린 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/1KMpnvBEMoM/mqdefault.jpg", "dur": "3:32:41"}, {"id": "jSoAh96V8qc", "title": "[playlist] 유럽 정원, 봄 노을 아래 멈춰 선 산책 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/jSoAh96V8qc/mqdefault.jpg", "dur": "3:37:01"}, {"id": "3QlrhvYQEIw", "title": "[playlist] 조용한 창가 작업실, 마음이 정돈되는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/3QlrhvYQEIw/mqdefault.jpg", "dur": "3:30:58"}, {"id": "usmQZjjcQRg", "title": "[playlist] 베이커리 카페 창가, 여유가 머무는 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/usmQZjjcQRg/mqdefault.jpg", "dur": "3:34:17"}, {"id": "2kjyLxp2TBA", "title": "[playlist] 노을, 바다를 바라보며 생각이 잦아드는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/2kjyLxp2TBA/mqdefault.jpg", "dur": "3:31:49"}, {"id": "zE8x-vbOSeQ", "title": "[playlist] 작업실 창가, 숲을 바라보며 숨 고르는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/zE8x-vbOSeQ/mqdefault.jpg", "dur": "3:38:19"}, {"id": "6pKmLJIj_Wk", "title": "[playlist] 넓은 들판, 느긋한 구름, 방해받지 않는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/6pKmLJIj_Wk/mqdefault.jpg", "dur": "3:31:45"}, {"id": "QWy79hmhEtw", "title": "[playlist] 고요한 호수를 바라보며, 생각이 잦아드는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/QWy79hmhEtw/mqdefault.jpg", "dur": "3:37:46"}, {"id": "IbEm3kCQjhE", "title": "[playlist] 안개 낀 창가, 고요히 머무는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/IbEm3kCQjhE/mqdefault.jpg", "dur": "3:33:50"}, {"id": "UJEr9U3qY-w", "title": "[playlist] 초원과 설산 사이, 봄이 다가오는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/UJEr9U3qY-w/mqdefault.jpg", "dur": "3:32:44"}, {"id": "6HTS1P6tZlI", "title": "[playlist] 무드등 켜진 방, 오늘을 내려놓는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/6HTS1P6tZlI/mqdefault.jpg", "dur": "3:32:38"}, {"id": "beaZgT-wWRY", "title": "[playlist] 바다가 보이는 창가, 마음이 정돈되는 시간 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/beaZgT-wWRY/mqdefault.jpg", "dur": "3:35:47"}, {"id": "z1Hk0NbMgqY", "title": "[playlist] 고요한 새벽, 마음이 조용해지는 집 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/z1Hk0NbMgqY/mqdefault.jpg", "dur": "3:47:50"}, {"id": "pmgWmXPfo-o", "title": "[playlist] 고요한 도서관, 겨울 끝에서 봄을 기다리며 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/pmgWmXPfo-o/mqdefault.jpg", "dur": "3:31:16"}, {"id": "5pXYUM8N5ng", "title": "[playlist] 파리의 겨울, 창밖을 바라보며 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/5pXYUM8N5ng/mqdefault.jpg", "dur": "3:32:42"}, {"id": "GjnkxqeChzQ", "title": "[playlist] 겨울 숲이 보이는 욕조, 긴장이 풀리는 나만의 시간 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/GjnkxqeChzQ/mqdefault.jpg", "dur": "3:29:08"}, {"id": "QnU-TCU8rlQ", "title": "[playlist] 노을진 서울, 창밖을 바라보며 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/QnU-TCU8rlQ/mqdefault.jpg", "dur": "3:29:52"}, {"id": "NPXR9qWV9oc", "title": "[playlist] 유리창 너머 겨울 호수, 고요히 스며드는 순간 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/NPXR9qWV9oc/mqdefault.jpg", "dur": "3:29:04"}, {"id": "ojIKYoIjvBE", "title": "[playlist] 카페 창가에 앉아, 고요히 에펠탑을 바라보며 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/ojIKYoIjvBE/mqdefault.jpg", "dur": "3:29:05"}, {"id": "SfCAgI-Ggds", "title": "[playlist] 따뜻한 불빛의 서재, 온전한 나만의 휴식 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/SfCAgI-Ggds/mqdefault.jpg", "dur": "3:33:48"}, {"id": "oU4vPY4GVms", "title": "[playlist] 바다를 마주한 창가, 고요히 흐르는 낭만 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/oU4vPY4GVms/mqdefault.jpg", "dur": "3:29:54"}, {"id": "dgjXA1IDH6A", "title": "[playlist] 눈 내리는 파리 창가, 온전한 나만의 휴식 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/dgjXA1IDH6A/mqdefault.jpg", "dur": "3:37:44"}, {"id": "eyu8QjrsrWM", "title": "[playlist] 눈 덮인 숲을 마주한 창가, 고요히 흐르는 겨울 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/eyu8QjrsrWM/mqdefault.jpg", "dur": "3:10:09"}, {"id": "8xJkBEyvVf4", "title": "[playlist] 눈 내리는 캠퍼스, 고요히 흐르는 겨울의 하루 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/8xJkBEyvVf4/mqdefault.jpg", "dur": "3:13:11"}, {"id": "8D3EXRGKS2Q", "title": "[playlist] 카페 창가에 앉아, 눈 내리는 거리를 바라보며 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/8D3EXRGKS2Q/mqdefault.jpg", "dur": "3:12:48"}, {"id": "hkj8KVrHt2I", "title": "[playlist] 하루가 끝난 공간, 조용히 쉬어가는 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/hkj8KVrHt2I/mqdefault.jpg", "dur": "3:10:31"}, {"id": "t03AKrrvGU8", "title": "[playlist] 연말이 지나간 뒤, 창가에 남겨진 겨울의 위로 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/t03AKrrvGU8/mqdefault.jpg", "dur": "3:10:16"}, {"id": "Cy-bf_yddbw", "title": "[playlist] 벽난로의 온기, 마음이 쉬어가는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/Cy-bf_yddbw/mqdefault.jpg", "dur": "3:09:53"}, {"id": "Xo_9MQmSJPw", "title": "[playlist] 조명, 빈 소파, 그리고 겨울 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/Xo_9MQmSJPw/mqdefault.jpg", "dur": "3:01:17"}, {"id": "ncBMAx3Qei8", "title": "[playlist] 노르웨이 숲속 작은 집, 굴뚝 연기 사이로 스며드는 겨울 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/ncBMAx3Qei8/mqdefault.jpg", "dur": "3:03:20"}, {"id": "JazpXIo0n6k", "title": "[playlist] 설원 속 휴식, 고요히 스며드는 나만의 장소 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/JazpXIo0n6k/mqdefault.jpg", "dur": "3:04:02"}, {"id": "BpMFdiCQ2M4", "title": "[playlist] 조용한 서재, 창밖의 겨울을 바라보며 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/BpMFdiCQ2M4/mqdefault.jpg", "dur": "2:38:44"}, {"id": "c83P_eYKDuY", "title": "[playlist] 호텔 라운지, 고요한 창가에 머무는 그 겨울 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/c83P_eYKDuY/mqdefault.jpg", "dur": "2:37:17"}, {"id": "PHs_A0ZRvmM", "title": "[playlist] 설경 속 고요, 천천히 내려앉는 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/PHs_A0ZRvmM/mqdefault.jpg", "dur": "2:34:10"}, {"id": "SmilGEYmgTQ", "title": "[playlist] 눈 내리는 돌담 길, 고요한 발걸음 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/SmilGEYmgTQ/mqdefault.jpg", "dur": "2:34:13"}, {"id": "DD2iHov_BPs", "title": "[playlist] 크리스마스 트리 아래, 고요히 번지는 빈티지 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/DD2iHov_BPs/mqdefault.jpg", "dur": "3:10:55"}, {"id": "RCwz0qTYXKY", "title": "[playlist] 설원 깊숙이 흐르는 열차, 아무도 방해하지 않는 휴식 그리고 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/RCwz0qTYXKY/mqdefault.jpg", "dur": "2:28:41"}, {"id": "ke_oAONgWg8", "title": "[playlist] 눈 내리는 숲속의 작은 집, 연기처럼 흐르는 고요한 겨울 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/ke_oAONgWg8/mqdefault.jpg", "dur": "2:27:19"}, {"id": "zfzETYPBKWk", "title": "[playlist] 벽난로의 온기, 고요히 스며드는 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/zfzETYPBKWk/mqdefault.jpg", "dur": "2:36:19"}, {"id": "AgVe6jT6Bqo", "title": "[playlist] 크리스마스의 온기, 겨울 호텔 로비에 머무는 빈티지 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/AgVe6jT6Bqo/mqdefault.jpg", "dur": "2:14:10"}, {"id": "UGRVRkPjIzQ", "title": "[playlist] 파리의 크리스마스, 빈티지 재즈로 물드는 거리 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/UGRVRkPjIzQ/mqdefault.jpg", "dur": "2:26:35"}, {"id": "8ELexeiaAwc", "title": "[playlist] 눈 내리는 설원, 고요히 스며드는 나만의 시간 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/8ELexeiaAwc/mqdefault.jpg", "dur": "2:14:58"}, {"id": "lMxC0LCCO70", "title": "[playlist] 눈 오는 숲속 카페, 유리창 너머로 스며드는 휴식 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/lMxC0LCCO70/mqdefault.jpg", "dur": "2:15:59"}, {"id": "1np1L4VDepM", "title": "[playlist] 눈 덮인 산속 밤, 고요를 감싸는 따뜻한 보컬 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/1np1L4VDepM/mqdefault.jpg", "dur": "2:14:12"}, {"id": "XKpHZkXiTBU", "title": "[playlist] 눈 내리는 거리, 고요히 쌓여가는 눈 그리고 재즈 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/XKpHZkXiTBU/mqdefault.jpg", "dur": "2:35:21"}, {"id": "TbA6IXzlfD0", "title": "[playlist] 눈 내리는 창가, 고요한 재즈의 따스함 | JazzVintage92 · Winter Notes", "thumb": "https://i.ytimg.com/vi/TbA6IXzlfD0/mqdefault.jpg", "dur": "1:43:33"}, {"id": "R-aDoWGc4hI", "title": "[playlist] 포근한 빛이 머무는 조용한 방 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/R-aDoWGc4hI/mqdefault.jpg", "dur": "3:53:26"}, {"id": "noT5tg0HUns", "title": "[playlist] 노을이 주는, 고독한 나만의 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/noT5tg0HUns/mqdefault.jpg", "dur": "2:58:29"}, {"id": "J_mVPZfpf5k", "title": "[playlist] 고요한 들판위 집, 온전한 나만의 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/J_mVPZfpf5k/mqdefault.jpg", "dur": "3:15:15"}, {"id": "lvt1ztzRGrA", "title": "[playlist] 한적한 길 위, 나를 반겨주는 달빛 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/lvt1ztzRGrA/mqdefault.jpg", "dur": "2:24:56"}, {"id": "CDCM6r7SPgY", "title": "[playlist] 가을이 끝나갈 무렾, 남은 온기와 여유가 스며드는 시간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/CDCM6r7SPgY/mqdefault.jpg", "dur": "1:56:51"}, {"id": "eR4iygeLT3o", "title": "[playlist] 빈 소파, 가장 나다운 모습으로 돌아갈 수 있는 안식처 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/eR4iygeLT3o/mqdefault.jpg", "dur": "2:04:46"}, {"id": "dBeACZ01kN4", "title": "[playlist] 따뜻한 공간, 은은한 불빛, 그리고 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/dBeACZ01kN4/mqdefault.jpg", "dur": "1:54:55"}, {"id": "J-OSNSzO-38", "title": "[playlist] 따뜻한 조명 아래, 책과 혼자만의 고요한 밤 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/J-OSNSzO-38/mqdefault.jpg", "dur": "2:02:28"}, {"id": "cgX-1-GDm48", "title": "[playlist]  따뜻한 고요함, 하루 끝의 여운, 말없이 쉬는 저녁 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/cgX-1-GDm48/mqdefault.jpg", "dur": "2:38:34"}, {"id": "7mCRNyJY4lA", "title": "[playlist] 조명의 온도, 따뜻하게 번지는 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/7mCRNyJY4lA/mqdefault.jpg", "dur": "2:25:09"}, {"id": "N7QnbXpMW1A", "title": "[playlist] 흐린 새벽빛 아래, 혼자만의 차분한 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/N7QnbXpMW1A/mqdefault.jpg", "dur": "2:04:25"}, {"id": "55wtdEvsEzc", "title": "[playlist] 🍂 낙엽이 덮은 길 위, 고요히 스며드는 재즈 | JazzVintage92 · Autumn Notes", "thumb": "https://i.ytimg.com/vi/55wtdEvsEzc/mqdefault.jpg", "dur": "1:28:32"}, {"id": "-6MiJBZSLQI", "title": "[playlist] 🍂 천천히 달리는 오후, 낙엽과 함께하는 재즈 | JazzVintage92 · Autumn Notes", "thumb": "https://i.ytimg.com/vi/-6MiJBZSLQI/mqdefault.jpg", "dur": "2:04:33"}, {"id": "FOImdKW2lwA", "title": "[playlist] 🍁 고요한, 낙엽길을 따라 흐르는 재즈 | JazzVintage92 · Autumn Notes", "thumb": "https://i.ytimg.com/vi/FOImdKW2lwA/mqdefault.jpg", "dur": "2:08:52"}, {"id": "SLOLndVOyKc", "title": "[playlist] 조용한 방 안의 재즈, 부드럽게 스며드는 선율 | Vintage Jazz for Cozy Evenings", "thumb": "https://i.ytimg.com/vi/SLOLndVOyKc/mqdefault.jpg", "dur": "2:09:56"}, {"id": "6iDz-rz_C5g", "title": "[playlist] 🍁 낙엽이 익어가는 계절, 가을을 담은 재즈 | JazzVintage92 · Autumn Notes", "thumb": "https://i.ytimg.com/vi/6iDz-rz_C5g/mqdefault.jpg", "dur": "3:11:24"}, {"id": "3smfGY-et1o", "title": "[playlist] 창가에 머무는 조용한 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/3smfGY-et1o/mqdefault.jpg", "dur": "2:06:21"}, {"id": "TrEbDOBA7Q8", "title": "[playlist] 안개 낀 숲, 고요히 머무는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/TrEbDOBA7Q8/mqdefault.jpg", "dur": "1:50:58"}, {"id": "4-wcm41Uhco", "title": "[playlist] 파도와 창가의 고요, 깊어지는 낭만 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/4-wcm41Uhco/mqdefault.jpg", "dur": "2:23:38"}, {"id": "MEW7w_ZSHT0", "title": "[playlist] 느긋한 오후, 아늑한 소파에 앉아 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/MEW7w_ZSHT0/mqdefault.jpg", "dur": "2:10:06"}, {"id": "bAO2WSKUg1g", "title": "[playlist] 커피 향이 가득한 고요한 오후 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/bAO2WSKUg1g/mqdefault.jpg", "dur": "2:07:21"}, {"id": "89lrGPgXyms", "title": "[playlist] 조용한 서재, 따뜻한 빛과 어울리는 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/89lrGPgXyms/mqdefault.jpg", "dur": "1:50:19"}, {"id": "qEmNaFlV_OY", "title": "[playlist] 고요한 순간, 책과 휴식 속에 흐르는 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/qEmNaFlV_OY/mqdefault.jpg", "dur": "1:32:34"}, {"id": "KMMj4aa4GNE", "title": "[playlist] 조용한 공간에 번지는 낭만 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/KMMj4aa4GNE/mqdefault.jpg", "dur": "1:52:22"}, {"id": "8JRxK3b8lKM", "title": "[playlist] 낭만이 머무는 조용한 장소, 나만의 순간과 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/8JRxK3b8lKM/mqdefault.jpg", "dur": "1:51:17"}, {"id": "aml-qMKW7iA", "title": "[playlist] 에스프레소 한잔의 여유, 커피향 그윽한 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/aml-qMKW7iA/mqdefault.jpg", "dur": "3:31:51"}, {"id": "jyHlPZ5olYo", "title": "[playlist] 커피향 그윽한 오후, 재즈로 채우는 시간 | 11 Vintage Jazz Songs", "thumb": "https://i.ytimg.com/vi/jyHlPZ5olYo/mqdefault.jpg", "dur": "1:27:59"}, {"id": "bslC7QIWvNI", "title": "[playlist] 다가오는 가을의 고요, 카페 속 빈티지 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/bslC7QIWvNI/mqdefault.jpg", "dur": "2:01:38"}, {"id": "3n4rWgsRtlA", "title": "[playlist] 모던 감성, 고요한 하루의 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/3n4rWgsRtlA/mqdefault.jpg", "dur": "1:59:09"}, {"id": "-Dv6MX4k31Y", "title": "[playlist] 잔잔한 위로가 깃든 순간, 카페의 한자리 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/-Dv6MX4k31Y/mqdefault.jpg", "dur": "2:07:14"}, {"id": "NnrFIKVnK-4", "title": "[playlist] 고요를 머금은 카페, 빈티지 무드의 모던 재즈 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/NnrFIKVnK-4/mqdefault.jpg", "dur": "1:51:05"}, {"id": "jrVxIWbIx_w", "title": "[playlist] 창가 너머 숲의 고요, 잔잔한 재즈 | 10 Cozy Vintage Jazz Tunes", "thumb": "https://i.ytimg.com/vi/jrVxIWbIx_w/mqdefault.jpg", "dur": "1:48:14"}, {"id": "rJTjDXHcPUg", "title": "[playlist] 아침 햇살처럼 번지는 따스한 재즈 | 10 Tracks to Start Your Day Gently", "thumb": "https://i.ytimg.com/vi/rJTjDXHcPUg/mqdefault.jpg", "dur": "1:53:35"}, {"id": "XPHRKhC_68M", "title": "[playlist] 차분한 낭만, 깊어지는 순간 | JazzVintage92 · Cozy Notes", "thumb": "https://i.ytimg.com/vi/XPHRKhC_68M/mqdefault.jpg", "dur": "1:52:04"}, {"id": "kPPNH9SGjsQ", "title": "[playlist] 책장을 넘기듯 고요히 흐르는 카페 재즈 | Vintage Jazz Ballads for Reading & Relaxing", "thumb": "https://i.ytimg.com/vi/kPPNH9SGjsQ/mqdefault.jpg", "dur": "1:27:59"}, {"id": "y1Tk4_Hc7hY", "title": "[Playlist] 잔잔히 스며드는 빈티지 보컬 재즈 | 10 Cozy Tracks for Late Night", "thumb": "https://i.ytimg.com/vi/y1Tk4_Hc7hY/mqdefault.jpg", "dur": "2:02:38"}, {"id": "4OTzvdBoyl0", "title": "[Playlist] ☕ 카페에 흐르는 고요한 빈티지 재즈 (2시간) | Vintage Cafe Jazz for Work, Reading & Relaxing", "thumb": "https://i.ytimg.com/vi/4OTzvdBoyl0/mqdefault.jpg", "dur": "2:47:28"}, {"id": "_tRb6SQiWgA", "title": "Playlist l 내가 사랑하는 재즈 , 영화 속 한 장면처럼 🎬 l Vintage Jazz for Sleep, Reading & Cozy Nights - JAZZZ92", "thumb": "https://i.ytimg.com/vi/_tRb6SQiWgA/mqdefault.jpg", "dur": "1:47:03"}, {"id": "UPm60a5FKnc", "title": "따뜻한 오후, 부드러운 재즈 – Warm Afternoon, Soft Jazz", "thumb": "https://i.ytimg.com/vi/UPm60a5FKnc/mqdefault.jpg", "dur": "2:01:31"}, {"id": "tobmGH3HU0A", "title": "[playlist] 책장 사이로 흐르는 재즈의 밤 | Jazz for Silent Evenings", "thumb": "https://i.ytimg.com/vi/tobmGH3HU0A/mqdefault.jpg", "dur": "1:50:04"}, {"id": "XTMOtcaWzMw", "title": "【Playlist】☕ 커피 향이 스며드는 오후, 생각 없이 틀어놓는 따뜻한 재즈 발라드 (2시간)", "thumb": "https://i.ytimg.com/vi/XTMOtcaWzMw/mqdefault.jpg", "dur": "1:55:45"}, {"id": "l1fhshdPcXg", "title": "[Playlist] ☕️ 커피한잔 하는중.. 재즈 팝송 (2시간) | 감성 보컬 & 피아노 | 카페 / 공부 / 휴식", "thumb": "https://i.ytimg.com/vi/l1fhshdPcXg/mqdefault.jpg", "dur": "2:18:59"}, {"id": "HgICPcy1dPA", "title": "[Playlist] ☕️ 낭만 가득한 재즈 팝송 (2시간) | 독서 ∙ 휴식 ∙ 커피 타임을 위한 빈티지 보컬 재즈 BGM", "thumb": "https://i.ytimg.com/vi/HgICPcy1dPA/mqdefault.jpg", "dur": "2:11:04"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

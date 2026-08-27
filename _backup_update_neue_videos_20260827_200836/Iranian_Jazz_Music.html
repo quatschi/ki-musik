@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iranian Jazz Music</title>
+<!-- categories: Weltmusik, Jazz -->
+<!-- channel-id: UCmQpt7ZWHO3BPlHMG8jp36A -->
+<!-- channel-url: https://youtube.com/@iranianjazzmusic -->
+<!-- created: 2026-06-25 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Iranian_Jazz_Music.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/j6S9pVgszw5S8JOByZIkkjB4cNFekIC0kal4xY9HJdIDaO2LO2DHX9DLzkCeS_hdVBDhSqnL=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Iranian Jazz Music</div>
+      <div class="channel-count">71 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Iranian Jazz Music";
+const KANAL = "Iranian_Jazz_Music.html";
+const ORIG_CATEGORIES = "Weltmusik, Jazz";
+const VIDEOS = [{"id": "zeR6vAmP_OY", "title": "Persian Jazz - Smooth Iranian Fusion Jazz & Ethno Jazz Melodies for a Mystical Night 2026!!", "thumb": "https://i.ytimg.com/vi/zeR6vAmP_OY/mqdefault.jpg", "dur": "2:08:53"}, {"id": "hRG7TfO2F9E", "title": "Smooth Persian Jazz & Ethnic Fusion Melodies | Deep Iranian Soul Rhythms for Late Nights", "thumb": "https://i.ytimg.com/vi/hRG7TfO2F9E/mqdefault.jpg", "dur": "2:04:05"}, {"id": "C5uKrEAxIMQ", "title": "Ancient Persia Meets Modern Jazz ~ Soulful Iranian Fusion Music for Study & Relax", "thumb": "https://i.ytimg.com/vi/C5uKrEAxIMQ/mqdefault.jpg", "dur": "2:01:13"}, {"id": "TBGXv0Z854U", "title": "Persian Jazz ~ Deep Iranian Fusion Rhythms & Qajar Noir Melodies for Relaxing Late Nights", "thumb": "https://i.ytimg.com/vi/TBGXv0Z854U/mqdefault.jpg", "dur": "2:03:08"}, {"id": "FZCmHYq9y9E", "title": "Persian Jazz - Dark Qajar Fusion Melodies for Late Night & Melancholic Iranian Jazz Vibes", "thumb": "https://i.ytimg.com/vi/FZCmHYq9y9E/mqdefault.jpg", "dur": "2:00:42"}, {"id": "3tU_MhFkq6Q", "title": "Persian Jazz - Dark Qajar Jazz - Iranian Fusion Jazz & Middle Eastern Noir Instrumental Mix", "thumb": "https://i.ytimg.com/vi/3tU_MhFkq6Q/mqdefault.jpg", "dur": "2:08:29"}, {"id": "02SqODkno0Y", "title": "Persian Jazz & Oriental Melodies - Qajar Jazz Fusion Music for Deep Relaxing and Focus", "thumb": "https://i.ytimg.com/vi/02SqODkno0Y/mqdefault.jpg", "dur": "2:08:21"}, {"id": "3pJYMz2W1PQ", "title": "Mystical Persian Jazz Sitar Melodies ~ Iranian Fusion Journey & Qajar Vibes", "thumb": "https://i.ytimg.com/vi/3pJYMz2W1PQ/mqdefault.jpg", "dur": "2:00:40"}, {"id": "KZJnFjNBKKg", "title": "🎵 Create Amazing Iranian Jazz Music in FL Studio | Step-by-Step Tutorial", "thumb": "https://i.ytimg.com/vi/KZJnFjNBKKg/mqdefault.jpg", "dur": "10:26"}, {"id": "NqziZMK9os0", "title": "Persian Jazz & Ethno Fusion Rhythms | Sultans of Qajar Jazz and Iranian Noir Melodies 2026", "thumb": "https://i.ytimg.com/vi/NqziZMK9os0/mqdefault.jpg", "dur": "2:08:52"}, {"id": "UOERGAPRFHc", "title": "Qajar Jazz Flute ~ Ancient Persian Melodies | Iranian Fusion Music Serenity", "thumb": "https://i.ytimg.com/vi/UOERGAPRFHc/mqdefault.jpg", "dur": "2:00:46"}, {"id": "dcgQicEavoo", "title": "Midnight Persian Jazz Melodies | Smooth Iranian Fusion Jazz & Deep Middle Eastern Rhythms", "thumb": "https://i.ytimg.com/vi/dcgQicEavoo/mqdefault.jpg", "dur": "2:09:11"}, {"id": "cc_chSBEvaA", "title": "Atmospheric Persian Jazz - Smooth Middle Eastern Melodies & Iranian Fusion Jazz for Relaxing", "thumb": "https://i.ytimg.com/vi/cc_chSBEvaA/mqdefault.jpg", "dur": "2:01:28"}, {"id": "I3xU07bUgOs", "title": "Persian Jazz Melodies | Traditional Iranian Fusion Jazz for Dark Nights & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/I3xU07bUgOs/mqdefault.jpg", "dur": "2:08:01"}, {"id": "JGd1C7wKxDU", "title": "Persian Jazz & Ethnic Fusion Melodies | Traditional Instruments Meet Modern Noir Vibes", "thumb": "https://i.ytimg.com/vi/JGd1C7wKxDU/mqdefault.jpg", "dur": "2:09:30"}, {"id": "OdTdn7LknyU", "title": "Persian Jazz - Deep Oriental Melodies & Modern Fusion Beats for Relaxing Night Vibes 2026", "thumb": "https://i.ytimg.com/vi/OdTdn7LknyU/mqdefault.jpg", "dur": "2:01:56"}, {"id": "M493pjcKf5k", "title": "Persian Jazz & Iranian Fusion Jazz - Atmospheric Qajar Jazz for Relaxing Night Vibes 2026", "thumb": "https://i.ytimg.com/vi/M493pjcKf5k/mqdefault.jpg", "dur": "2:01:56"}, {"id": "avBTuZIWUgk", "title": "Making Iranian Jazz Music Music in FL Studio | Step-by-Step Tutorial", "thumb": "https://i.ytimg.com/vi/avBTuZIWUgk/mqdefault.jpg", "dur": "1:40:59"}, {"id": "-6MqbCPenjU", "title": "Persian Jazz Fusion | Sitar Journey - Mystical Iranian Grooves & World Music Ambiance", "thumb": "https://i.ytimg.com/vi/-6MqbCPenjU/mqdefault.jpg", "dur": "2:10:23"}, {"id": "Ry4j-SdGYSw", "title": "Qajar Jazz Melodies ~ Ancient Persia Meets Modern Fusion ~ Iranian Jazz Sitar Vibe", "thumb": "https://i.ytimg.com/vi/Ry4j-SdGYSw/mqdefault.jpg", "dur": "2:01:26"}, {"id": "2qq0a-jKj8s", "title": "Persian Jazz & Iranian Fusion Music - Relaxing Middle Eastern Jazz for Midnight Study Night", "thumb": "https://i.ytimg.com/vi/2qq0a-jKj8s/mqdefault.jpg", "dur": "2:09:26"}, {"id": "wakgUsvJmA8", "title": "Create an Iranian Jazz Music Inspired Artwork | Photoshop Tutorial", "thumb": "https://i.ytimg.com/vi/wakgUsvJmA8/mqdefault.jpg", "dur": "14:08"}, {"id": "HhcJ4mggufk", "title": "Persian Jazz & Iranian Fusion Jazz | Deep Instrumental Melodies for Noir Nights and Relax", "thumb": "https://i.ytimg.com/vi/HhcJ4mggufk/mqdefault.jpg", "dur": "2:01:24"}, {"id": "UB49qPBhCbw", "title": "Persian Jazz Fusion Sitar Sounds ~ Mystical Iranian Noir Melodies & Groove", "thumb": "https://i.ytimg.com/vi/UB49qPBhCbw/mqdefault.jpg", "dur": "2:01:27"}, {"id": "hvQO0XgjhWc", "title": "Mystical Persian Jazz Fusion - Ancient Melodies meet Modern Grooves | Iranian Sufi Flute", "thumb": "https://i.ytimg.com/vi/hvQO0XgjhWc/mqdefault.jpg", "dur": "2:03:29"}, {"id": "Hj98nJwmOR0", "title": "Persian Jazz Melodies & Iranian Fusion ~ Mystical Sounds of Tehran for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/Hj98nJwmOR0/mqdefault.jpg", "dur": "2:00:31"}, {"id": "V0uCIuZxz9Y", "title": "Persian Jazz Melodies & Iranian Fusion Jazz - Qajar Jazz Vibes for Deep Late Night Study", "thumb": "https://i.ytimg.com/vi/V0uCIuZxz9Y/mqdefault.jpg", "dur": "2:02:23"}, {"id": "-R2UhZaQflY", "title": "Persian Jazz - Smooth Iranian Fusion Melodies & Qajar Noir Aesthetics for Midnight Focus", "thumb": "https://i.ytimg.com/vi/-R2UhZaQflY/mqdefault.jpg", "dur": "2:07:35"}, {"id": "L-uRS_j3fdU", "title": "Persian Jazz Melodies & Sultry Iranian Fusion Jazz for Relaxing Evenings at Tehran Cafes", "thumb": "https://i.ytimg.com/vi/L-uRS_j3fdU/mqdefault.jpg", "dur": "2:04:00"}, {"id": "34od4bxtKEw", "title": "Persian Jazz & Oriental Melodies ~ Iranian Fusion Jazz & Middle Eastern Noir Chill Beats", "thumb": "https://i.ytimg.com/vi/34od4bxtKEw/mqdefault.jpg", "dur": "2:01:48"}, {"id": "8phKbwc_2mI", "title": "Persian Jazz Melodies & Iranian Fusion Jazz Rhythms - Mystical Qajar Jazz for Relaxing Soul", "thumb": "https://i.ytimg.com/vi/8phKbwc_2mI/mqdefault.jpg", "dur": "2:01:01"}, {"id": "ekRU89O9RAg", "title": "Qajar Jazz Melodies | Ancient Persian Fusion ~ Mystic Sitar Sounds", "thumb": "https://i.ytimg.com/vi/ekRU89O9RAg/mqdefault.jpg", "dur": "2:00:33"}, {"id": "lh_D4KSieC8", "title": "Persian Jazz - Smooth Iranian Fusion Jazz Melodies - Dark Persian Noir For Deep Relaxation", "thumb": "https://i.ytimg.com/vi/lh_D4KSieC8/mqdefault.jpg", "dur": "2:09:05"}, {"id": "9JG8_QCGcy8", "title": "Persian Jazz & Qajar Fusion Melodies | Deep Ethnic Rhythms for Late Night Moods and Relax", "thumb": "https://i.ytimg.com/vi/9JG8_QCGcy8/mqdefault.jpg", "dur": "2:07:17"}, {"id": "RyPjsUsGyd4", "title": "Persian Jazz & Qajar Jazz Melodies | Instrumental Persian Noir and Iranian Fusion Music", "thumb": "https://i.ytimg.com/vi/RyPjsUsGyd4/mqdefault.jpg", "dur": "2:02:48"}, {"id": "aOZDSa0IR1g", "title": "Persian Jazz Melodies & Deep Iranian Fusion Vibes - Qajar Jazz Noir For Midnight Relaxing", "thumb": "https://i.ytimg.com/vi/aOZDSa0IR1g/mqdefault.jpg", "dur": "2:09:26"}, {"id": "zeoXH0dmgPE", "title": "Persian Jazz - Deep Iranian Fusion & Qajar Jazz Soulful Melodies for Midnight Relaxation", "thumb": "https://i.ytimg.com/vi/zeoXH0dmgPE/mqdefault.jpg", "dur": "2:02:20"}, {"id": "yCrx2M-h2ZU", "title": "Persian Jazz - Smooth Middle Eastern Melodies & Iranian Fusion Jazz for Relaxation and Soul", "thumb": "https://i.ytimg.com/vi/yCrx2M-h2ZU/mqdefault.jpg", "dur": "2:05:38"}, {"id": "NlgKCJ1hBNU", "title": "Persian Jazz & Qajar Jazz Melodies ~ Smooth Iranian Fusion Jazz and Middle Eastern Rhythms", "thumb": "https://i.ytimg.com/vi/NlgKCJ1hBNU/mqdefault.jpg", "dur": "2:08:33"}, {"id": "RCkDqURnGow", "title": "Persian Jazz & Ethno Fusion Rhythms | Deep Middle Eastern Jazz Mix for Elegant Atmosphere", "thumb": "https://i.ytimg.com/vi/RCkDqURnGow/mqdefault.jpg", "dur": "2:08:45"}, {"id": "LJyKyKjOLFQ", "title": "Dark Persian Jazz & Iranian Noir Melodies - Mystical Middle Eastern Fusion for Deep Sleep", "thumb": "https://i.ytimg.com/vi/LJyKyKjOLFQ/mqdefault.jpg", "dur": "2:02:14"}, {"id": "TA_C2TfyoQk", "title": "Persian Jazz Melodies | Smooth Iranian Jazz & Deep Persian Noir for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/TA_C2TfyoQk/mqdefault.jpg", "dur": "2:04:21"}, {"id": "B7ETeY4Q3LU", "title": "Persian Jazz & Iranian Fusion Jazz Melodies | Qajar Jazz Vibes for Deep Late Night Focus", "thumb": "https://i.ytimg.com/vi/B7ETeY4Q3LU/mqdefault.jpg", "dur": "2:01:57"}, {"id": "gJT8w-dXNAU", "title": "Persian Jazz & Melodic Qajar Jazz Vibes | Deep Iranian Fusion Jazz and Ethno Jazz Rhythms", "thumb": "https://i.ytimg.com/vi/gJT8w-dXNAU/mqdefault.jpg", "dur": "2:08:22"}, {"id": "Fhst1YjT7P0", "title": "Persian Jazz | Smooth Iranian Melodies & Qajar Soul Fusion for Late Night Relaxation Sessions", "thumb": "https://i.ytimg.com/vi/Fhst1YjT7P0/mqdefault.jpg", "dur": "2:00:31"}, {"id": "H_kDjAzTl6w", "title": "Persian Jazz Melodies | Traditional Iranian Fusion Jazz - Qajar Jazz & Persian Noir Vibes", "thumb": "https://i.ytimg.com/vi/H_kDjAzTl6w/mqdefault.jpg", "dur": "2:01:09"}, {"id": "AUeUHj3VgGU", "title": "Persian Jazz | Ethereal Iranian Fusion Melodies for Deep Focus and Relaxation Sessions", "thumb": "https://i.ytimg.com/vi/AUeUHj3VgGU/mqdefault.jpg", "dur": "2:03:06"}, {"id": "lkiNBdRJkro", "title": "Persian Jazz Fusion: A Qajar Era Noir Soundscape", "thumb": "https://i.ytimg.com/vi/lkiNBdRJkro/mqdefault.jpg", "dur": "2:01:56"}, {"id": "4tSIKKz20Jo", "title": "Persian Jazz & Mystic Melodies | Iranian Jazz Fusion for Deep Relaxation and Focus Study", "thumb": "https://i.ytimg.com/vi/4tSIKKz20Jo/mqdefault.jpg", "dur": "2:07:30"}, {"id": "NrbTuoEDybs", "title": "Persian Jazz - Relaxing Iranian Fusion Music | Midnight Tehran Vibes & Ethnic Noir Grooves", "thumb": "https://i.ytimg.com/vi/NrbTuoEDybs/mqdefault.jpg", "dur": "2:02:06"}, {"id": "zbKhikZXauA", "title": "Persian Jazz Melodies | Dark Iranian Fusion & Qajar Noir Beats for Midnight Relaxing Vibes", "thumb": "https://i.ytimg.com/vi/zbKhikZXauA/mqdefault.jpg", "dur": "2:02:02"}, {"id": "p6EwNWy3Ep0", "title": "Persian Jazz Melodies | Ethno Iranian Fusion Jazz & Qajar Noir Sounds for Deep Relaxation", "thumb": "https://i.ytimg.com/vi/p6EwNWy3Ep0/mqdefault.jpg", "dur": "2:01:55"}, {"id": "JZIzxpWRwEM", "title": "Persian Jazz - Deep Ethno Fusion and Iranian Jazz Melodies for Relaxing Nights at Home now", "thumb": "https://i.ytimg.com/vi/JZIzxpWRwEM/mqdefault.jpg", "dur": "2:02:01"}, {"id": "zj1HkR4zO18", "title": "Persian Jazz & Iranian Fusion Jazz Melodies | Smooth Qajar Jazz and Middle Eastern Jazz Mix", "thumb": "https://i.ytimg.com/vi/zj1HkR4zO18/mqdefault.jpg", "dur": "2:04:34"}, {"id": "QvN1sTVPSO4", "title": "Persian Noir and Iranian Jazz - Deep Melodies of Qajar Jazz for Relaxing Evenings in Tehran", "thumb": "https://i.ytimg.com/vi/QvN1sTVPSO4/mqdefault.jpg", "dur": "2:00:35"}, {"id": "GyKkN6LYFyU", "title": "Persian Jazz & Qajar Jazz Melodies ~ Deep Iranian Fusion for Noir Nights and Soulful Sleep", "thumb": "https://i.ytimg.com/vi/GyKkN6LYFyU/mqdefault.jpg", "dur": "2:02:23"}, {"id": "37nSKktj-7I", "title": "Persian Jazz Melodies~Qajar Era Influences~Middle Eastern Fusion", "thumb": "https://i.ytimg.com/vi/37nSKktj-7I/mqdefault.jpg", "dur": "2:00:24"}, {"id": "CJJj9ytEic4", "title": "Persian Jazz Melodies ~ Ancient Flute & Qajar Noir Vibes", "thumb": "https://i.ytimg.com/vi/CJJj9ytEic4/mqdefault.jpg", "dur": "2:10:34"}, {"id": "wXm0NeSxoRQ", "title": "Persian Jazz - Dark Tehran Noir & Traditional Iranian Fusion for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/wXm0NeSxoRQ/mqdefault.jpg", "dur": "2:00:22"}, {"id": "MUjFAH1E07U", "title": "Persian Jazz ~ Deep Iranian Fusion Jazz & Qajar Jazz Soul for Midnight Relaxation Session", "thumb": "https://i.ytimg.com/vi/MUjFAH1E07U/mqdefault.jpg", "dur": "2:08:46"}, {"id": "8Xy8B8H2umc", "title": "Persian Jazz Flute Reverie | Ancient Melodies & Modern Rhythms - Iranian Fusion Music", "thumb": "https://i.ytimg.com/vi/8Xy8B8H2umc/mqdefault.jpg", "dur": "2:02:02"}, {"id": "qXE1H8B4OOE", "title": "Persian Jazz Fusion ~ Sitar Melodies | Ancient Echoes, Modern Grooves", "thumb": "https://i.ytimg.com/vi/qXE1H8B4OOE/mqdefault.jpg", "dur": "2:08:44"}, {"id": "xkA_fUVZjRM", "title": "Persian Jazz Melodies & Deep Iranian Fusion Vibes - Qajar Jazz Noir for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/xkA_fUVZjRM/mqdefault.jpg", "dur": "2:08:34"}, {"id": "1ukEndMtTME", "title": "Persian Jazz - Smooth Iranian Fusion Jazz & Qajar Jazz Melodies for a Dark Persian Noir Night", "thumb": "https://i.ytimg.com/vi/1ukEndMtTME/mqdefault.jpg", "dur": "2:00:54"}, {"id": "jzasNbmGQwA", "title": "Mystical Persian Jazz ~ Iranian Fusion Rhythms for Deep Focus and Middle Eastern Soul Vibes", "thumb": "https://i.ytimg.com/vi/jzasNbmGQwA/mqdefault.jpg", "dur": "2:00:56"}, {"id": "5d6EgStPAmE", "title": "Persian Jazz Melodies | Smooth Iranian Fusion Jazz & Ethno Jazz for Deep Relaxation Night", "thumb": "https://i.ytimg.com/vi/5d6EgStPAmE/mqdefault.jpg", "dur": "2:08:35"}, {"id": "7Jr3l6EZaaI", "title": "Persian Jazz Fusion - Sitar Groove & Eastern Melodies ~ Iranian Jazz Vibe", "thumb": "https://i.ytimg.com/vi/7Jr3l6EZaaI/mqdefault.jpg", "dur": "2:10:14"}, {"id": "SIY6Bv6weQY", "title": "Persian Jazz Fusion Unveiled Qajar Era Music & Middle Eastern Jazz Vibes", "thumb": "https://i.ytimg.com/vi/SIY6Bv6weQY/mqdefault.jpg", "dur": "2:08:34"}, {"id": "318eqTbwz_Q", "title": "Persian Jazz Masterpiece Journey: Ancient Melodies Meet Modern Fusion", "thumb": "https://i.ytimg.com/vi/318eqTbwz_Q/mqdefault.jpg", "dur": "2:03:46"}, {"id": "oMmDhekkZgo", "title": "Mystic Persian Jazz ~ Soulful Iranian Fusion Music with Ancient Sitar Melodies", "thumb": "https://i.ytimg.com/vi/oMmDhekkZgo/mqdefault.jpg", "dur": "2:09:37"}, {"id": "ZoAHff74Ma0", "title": "Persian Jazz & Oriental Fusion Melodies | Smooth Iranian Jazz For Relaxing Nightly Moods Now", "thumb": "https://i.ytimg.com/vi/ZoAHff74Ma0/mqdefault.jpg", "dur": "2:09:45"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

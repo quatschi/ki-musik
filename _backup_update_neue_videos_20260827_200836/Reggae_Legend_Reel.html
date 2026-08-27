@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reggae Legend Reel </title>
+<!-- categories: Reggae -->
+<!-- channel-id: UCuC44ntZXtOCWvCqWRaJqsA -->
+<!-- channel-url: https://youtube.com/@reggaelegendreel -->
+<!-- created: 2026-06-24 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Reggae_Legend_Reel.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/dta5vnXw1ILeDFMacFJE-taMyh8w0ZucIqmaC1USslcwc777AdCghJ-PT0IP9YzUOAYzlvPeQQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Reggae Legend Reel </div>
+      <div class="channel-count">74 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Reggae Legend Reel ";
+const KANAL = "Reggae_Legend_Reel.html";
+const ORIG_CATEGORIES = "Reggae";
+const VIDEOS = [{"id": "1TYpM398oOk", "title": "Hold Me in Your Prayer   Gospel Roots Reggae Album 🌿 Nyabinghi Vibes", "thumb": "https://i.ytimg.com/vi/1TYpM398oOk/mqdefault.jpg", "dur": "1:08:41"}, {"id": "DlB53YKt7vE", "title": "UB40 Greatest Hits 2026 🌴 Timeless Reggae Love Songs   Relaxing Lovers Rock Mix   Island of My Drea", "thumb": "https://i.ytimg.com/vi/DlB53YKt7vE/mqdefault.jpg", "dur": "42:29"}, {"id": "aL9ato_WSYc", "title": "Caribbean Vibes 2026 | Original Dancehall, Lovers Rock & Island Pop Mix | Summer Party Album", "thumb": "https://i.ytimg.com/vi/aL9ato_WSYc/mqdefault.jpg", "dur": "21:51"}, {"id": "ogLU396D3UQ", "title": "Best Female Dancehall Mix 2026 | Shenseea, Jada Kingdom, Stalk Ashley, Lady Lava, Ishawna | Nonstop", "thumb": "https://i.ytimg.com/vi/ogLU396D3UQ/mqdefault.jpg", "dur": "21:44"}, {"id": "qprUO3a1Cyw", "title": "BEST REGGAE SONGS 2026  | Nonstop Reggae Mix for Relaxing  Chill Roots Reggae Playlist | Island Vibe", "thumb": "https://i.ytimg.com/vi/qprUO3a1Cyw/mqdefault.jpg", "dur": "41:04"}, {"id": "ALKMd1J1h3U", "title": "Classic Reggae Songs (High Search Volume) 🌴 | Relaxing Roots Reggae Playlist 2026 Chill Reggae Music", "thumb": "https://i.ytimg.com/vi/ALKMd1J1h3U/mqdefault.jpg", "dur": "54:20"}, {"id": "FFR8I6BBWF8", "title": "Hidden Hearts – Timeless Lovers Rock Collection | Romantic Reggae Duets | Smooth Lovers Rock Album", "thumb": "https://i.ytimg.com/vi/FFR8I6BBWF8/mqdefault.jpg", "dur": "27:49"}, {"id": "BFGeiE89n6w", "title": "🔥 Reggae Hits 2026 🌴 Best Reggae Music Mix | Chill & Relax Vibes", "thumb": "https://i.ytimg.com/vi/BFGeiE89n6w/mqdefault.jpg", "dur": "26:59"}, {"id": "TSUhQlVlOxc", "title": "Rub-A-Dub Reggae Classics Tristan Palmer, Barrington Levy, Johnny Osbourne & More  80s Dancehall Mix", "thumb": "https://i.ytimg.com/vi/TSUhQlVlOxc/mqdefault.jpg", "dur": "28:31"}, {"id": "lRlhCOzI34E", "title": "BEST REGGAE LOVE SONGS MIX VOL 2 ❤️ | UB40, Bob Marley, Beres Hammond, Gregory Isaacs, Dennis Brown", "thumb": "https://i.ytimg.com/vi/lRlhCOzI34E/mqdefault.jpg", "dur": "34:54"}, {"id": "GG9gEuAq_-c", "title": "Reggae Mix Roots, Calture &lovers | Richie Spice • Sizzla • Freddie McGregor Roots Reggae Album 2026", "thumb": "https://i.ytimg.com/vi/GG9gEuAq_-c/mqdefault.jpg", "dur": "46:47"}, {"id": "XET87KpXBzk", "title": "Best African Roots Reggae Legends Mix 2026 | Lucky Dube, Alpha Blondy, Majek Fashek & Sonny Okosun", "thumb": "https://i.ytimg.com/vi/XET87KpXBzk/mqdefault.jpg", "dur": "29:04"}, {"id": "MC2uf2pdNUA", "title": "Ultimate Lovers Rock & Roots Reggae Anthology 2026 | New Soulful Reggae Album (Full)", "thumb": "https://i.ytimg.com/vi/MC2uf2pdNUA/mqdefault.jpg", "dur": "35:40"}, {"id": "rmBwrM_UQrg", "title": "Kings of the Island Dancehall & Lovers Rock Mix 2026 feat. Popcaan, Mavado, Sizzla & Glen Washington", "thumb": "https://i.ytimg.com/vi/rmBwrM_UQrg/mqdefault.jpg", "dur": "19:33"}, {"id": "V03fTy7WUcQ", "title": "Caribbean Vibes by  Shaggy, Kevin Lyttle & Sean Paul Original Dancehall, Reggae Fusion  Mix 2026", "thumb": "https://i.ytimg.com/vi/V03fTy7WUcQ/mqdefault.jpg", "dur": "9:52"}, {"id": "4itI-bAo-Kw", "title": "Raíces Que Unen 🌿 | The Best Latin Roots Reggae Mix | Los Cafres, Cultura Profética Inspired Vibes", "thumb": "https://i.ytimg.com/vi/4itI-bAo-Kw/mqdefault.jpg", "dur": "59:30"}, {"id": "edTL3ytlBMg", "title": "Dancehall – Tropical Reggae & Dancehall Vibes  Caribbean Party Mix Island Groove inspired by shaggy", "thumb": "https://i.ytimg.com/vi/edTL3ytlBMg/mqdefault.jpg", "dur": "21:38"}, {"id": "APbH6tno1kw", "title": "Roots of Resistance – The Collection | Conscious Roots Reggae Album | inspired by Steel Pulse", "thumb": "https://i.ytimg.com/vi/APbH6tno1kw/mqdefault.jpg", "dur": "28:00"}, {"id": "jPxL0tpbWlw", "title": "Queens of Dancehall Vol.1 Best Jamaican Dancehall Party Mix Shenseea x Spice x Sister Nancy Inspired", "thumb": "https://i.ytimg.com/vi/jPxL0tpbWlw/mqdefault.jpg", "dur": "10:00"}, {"id": "IZ1rkHuWllA", "title": "Timeless Vibes – Ultimate Reggae Love Collection  Lovers Rock, Roots Reggae & Caribbean Romance Hits", "thumb": "https://i.ytimg.com/vi/IZ1rkHuWllA/mqdefault.jpg", "dur": "32:28"}, {"id": "rwqk8ZmyPkk", "title": "Forever Lovers Rock Collection Classic Rocksteady & Jamaican Lovers Rock Relaxing Reggae Love Songs", "thumb": "https://i.ytimg.com/vi/rwqk8ZmyPkk/mqdefault.jpg", "dur": "53:00"}, {"id": "O0JdD32Z90M", "title": "YG Marley – Legacy of a New Generation | Full Reggae Revival Roots, Love & Freedom (Official Audio)", "thumb": "https://i.ytimg.com/vi/O0JdD32Z90M/mqdefault.jpg", "dur": "23:21"}, {"id": "4rkvzf1MZNo", "title": "Afro-Dancehall (Full Album) | Tropical Afrobeat, Dancehall & Afro Fusion Mix 2026 | Music Playlist", "thumb": "https://i.ytimg.com/vi/4rkvzf1MZNo/mqdefault.jpg", "dur": "45:06"}, {"id": "jWVtqG1q8eo", "title": "Best of UB40 | Classic Reggae Collection | Relaxing Reggae Playlist | Reggae Hits of All Time", "thumb": "https://i.ytimg.com/vi/jWVtqG1q8eo/mqdefault.jpg", "dur": "34:48"}, {"id": "AiT7-92tLW0", "title": "Reggae Legends Timeless Songs 🌴 | Bob Marley, Burning Spear & More | Best Roots Reggae Collection", "thumb": "https://i.ytimg.com/vi/AiT7-92tLW0/mqdefault.jpg", "dur": "1:02:45"}, {"id": "TQCfUBEKZz4", "title": "Reggae Romance Collection | 16 Timeless Island Love Songs", "thumb": "https://i.ytimg.com/vi/TQCfUBEKZz4/mqdefault.jpg", "dur": "1:03:40"}, {"id": "IhuLOKHm9eE", "title": "Peter Tosh Inspired Roots Reggae Collection |Conscious Reggae ,Freedom Songs & Spiritual Roots Music", "thumb": "https://i.ytimg.com/vi/IhuLOKHm9eE/mqdefault.jpg", "dur": "42:26"}, {"id": "l1DjP3mNH4g", "title": "Free The Herb | Roots Reggae Conscious Music | Nyabinghi Drumming & Analog Horns", "thumb": "https://i.ytimg.com/vi/l1DjP3mNH4g/mqdefault.jpg", "dur": "3:57"}, {"id": "meWsDstdON8", "title": "best of Roots Reggae Album Damian Marley | Conscious Jamaican Music, Dub & Nyabinghi Vibes", "thumb": "https://i.ytimg.com/vi/meWsDstdON8/mqdefault.jpg", "dur": "38:24"}, {"id": "vWyWgXYalyQ", "title": "Best Dancehall, Reggae & Island Party Music Full Album  by Sean Kingston, Vybz Kartel, Sean Paul", "thumb": "https://i.ytimg.com/vi/vWyWgXYalyQ/mqdefault.jpg", "dur": "37:51"}, {"id": "pMGd2Z2qzUY", "title": "Best Roots Gospel Reggae Worship Album  Christafari & Avion Blackman Nyabinghi, Analog  & tape Echo", "thumb": "https://i.ytimg.com/vi/pMGd2Z2qzUY/mqdefault.jpg", "dur": "1:00:17"}, {"id": "S31zh5NwJo0", "title": "Fire Inna Babylon | Deep Roots Reggae Revival |Burning Spear & Abyssinians Inspired Roots Album", "thumb": "https://i.ytimg.com/vi/S31zh5NwJo0/mqdefault.jpg", "dur": "43:19"}, {"id": "jF85OKOHTow", "title": "The Ultimate Queens of Dancehall Collection | D'Angel, Ce'Cile & Tanya Stephens", "thumb": "https://i.ytimg.com/vi/jF85OKOHTow/mqdefault.jpg", "dur": "28:33"}, {"id": "ayiNJdGp_Bw", "title": "Island Vibes  Lovers Rock, Dancehall & Afro mix  Vybz Kartel, Burna Boy, Gyptian Inspired Love Songs", "thumb": "https://i.ytimg.com/vi/ayiNJdGp_Bw/mqdefault.jpg", "dur": "39:14"}, {"id": "ikEtvVONDpQ", "title": "ONE BLOOD: THREE VOICES • ONE VISION Ziggy Marley • Stephen Marley • Damian Marley", "thumb": "https://i.ytimg.com/vi/ikEtvVONDpQ/mqdefault.jpg", "dur": "46:37"}, {"id": "wPSWhx6iXjU", "title": "Best Dancehall Mix | Vybz Kartel x Masicka x Skillibeng x Chronic Law x Alkaline x Govana Inspired", "thumb": "https://i.ytimg.com/vi/wPSWhx6iXjU/mqdefault.jpg", "dur": "28:41"}, {"id": "N9Pwc53fPuA", "title": "Greatest Jamaican Songs of All Time 🇯🇲 | Roots Reggae, Ska, Rocksteady & Dancehall Classics Playlist", "thumb": "https://i.ytimg.com/vi/N9Pwc53fPuA/mqdefault.jpg", "dur": "44:23"}, {"id": "TgpSblxScD8", "title": "BEST LOVER ROCK SONGS 90s ❤️ INSPIRED BY WAYNE WONDER, J.C. LODGE, FREDDIE MCGREGOR & RUPEE", "thumb": "https://i.ytimg.com/vi/TgpSblxScD8/mqdefault.jpg", "dur": "44:20"}, {"id": "c17ef6srzJo", "title": "Reggae & Dancehall Hits | Ocean Slow, Electric Tonight,  inspired by by Pedro Capó & Farruko", "thumb": "https://i.ytimg.com/vi/c17ef6srzJo/mqdefault.jpg", "dur": "17:36"}, {"id": "diz9xkW0HZI", "title": "Roots Rock Anthems | Classic Rockers Reggae Collection | Roots & Culture Reggae Mix 2026", "thumb": "https://i.ytimg.com/vi/diz9xkW0HZI/mqdefault.jpg", "dur": "38:20"}, {"id": "hQ8vC6-MnpM", "title": "DANCEHALL LEGENDS 🔥 Best of Shaggy, Elephant Man, Gyptian & Rihanna Ultimate Dancehall Hits Mix 2026", "thumb": "https://i.ytimg.com/vi/hQ8vC6-MnpM/mqdefault.jpg", "dur": "42:33"}, {"id": "LjXo_XA_6Wg", "title": "BEST REGGAE LOVE SONGS MIX ❤️ UB40, Beres Hammond, Gregory Isaacs, Dennis Brown Lovers Rock Classics", "thumb": "https://i.ytimg.com/vi/LjXo_XA_6Wg/mqdefault.jpg", "dur": "1:15:03"}, {"id": "Ci4Nn8CFFwk", "title": "ASIMUNYE AFRIKA 🇿🇦🌍 | Stop Xenophobia • Let Africa Unite | Conscious African Roots Reggae Album 2026", "thumb": "https://i.ytimg.com/vi/Ci4Nn8CFFwk/mqdefault.jpg", "dur": "43:06"}, {"id": "78P93DdEKXA", "title": "SIYABANDANA – WE ARE ONE BLOOD | Official African Roots Reggae Anthem | Stop Xenophobia", "thumb": "https://i.ytimg.com/vi/78P93DdEKXA/mqdefault.jpg", "dur": "8:00"}, {"id": "qWgLuHewfR0", "title": "THE VERY BEST OF BOB MARLEY | ROOTS REGGAE COLLECTION LOST ALBUM (1976) 🌿🔥", "thumb": "https://i.ytimg.com/vi/qWgLuHewfR0/mqdefault.jpg", "dur": "19:35"}, {"id": "cgxFInNyiFU", "title": "Roots Awakening Jamaica vs Africa Roots Reggae inspired by Gregory Isaacs, Bob Marley & Jimmy Cliff", "thumb": "https://i.ytimg.com/vi/cgxFInNyiFU/mqdefault.jpg", "dur": "52:08"}, {"id": "hT1aiQ7y5fc", "title": "Street Fire Anthem 🔥 | Dancehall x Hip-Hop Fusion Album inspired by 2pac / Elephant Man", "thumb": "https://i.ytimg.com/vi/hT1aiQ7y5fc/mqdefault.jpg", "dur": "10:14"}, {"id": "DEtqftxv1d0", "title": "DANCEHALL BLAST Classic Jamaican Dancehall Mix Beenie Man, Chaka Demus & Pliers Inspired Basement", "thumb": "https://i.ytimg.com/vi/DEtqftxv1d0/mqdefault.jpg", "dur": "54:01"}, {"id": "MvduhSDPkdc", "title": "SOUL OF A WARRIOR African Roots Reggae Majek Fashek, Alpha Blondy, Tiken Jah, Ismael Isaac Inspired", "thumb": "https://i.ytimg.com/vi/MvduhSDPkdc/mqdefault.jpg", "dur": "51:59"}, {"id": "mHMtj8GheuA", "title": "ROOTS & CULTURE – African Reggae Legends | Majek Fashek, Alpha Blondy, Ras Kimono & Nazizi", "thumb": "https://i.ytimg.com/vi/mHMtj8GheuA/mqdefault.jpg", "dur": "26:25"}, {"id": "qsasiTuB4dc", "title": "Best Dancehall Gospel Reggae Worship  by Papa San, Sherwin Gardner, Christafari & Chevelle Franklyn", "thumb": "https://i.ytimg.com/vi/qsasiTuB4dc/mqdefault.jpg", "dur": "35:45"}, {"id": "XDD53ureD08", "title": "ISLAND KINGS – The Ultimate Dancehall Collection Featuring Shaggy • Baby Cham • Sean Paul", "thumb": "https://i.ytimg.com/vi/XDD53ureD08/mqdefault.jpg", "dur": "32:49"}, {"id": "ldcGY7k4vXk", "title": "AFRICA RISE – African Roots Reggae Lucky Dube, Alpha Blondy, Majek Fashek & Sonny Okosun Inspired", "thumb": "https://i.ytimg.com/vi/ldcGY7k4vXk/mqdefault.jpg", "dur": "40:03"}, {"id": "Ytu7oBCjNoI", "title": "Dancehall & Lovers Rock 🔥 Vybz Kartel, Sean Paul, Beenie Man, Janet Kay Reggae Love & Bashment Mix", "thumb": "https://i.ytimg.com/vi/Ytu7oBCjNoI/mqdefault.jpg", "dur": "1:14:09"}, {"id": "YbzB573ZQR8", "title": "Africa Root and Reggae —Struggle, Spirit & Freedom inspired by bob marley, peter tosh, burning spear", "thumb": "https://i.ytimg.com/vi/YbzB573ZQR8/mqdefault.jpg", "dur": "49:50"}, {"id": "zO9SiPkJBks", "title": "DANCEHALL STAGE Dancehall &Reggae Rihanna, Wayne Wonder, Alicia Keys, Vybz Kartel Inspired Party Mix", "thumb": "https://i.ytimg.com/vi/zO9SiPkJBks/mqdefault.jpg", "dur": "24:46"}, {"id": "EduBD8WKS0I", "title": "Deep Roots Reggae & Nyahbinghi Chant  (1979 Unreleased album) inspired by Bob Marley & Burning Spea", "thumb": "https://i.ytimg.com/vi/EduBD8WKS0I/mqdefault.jpg", "dur": "1:03:23"}, {"id": "on4U4TaiXIE", "title": "Dancehall Vibes:The Ultimate Collection🔥 Beenie Man, Shaggy, Kevin Lyttle Inspired Reggae Dancehall", "thumb": "https://i.ytimg.com/vi/on4U4TaiXIE/mqdefault.jpg", "dur": "44:23"}, {"id": "k6uhy4il8YE", "title": "CALL OF ZION 🔥 Deep Roots Reggae inspired by Damian Marley", "thumb": "https://i.ytimg.com/vi/k6uhy4il8YE/mqdefault.jpg", "dur": "21:14"}, {"id": "a0n-G61R23A", "title": "Voices Of The Roots Deep Roots Reggae |Burning Spear Inspired • Bob Marley Style Nyabinghi Dub Vibes", "thumb": "https://i.ytimg.com/vi/a0n-G61R23A/mqdefault.jpg", "dur": "1:12:35"}, {"id": "ET4vDIv5fos", "title": "Voices of the Roots 🌍 | 70s Roots Reggae Revival (Nyabinghi, Conscious, Analog Dub Vibes) volume 2", "thumb": "https://i.ytimg.com/vi/ET4vDIv5fos/mqdefault.jpg", "dur": "46:23"}, {"id": "YS-qVAiw-1I", "title": "Ultimate Dancehall & Reggae Love Mix 2026| Sean Paul, Mavado, Rihanna Inspired Caribbean Party Album", "thumb": "https://i.ytimg.com/vi/YS-qVAiw-1I/mqdefault.jpg", "dur": "49:12"}, {"id": "JnR4Heg3mTw", "title": "Lovers Rock Revival 🇯🇲🇬🇧  Roots Reggae Mix  Ken Boothe x Don Campbell x Alton Ellis Style  Nyabinghi", "thumb": "https://i.ytimg.com/vi/JnR4Heg3mTw/mqdefault.jpg", "dur": "1:05:39"}, {"id": "s3W4nrIVxTI", "title": "ROOTS REGGAE CLASSIC  Timeless Vibes Mix | Lover Rock, Dub, Conscious Reggae  Chill & Relax Playlist", "thumb": "https://i.ytimg.com/vi/s3W4nrIVxTI/mqdefault.jpg", "dur": "37:53"}, {"id": "3T71BZEfLC0", "title": "Hold The Light – Dancehall & Reggae Album | Roots, Bashment & Conscious Vibes", "thumb": "https://i.ytimg.com/vi/3T71BZEfLC0/mqdefault.jpg", "dur": "31:42"}, {"id": "9ZTuBhvQzu4", "title": "Voices of the Roots 🌍 | 90s Roots Reggae Revival (Nyabinghi, Conscious, Analog Dub Vibes)", "thumb": "https://i.ytimg.com/vi/9ZTuBhvQzu4/mqdefault.jpg", "dur": "36:41"}, {"id": "Sma1rnd8GL0", "title": "Roots Reggae Nyabinghi Album 2026 | Truth and Light – Conscious Dub, Analog  & Spiritual Chant Music", "thumb": "https://i.ytimg.com/vi/Sma1rnd8GL0/mqdefault.jpg", "dur": "39:45"}, {"id": "Yxk1yhxG7Og", "title": "SIGNAL THE VIBE – Dancehall Album 2026 | Female Energy, Club Bangers, Caribbean Vibes", "thumb": "https://i.ytimg.com/vi/Yxk1yhxG7Og/mqdefault.jpg", "dur": "17:36"}, {"id": "kw5wVPlvjN0", "title": "WE NAH BEND – Reggae Gospel Album  Roots, Dub Worship & Spiritual Warfare Music (Full Album)", "thumb": "https://i.ytimg.com/vi/kw5wVPlvjN0/mqdefault.jpg", "dur": "46:17"}, {"id": "qZb8XsTMMyY", "title": "Smooth Lovers Rock Reggae | Dennis Brown & Gregory Isaacs Style Love Songs Mix", "thumb": "https://i.ytimg.com/vi/qZb8XsTMMyY/mqdefault.jpg", "dur": "1:00:19"}, {"id": "RF9leI1_CA0", "title": "Reggae-Inspired Soul | Smooth Basslines, Spiritual Energy & Love", "thumb": "https://i.ytimg.com/vi/RF9leI1_CA0/mqdefault.jpg", "dur": "8:00"}, {"id": "k8JXlNTtpWE", "title": "Dancehall Vibes 2026 🔥 | Full Album Mix (Romantic, Street, Party & Conscious Dancehall)", "thumb": "https://i.ytimg.com/vi/k8JXlNTtpWE/mqdefault.jpg", "dur": "40:15"}, {"id": "doRtcTtp5w4", "title": "Full Reggae Album 2026 🔥 Roots Revival with Nyabinghi Chants & Conscious Lyrics", "thumb": "https://i.ytimg.com/vi/doRtcTtp5w4/mqdefault.jpg", "dur": "54:18"}, {"id": "1dUJ5xYi6N8", "title": "Ben Marley – Shadow Breaker Full Album  Roots R", "thumb": "https://i.ytimg.com/vi/1dUJ5xYi6N8/mqdefault.jpg", "dur": "28:27"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

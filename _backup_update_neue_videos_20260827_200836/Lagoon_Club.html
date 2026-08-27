@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lagoon Club</title>
+<!-- categories: Lounge, Vintage -->
+<!-- channel-id: UC8-K4yqpb3pkNxmjX2lLUMA -->
+<!-- channel-url: https://youtube.com/@lagoonclubhq -->
+<!-- created: 2026-06-23 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Lagoon_Club.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/dUM-HaOuXjEQ1ppeQGZmgSqP1Lx6Iqle7o5_TT-ltwHl2RJQUFI1XSh8US9du3aegajs2g7vdQ=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Lagoon Club</div>
+      <div class="channel-count">99 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Lagoon Club";
+const KANAL = "Lagoon_Club.html";
+const ORIG_CATEGORIES = "Lounge, Vintage";
+const VIDEOS = [{"id": "zPcISf1r9yw", "title": "✈️ Boarding Pass 1959 · Honolulu | Jet Age Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/zPcISf1r9yw/mqdefault.jpg", "dur": "3:19:42"}, {"id": "O3RcSglaprE", "title": "🌴 3 Hours of 1959 Exotica · \"The Forgotten Bar\" 🍹 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/O3RcSglaprE/mqdefault.jpg", "dur": "3:56:26"}, {"id": "VZPpOEWtoFU", "title": "🌴 3 Hours of 1959 Exotica · \"The Jungle Gramophone\" 📻 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/VZPpOEWtoFU/mqdefault.jpg", "dur": "3:17:03"}, {"id": "qXf1XThx7CU", "title": "🌴 3 Hours of 1959 Exotica · \"The Rain Idol\" 🗿 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/qXf1XThx7CU/mqdefault.jpg", "dur": "8:01:27"}, {"id": "g3-swOD6AZ4", "title": "🌴 3 Hours of 1959 Exotica · \"The Midnight Bloom\" 🌺 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/g3-swOD6AZ4/mqdefault.jpg", "dur": "2:15:34"}, {"id": "oqhX0Njnmgc", "title": "✈️ First Class to Honolulu Bay | 1959 Jet Age Exotica & Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/oqhX0Njnmgc/mqdefault.jpg", "dur": "4:09:27"}, {"id": "LQYrtGcTo6g", "title": "🌴 1959 Exotica · \"Secrets of the Green Idol\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/LQYrtGcTo6g/mqdefault.jpg", "dur": "3:21:49"}, {"id": "VDBjNwQeJQQ", "title": "🌴 100 Greatest Tiki & Exotica Classics of 1959 | 6 Hour Vintage Lounge Mix", "thumb": "https://i.ytimg.com/vi/VDBjNwQeJQQ/mqdefault.jpg", "dur": "2:02:12"}, {"id": "lpqxpmPJq0I", "title": "🌴 2 Hours of 1959 Tiki Exotica · \"The Idol's Chant\" 🗿 Bongo Fever & Vibraphone", "thumb": "https://i.ytimg.com/vi/lpqxpmPJq0I/mqdefault.jpg", "dur": "1:45:34"}, {"id": "-bWsZV-zTC0", "title": "✈️ First Class Lounge | 2 Hours of 1959 Jet Age Exotica & Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/-bWsZV-zTC0/mqdefault.jpg", "dur": "2:22:31"}, {"id": "eOFhRdnhG7k", "title": "🌴 1959 Exotica · \"The Laughing Idol\" 🗿 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/eOFhRdnhG7k/mqdefault.jpg", "dur": "3:05:54"}, {"id": "G5zQm2SXU4s", "title": "✈️ The Clipper Girl | 1959 Jet Age Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/G5zQm2SXU4s/mqdefault.jpg", "dur": "2:41:06"}, {"id": "iS38NcfxcM4", "title": "🌴 1959 Exotica · \"The Weeping Idol\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/iS38NcfxcM4/mqdefault.jpg", "dur": "2:43:13"}, {"id": "bGjV0LBqC8k", "title": "🌺 The Waikiki Dancer | 1959 Hawaiian Exotica, Hula & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/bGjV0LBqC8k/mqdefault.jpg", "dur": "3:02:57"}, {"id": "VnKd2N5A2LI", "title": "✈️ The Island Hostess | 1959 Jet Age Exotica & Smooth Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/VnKd2N5A2LI/mqdefault.jpg", "dur": "3:30:30"}, {"id": "U3obTckEl48", "title": "✈️ The Honolulu Hostess | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/U3obTckEl48/mqdefault.jpg", "dur": "2:25:40"}, {"id": "BIP-o05z-_c", "title": "🌴 1959 Exotica · \"The Screaming Idol\" 🗿 Bongo Fever, Vibraphone & Tribal Drums", "thumb": "https://i.ytimg.com/vi/BIP-o05z-_c/mqdefault.jpg", "dur": "4:50:10"}, {"id": "U-yNlLTK6pQ", "title": "✈️ The Waikiki Flight Girl | 1959 Jet Age Exotica & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/U-yNlLTK6pQ/mqdefault.jpg", "dur": "2:42:31"}, {"id": "91J-FpTbu9I", "title": "🍹 1959 Tiki Bar · \"Hurricane Hour\" | Upbeat Exotica, Mambo & Cha-Cha Lounge", "thumb": "https://i.ytimg.com/vi/91J-FpTbu9I/mqdefault.jpg", "dur": "2:14:37"}, {"id": "9vuCfYxHV_E", "title": "🌴 100 Greatest Happy Tiki & Exotica Classics | 1959 Vintage Lounge Mix", "thumb": "https://i.ytimg.com/vi/9vuCfYxHV_E/mqdefault.jpg", "dur": "1:34:09"}, {"id": "MvCWFPlALQY", "title": "✈️ Jet Set: Acapulco | 1959 Jet Age Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/MvCWFPlALQY/mqdefault.jpg", "dur": "2:30:49"}, {"id": "7cUIacifLIY", "title": "🌴 1959 Exotica · \"Whispers from the Coral Temple\" 🗿 Bongo Fever & Vibraphone", "thumb": "https://i.ytimg.com/vi/7cUIacifLIY/mqdefault.jpg", "dur": "3:22:19"}, {"id": "73lFPsI3yOA", "title": "🍹 1959 Tiki Bar · \"Zombie Hour\" | Upbeat Exotica, Mambo & Tropical Lounge", "thumb": "https://i.ytimg.com/vi/73lFPsI3yOA/mqdefault.jpg", "dur": "1:33:54"}, {"id": "PvlGzMbWK7k", "title": "🌋 1959 Exotica · \"The Last Volcano God\" 🗿 Bongo Fever, Vibraphone & Drums", "thumb": "https://i.ytimg.com/vi/PvlGzMbWK7k/mqdefault.jpg", "dur": "1:38:27"}, {"id": "saKiRZmL860", "title": "✈️ The Pan Am Stewardess | 1959 Jet Age Exotica & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/saKiRZmL860/mqdefault.jpg", "dur": "2:34:21"}, {"id": "-YszNsRmuBk", "title": "🌴 1959 Exotica · \"The Cursed Mask\" 🗿 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/-YszNsRmuBk/mqdefault.jpg", "dur": "2:30:27"}, {"id": "aZhFNOEEtmI", "title": "🌴 1959 Exotica · \"The Idol Keeper\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/aZhFNOEEtmI/mqdefault.jpg", "dur": "3:24:40"}, {"id": "XrMWucsWOeM", "title": "🌴 100 Greatest Tiki Exotica Classics of 1959 | 3 Hour Vintage Lounge Mix", "thumb": "https://i.ytimg.com/vi/XrMWucsWOeM/mqdefault.jpg", "dur": "3:28:14"}, {"id": "rI4mgHECFd0", "title": "🌴 1959 Exotica · \"Valley of the Tikis\" 🗿 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/rI4mgHECFd0/mqdefault.jpg", "dur": "2:35:50"}, {"id": "fAn6X3UGZJE", "title": "✈️ Night Flight to Waikiki | 1959 Jet Age Exotica & Smooth Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/fAn6X3UGZJE/mqdefault.jpg", "dur": "3:30:57"}, {"id": "H_KExsUj3ko", "title": "🌴 1959 Exotica · \"The Idol's Curse\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/H_KExsUj3ko/mqdefault.jpg", "dur": "1:35:52"}, {"id": "0n792i6uh5A", "title": "🌴 1959 Exotica · \"The Watcher on the Reef\" 🗿 Bongo Fever & Lap Steel", "thumb": "https://i.ytimg.com/vi/0n792i6uh5A/mqdefault.jpg", "dur": "1:31:37"}, {"id": "1k4_A46xPac", "title": "✈️ Skyway to Samoa | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/1k4_A46xPac/mqdefault.jpg", "dur": "2:32:15"}, {"id": "HHva3xKLAj4", "title": "🌴 1959 Exotica · \"The Fire Idol\" 🗿 Bongo Fever, Vibraphone & Tribal Drums", "thumb": "https://i.ytimg.com/vi/HHva3xKLAj4/mqdefault.jpg", "dur": "3:31:50"}, {"id": "rqLDmWX6xh0", "title": "✈️ Jet Set: Bora Bora | 1959 Jet Age Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/rqLDmWX6xh0/mqdefault.jpg", "dur": "1:31:35"}, {"id": "_tnVx9kiqBg", "title": "🌴 1959 Exotica · \"The Idol Awakes\" 🗿 Bongo Fever, Vibraphone & Marimba", "thumb": "https://i.ytimg.com/vi/_tnVx9kiqBg/mqdefault.jpg", "dur": "2:29:18"}, {"id": "vaKD3TKx0EQ", "title": "🌴 1959 Exotica · \"The Idol's Warning\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/vaKD3TKx0EQ/mqdefault.jpg", "dur": "1:36:07"}, {"id": "ElyMyPklLTE", "title": "✈️ Jet Set: Waikiki | 1959 Jet Age Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/ElyMyPklLTE/mqdefault.jpg", "dur": "2:33:48"}, {"id": "kAGghS-uLec", "title": "🌴 1959 Exotica · \"What the Tiki Saw\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/kAGghS-uLec/mqdefault.jpg", "dur": "3:29:44"}, {"id": "3MCBeSFs3oY", "title": "🌴 1959 Exotica · \"Secrets of the Emerald Idol\" 🗿 Bongo Fever & Vibraphone", "thumb": "https://i.ytimg.com/vi/3MCBeSFs3oY/mqdefault.jpg", "dur": "3:31:51"}, {"id": "JX9mv34zLWQ", "title": "✈️ Honolulu Airport 1959 | Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/JX9mv34zLWQ/mqdefault.jpg", "dur": "1:33:43"}, {"id": "hQC6Dt0lwIY", "title": "🌺 1959 Poolside Honolulu | Hawaiian Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/hQC6Dt0lwIY/mqdefault.jpg", "dur": "2:31:45"}, {"id": "eXgd7Y5iMek", "title": "🌺 1959 Waikiki Nights | Hawaiian Exotica, Hula & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/eXgd7Y5iMek/mqdefault.jpg", "dur": "1:41:08"}, {"id": "601ovsWufFc", "title": "✈️ First Class to Fiji | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/601ovsWufFc/mqdefault.jpg", "dur": "3:32:42"}, {"id": "ZLD6ROxpNXY", "title": "✈️ Pacific Clipper | 1959 Jet Age Exotica, Hawaiian & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/ZLD6ROxpNXY/mqdefault.jpg", "dur": "6:03:26"}, {"id": "wrzkaHYtVLc", "title": "🌴 7 Hours of 1959 Tiki Exotica · \"Whispers from the Lost Islands\" 🗿 Bongo Fever", "thumb": "https://i.ytimg.com/vi/wrzkaHYtVLc/mqdefault.jpg", "dur": "7:08:23"}, {"id": "JsqrvraXRJI", "title": "✈️ First Class to Tahiti | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/JsqrvraXRJI/mqdefault.jpg", "dur": "3:29:23"}, {"id": "SK1AEjb7s48", "title": "🌴 1959 Exotica · \"The Coral Lagoon\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/SK1AEjb7s48/mqdefault.jpg", "dur": "2:26:14"}, {"id": "XV7GRxyCkaI", "title": "✈️ First Class to Bora Bora | 1959 Jet Age Exotica & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/XV7GRxyCkaI/mqdefault.jpg", "dur": "1:34:31"}, {"id": "CZiBwsqp7s4", "title": "🌴 1959 Exotica · \"The Emerald Lagoon\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/CZiBwsqp7s4/mqdefault.jpg", "dur": "3:32:11"}, {"id": "8s2QSMOCrx8", "title": "✈️ First Class to Honolulu Bay | 1959 Jet Age Exotica & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/8s2QSMOCrx8/mqdefault.jpg", "dur": "1:37:30"}, {"id": "fWpGoYT2eng", "title": "✈️ First Class to Waikiki | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/fWpGoYT2eng/mqdefault.jpg", "dur": "3:28:32"}, {"id": "UujC8g8OyZk", "title": "🌴 1959 Exotica · \"The Pearl Lagoon\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/UujC8g8OyZk/mqdefault.jpg", "dur": "2:40:10"}, {"id": "KrYT0Bz2QRM", "title": "🌴 1959 Exotica · \"The Crimson Cove\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/KrYT0Bz2QRM/mqdefault.jpg", "dur": "1:34:11"}, {"id": "0j-6pvRrtJA", "title": "🌴 1959 Exotica · \"The Silver Lagoon\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/0j-6pvRrtJA/mqdefault.jpg", "dur": "2:14:14"}, {"id": "XtXAMXlPZqk", "title": "✈️ First Class to Bora Bora | 1959 Jet Age Exotica & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/XtXAMXlPZqk/mqdefault.jpg", "dur": "1:54:20"}, {"id": "EXSOiZNRMY4", "title": "🌴 1959 Exotica · \"The Lost Waterfall\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/EXSOiZNRMY4/mqdefault.jpg", "dur": "1:55:46"}, {"id": "-7N58tzbGwE", "title": "🌴 1959 Exotica · \"The Sacred Lagoon\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/-7N58tzbGwE/mqdefault.jpg", "dur": "1:53:23"}, {"id": "ePaiQFNqYP8", "title": "✈️ Aloha Airways | 1959 Jet Age Exotica, Hawaiian & Upbeat Tropical Lounge", "thumb": "https://i.ytimg.com/vi/ePaiQFNqYP8/mqdefault.jpg", "dur": "2:08:01"}, {"id": "bxuW6eT-8hc", "title": "🌴 1959 Exotica · \"The Drowned Temple\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/bxuW6eT-8hc/mqdefault.jpg", "dur": "1:58:33"}, {"id": "8L3ChhN41Dw", "title": "🌴 1959 Exotica · \"The Jungle Temple\" 🗿 Bongo Fever, Vibraphone & Lap Steel", "thumb": "https://i.ytimg.com/vi/8L3ChhN41Dw/mqdefault.jpg", "dur": "1:41:48"}, {"id": "WCDfcrDTlm4", "title": "🌺 Honolulu Holiday | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/WCDfcrDTlm4/mqdefault.jpg", "dur": "2:08:01"}, {"id": "3VQNUECvttw", "title": "🌙 Tiki Bar After Midnight | 1950s Exotica & Lap Steel Until Closing Time", "thumb": "https://i.ytimg.com/vi/3VQNUECvttw/mqdefault.jpg", "dur": "1:25:39"}, {"id": "NGZxBWkxbQM", "title": "🌺 The Summer Hawaii Became a State | 1959 Exotica & Hawaiian Lounge Jazz", "thumb": "https://i.ytimg.com/vi/NGZxBWkxbQM/mqdefault.jpg", "dur": "1:40:10"}, {"id": "YiNLE1Nmshc", "title": "✈️ Now Boarding: Honolulu | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/YiNLE1Nmshc/mqdefault.jpg", "dur": "1:39:15"}, {"id": "ESsHi8N76ag", "title": "✈️ Pan Pacific 1959 | Jet Age Exotica, Hawaiian & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/ESsHi8N76ag/mqdefault.jpg", "dur": "1:35:20"}, {"id": "t2Eamkkkggk", "title": "🌺 First Class to Waikiki | 1959 Jet Age Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/t2Eamkkkggk/mqdefault.jpg", "dur": "1:34:36"}, {"id": "wb4MqC8QOFQ", "title": "🌺 1959 Honolulu Nights | Jet Age Exotica, Hawaiian & Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/wb4MqC8QOFQ/mqdefault.jpg", "dur": "3:30:30"}, {"id": "cwmpHOoBcVM", "title": "✈️ 1959 Jet Age Exotica · First Class to Waikiki | Tropical Lounge & Bossa Nova", "thumb": "https://i.ytimg.com/vi/cwmpHOoBcVM/mqdefault.jpg", "dur": "2:37:30"}, {"id": "HF0CRtOfZDc", "title": "🌴 1959 Exotica · \"The Forgotten Temple Cove\" 🗿 Bongo Fever & Vibraphone", "thumb": "https://i.ytimg.com/vi/HF0CRtOfZDc/mqdefault.jpg", "dur": "2:41:33"}, {"id": "VdBSnzobYkY", "title": "🌴 1959 Exotica · \"Whispers from the Black Lagoon\" 🗿 Bongo Fever & Vibraphone", "thumb": "https://i.ytimg.com/vi/VdBSnzobYkY/mqdefault.jpg", "dur": "2:37:30"}, {"id": "kJKrw5kAfCM", "title": "📀 The Tiki DJ's Lost Reels | 1959 Exotica & Hawaiian Lounge Jazz", "thumb": "https://i.ytimg.com/vi/kJKrw5kAfCM/mqdefault.jpg", "dur": "2:37:30"}, {"id": "cwXHUnVPT3c", "title": "⛵ Sunset Sail to the Islands | 1959 Exotica & Upbeat Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/cwXHUnVPT3c/mqdefault.jpg", "dur": "2:28:18"}, {"id": "TIwra_i5xOk", "title": "🌙 Moonlight Lagoon | 1950s Slow Exotica & Lap Steel for Late Nights", "thumb": "https://i.ytimg.com/vi/TIwra_i5xOk/mqdefault.jpg", "dur": "1:43:45"}, {"id": "OFQtNVspiyk", "title": "🌴 Waikiki Beach Club | 1959 Hawaiian Exotica & Upbeat Tropical Lounge Jazz", "thumb": "https://i.ytimg.com/vi/OFQtNVspiyk/mqdefault.jpg", "dur": "1:50:00"}, {"id": "gW552_THmAI", "title": "📻 Radio Honolulu | 1959 Exotica, Hawaiian & Tropical Lounge Jazz All Night", "thumb": "https://i.ytimg.com/vi/gW552_THmAI/mqdefault.jpg", "dur": "2:18:33"}, {"id": "AKveojQns4E", "title": "🌙 Tiki Bar After Midnight | 1950s Exotica & Lap Steel Until Closing Time", "thumb": "https://i.ytimg.com/vi/AKveojQns4E/mqdefault.jpg", "dur": "2:48:06"}, {"id": "MeKYyBZ5epE", "title": "🌺 The Summer Hawaii Became a State | 1959 Exotica & Hawaiian Lounge Jazz", "thumb": "https://i.ytimg.com/vi/MeKYyBZ5epE/mqdefault.jpg", "dur": "2:34:36"}, {"id": "w_pG27Y28o0", "title": "🌺 2 Hours in Old Honolulu | 1959 Jet Age Exotica, Hawaiian & Bossa Nova", "thumb": "https://i.ytimg.com/vi/w_pG27Y28o0/mqdefault.jpg", "dur": "1:57:39"}, {"id": "oyYmAgLIp7I", "title": "🔥 Luau Night | 1959 Hawaiian Exotica, Hula Drums & Tiki Party Jazz", "thumb": "https://i.ytimg.com/vi/oyYmAgLIp7I/mqdefault.jpg", "dur": "1:39:44"}, {"id": "9Vd3JK48Vlw", "title": "📼 Lost Tiki Lounge Tapes | 1959 Exotica Found In A Waikiki Basement", "thumb": "https://i.ytimg.com/vi/9Vd3JK48Vlw/mqdefault.jpg", "dur": "1:30:09"}, {"id": "k_yZxKOEc80", "title": "First Class To Honolulu ✈️ 1959 Jet Age Exotica & Tropical Bossa Nova", "thumb": "https://i.ytimg.com/vi/k_yZxKOEc80/mqdefault.jpg", "dur": "1:19:03"}, {"id": "icy5ovqVfRo", "title": "Tiki Bar After Midnight 🌙 1950s Exotica & Lap Steel Until Closing", "thumb": "https://i.ytimg.com/vi/icy5ovqVfRo/mqdefault.jpg", "dur": "1:17:34"}, {"id": "bXM5iPAu7bQ", "title": "The Summer Hawaii Became A State 🌺 1959 Exotica & Hawaiian Lounge Jazz", "thumb": "https://i.ytimg.com/vi/bXM5iPAu7bQ/mqdefault.jpg", "dur": "2:30:33"}, {"id": "gzsZBOl8jGc", "title": "Surf Wagon 🏄 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Day | 1950s Mix", "thumb": "https://i.ytimg.com/vi/gzsZBOl8jGc/mqdefault.jpg", "dur": "2:25:14"}, {"id": "FkRiCJY8zYU", "title": "Gold Coast 🌅 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Drive | 1950s Mix", "thumb": "https://i.ytimg.com/vi/FkRiCJY8zYU/mqdefault.jpg", "dur": "2:26:19"}, {"id": "53nACQgFWBc", "title": "Palm Express 🚂 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Day | 1950s Mix", "thumb": "https://i.ytimg.com/vi/53nACQgFWBc/mqdefault.jpg", "dur": "2:25:55"}, {"id": "RAV_W70jKhI", "title": "Velvet Hour 🍸 Slow Vintage Tiki Lounge & Exotica for Late Cocktail Evenings | 1950s Mix", "thumb": "https://i.ytimg.com/vi/RAV_W70jKhI/mqdefault.jpg", "dur": "1:02:48"}, {"id": "7rkymIHxBQw", "title": "Harbor Lounge ⚓ Smooth Vintage Tropical Jazz & Bossa Nova for a Sunny Day | 1950s Mix", "thumb": "https://i.ytimg.com/vi/7rkymIHxBQw/mqdefault.jpg", "dur": "1:18:01"}, {"id": "FHbL_fEritA", "title": "Vespa Nights 🛵 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Evening | 1950s Mix", "thumb": "https://i.ytimg.com/vi/FHbL_fEritA/mqdefault.jpg", "dur": "48:06"}, {"id": "-fHQ8J9f47M", "title": "Tiki Lounge 🌴 Vintage Exotica & Tropical Jazz to Relax and Unwind | 1950s Mai Tai Mix", "thumb": "https://i.ytimg.com/vi/-fHQ8J9f47M/mqdefault.jpg", "dur": "44:53"}, {"id": "btI3JTx7G-M", "title": "Coast Drive 🚗 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Drive | 1950s", "thumb": "https://i.ytimg.com/vi/btI3JTx7G-M/mqdefault.jpg", "dur": "1:03:28"}, {"id": "09QXclJrw4E", "title": "Jukebox Nights 🎶 Upbeat Vintage Tiki Jazz & Exotica for a Fun Evening | 1950s Mix", "thumb": "https://i.ytimg.com/vi/09QXclJrw4E/mqdefault.jpg", "dur": "50:56"}, {"id": "KecxXo9EjZ4", "title": "Tiki Hour 🍹 Vintage Exotica & Tropical Lounge for the Perfect Cocktail Evening | 1950s Mix", "thumb": "https://i.ytimg.com/vi/KecxXo9EjZ4/mqdefault.jpg", "dur": "42:06"}, {"id": "aPOM_1VkLJI", "title": "Coast Drive 🚗 Upbeat Vintage Tropical Jazz & Bossa Nova for a Sunny Drive | 1950s", "thumb": "https://i.ytimg.com/vi/aPOM_1VkLJI/mqdefault.jpg", "dur": "43:47"}, {"id": "zqQ0xmyxpf0", "title": "Sunset Lagoon 🌅 Slow Vintage Exotica & Bossa Nova for Golden Hour | Tropical Jazz", "thumb": "https://i.ytimg.com/vi/zqQ0xmyxpf0/mqdefault.jpg", "dur": "1:13:23"}, {"id": "CZ2yYP8qSLY", "title": "Island Nights 🌴 Vintage Tiki Lounge with Lap Steel & Vibraphone | Exotica Jazz Mix", "thumb": "https://i.ytimg.com/vi/CZ2yYP8qSLY/mqdefault.jpg", "dur": "53:09"}, {"id": "Fk_ruNZV5n0", "title": "Tiki Lounge 🌴 Vintage Exotica & Tropical Jazz to Relax and Unwind | 1950s Mai Tai Mix", "thumb": "https://i.ytimg.com/vi/Fk_ruNZV5n0/mqdefault.jpg", "dur": "45:27"}, {"id": "TcBtyfFHf9o", "title": "Walking Around, Great Views", "thumb": "https://i.ytimg.com/vi/TcBtyfFHf9o/mqdefault.jpg", "dur": "3:06"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midnight Chicago Soul</title>
+<!-- categories: Soul -->
+<!-- channel-id: UCBvPJSS9clCjyOjkfPjI_OQ -->
+<!-- channel-url: https://youtube.com/@midnightchicagosoul -->
+<!-- created: 2026-06-26 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Midnight_Chicago_Soul.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/-5eedQtQw5Qur2G31KABNZpADTo-01e9KH1o0LK3rz3u3A4nChJL7lx3fjP8R1-KasDJZGpi=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Midnight Chicago Soul</div>
+      <div class="channel-count">206 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Midnight Chicago Soul";
+const KANAL = "Midnight_Chicago_Soul.html";
+const ORIG_CATEGORIES = "Soul";
+const VIDEOS = [{"id": "8pIQtDJLeHc", "title": "Chicago Soul | Curtis Mayfield – Music Never Sleeps [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/8pIQtDJLeHc/mqdefault.jpg", "dur": "2:32:14"}, {"id": "9gChI-9dTUM", "title": "Chicago Soul | Curtis Mayfield – Beyond Every Goodbye [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/9gChI-9dTUM/mqdefault.jpg", "dur": "2:33:05"}, {"id": "OszsawkkrP4", "title": "Chicago Soul | Curtis Mayfield – The City Still Sings [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/OszsawkkrP4/mqdefault.jpg", "dur": "2:36:07"}, {"id": "JgPuzabZ48g", "title": "Chicago Soul | Curtis Mayfield – Streets Full of Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/JgPuzabZ48g/mqdefault.jpg", "dur": "2:38:28"}, {"id": "EOIDE_thDjY", "title": "Chicago Soul | Curtis Mayfield – The City Still Sings [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/EOIDE_thDjY/mqdefault.jpg", "dur": "2:32:42"}, {"id": "ny_cAMoLS9g", "title": "Chicago Soul | Marvin Gaye – Still Warm Inside [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/ny_cAMoLS9g/mqdefault.jpg", "dur": "2:37:46"}, {"id": "_SwvjjKsi0g", "title": "Chicago Soul | Marvin Gaye – A Song Left Behind [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/_SwvjjKsi0g/mqdefault.jpg", "dur": "2:40:36"}, {"id": "Q-1muF_t2h4", "title": "Chicago Soul | Marvin Gaye – The Heart Knows Home [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/Q-1muF_t2h4/mqdefault.jpg", "dur": "2:40:23"}, {"id": "252SkzVtjm0", "title": "Chicago Soul | Marvin Gaye – Love Found Me Again [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/252SkzVtjm0/mqdefault.jpg", "dur": "2:39:44"}, {"id": "cjDtQCyp5lA", "title": "Chicago Soul | Vintage 1970s Soul - Stay Right Here", "thumb": "https://i.ytimg.com/vi/cjDtQCyp5lA/mqdefault.jpg", "dur": "2:39:55"}, {"id": "nal46iJgT7I", "title": "Chicago Soul | Marvin Gaye – Warm Smiles & Soulful Nights [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/nal46iJgT7I/mqdefault.jpg", "dur": "2:40:17"}, {"id": "pXAgiVz2SyQ", "title": "Chicago Soul | Marvin Gaye – Sunday Light & Soft Love [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/pXAgiVz2SyQ/mqdefault.jpg", "dur": "2:34:51"}, {"id": "bIY2XYa26BU", "title": "Chicago Soul | Curtis Mayfield – Golden Streets & Gentle Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/bIY2XYa26BU/mqdefault.jpg", "dur": "2:42:55"}, {"id": "znCMLfZVGV0", "title": "Chicago Soul | Marvin Gaye – Candlelight & Quiet Dreams [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/znCMLfZVGV0/mqdefault.jpg", "dur": "2:38:19"}, {"id": "W2TSOAWBRTk", "title": "Chicago Soul | Marvin Gaye – Vinyl Dreams & Warm Hearts [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/W2TSOAWBRTk/mqdefault.jpg", "dur": "2:38:20"}, {"id": "zbiPSbQ2JCw", "title": "Chicago Soul | Marvin Gaye – Mercy in Every Melody [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/zbiPSbQ2JCw/mqdefault.jpg", "dur": "2:38:57"}, {"id": "_prdzFr0XB8", "title": "Chicago Soul | Vintage Soul Sessions – Warm Hearts & Easy Grooves [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/_prdzFr0XB8/mqdefault.jpg", "dur": "2:38:58"}, {"id": "AtgHgCS5vro", "title": "Chicago Soul | Curtis Mayfield – Gentle Strings & Golden Days [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/AtgHgCS5vro/mqdefault.jpg", "dur": "2:31:27"}, {"id": "YESDxfk0Zs8", "title": "Chicago Soul | Marvin Gaye – Soft Lights, Open Hearts [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/YESDxfk0Zs8/mqdefault.jpg", "dur": "2:33:23"}, {"id": "wEj9UfeHxzs", "title": "Chicago Soul | Curtis Mayfield – Warm Strings & Quiet Dreams [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/wEj9UfeHxzs/mqdefault.jpg", "dur": "2:32:58"}, {"id": "3MB-nlbZUD8", "title": "Chicago Soul | Marvin Gaye – Golden Mornings & Gentle Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/3MB-nlbZUD8/mqdefault.jpg", "dur": "2:29:54"}, {"id": "9vkBL0f368E", "title": "Chicago Soul | Marvin Gaye – Hearts of Champions [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/9vkBL0f368E/mqdefault.jpg", "dur": "2:41:39"}, {"id": "zrC3iwQ-Tkk", "title": "Chicago Soul | Curtis Mayfield – Champions Never Fade [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/zrC3iwQ-Tkk/mqdefault.jpg", "dur": "2:35:39"}, {"id": "VhQSKaQ2Ryg", "title": "Chicago Soul | Curtis Mayfield – Beyond the Final Whistle [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/VhQSKaQ2Ryg/mqdefault.jpg", "dur": "2:28:19"}, {"id": "Pf88Yz1V5sE", "title": "Chicago Soul | Curtis Mayfield – The Soul of Victory [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/Pf88Yz1V5sE/mqdefault.jpg", "dur": "2:32:38"}, {"id": "thxmp7iZouc", "title": "Curtis Mayfield Style Soulful Melodies (No Ads In-Between) Retro Soul Music", "thumb": "https://i.ytimg.com/vi/thxmp7iZouc/mqdefault.jpg", "dur": "2:40:45"}, {"id": "WRESbcBBrU0", "title": "Chicago Soul | Curtis Mayfield – Sunlit City Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/WRESbcBBrU0/mqdefault.jpg", "dur": "2:36:58"}, {"id": "7SC8lHH1BM4", "title": "Chicago Soul | Marvin Gaye – Soft Days, Sweet Memories [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/7SC8lHH1BM4/mqdefault.jpg", "dur": "2:38:02"}, {"id": "4INhfNad2vY", "title": "Chicago Soul | Marvin Gaye – Sunlight on My Mind [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/4INhfNad2vY/mqdefault.jpg", "dur": "2:39:10"}, {"id": "D6pD4y9lt5I", "title": "Chicago Soul | Marvin Gaye – Where the Heart Waits [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/D6pD4y9lt5I/mqdefault.jpg", "dur": "2:30:30"}, {"id": "wkZadCAD4I8", "title": "Chicago Soul | Curtis Mayfield – Beyond the Streetlights [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/wkZadCAD4I8/mqdefault.jpg", "dur": "2:25:42"}, {"id": "QJhtHPTa3IE", "title": "Chicago Soul | Marvin Gaye – Love Was Here [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/QJhtHPTa3IE/mqdefault.jpg", "dur": "2:30:26"}, {"id": "Ix7_dv4zG24", "title": "Chicago Soul | Curtis Mayfield – Streetcar Serenade [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/Ix7_dv4zG24/mqdefault.jpg", "dur": "2:35:36"}, {"id": "MQxbcybz2EY", "title": "Chicago Soul | Marvin Gaye – Where Love Remains [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/MQxbcybz2EY/mqdefault.jpg", "dur": "2:35:19"}, {"id": "1Z8NL_Ehll8", "title": "Chicago Soul | Curtis Mayfield – The City Keeps Singing [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/1Z8NL_Ehll8/mqdefault.jpg", "dur": "2:37:37"}, {"id": "QrKN49oCylA", "title": "Chicago Soul | Marvin Gaye – Golden Goodbye [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/QrKN49oCylA/mqdefault.jpg", "dur": "2:35:38"}, {"id": "C_bTldSfQe8", "title": "Chicago Soul | Marvin Gaye – A Melody for Empty Streets [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/C_bTldSfQe8/mqdefault.jpg", "dur": "2:28:58"}, {"id": "sBPph71pjQ8", "title": "Chicago Soul | Marvin Gaye – Love Stayed a Little Longer [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/sBPph71pjQ8/mqdefault.jpg", "dur": "2:26:56"}, {"id": "-Nav191H5qA", "title": "Chicago Soul | Marvin Gaye – Mercy After Midnight [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/-Nav191H5qA/mqdefault.jpg", "dur": "2:25:41"}, {"id": "gAcutadKotM", "title": "Chicago Soul | Marvin Gaye – Golden Hour Blues [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/gAcutadKotM/mqdefault.jpg", "dur": "2:23:19"}, {"id": "cBhiT9rIWUI", "title": "Chicago Soul | Curtis Mayfield – Concrete & Moonlight [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/cBhiT9rIWUI/mqdefault.jpg", "dur": "2:20:18"}, {"id": "coDlVC9-ML8", "title": "Chicago Soul | Marvin Gaye – One More Summer Song [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/coDlVC9-ML8/mqdefault.jpg", "dur": "2:22:21"}, {"id": "Z8YK9JB-NqA", "title": "Chicago Soul | Marvin Gaye – Fading Radio Dreams [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/Z8YK9JB-NqA/mqdefault.jpg", "dur": "2:23:05"}, {"id": "ISSllZWKvl4", "title": "Chicago Soul | Marvin Gaye – After the Rain Fell [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/ISSllZWKvl4/mqdefault.jpg", "dur": "1:21:38"}, {"id": "V-b__TduyPc", "title": "Chicago Soul | Marvin Gaye – After the Rain Fell [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/V-b__TduyPc/mqdefault.jpg", "dur": "2:24:02"}, {"id": "LLXNjYJQCsc", "title": "Chicago Soul | Marvin Gaye – Last Train Home [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/LLXNjYJQCsc/mqdefault.jpg", "dur": "2:24:31"}, {"id": "4V8y9O6A5YA", "title": "Chicago Soul | Marvin Gaye – Amber Windows [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/4V8y9O6A5YA/mqdefault.jpg", "dur": "2:25:07"}, {"id": "zZIqlnqdMJY", "title": "Chicago Soul | Marvin Gaye – Midnight Warmth [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/zZIqlnqdMJY/mqdefault.jpg", "dur": "2:17:44"}, {"id": "p-9LR9eDSW8", "title": "Chicago Soul | Curtis Mayfield – Streetlight Grooves [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/p-9LR9eDSW8/mqdefault.jpg", "dur": "2:20:16"}, {"id": "uQvzOGdYq0Q", "title": "Chicago Soul | Marvin Gaye – Slow Soul Rain [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/uQvzOGdYq0Q/mqdefault.jpg", "dur": "2:20:35"}, {"id": "6kpS5o_bfLw", "title": "Chicago Soul | Curtis Mayfield Inspired – Night Wind & Deep Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/6kpS5o_bfLw/mqdefault.jpg", "dur": "2:19:14"}, {"id": "4cPguLPQeaE", "title": "Chicago Soul | Marvin Gaye Inspired – Quiet Storms & Gentle Soul [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/4cPguLPQeaE/mqdefault.jpg", "dur": "2:14:26"}, {"id": "BmyJ68i85RA", "title": "Chicago Soul | Marvin Gaye – Velvet Nights & Empty Hearts (1974) [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/BmyJ68i85RA/mqdefault.jpg", "dur": "2:27:11"}, {"id": "NeijCKvuafU", "title": "Chicago Soul | Curtis Mayfield Inspired – Warm Soul & Empty Streets [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/NeijCKvuafU/mqdefault.jpg", "dur": "2:34:55"}, {"id": "BxIExnb0f28", "title": "Chicago Soul | Curtis Mayfield – Midnight Street Serenade (1974) [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/BxIExnb0f28/mqdefault.jpg", "dur": "2:34:22"}, {"id": "wyEltjA5Dz8", "title": "Chicago Soul | Curtis Mayfield Inspired – Warm Soul & Empty Streets [No Mid-Roll Ads]", "thumb": "https://i.ytimg.com/vi/wyEltjA5Dz8/mqdefault.jpg", "dur": "2:34:55"}, {"id": "8RUFefrS4DA", "title": "Chicago Soul | Curtis Mayfield – Midnight Over the City (1974)", "thumb": "https://i.ytimg.com/vi/8RUFefrS4DA/mqdefault.jpg", "dur": "2:24:35"}, {"id": "hT9fWPkYHNw", "title": "Chicago Soul | Marvin Gaye – Quiet Nights, Deep Feelings (1972)", "thumb": "https://i.ytimg.com/vi/hT9fWPkYHNw/mqdefault.jpg", "dur": "2:34:36"}, {"id": "XMGQcjUPJZU", "title": "Chicago Soul | Marvin Gaye – Midnight Roads & Empty Hearts (1974)", "thumb": "https://i.ytimg.com/vi/XMGQcjUPJZU/mqdefault.jpg", "dur": "2:32:38"}, {"id": "FhY2y0L_ecE", "title": "Chicago Soul | Curtis Mayfield – South Side Serenade", "thumb": "https://i.ytimg.com/vi/FhY2y0L_ecE/mqdefault.jpg", "dur": "2:36:43"}, {"id": "5GS9WSAmwsU", "title": "Chicago Soul | Curtis Mayfield – The Light She Left On", "thumb": "https://i.ytimg.com/vi/5GS9WSAmwsU/mqdefault.jpg", "dur": "2:21:35"}, {"id": "seEPh1_2mwc", "title": "Chicago Soul | Marvin Gaye – Quiet Struggle (1973)", "thumb": "https://i.ytimg.com/vi/seEPh1_2mwc/mqdefault.jpg", "dur": "2:16:40"}, {"id": "0sIOnpXVZ9c", "title": "Chicago Soul | Marvin Gaye – Stay Here Till Morning (1974)", "thumb": "https://i.ytimg.com/vi/0sIOnpXVZ9c/mqdefault.jpg", "dur": "2:26:31"}, {"id": "zyMSvn9tIiA", "title": "Chicago Soul | Listening Room Vol. 5 | Love, Loss & Stillness – No Mid-Roll Ads", "thumb": "https://i.ytimg.com/vi/zyMSvn9tIiA/mqdefault.jpg", "dur": "2:21:04"}, {"id": "f_uEqagwl-E", "title": "Chicago Soul — Soft Lights & Slow Dancing | Marvin Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/f_uEqagwl-E/mqdefault.jpg", "dur": "2:33:26"}, {"id": "zr-YSojIuJQ", "title": "Chicago Soul — Soul Songs for a Restless City | Curtis Inspired 70s Deep Soul", "thumb": "https://i.ytimg.com/vi/zr-YSojIuJQ/mqdefault.jpg", "dur": "2:30:09"}, {"id": "_tf-Atoamc8", "title": "Chicago Soul — A Love Song for Empty Streets | Marvin Inspired 70s Late Night Soul", "thumb": "https://i.ytimg.com/vi/_tf-Atoamc8/mqdefault.jpg", "dur": "2:33:20"}, {"id": "0DB8I-ZaLf4", "title": "Chicago Soul — Velvet After Midnight | Marvin Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/0DB8I-ZaLf4/mqdefault.jpg", "dur": "2:30:47"}, {"id": "MKw6kUrlOeg", "title": "Chicago Soul — Inner City Truth | Curtis Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/MKw6kUrlOeg/mqdefault.jpg", "dur": "2:37:24"}, {"id": "7P09S-sPcYQ", "title": "Chicago Soul — Golden Light | Marvin Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/7P09S-sPcYQ/mqdefault.jpg", "dur": "2:40:53"}, {"id": "MfHZZQjgnoI", "title": "Chicago Soul — Soft Glow Within | Donny Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/MfHZZQjgnoI/mqdefault.jpg", "dur": "2:41:05"}, {"id": "EKhs1gHWiZM", "title": "Chicago Soul — City Glow | Curtis Inspired 70s Chicago Soul", "thumb": "https://i.ytimg.com/vi/EKhs1gHWiZM/mqdefault.jpg", "dur": "2:37:26"}, {"id": "WiDmENYyDYM", "title": "Chicago Soul — Night Structures | Curtis Inspired 70s Chicago Soul", "thumb": "https://i.ytimg.com/vi/WiDmENYyDYM/mqdefault.jpg", "dur": "2:31:16"}, {"id": "XEx2WnrQ9nc", "title": "Chicago Soul — Quiet Motion | Marvin Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/XEx2WnrQ9nc/mqdefault.jpg", "dur": "2:35:14"}, {"id": "VIdpxeAevuM", "title": "Chicago Soul — Slow Burning Sky | Marvin Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/VIdpxeAevuM/mqdefault.jpg", "dur": "2:24:21"}, {"id": "48qpjwwRDEQ", "title": "Chicago Soul — Velvet Silence | Marvin Inspired 70s Late Night Soul", "thumb": "https://i.ytimg.com/vi/48qpjwwRDEQ/mqdefault.jpg", "dur": "2:25:30"}, {"id": "05CfuGabUdw", "title": "Chicago Soul — Nights That Shaped My Soul | Curtis Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/05CfuGabUdw/mqdefault.jpg", "dur": "2:43:15"}, {"id": "xEJub_knyGk", "title": "Chicago Soul — We Learned Love the Hard Way | Curtis Inspired 70s Deep Soul", "thumb": "https://i.ytimg.com/vi/xEJub_knyGk/mqdefault.jpg", "dur": "2:36:40"}, {"id": "QBSvfAjFggE", "title": "Chicago Soul — We Were Better Back Then | Marvin Inspired 70s Slow Soul", "thumb": "https://i.ytimg.com/vi/QBSvfAjFggE/mqdefault.jpg", "dur": "2:33:28"}, {"id": "P9J2Ef91lkY", "title": "Chicago Soul — A Love That Never Stayed | Marvin Inspired 70s Midnight Soul", "thumb": "https://i.ytimg.com/vi/P9J2Ef91lkY/mqdefault.jpg", "dur": "2:33:33"}, {"id": "9q9c4ruf87U", "title": "Chicago Soul — Where the Truth Still Lives | Curtis Inspired 70s Soul", "thumb": "https://i.ytimg.com/vi/9q9c4ruf87U/mqdefault.jpg", "dur": "2:40:26"}, {"id": "Qq2zBkh92bA", "title": "Chicago Soul — The Night We Said Goodbye | Marvin Inspired 70s Slow Soul", "thumb": "https://i.ytimg.com/vi/Qq2zBkh92bA/mqdefault.jpg", "dur": "2:38:41"}, {"id": "QTyUwlyFQFI", "title": "Chicago Soul — If You Ever Come Back | Marvin Inspired 70s Love & Soul", "thumb": "https://i.ytimg.com/vi/QTyUwlyFQFI/mqdefault.jpg", "dur": "2:30:17"}, {"id": "hpu59Z7dyqw", "title": "Chicago Soul — Still Thinking of You | Marvin Inspired 70s Love Songs", "thumb": "https://i.ytimg.com/vi/hpu59Z7dyqw/mqdefault.jpg", "dur": "2:36:41"}, {"id": "lsNgpTCkjiU", "title": "Chicago Soul — Streets That Raised Me | Curtis Inspired 70s Urban Soul", "thumb": "https://i.ytimg.com/vi/lsNgpTCkjiU/mqdefault.jpg", "dur": "2:32:36"}, {"id": "upDloH2iXQQ", "title": "Chicago Soul — When Love Faded Away | Marvin Inspired 70s Late Night Soul", "thumb": "https://i.ytimg.com/vi/upDloH2iXQQ/mqdefault.jpg", "dur": "2:26:34"}, {"id": "7lcnYrXNBgo", "title": "Chicago Soul | Curtis Mayfield Inspired – Slow Lights on Empty Streets (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/7lcnYrXNBgo/mqdefault.jpg", "dur": "2:34:54"}, {"id": "BQ1zw1gkdcw", "title": "Chicago Soul | Curtis Mayfield Inspired – Peace in the City Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/BQ1zw1gkdcw/mqdefault.jpg", "dur": "2:26:57"}, {"id": "O2ghCLtJtz8", "title": "Chicago Soul | Marvin Gaye Inspired – Drifting Through Quiet Nights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/O2ghCLtJtz8/mqdefault.jpg", "dur": "2:26:35"}, {"id": "lCEq3Ea3mGo", "title": "Chicago Soul | Curtis Mayfield Inspired – Calm Voices in the City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/lCEq3Ea3mGo/mqdefault.jpg", "dur": "2:27:14"}, {"id": "UCmMzrN-Ssg", "title": "Chicago Soul | Curtis Mayfield Inspired – Where the Soul Still Bleeds (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/UCmMzrN-Ssg/mqdefault.jpg", "dur": "2:27:11"}, {"id": "hOiKp9FoyHY", "title": "Chicago Soul | Curtis Mayfield Inspired – Streets That Never Sleep (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/hOiKp9FoyHY/mqdefault.jpg", "dur": "2:23:46"}, {"id": "RDIEo04AafU", "title": "Chicago Soul | Curtis Mayfield Inspired – Voices in the Night Streets (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/RDIEo04AafU/mqdefault.jpg", "dur": "2:21:45"}, {"id": "zJObcZl6JOU", "title": "Chicago Soul | Curtis Mayfield Inspired – Shadows on South Side (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/zJObcZl6JOU/mqdefault.jpg", "dur": "2:29:42"}, {"id": "yxILQ6R4ZQ0", "title": "Chicago Soul | Marvin Gaye Inspired – Gentle Nights & Easy Flow (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/yxILQ6R4ZQ0/mqdefault.jpg", "dur": "2:32:00"}, {"id": "9FzFvhlhoMo", "title": "Chicago Soul | Marvin Gaye Inspired – Quiet Soul for Relaxing (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/9FzFvhlhoMo/mqdefault.jpg", "dur": "2:25:38"}, {"id": "gDWs14NAH6Q", "title": "Chicago Soul | Marvin Gaye Inspired – Smooth Nights & Inner Peace (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/gDWs14NAH6Q/mqdefault.jpg", "dur": "2:27:04"}, {"id": "rmqfN4mOEKg", "title": "Chicago Soul | Curtis Mayfield Inspired – Quiet City Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/rmqfN4mOEKg/mqdefault.jpg", "dur": "2:23:20"}, {"id": "3OA1xS6ZGyU", "title": "Chicago Soul | Marvin Gaye Inspired – Easy Nights & Warm Vibes (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/3OA1xS6ZGyU/mqdefault.jpg", "dur": "2:35:30"}, {"id": "tZOPCP4_rzM", "title": "Chicago Soul | Curtis Mayfield Inspired – Easy Urban Nights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/tZOPCP4_rzM/mqdefault.jpg", "dur": "2:35:36"}, {"id": "1OWo837h0XY", "title": "Chicago Soul | Curtis Mayfield Inspired – Soft Groove City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/1OWo837h0XY/mqdefault.jpg", "dur": "2:39:29"}, {"id": "9u84M7RtjX8", "title": "Chicago Soul | Marvin Gaye Inspired – Calm Love Nights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/9u84M7RtjX8/mqdefault.jpg", "dur": "2:37:19"}, {"id": "KHbLJDT7PvI", "title": "Chicago Soul | Curtis Mayfield Inspired – Calm Streets Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/KHbLJDT7PvI/mqdefault.jpg", "dur": "2:34:35"}, {"id": "lWqKYbcZ-mE", "title": "Chicago Soul | Curtis Mayfield Inspired – Easy Soul Flow (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/lWqKYbcZ-mE/mqdefault.jpg", "dur": "2:32:33"}, {"id": "-76Nb-9O-J0", "title": "Chicago Soul | Curtis Mayfield Inspired – Easy Grooves & Calm Nights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/-76Nb-9O-J0/mqdefault.jpg", "dur": "2:35:33"}, {"id": "JBNAfQCMGFs", "title": "Chicago Soul | Curtis Mayfield Inspired – Relaxing Soul in the City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/JBNAfQCMGFs/mqdefault.jpg", "dur": "2:35:34"}, {"id": "SbzVxzugHR4", "title": "Chicago Soul | Marvin Gaye Inspired – Calm Nights & Soft Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/SbzVxzugHR4/mqdefault.jpg", "dur": "2:31:10"}, {"id": "Dvw9jykK1A4", "title": "Chicago Soul | Marvin Gaye Inspired – Easy Soul & Peaceful Vibes (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/Dvw9jykK1A4/mqdefault.jpg", "dur": "2:29:51"}, {"id": "ZNZScjwrMNY", "title": "Chicago Soul | Marvin Gaye Inspired – Deep Romance After Dark (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/ZNZScjwrMNY/mqdefault.jpg", "dur": "2:27:27"}, {"id": "NI0ww15FdxY", "title": "Chicago Soul | Curtis Mayfield Inspired – Hidden Truths in the Night (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/NI0ww15FdxY/mqdefault.jpg", "dur": "2:33:21"}, {"id": "m0ZZOJdfnvE", "title": "Chicago Soul | Curtis Mayfield Inspired – Soul Rising from the Pavement (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/m0ZZOJdfnvE/mqdefault.jpg", "dur": "2:24:38"}, {"id": "if6nB59xbGA", "title": "Chicago Soul | Curtis Mayfield Inspired – Low Lights & Real Stories (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/if6nB59xbGA/mqdefault.jpg", "dur": "2:35:57"}, {"id": "RpzLEcb3hRA", "title": "Chicago Soul | Marvin Gaye Inspired – Nightfall & Sweet Emotions (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/RpzLEcb3hRA/mqdefault.jpg", "dur": "2:34:46"}, {"id": "VZa5jfZvmcc", "title": "Chicago Soul | Curtis Mayfield Inspired – Slow Groove City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/VZa5jfZvmcc/mqdefault.jpg", "dur": "2:25:21"}, {"id": "Aa9kXeIjep4", "title": "Chicago Soul | Curtis Mayfield Inspired – Night Soul Flow (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/Aa9kXeIjep4/mqdefault.jpg", "dur": "2:28:38"}, {"id": "xRNp58EeF0E", "title": "Chicago Soul | Marvin Gaye Inspired – Slow Dancing Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/xRNp58EeF0E/mqdefault.jpg", "dur": "2:29:27"}, {"id": "v7YwgPuN79s", "title": "Chicago Soul | Curtis Mayfield Inspired – Night Wind Grooves (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/v7YwgPuN79s/mqdefault.jpg", "dur": "2:17:57"}, {"id": "RTXUfr3-aSw", "title": "Chicago Soul | Marvin Gaye Inspired – Heart & Soul Nights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/RTXUfr3-aSw/mqdefault.jpg", "dur": "2:22:05"}, {"id": "-1wgce-fzJs", "title": "Chicago Soul | Curtis Mayfield Inspired – City Soul Flow (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/-1wgce-fzJs/mqdefault.jpg", "dur": "2:28:04"}, {"id": "9v8HvbWdlZQ", "title": "Chicago Soul | Curtis Mayfield Inspired – Slow Streets Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/9v8HvbWdlZQ/mqdefault.jpg", "dur": "2:29:21"}, {"id": "MxKuXYLffzk", "title": "Chicago Soul | Marvin Gaye Inspired – Moonlight Soul Feelings (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/MxKuXYLffzk/mqdefault.jpg", "dur": "2:23:01"}, {"id": "pvWf41-JK7U", "title": "Chicago Soul | Marvin Gaye Inspired – Midnight Soul Therapy (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/pvWf41-JK7U/mqdefault.jpg", "dur": "2:26:57"}, {"id": "Pgu_peZSwe8", "title": "Chicago Soul | Marvin Gaye Inspired – Soft Love After Dark (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/Pgu_peZSwe8/mqdefault.jpg", "dur": "2:25:19"}, {"id": "GNS63jp7Pek", "title": "Chicago Soul | Curtis Mayfield Inspired – City Soul at Midnight (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/GNS63jp7Pek/mqdefault.jpg", "dur": "2:33:55"}, {"id": "NIpxfVKcKho", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – City Lights & Quiet Power (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/NIpxfVKcKho/mqdefault.jpg", "dur": "2:32:31"}, {"id": "M9OqHXtn1sA", "title": "Chicago Soul - After the Last Train, Warm Bread | Inspired by the spirit of Curtis Mayfield", "thumb": "https://i.ytimg.com/vi/M9OqHXtn1sA/mqdefault.jpg", "dur": "2:31:39"}, {"id": "BX1HMbnU2vs", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Slow Truth Under Streetlights (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/BX1HMbnU2vs/mqdefault.jpg", "dur": "2:36:11"}, {"id": "28yGazbSrOY", "title": "Donny Hathaway Inspired 1970s Soul — When You’re Tired of Being Strong(No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/28yGazbSrOY/mqdefault.jpg", "dur": "2:28:13"}, {"id": "Ex_XCaz7qEc", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Quiet Fire in the Night Air (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/Ex_XCaz7qEc/mqdefault.jpg", "dur": "2:23:35"}, {"id": "CfqMgycwCmY", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Steel City Soul Reflections (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/CfqMgycwCmY/mqdefault.jpg", "dur": "2:24:58"}, {"id": "m7gl6hJO_S4", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – City Shadows & Slow Fire (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/m7gl6hJO_S4/mqdefault.jpg", "dur": "2:24:51"}, {"id": "1_G_L5pLhx4", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Midnight Truth & Soft Light (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/1_G_L5pLhx4/mqdefault.jpg", "dur": "2:27:08"}, {"id": "GFsuWJB3xFM", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Soft Fire & Open Hearts (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/GFsuWJB3xFM/mqdefault.jpg", "dur": "2:27:13"}, {"id": "6GuZo5vSYV4", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Midnight Velvet Dreams (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/6GuZo5vSYV4/mqdefault.jpg", "dur": "2:25:48"}, {"id": "yMzWCadf49I", "title": "Chicago Soul | Marvin Gaye Inspired – Midnight Confessions (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/yMzWCadf49I/mqdefault.jpg", "dur": "2:28:09"}, {"id": "xp1Zoj4F9y0", "title": "Chicago Soul | Marvin Gaye Inspired – Heartbeats After Midnight (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/xp1Zoj4F9y0/mqdefault.jpg", "dur": "2:26:25"}, {"id": "PgeDu_Ia_SU", "title": "Chicago Soul After Dark | Curtis Mayfield Inspired – When the City Sleeps (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/PgeDu_Ia_SU/mqdefault.jpg", "dur": "2:24:54"}, {"id": "6mEo98ULE5c", "title": "Chicago Soul  | Curtis Mayfield Inspired – Midnight Soul Stories (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/6mEo98ULE5c/mqdefault.jpg", "dur": "2:29:08"}, {"id": "_ilempgqHSk", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – City Lights & Deep Rhythm (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/_ilempgqHSk/mqdefault.jpg", "dur": "2:22:38"}, {"id": "759bm8chAtI", "title": "Chicago Soul  | Curtis Mayfield Inspired 1970s Soul – Soul of the Steel City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/759bm8chAtI/mqdefault.jpg", "dur": "2:25:03"}, {"id": "sRt-JI4z64E", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Late Night Soul Therapy (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/sRt-JI4z64E/mqdefault.jpg", "dur": "2:22:47"}, {"id": "8Pi2goivbWs", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Heartbeats After Midnight (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/8Pi2goivbWs/mqdefault.jpg", "dur": "2:32:04"}, {"id": "HNaMSr3u5ac", "title": "Chicago Soul  | Marvin Gaye Inspired 1970s Soul – Honest Love in the City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/HNaMSr3u5ac/mqdefault.jpg", "dur": "2:27:42"}, {"id": "DZx7lImc4xM", "title": "Chicago Soul  | Curtis Mayfield Inspired 1970s Soul – Echoes of a Burning City (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/DZx7lImc4xM/mqdefault.jpg", "dur": "2:29:08"}, {"id": "r081mIgXmzU", "title": "Chicago Soul  | Curtis Mayfield Inspired 1970s Soul – Deep Streets & Soft Light (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/r081mIgXmzU/mqdefault.jpg", "dur": "2:23:24"}, {"id": "PYCl0AJPorI", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – City Fire & Slow Truth (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/PYCl0AJPorI/mqdefault.jpg", "dur": "2:27:20"}, {"id": "xL9zUR9qSag", "title": "Chicago Soul  | Marvin Gaye Inspired 1970s Soul – Velvet Skies & Honest Hearts (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/xL9zUR9qSag/mqdefault.jpg", "dur": "2:28:35"}, {"id": "_vPidB8oZ5Y", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Street Echoes & Deep Truth (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/_vPidB8oZ5Y/mqdefault.jpg", "dur": "2:25:29"}, {"id": "eiTQDaW8yvw", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – City Dreams & Slow Fire (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/eiTQDaW8yvw/mqdefault.jpg", "dur": "2:28:45"}, {"id": "rSTQtXNSVE0", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Midnight Love Grooves (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/rSTQtXNSVE0/mqdefault.jpg", "dur": "2:30:50"}, {"id": "4V0O2AMGSQ0", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Quiet City Reflections (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/4V0O2AMGSQ0/mqdefault.jpg", "dur": "2:30:01"}, {"id": "bxZhChI5YnE", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Soul Messages at Night (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/bxZhChI5YnE/mqdefault.jpg", "dur": "2:22:02"}, {"id": "kCYWB49nIps", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Gentle Voices After Dark (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/kCYWB49nIps/mqdefault.jpg", "dur": "2:25:21"}, {"id": "vIEC7bu44K8", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Warm Nights & Soul (No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/vIEC7bu44K8/mqdefault.jpg", "dur": "2:20:00"}, {"id": "4lllPHiiaWw", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Late Night Love Stories(No Mid-Roll Ads)", "thumb": "https://i.ytimg.com/vi/4lllPHiiaWw/mqdefault.jpg", "dur": "2:21:35"}, {"id": "SjBickSS8fI", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Streetlight Reflections", "thumb": "https://i.ytimg.com/vi/SjBickSS8fI/mqdefault.jpg", "dur": "2:17:46"}, {"id": "ta59gx0TLF4", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Midnight Truths", "thumb": "https://i.ytimg.com/vi/ta59gx0TLF4/mqdefault.jpg", "dur": "2:19:15"}, {"id": "SR0W5qHV3OU", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul - One More Night to Stay | Evening Souls", "thumb": "https://i.ytimg.com/vi/SR0W5qHV3OU/mqdefault.jpg", "dur": "2:16:15"}, {"id": "N79Lc4PgsCQ", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Quiet Love After Dark", "thumb": "https://i.ytimg.com/vi/N79Lc4PgsCQ/mqdefault.jpg", "dur": "2:20:55"}, {"id": "EnubZgafVDs", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Inner Soul at Midnight", "thumb": "https://i.ytimg.com/vi/EnubZgafVDs/mqdefault.jpg", "dur": "2:18:46"}, {"id": "D4bisk84TZ8", "title": "Chicago Soul | Marvin Gaye Inspired Soul & Ballad – Before the Sun Arrives", "thumb": "https://i.ytimg.com/vi/D4bisk84TZ8/mqdefault.jpg", "dur": "2:20:16"}, {"id": "tikEtwaomhA", "title": "Donny Hathaway Inspired Soul — Being Human Is Enough | Quiet Healing Playlist", "thumb": "https://i.ytimg.com/vi/tikEtwaomhA/mqdefault.jpg", "dur": "2:26:31"}, {"id": "o6dRDM2sAHU", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Midnight Soul Confessions", "thumb": "https://i.ytimg.com/vi/o6dRDM2sAHU/mqdefault.jpg", "dur": "2:14:41"}, {"id": "UwN-ieNEAxM", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Warm Love in the City", "thumb": "https://i.ytimg.com/vi/UwN-ieNEAxM/mqdefault.jpg", "dur": "2:18:56"}, {"id": "VTXWQ7Z83X0", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Warm Nights, Deep Soul", "thumb": "https://i.ytimg.com/vi/VTXWQ7Z83X0/mqdefault.jpg", "dur": "2:18:15"}, {"id": "vOahCKXLb8M", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Soft Soul Under City Lights", "thumb": "https://i.ytimg.com/vi/vOahCKXLb8M/mqdefault.jpg", "dur": "2:22:41"}, {"id": "RQOSqNDcW18", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Gentle Midnight Reflections", "thumb": "https://i.ytimg.com/vi/RQOSqNDcW18/mqdefault.jpg", "dur": "2:17:52"}, {"id": "PFG4l6MRjr4", "title": "Chicago Soul|Curtis Mayfield Inspired 1970s Soul-Warm Soul Reflections at Midnight[Unreleased Album]", "thumb": "https://i.ytimg.com/vi/PFG4l6MRjr4/mqdefault.jpg", "dur": "2:24:02"}, {"id": "YhGE-lIr5wc", "title": "Chicago Soul|Curtis Mayfield Inspired 1970s Soul-Deep Grooves from the South Side [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/YhGE-lIr5wc/mqdefault.jpg", "dur": "2:22:08"}, {"id": "VzV-2ofs11M", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Late Night City Grooves [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/VzV-2ofs11M/mqdefault.jpg", "dur": "2:19:45"}, {"id": "dkc9VyaL1vA", "title": "Chicago Soul & Vintage Funk 1970 | Curtis Mayfield Inspired ✨ Golden Groove Classics [Lost Album]", "thumb": "https://i.ytimg.com/vi/dkc9VyaL1vA/mqdefault.jpg", "dur": "2:25:25"}, {"id": "5TkNJhu2Jd0", "title": "Curtis Mayfield | Timeless 1960s Soul, Freedom Songs & Black Consciousness", "thumb": "https://i.ytimg.com/vi/5TkNJhu2Jd0/mqdefault.jpg", "dur": "2:13:35"}, {"id": "jE5mpm1nGg4", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Gentle Souls [Evening Rework]", "thumb": "https://i.ytimg.com/vi/jE5mpm1nGg4/mqdefault.jpg", "dur": "2:23:48"}, {"id": "-KZWUyIVtks", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul –Quiet On These Streets", "thumb": "https://i.ytimg.com/vi/-KZWUyIVtks/mqdefault.jpg", "dur": "2:21:29"}, {"id": "90H9ZjGhSik", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – The Space Between My Breaths", "thumb": "https://i.ytimg.com/vi/90H9ZjGhSik/mqdefault.jpg", "dur": "2:20:20"}, {"id": "BLPkVLH2UdQ", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Slow Movements, Deep Soul [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/BLPkVLH2UdQ/mqdefault.jpg", "dur": "2:21:13"}, {"id": "PnXXbW8XQPk", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul — Stay Tonight [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/PnXXbW8XQPk/mqdefault.jpg", "dur": "2:19:08"}, {"id": "-EFgUBi1JqQ", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – What The Silence Knows", "thumb": "https://i.ytimg.com/vi/-EFgUBi1JqQ/mqdefault.jpg", "dur": "2:20:37"}, {"id": "bKELYwGpyTA", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Soft As You Came", "thumb": "https://i.ytimg.com/vi/bKELYwGpyTA/mqdefault.jpg", "dur": "2:21:27"}, {"id": "rjs5lpoVdF8", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – I Came Here Heavy", "thumb": "https://i.ytimg.com/vi/rjs5lpoVdF8/mqdefault.jpg", "dur": "2:20:15"}, {"id": "1Axk3f8SnK4", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Stay Warm With Me", "thumb": "https://i.ytimg.com/vi/1Axk3f8SnK4/mqdefault.jpg", "dur": "2:14:19"}, {"id": "MsG7ziDbct0", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Where the City Moves Softly [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/MsG7ziDbct0/mqdefault.jpg", "dur": "2:15:05"}, {"id": "OfqChXGrJsk", "title": "60's Soul Classic | Marvin Gaye Inspired 1970s Soul – Midnight Letters [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/OfqChXGrJsk/mqdefault.jpg", "dur": "2:22:19"}, {"id": "0JFBic8kvRs", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Soul Under City Lights [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/0JFBic8kvRs/mqdefault.jpg", "dur": "2:16:20"}, {"id": "RsgPziYf9JI", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Quiet Inner Fire [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/RsgPziYf9JI/mqdefault.jpg", "dur": "2:20:06"}, {"id": "79_bhiO2mqw", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Still I Kneel", "thumb": "https://i.ytimg.com/vi/79_bhiO2mqw/mqdefault.jpg", "dur": "2:24:27"}, {"id": "OGoXdfC47sA", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Late Night Soul Feelings [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/OGoXdfC47sA/mqdefault.jpg", "dur": "2:20:11"}, {"id": "cWAHD_dos8A", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul —  Love Grooves  [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/cWAHD_dos8A/mqdefault.jpg", "dur": "2:23:41"}, {"id": "E4glkvo7vGo", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Love Came Late, I Stayed [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/E4glkvo7vGo/mqdefault.jpg", "dur": "2:17:15"}, {"id": "tUeXd9PZkds", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul — Same House, Different Years [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/tUeXd9PZkds/mqdefault.jpg", "dur": "2:22:38"}, {"id": "xCANwXvkE8E", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul — Mercy & Grace [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/xCANwXvkE8E/mqdefault.jpg", "dur": "2:21:38"}, {"id": "a32AaNPAwFI", "title": "Chicago Soul | Donny Hathaway Inspired Mid Groove Soul – Soft Nights [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/a32AaNPAwFI/mqdefault.jpg", "dur": "2:19:01"}, {"id": "60x7XbIjFRs", "title": "Chicago Soul Ballads | Curtis Mayfield Inspired – Soft Light on You [Lost Album]", "thumb": "https://i.ytimg.com/vi/60x7XbIjFRs/mqdefault.jpg", "dur": "2:22:23"}, {"id": "TkrBQLkQMJ0", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – I Leave You Free", "thumb": "https://i.ytimg.com/vi/TkrBQLkQMJ0/mqdefault.jpg", "dur": "2:23:02"}, {"id": "hUcZ2QeXYKE", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Home After Everything [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/hUcZ2QeXYKE/mqdefault.jpg", "dur": "2:23:13"}, {"id": "s24GRxfHcoQ", "title": "Chicago Soul – 1970s Shadows on the Street | Curtis Mayfield Inspired Essence | Warm Emotional Echo", "thumb": "https://i.ytimg.com/vi/s24GRxfHcoQ/mqdefault.jpg", "dur": "2:20:13"}, {"id": "nnpnCiaAOSo", "title": "Chicago Soul | Curtis Mayfield Inspired – Gentle Souls (Unreleased Sessions)", "thumb": "https://i.ytimg.com/vi/nnpnCiaAOSo/mqdefault.jpg", "dur": "2:21:52"}, {"id": "1_-MPcyw2gI", "title": "Chicago Soul Slow Groove | Curtis Mayfield Inspired — A Story of Love and Loss [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/1_-MPcyw2gI/mqdefault.jpg", "dur": "2:25:21"}, {"id": "wQMcjzE0kHc", "title": "60's Soul Classic | Marvin Gaye Inspired 1970s Soul – Whispers of the Heart [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/wQMcjzE0kHc/mqdefault.jpg", "dur": "1:06:48"}, {"id": "3ow51AighFw", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – The House That Held Us All [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/3ow51AighFw/mqdefault.jpg", "dur": "1:08:24"}, {"id": "340uqx9HtzI", "title": "Chicago Soul | Curtis Mayfield Inspired 1970s Soul – Where People Move Softly [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/340uqx9HtzI/mqdefault.jpg", "dur": "1:07:10"}, {"id": "_emEVyGgeU4", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul - [Unreleased Album|]", "thumb": "https://i.ytimg.com/vi/_emEVyGgeU4/mqdefault.jpg", "dur": "1:07:27"}, {"id": "hh_O9RAiBNQ", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Still in My Heart [Unreleased Album|]", "thumb": "https://i.ytimg.com/vi/hh_O9RAiBNQ/mqdefault.jpg", "dur": "1:05:36"}, {"id": "BA2-1dKFUzs", "title": "Chicago Soul Sessions | Marvin Gaye Inspired – CITY LOVERS [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/BA2-1dKFUzs/mqdefault.jpg", "dur": "1:10:13"}, {"id": "YYFoyuPN1QM", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Inner Dawn [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/YYFoyuPN1QM/mqdefault.jpg", "dur": "1:09:57"}, {"id": "X0P5ChhKHqk", "title": "Chicago Soul | Marvin Gaye Inspired 1970s Soul – Quiet Love [Unreleased Album]", "thumb": "https://i.ytimg.com/vi/X0P5ChhKHqk/mqdefault.jpg", "dur": "1:10:41"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

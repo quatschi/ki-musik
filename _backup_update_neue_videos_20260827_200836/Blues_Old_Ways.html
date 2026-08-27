@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blues Old Ways</title>
+<!-- categories: Blues, Rock -->
+<!-- channel-id: UCyUMpceb4ydtycI7-icUTwg -->
+<!-- channel-url: https://youtube.com/@bluesoldways -->
+<!-- created: 2026-06-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; padding: 30px 20px 70px; color: white; }
+  .back { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 0.05em; }
+  .back:hover { color: #e0d7ff; }
+  .channel-header { display: flex; align-items: center; gap: 20px; max-width: 860px; margin: 0 auto 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .channel-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(180,150,255,0.4); }
+  .channel-title { font-size: 1.5rem; font-weight: 300; color: #e0d7ff; letter-spacing: 0.05em; }
+  .channel-count { font-size: 0.8rem; color: #7a6fa0; margin-top: 4px; }
+  .grid { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+  .video-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px 10px 10px; color: white; transition: all 0.2s ease; }
+  .video-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(180,150,255,0.35); }
+  .thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .nothumb { width: 120px; height: 68px; background: rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #cc0000; flex-shrink: 0; }
+  .video-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .video-title { font-size: 0.92rem; color: #e8e0ff; line-height: 1.3; }
+  .video-dur { font-size: 0.78rem; color: #7a6fa0; }
+  .rating-area { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .stars { display: flex; gap: 3px; }
+  .star { font-size: 1.3rem; cursor: pointer; color: #4a4060; transition: color 0.15s; user-select: none; }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn { font-size: 0.7rem; cursor: pointer; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; background: none; color: #9b8fc0; }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20,15,50,0.97); border-top: 1px solid rgba(180,150,255,0.3); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; z-index: 100; }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn { background: #5a3fa0; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+  .save-btn:hover { background: #7a5fc0; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Blues_Old_Ways.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/INlawdUVaAS8ikuL8HCh3BXeaBFM5lPaMKkZWbLv9E-FFbKiNddpaMcOdpkeMMGoR_oCIq_E=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Blues Old Ways</div>
+      <div class="channel-count">75 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Blues Old Ways";
+const KANAL = "Blues_Old_Ways.html";
+const ORIG_CATEGORIES = "Blues, Rock";
+const VIDEOS = [{"id": "gx6n8mzEME0", "title": "Best Blues EVER Vol. 37 | Deep Soul Blues | Every Man Knows This Pain", "thumb": "https://i.ytimg.com/vi/gx6n8mzEME0/mqdefault.jpg", "dur": "1:02:55"}, {"id": "demTeIJYhdI", "title": "Best Blues EVER Vol. 36 | Blues Stories Every Married Man Understands Pt. 2 | Deep Emotional Blues", "thumb": "https://i.ytimg.com/vi/demTeIJYhdI/mqdefault.jpg", "dur": "53:55"}, {"id": "pkfQ7fM6RDI", "title": "Best Blues EVER Vol. 35 | Best Old Blues Songs of All Time (Original Blues)", "thumb": "https://i.ytimg.com/vi/pkfQ7fM6RDI/mqdefault.jpg", "dur": "1:04:01"}, {"id": "lw49JYu1MKw", "title": "3 HOURS Of Deep Soul Blues | Greatest Hits Vol. 32, 33 & 34 | Emotional Chicago Blues Mix", "thumb": "https://i.ytimg.com/vi/lw49JYu1MKw/mqdefault.jpg", "dur": "3:28:38"}, {"id": "FfqqOqFHI8Q", "title": "Best Blues EVER Vol. 34 | Songs That Bring Back Forgotten Memories", "thumb": "https://i.ytimg.com/vi/FfqqOqFHI8Q/mqdefault.jpg", "dur": "1:04:17"}, {"id": "G4DePt8tdIA", "title": "Best Blues EVER Vol. 33 | Where Did My Good Years Go? | Deep Emotional Soul Blues", "thumb": "https://i.ytimg.com/vi/G4DePt8tdIA/mqdefault.jpg", "dur": "1:24:04"}, {"id": "8UzVZVz-OvQ", "title": "Best Blues EVER Vol. 32 | Deep Blues for Broken Hearts", "thumb": "https://i.ytimg.com/vi/8UzVZVz-OvQ/mqdefault.jpg", "dur": "1:00:18"}, {"id": "FDWvzl7gmxc", "title": "3 HOURS of Deep Soul Blues | Greatest Hits of Best Blues EVER (2026 Collection)", "thumb": "https://i.ytimg.com/vi/FDWvzl7gmxc/mqdefault.jpg", "dur": "3:19:28"}, {"id": "DE0U2fdRybQ", "title": "Best Blues EVER Vol. 31 | Deep Blues Every Man Will Understand", "thumb": "https://i.ytimg.com/vi/DE0U2fdRybQ/mqdefault.jpg", "dur": "1:03:03"}, {"id": "_-2A4tXlAJ4", "title": "Best Blues EVER Vol. 30 | Deep Blues for Broken Hearts | Emotional Soul Blues Stories", "thumb": "https://i.ytimg.com/vi/_-2A4tXlAJ4/mqdefault.jpg", "dur": "1:07:21"}, {"id": "InakEUtWjEY", "title": "Best Blues EVER Vol. 29 | Deep Blues for Broken Hearts ", "thumb": "https://i.ytimg.com/vi/InakEUtWjEY/mqdefault.jpg", "dur": "1:09:05"}, {"id": "BrwxERc1v48", "title": "3 HOURS Of Deep Soul Blues | Best Blues EVER Vol. 26, 27 & 28 | Emotional Blues Collection", "thumb": "https://i.ytimg.com/vi/BrwxERc1v48/mqdefault.jpg", "dur": "3:02:07"}, {"id": "eueqEq5ZF00", "title": "She Doesn't Hear | Deep Emotional Soul Blues About a Husband Nobody Notices", "thumb": "https://i.ytimg.com/vi/eueqEq5ZF00/mqdefault.jpg", "dur": "3:02"}, {"id": "raarLDVH3lQ", "title": "Best Blues EVER Vol. 28 | If Love Fades, Don't Let Silence Win (1 Hour Deep Soul Blues)", "thumb": "https://i.ytimg.com/vi/raarLDVH3lQ/mqdefault.jpg", "dur": "1:00:01"}, {"id": "S_QcWzsCh1I", "title": "Best Blues EVER Vol. 27 | The Blues Every Married Man Needs to Hear | Deep Romantic Soul Blues", "thumb": "https://i.ytimg.com/vi/S_QcWzsCh1I/mqdefault.jpg", "dur": "1:02:06"}, {"id": "yQAKBNpGbyQ", "title": "Best Blues EVER Vol. 26 | Emotional Blues Guitar & Midnight Stories", "thumb": "https://i.ytimg.com/vi/yQAKBNpGbyQ/mqdefault.jpg", "dur": "1:00:01"}, {"id": "nUS9qM4i6Vg", "title": "3 Hours of Deep Soul Blues | Best Blues EVER | Whiskey Blues, Lonely Nights & Broken Hearts", "thumb": "https://i.ytimg.com/vi/nUS9qM4i6Vg/mqdefault.jpg", "dur": "3:11:39"}, {"id": "tezRC-vppdc", "title": "Best Blues EVER Vol. 25 | 1 Hour of Deep Soul Blues for Lonely Nights", "thumb": "https://i.ytimg.com/vi/tezRC-vppdc/mqdefault.jpg", "dur": "1:04:58"}, {"id": "6wEOFe-g8Qc", "title": "Relaxing Blues Music | 9 Hours of Slow Blues Guitar and Soulful Blues Songs", "thumb": "https://i.ytimg.com/vi/6wEOFe-g8Qc/mqdefault.jpg", "dur": "9:27:26"}, {"id": "Io28YMrdGHY", "title": "Best Blues EVER Vol. 24 | Deep Soul Blues | Best Music to Relax", "thumb": "https://i.ytimg.com/vi/Io28YMrdGHY/mqdefault.jpg", "dur": "1:06:05"}, {"id": "ptS5NobTFIE", "title": "Greatest Hits of Best Blues EVER | Top 20 Deep Soul Blues Songs | 4 Hours", "thumb": "https://i.ytimg.com/vi/ptS5NobTFIE/mqdefault.jpg", "dur": "3:56:28"}, {"id": "_cdcWOGWdxI", "title": "WHISKEY & BLUES Vol. 1 | Deep Soul Blues for Lonely Nights", "thumb": "https://i.ytimg.com/vi/_cdcWOGWdxI/mqdefault.jpg", "dur": "1:01:13"}, {"id": "guPCLF2XYAw", "title": "4 HOURS of Deep Soul Blues | BEST BLUES EVER Vol. 3", "thumb": "https://i.ytimg.com/vi/guPCLF2XYAw/mqdefault.jpg", "dur": "4:06:16"}, {"id": "1xJUWwMqsXE", "title": "Best Blues EVER Vol. 23 | Still Wearing My Wedding Ring | Soulful Chicago Blues", "thumb": "https://i.ytimg.com/vi/1xJUWwMqsXE/mqdefault.jpg", "dur": "1:00:02"}, {"id": "Go4B6WvKPOQ", "title": "Best Blues EVER VOL. 22 | SHE NEVER CAME BACK | Soulful Slow Blues for Lonely Hearts", "thumb": "https://i.ytimg.com/vi/Go4B6WvKPOQ/mqdefault.jpg", "dur": "1:00:01"}, {"id": "P0UAAuoLAro", "title": "Best Blues EVER Vol. 21 I STILL LOVE HER | Deep Emotional Slow Blues 2026", "thumb": "https://i.ytimg.com/vi/P0UAAuoLAro/mqdefault.jpg", "dur": "1:02:32"}, {"id": "hEWghsqfLHE", "title": "Elijah Brown - Deep Blues | The Night We First Met | Soulful Blues Love Songs", "thumb": "https://i.ytimg.com/vi/hEWghsqfLHE/mqdefault.jpg", "dur": "22:55"}, {"id": "ZBioWjNF2FY", "title": "Best Blues EVER Vol. 20 | When Love Slowly Faded Away | Deep Soul Blues", "thumb": "https://i.ytimg.com/vi/ZBioWjNF2FY/mqdefault.jpg", "dur": "1:03:42"}, {"id": "D4ACz5hN_-Q", "title": "Best Blues EVER Vol. 19 | Deep Soul Blues For Lonely Nights", "thumb": "https://i.ytimg.com/vi/D4ACz5hN_-Q/mqdefault.jpg", "dur": "1:10:02"}, {"id": "BiU2C1WdelQ", "title": "I Stayed Too Long In The Pain | Deep Soul Blues About Love, Regret & Lost Years", "thumb": "https://i.ytimg.com/vi/BiU2C1WdelQ/mqdefault.jpg", "dur": "4:01"}, {"id": "Xj2trmzNWeM", "title": "4 HOURS of Deep Soul Blues | BEST BLUES EVER Vol. 2", "thumb": "https://i.ytimg.com/vi/Xj2trmzNWeM/mqdefault.jpg", "dur": "4:23:09"}, {"id": "VBqwFZHznHQ", "title": "Best Blues EVER Vol. 18 | Deep Soul Blues | The Day I Became Invisible", "thumb": "https://i.ytimg.com/vi/VBqwFZHznHQ/mqdefault.jpg", "dur": "1:10:14"}, {"id": "VE03Ut3Y3e8", "title": "Best Blues EVER Vol. 17 | The Memories That Never Left | Emotional Soul Blues", "thumb": "https://i.ytimg.com/vi/VE03Ut3Y3e8/mqdefault.jpg", "dur": "1:00:19"}, {"id": "r_owseItjVY", "title": "If Heaven Lets You Hear This Song | A Blues For Someone You Miss | Deep Soul Blues", "thumb": "https://i.ytimg.com/vi/r_owseItjVY/mqdefault.jpg", "dur": "5:19"}, {"id": "bC2lwcPHAB4", "title": "Best Blues EVER Vol. 16 | The Blues of Regret, Love and Goodbye", "thumb": "https://i.ytimg.com/vi/bC2lwcPHAB4/mqdefault.jpg", "dur": "1:09:12"}, {"id": "P4UoNXEmEtE", "title": "Best Blues EVER Vol. 15 | Every Married Man Knows This Feeling", "thumb": "https://i.ytimg.com/vi/P4UoNXEmEtE/mqdefault.jpg", "dur": "1:03:26"}, {"id": "DpSHWb_FczE", "title": "We Hurt Each Other Too Much | Deep Soul Blues", "thumb": "https://i.ytimg.com/vi/DpSHWb_FczE/mqdefault.jpg", "dur": "5:06"}, {"id": "oWPg2-Z-C6s", "title": "Best Blues EVER | 5 Hours of Deep Soul Blues Stories for Late Nights, Whiskey & Broken Hearts", "thumb": "https://i.ytimg.com/vi/oWPg2-Z-C6s/mqdefault.jpg", "dur": "5:27:43"}, {"id": "o9vS1QEvWNM", "title": "Best Blues EVER Vol. 14 | Deep Soul Blues Stories About Broken Love", "thumb": "https://i.ytimg.com/vi/o9vS1QEvWNM/mqdefault.jpg", "dur": "1:00:01"}, {"id": "Pq_jjVBTtKg", "title": "Best Blues EVER Vol. 13 | Blues Stories Every Married Man Understands", "thumb": "https://i.ytimg.com/vi/Pq_jjVBTtKg/mqdefault.jpg", "dur": "1:04:03"}, {"id": "I3fndegvuYo", "title": "Your Picture On The Fridge | Deep Soul Blues About Lost Love & Memories", "thumb": "https://i.ytimg.com/vi/I3fndegvuYo/mqdefault.jpg", "dur": "5:30"}, {"id": "SK0kDAaYZQo", "title": "Best Blues EVER Vol. 12 | The Letter She Never Read | 1 Hour of Soulful Blues & Heartbreak Stories", "thumb": "https://i.ytimg.com/vi/SK0kDAaYZQo/mqdefault.jpg", "dur": "1:19:50"}, {"id": "p0-WqeO0djU", "title": "Best Blues EVER Vol. 11 | 1 Hour Of Deep Soul Blues | Stories Of Love, Loss & Strength", "thumb": "https://i.ytimg.com/vi/p0-WqeO0djU/mqdefault.jpg", "dur": "1:00:04"}, {"id": "j5oO3vK38aA", "title": "2 HOURS Of Deep Soul Blues | BEST BLUES EVER", "thumb": "https://i.ytimg.com/vi/j5oO3vK38aA/mqdefault.jpg", "dur": "2:02:36"}, {"id": "aPfYK2N3idc", "title": "If I Leave, I Lose Them Too | Soulful Blues About Family, Love & Loss", "thumb": "https://i.ytimg.com/vi/aPfYK2N3idc/mqdefault.jpg", "dur": "5:16"}, {"id": "Yz-5FA6tR6g", "title": "Best Blues EVER Vol. 10 | Deep Soul Blues, Lost Love & Real Stories", "thumb": "https://i.ytimg.com/vi/Yz-5FA6tR6g/mqdefault.jpg", "dur": "1:03:58"}, {"id": "rMwy4jLOcFs", "title": "Best Blues EVER Vol. 9 | Deep Soul Blues, Whiskey Blues & Chicago Nights", "thumb": "https://i.ytimg.com/vi/rMwy4jLOcFs/mqdefault.jpg", "dur": "38:34"}, {"id": "-3bdkohI1Os", "title": "4 HOURS Of Deep Soul Blues | BEST BLUES EVER", "thumb": "https://i.ytimg.com/vi/-3bdkohI1Os/mqdefault.jpg", "dur": "4:00:13"}, {"id": "LWfXkxTpGB8", "title": "Men Cry In Silence | Emotional Blues Every Lonely Man Will Feel", "thumb": "https://i.ytimg.com/vi/LWfXkxTpGB8/mqdefault.jpg", "dur": "5:06"}, {"id": "tJfnABNP8uo", "title": "Best Blues EVER Vol. 8 | Emotional Blues About Lonely Men, Divorce, Whiskey & Real Life Pain", "thumb": "https://i.ytimg.com/vi/tJfnABNP8uo/mqdefault.jpg", "dur": "46:05"}, {"id": "NSbttcjJNlg", "title": "Best Blues EVER Vol. 7 | Emotional Blues About Marriage, Pain, Loneliness & Broken Men", "thumb": "https://i.ytimg.com/vi/NSbttcjJNlg/mqdefault.jpg", "dur": "41:44"}, {"id": "NYxzWq9d57o", "title": "Best Blues EVER Vol. 6 | Deep Soul Blues For Broken Men", "thumb": "https://i.ytimg.com/vi/NYxzWq9d57o/mqdefault.jpg", "dur": "39:02"}, {"id": "FZdOPI4ZP8g", "title": "You Stopped Looking At Me | Emotional Piano Blues", "thumb": "https://i.ytimg.com/vi/FZdOPI4ZP8g/mqdefault.jpg", "dur": "3:57"}, {"id": "j9cCvBjyPWI", "title": "Best Blues EVER Vol. 5 | Deep Soul Blues For Lonely Nights", "thumb": "https://i.ytimg.com/vi/j9cCvBjyPWI/mqdefault.jpg", "dur": "1:00:35"}, {"id": "wdOLaNIw1JI", "title": "She Heard Me Too Late | Deep Soul Blues", "thumb": "https://i.ytimg.com/vi/wdOLaNIw1JI/mqdefault.jpg", "dur": "4:59"}, {"id": "8V2Xbrzfl3E", "title": "Close Your Eyes And Feel This Blues | Raw Soul Blues Experience", "thumb": "https://i.ytimg.com/vi/8V2Xbrzfl3E/mqdefault.jpg", "dur": "22:56"}, {"id": "QyUV26luh-Y", "title": "Best Blues EVER Vol. 4 | Soul Blues Regrets and Loneliness & Whiskey Nights", "thumb": "https://i.ytimg.com/vi/QyUV26luh-Y/mqdefault.jpg", "dur": "21:39"}, {"id": "iE8F9fyi30M", "title": "You’re Gone… And All That’s Left Is Pain | Deep Whiskey Soul Blues", "thumb": "https://i.ytimg.com/vi/iE8F9fyi30M/mqdefault.jpg", "dur": "4:55"}, {"id": "JbENPoTN8jk", "title": "Best Blues EVER Vol. 3 | Deep Whiskey Soul Blues", "thumb": "https://i.ytimg.com/vi/JbENPoTN8jk/mqdefault.jpg", "dur": "33:41"}, {"id": "joXIOsnUiAI", "title": "Best Blues EVER Vol. 2 | O Melhor Blues para Relaxar", "thumb": "https://i.ytimg.com/vi/joXIOsnUiAI/mqdefault.jpg", "dur": "26:47"}, {"id": "3clhfEfPxlE", "title": "Back To My Arms | Soul Blues Duet | Deep Chicago Love Story", "thumb": "https://i.ytimg.com/vi/3clhfEfPxlE/mqdefault.jpg", "dur": "5:01"}, {"id": "0N74-VyXzJM", "title": "The Girl By The Bar | Deep Soul Blues Storytelling | Chicago Blues Night", "thumb": "https://i.ytimg.com/vi/0N74-VyXzJM/mqdefault.jpg", "dur": "4:56"}, {"id": "vdbKlZCJp4E", "title": "Best Blues EVER | The Best Blues To Relax", "thumb": "https://i.ytimg.com/vi/vdbKlZCJp4E/mqdefault.jpg", "dur": "53:41"}, {"id": "2-CceLzId1c", "title": "Now I Burn With This Passion | Midnight Chicago Blues", "thumb": "https://i.ytimg.com/vi/2-CceLzId1c/mqdefault.jpg", "dur": "5:09"}, {"id": "rtelqnWbk8E", "title": "Midnight Soul Blues | Best Blues Music to Relax | Blues para Relaxar", "thumb": "https://i.ytimg.com/vi/rtelqnWbk8E/mqdefault.jpg", "dur": "58:22"}, {"id": "kZwtnCA5aTo", "title": "Relaxing Soul Blues | Baby come a little closer | Melhor música de blues para relaxar", "thumb": "https://i.ytimg.com/vi/kZwtnCA5aTo/mqdefault.jpg", "dur": "6:56"}, {"id": "0dNRpgTjFvs", "title": "Slow Chicago Blues | Relaxing Blues & Whiskey Night Mood | Blues Old Ways", "thumb": "https://i.ytimg.com/vi/0dNRpgTjFvs/mqdefault.jpg", "dur": "1:02:32"}, {"id": "7MML0-Jtsj0", "title": "Relaxing Chicago jazz Blues | Slow Blues & Whiskey Night Mood | Blues Relaxante música para relaxar", "thumb": "https://i.ytimg.com/vi/7MML0-Jtsj0/mqdefault.jpg", "dur": "50:06"}, {"id": "gnkluX2qMBQ", "title": "Midnight Chicago Blues | Smooth Jazz & Whiskey Mood | Blues Relaxante para Noite", "thumb": "https://i.ytimg.com/vi/gnkluX2qMBQ/mqdefault.jpg", "dur": "54:54"}, {"id": "LMJSv_38EzA", "title": "Smoky Barbershop Blues | Slow Blues For Relaxing Nights", "thumb": "https://i.ytimg.com/vi/LMJSv_38EzA/mqdefault.jpg", "dur": "1:13:23"}, {"id": "fwhtfXte4y8", "title": "Whiskey Blues | Slow Blues For Late Night Whiskey Nights", "thumb": "https://i.ytimg.com/vi/fwhtfXte4y8/mqdefault.jpg", "dur": "1:10:38"}, {"id": "7qVZ0R-B5Sw", "title": "Rainy Chicago Blues | Deep Soul Blues For Late Night Relaxing", "thumb": "https://i.ytimg.com/vi/7qVZ0R-B5Sw/mqdefault.jpg", "dur": "51:18"}, {"id": "ZMAolLre6zI", "title": "Late Night Chicago Blues | Relaxing Guitar & Soul Blues", "thumb": "https://i.ytimg.com/vi/ZMAolLre6zI/mqdefault.jpg", "dur": "50:34"}, {"id": "bcbujwDliUc", "title": "Whiskey Blues Guitar | Vintage Barbershop Soul Blues", "thumb": "https://i.ytimg.com/vi/bcbujwDliUc/mqdefault.jpg", "dur": "50:01"}, {"id": "Lfjs1Y31uuM", "title": "1 Hour Of Slow Chicago Blues | Relaxing Blues Guitar & Soul", "thumb": "https://i.ytimg.com/vi/Lfjs1Y31uuM/mqdefault.jpg", "dur": "52:30"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+  const encoded = b64EncodeUtf8(json);
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; }
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+init();
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

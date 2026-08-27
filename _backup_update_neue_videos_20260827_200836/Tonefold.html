@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tonefold</title>
+<!-- categories: Jazz -->
+<!-- channel-id: UCm61yrlgrgillyKTsi6kxmg -->
+<!-- channel-url: https://www.youtube.com/@Tonefold-s3l -->
+<!-- created: 2026-07-20 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    padding: 30px 20px;
+    color: white;
+  }
+  .back {
+    display: inline-block;
+    color: #9b8fc0;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+  .back:hover { color: #e0d7ff; }
+  .channel-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 0 auto 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .channel-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(180,150,255,0.4);
+  }
+  .channel-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #e0d7ff;
+    letter-spacing: 0.05em;
+  }
+  .channel-count {
+    font-size: 0.8rem;
+    color: #7a6fa0;
+    margin-top: 4px;
+  }
+  .grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .video-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px 10px 10px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+  .video-card:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(180,150,255,0.35);
+    transform: translateX(4px);
+  }
+  .thumb {
+    width: 120px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .nothumb {
+    width: 120px;
+    height: 68px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #cc0000;
+    flex-shrink: 0;
+  }
+  .video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .video-title {
+    font-size: 0.92rem;
+    color: #e8e0ff;
+    line-height: 1.3;
+  }
+  .video-dur {
+    font-size: 0.78rem;
+    color: #7a6fa0;
+  }
+  .rating-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .stars {
+    display: flex;
+    gap: 3px;
+  }
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #4a4060;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .star:hover, .star.active { color: #f0c040; }
+  .clear-btn {
+    font-size: 0.7rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    background: none;
+    color: #9b8fc0;
+  }
+  .clear-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+  .play-btn { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(180,150,255,0.15); border: 1px solid rgba(180,150,255,0.4); color: #b496ff; text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: all 0.2s ease; }
+  .play-btn:hover { background: rgba(180,150,255,0.35); border-color: rgba(180,150,255,0.8); color: #fff; }
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,15,50,0.97);
+    border-top: 1px solid rgba(180,150,255,0.3);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+  .save-bar span { font-size: 0.85rem; color: #9b8fc0; }
+  .save-btn {
+    background: #5a3fa0;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: #7a5fc0; }
+  .changed-hint { font-size: 0.75rem; color: #f0c040; display: none; }
+  .status-msg { font-size: 0.78rem; color: #7a6fa0; font-style: italic; }
+  .status-ok { color: #6fcf97; }
+  .status-err { color: #eb5757; }
+  .save-btn:disabled { background: #3a2a70; cursor: wait; }
+  body { padding-bottom: 70px; }
+  .token-overlay { position: fixed; inset: 0; background: rgba(10,8,30,0.92); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .token-box { background: #1a1535; border: 1px solid rgba(180,150,255,0.3); border-radius: 16px; padding: 30px; max-width: 420px; width: 90%; }
+  .token-box h2 { font-size: 1.1rem; font-weight: 400; color: #e0d7ff; margin-bottom: 10px; }
+  .token-box p { font-size: 0.82rem; color: #9b8fc0; margin-bottom: 18px; line-height: 1.5; }
+  .token-box input { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 14px; color: white; font-size: 0.85rem; font-family: monospace; margin-bottom: 14px; }
+  .token-box input:focus { outline: none; border-color: rgba(180,150,255,0.6); }
+  .token-confirm { background: #5a3fa0; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .token-confirm:hover { background: #7a5fc0; }
+  .meta-box { max-width: 860px; margin: 0 auto 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px; }
+  .meta-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .meta-row:last-child { margin-bottom: 0; }
+  .meta-label { font-size: 0.78rem; color: #9b8fc0; letter-spacing: 0.03em; }
+  .meta-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: white; font-size: 0.88rem; font-family: inherit; }
+  .meta-input:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  textarea.meta-input { resize: vertical; min-height: 60px; }
+  .meta-save-row { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+  .meta-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .meta-save-btn:hover { background: #7a5fc0; }
+  .meta-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .meta-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .meta-status.ok { color: #6fcf97; }
+  .meta-status.err { color: #eb5757; }
+  .edit-btn { display: inline-block; color: #9b8fc0; text-decoration: none; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; cursor: pointer; background: none; font-family: inherit; }
+  .edit-btn:hover { color: #e0d7ff; border-color: rgba(180,150,255,0.4); }
+  .edit-panel { display: none; max-width: 860px; margin: 0 auto 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px 20px; }
+  .edit-panel.open { display: block; }
+  .edit-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .edit-search { flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 7px 12px; color: white; font-size: 0.85rem; font-family: inherit; }
+  .edit-search:focus { outline: none; border-color: rgba(180,150,255,0.5); }
+  .edit-toolbar-btn { background: none; border: 1px solid rgba(255,255,255,0.15); color: #9b8fc0; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; }
+  .edit-toolbar-btn:hover { color: #fff; border-color: rgba(180,150,255,0.4); }
+  .edit-count { font-size: 0.78rem; color: #7a6fa0; margin-left: auto; }
+  .edit-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .edit-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; }
+  .edit-row:hover { background: rgba(255,255,255,0.06); }
+  .edit-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #7a5fc0; cursor: pointer; flex-shrink: 0; }
+  .edit-row-title { font-size: 0.82rem; color: #e0d7ff; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row-dur { font-size: 0.72rem; color: #7a6fa0; flex-shrink: 0; }
+  .edit-save-row { display: flex; align-items: center; gap: 12px; }
+  .edit-save-btn { background: #5a3fa0; color: white; border: none; padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .edit-save-btn:hover { background: #7a5fc0; }
+  .edit-save-btn:disabled { background: #3a2a70; cursor: wait; }
+  .edit-status { font-size: 0.78rem; font-style: italic; color: #7a6fa0; }
+  .edit-status.ok { color: #6fcf97; }
+  .edit-status.err { color: #eb5757; }
+</style>
+</head>
+<body>
+<div class="token-overlay" id="token-overlay">
+  <div class="token-box">
+    <h2>🔑 GitHub Token eingeben</h2>
+    <p>Das Token wird nur in diesem Browser gespeichert und direkt an GitHub übertragen.</p>
+    <input type="password" id="token-input" placeholder="github_pat_...">
+    <button class="token-confirm" onclick="saveToken()">Bestätigen</button>
+  </div>
+</div>
+
+  <div style="max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <a class="back" href="index.html">← Zurück zur Übersicht</a>
+    <a class="back" href="radio2.html?kanal=Tonefold.html" style="border:1px solid rgba(180,150,255,0.4);padding:6px 14px;border-radius:20px">▶ Nur diesen Kanal im Radio</a>
+    <button class="edit-btn" onclick="toggleEdit()">✏️ Bearbeiten</button>
+  </div>
+  <div class="channel-header">
+    <img class='channel-avatar' src='https://yt3.ggpht.com/TcAth-nbxtMONc0Ino9oOMn_v04NxYw5n2Endpn5yWnRAD6sAzO0xPSkhLWkH8TbmCJBzstVjg=s800-c-k-c0x00ffffff-no-rj'>
+    <div>
+      <div class="channel-title">Tonefold</div>
+      <div class="channel-count">209 Videos</div>
+    </div>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-row">
+      <label class="meta-label" for="meta-categories">Kategorien</label>
+      <input type="text" id="meta-categories" class="meta-input" placeholder="z.B. Jazz, Lounge">
+    </div>
+    <div class="meta-row">
+      <label class="meta-label" for="meta-notes">Notizen</label>
+      <textarea id="meta-notes" class="meta-input" placeholder="Beobachtungen zu diesem Kanal..."></textarea>
+    </div>
+    <div class="meta-save-row">
+      <button class="meta-save-btn" id="meta-save-btn" onclick="saveMeta()">💾 Kategorien/Notizen speichern</button>
+      <span class="meta-status" id="meta-status"></span>
+    </div>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="edit-toolbar">
+      <input type="text" id="edit-search" class="edit-search" placeholder="🔍 Videos filtern..." oninput="renderEditList()">
+      <button class="edit-toolbar-btn" onclick="editSelectAll(true)">Alle auswählen</button>
+      <button class="edit-toolbar-btn" onclick="editSelectAll(false)">Alle abwählen</button>
+      <span class="edit-count" id="edit-count"></span>
+    </div>
+    <div class="edit-list" id="edit-list"></div>
+    <div class="edit-save-row">
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()">💾 Speichern</button>
+      <span class="edit-status" id="edit-status"></span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="save-bar">
+    <span>Bewertet: <strong id="rated-count">0</strong> &nbsp;<span class="changed-hint" id="changed-hint">● ungespeichert</span></span>
+    <span class="status-msg" id="status-msg"></span>
+    <button class="save-btn" id="save-btn" onclick="saveRatings()">💾 Speichern</button>
+    <button class="save-btn" id="remove-unavailable-btn" onclick="removeUnavailable()" style="background:#7a3f3f;" title="Entfernt alle Videos ohne Thumbnail (nicht mehr verfügbar) aus der Liste">🗑️ Nicht verfügbare entfernen</button>
+  </div>
+
+<script>
+const GITHUB_USER = 'quatschi';
+const GITHUB_REPO = 'ki-musik';
+const GITHUB_FILE = 'noten.json';
+const META_FILE = 'kanal_meta.json';
+const CHANNEL = "Tonefold";
+const KANAL = "Tonefold.html";
+const ORIG_CATEGORIES = "Jazz";
+const VIDEOS = [{"id": "7rlUW4CVJvQ", "title": "Blue Meter Jazz 🔵 1 Hour Audiophile Japanese Jazz BGM | Late Night Hi-Fi & Whiskey Mood", "thumb": "https://i.ytimg.com/vi/7rlUW4CVJvQ/mqdefault.jpg", "dur": "1:15:00"}, {"id": "XUF7rkmFkbo", "title": "Studio Stereo Jazz 🎧 1 Hour Pure Hi-Fi Japanese Jazz BGM | Deep Listening & Focus", "thumb": "https://i.ytimg.com/vi/XUF7rkmFkbo/mqdefault.jpg", "dur": "1:15:21"}, {"id": "5oIYoEY_R9Y", "title": "Warm Mahogany Jazz 🥃 1 Hour Cozy Audiophile Japanese Jazz BGM | Relax, Read & Unwind", "thumb": "https://i.ytimg.com/vi/5oIYoEY_R9Y/mqdefault.jpg", "dur": "1:13:44"}, {"id": "1psEkoo_ts0", "title": "big-speaker Japanese jazz for deep late-night concentration.", "thumb": "https://i.ytimg.com/vi/1psEkoo_ts0/mqdefault.jpg", "dur": "1:13:58"}, {"id": "Z__2IBTvSSM", "title": "Hi-Fi Den Jazz 🕯️ 1 Hour Late Night Japanese Jazz BGM | Reading, Sleep & Meditation", "thumb": "https://i.ytimg.com/vi/Z__2IBTvSSM/mqdefault.jpg", "dur": "1:14:41"}, {"id": "aIDdrEPGvXQ", "title": "McIntosh Night Jazz 🌃 1 Hour Premium Japanese Jazz BGM | Audiophile Blue Glow & Relax", "thumb": "https://i.ytimg.com/vi/aIDdrEPGvXQ/mqdefault.jpg", "dur": "1:16:41"}, {"id": "tLuDZEV-qSw", "title": "Reel-to-Reel Jazz 📼 1 Hour Analog Japanese Jazz BGM | Tape Warmth, Sleep & Healing", "thumb": "https://i.ytimg.com/vi/tLuDZEV-qSw/mqdefault.jpg", "dur": "1:11:10"}, {"id": "QkbH2VxinTc", "title": "Vinyl Wall Jazz ☕ 1 Hour Vintage Japanese Jazz BGM | Study, Work & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/QkbH2VxinTc/mqdefault.jpg", "dur": "1:09:24"}, {"id": "Q1mixKHpOyE", "title": "Vintage Amplifier Jazz — Warm Tube Sound | 1 Hour Japanese Jazz BGM for Work & Relax", "thumb": "https://i.ytimg.com/vi/Q1mixKHpOyE/mqdefault.jpg", "dur": "1:11:19"}, {"id": "IJTPrN-CXSc", "title": "Spinning Vinyl Jazz — Retro Record Player | 1 Hour Japanese Jazz BGM for Coffee & Focus", "thumb": "https://i.ytimg.com/vi/IJTPrN-CXSc/mqdefault.jpg", "dur": "1:12:53"}, {"id": "bjkBAdrzVZQ", "title": "Vintage Hi-Fi Jazz — Audiophile Setup | 1 Hour Japanese Jazz BGM for Reading & Study", "thumb": "https://i.ytimg.com/vi/bjkBAdrzVZQ/mqdefault.jpg", "dur": "1:13:57"}, {"id": "isQLApaZTj0", "title": "Coffee & Jazz — Slow Cafe Morning | 1 Hour Japanese Jazz BGM for Work, Study & Relax", "thumb": "https://i.ytimg.com/vi/isQLApaZTj0/mqdefault.jpg", "dur": "1:11:30"}, {"id": "EL52_KO46Hk", "title": "Vinyl Listening Jazz — Turntable & Tea | 1 Hour Japanese Jazz BGM for Quiet Evenings", "thumb": "https://i.ytimg.com/vi/EL52_KO46Hk/mqdefault.jpg", "dur": "1:17:38"}, {"id": "F5M5aLyRLn8", "title": "Whiskey & Vinyl Jazz — Late Night Bar | 1 Hour Japanese Jazz BGM for Night Relax", "thumb": "https://i.ytimg.com/vi/F5M5aLyRLn8/mqdefault.jpg", "dur": "1:13:30"}, {"id": "exR633zO1HQ", "title": "Studio Monitor Jazz — Pure Hi-Fi Sound | 1 Hour Japanese Jazz BGM for Work & Deep Focus", "thumb": "https://i.ytimg.com/vi/exR633zO1HQ/mqdefault.jpg", "dur": "1:02:08"}, {"id": "W5Bc27ZQUKE", "title": "Vinyl Library Jazz — Bookshelf Hi-Fi & Records | 1 Hour Japanese Jazz BGM for Reading", "thumb": "https://i.ytimg.com/vi/W5Bc27ZQUKE/mqdefault.jpg", "dur": "1:15:16"}, {"id": "KzAqzJ8dAPo", "title": "JBL × McIntosh Bar Jazz — Audiophile Hi-Fi | 1 Hour Japanese Jazz BGM for Late Night", "thumb": "https://i.ytimg.com/vi/KzAqzJ8dAPo/mqdefault.jpg", "dur": "1:11:30"}, {"id": "_Pe0dG_uU_g", "title": "Vintage JBL Jazz — Legendary Studio Monitors | 1 Hour Japanese Jazz BGM for Vinyl Lovers", "thumb": "https://i.ytimg.com/vi/_Pe0dG_uU_g/mqdefault.jpg", "dur": "1:13:30"}, {"id": "iNEx8PmwU5U", "title": "Night View Vinyl Jazz — City Lights & Turntable | 1 Hour Japanese Jazz BGM for Relax", "thumb": "https://i.ytimg.com/vi/iNEx8PmwU5U/mqdefault.jpg", "dur": "1:18:52"}, {"id": "KUR64KbTrsw", "title": "Relaxing Japanese Jazz — YAMAHA × McIntosh Whiskey Bar | 1 Hour+ Late Night Hi-Fi BGM", "thumb": "https://i.ytimg.com/vi/KUR64KbTrsw/mqdefault.jpg", "dur": "1:05:22"}, {"id": "H9k3lUriAzQ", "title": "Relaxing Japanese Jazz — Golden Listening Room | 1 Hour+ Vinyl BGM for Study & Work", "thumb": "https://i.ytimg.com/vi/H9k3lUriAzQ/mqdefault.jpg", "dur": "1:08:13"}, {"id": "WVJDarZK7cE", "title": "Relaxing Japanese Jazz — Blue Monitor Pub | 1 Hour+ Tube Amp BGM for Evening Drinks", "thumb": "https://i.ytimg.com/vi/WVJDarZK7cE/mqdefault.jpg", "dur": "1:03:47"}, {"id": "jAD5CzU4nHI", "title": "Relaxing Japanese Jazz — After-Hours Bar Session | 1 Hour+ BGM for Night & Whiskey", "thumb": "https://i.ytimg.com/vi/jAD5CzU4nHI/mqdefault.jpg", "dur": "1:13:49"}, {"id": "MT80eA8DX5w", "title": "Relaxing Japanese Jazz — Whiskey Library Lounge | 1 Hour+ BGM for Reading & Slow Nights", "thumb": "https://i.ytimg.com/vi/MT80eA8DX5w/mqdefault.jpg", "dur": "1:01:42"}, {"id": "KorTsH9vH0Y", "title": "Relaxing Japanese Jazz — The Vinyl Lounge | 1 Hour+ Record Wall BGM for Work & Chill", "thumb": "https://i.ytimg.com/vi/KorTsH9vH0Y/mqdefault.jpg", "dur": "1:13:53"}, {"id": "pEJCoaAXXug", "title": "Acoustic Brew Cafe Jazz ☕ 1 Hour Japanese Jazz BGM | Retro Hi-Fi & Coffee", "thumb": "https://i.ytimg.com/vi/pEJCoaAXXug/mqdefault.jpg", "dur": "1:04:30"}, {"id": "mcQsVmNDDR8", "title": "JBL Vinyl Jazz Cafe ☕ 1 Hour Japanese Jazz BGM | Study, Work & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/mcQsVmNDDR8/mqdefault.jpg", "dur": "1:11:24"}, {"id": "jQu7gR3O-E8", "title": "Vinyl Night Jazz Bar 🎵 1 Hour Japanese Jazz BGM | Late Night Hi-Fi Relaxation", "thumb": "https://i.ytimg.com/vi/jQu7gR3O-E8/mqdefault.jpg", "dur": "1:29:37"}, {"id": "ayK15vc6jjs", "title": "McIntosh Jazz Lounge 🎵 1 Hour Japanese Jazz BGM | Audiophile Hi-Fi Sessions", "thumb": "https://i.ytimg.com/vi/ayK15vc6jjs/mqdefault.jpg", "dur": "1:04:32"}, {"id": "Y5fCzyaBz6A", "title": "Retro American Jazz Cafe ☕ 1 Hour Japanese Jazz BGM | Vintage Coffee & Hi-Fi", "thumb": "https://i.ytimg.com/vi/Y5fCzyaBz6A/mqdefault.jpg", "dur": "1:02:03"}, {"id": "2Gbk2SXMOts", "title": "Japanese Jazz Cafe ☕ 1 Hour Showa Kissaten BGM | Study, Work & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/2Gbk2SXMOts/mqdefault.jpg", "dur": "49:18"}, {"id": "Ifm9bqMej0s", "title": "YAMAHA Whiskey Bar Jazz 🥃 1 Hour Japanese Jazz BGM | Vintage Hi-Fi · Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/Ifm9bqMej0s/mqdefault.jpg", "dur": "45:04"}, {"id": "DcSWRFdZwSk", "title": "Luxury Audio Bar Jazz 🎷 1 Hour Japanese Jazz BGM | Vintage Floor Speakers · Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/DcSWRFdZwSk/mqdefault.jpg", "dur": "35:22"}, {"id": "EUSRNYHfdC0", "title": "Premium Hi-Fi Lounge Jazz 🎵 1 Hour Japanese Jazz BGM | Tube Amp · Study & Sleep Music", "thumb": "https://i.ytimg.com/vi/EUSRNYHfdC0/mqdefault.jpg", "dur": "42:37"}, {"id": "yS_xKC6V0qk", "title": "McIntosh Vinyl Sessions 🎵 1 Hour Japanese Jazz BGM | JBL + McIntosh 240 · Audiophile Bar", "thumb": "https://i.ytimg.com/vi/yS_xKC6V0qk/mqdefault.jpg", "dur": "39:10"}, {"id": "_Q3OjZoTD4o", "title": "Coffee & Vinyl Cafe Jazz ☕ 1 Hour Japanese Jazz BGM | DIATONE Speakers · Work & Relaxation", "thumb": "https://i.ytimg.com/vi/_Q3OjZoTD4o/mqdefault.jpg", "dur": "33:07"}, {"id": "8Nt9p1DSh0w", "title": "Midnight Library Jazz 📚 1 Hour Japanese Jazz BGM | Miles Davis Inspired · Study & Focus", "thumb": "https://i.ytimg.com/vi/8Nt9p1DSh0w/mqdefault.jpg", "dur": "38:59"}, {"id": "CNlJe9g2R_Y", "title": "Jazz Club After Hours 🎺 1 Hour Japanese Jazz BGM | Accuphase Amp · Late Night Vibes", "thumb": "https://i.ytimg.com/vi/CNlJe9g2R_Y/mqdefault.jpg", "dur": "39:51"}, {"id": "sISDuyLYWuo", "title": "Jazz Bar After Midnight 🥃 1 Hour Japanese Jazz BGM | Late Night Work, Study & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/sISDuyLYWuo/mqdefault.jpg", "dur": "1:08:16"}, {"id": "4Xn04ONFexA", "title": "Blue Note Jazz Lounge 🎺 Japanese Jazz BGM | McIntosh Amplifier · Study, Sleep & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/4Xn04ONFexA/mqdefault.jpg", "dur": "1:25:18"}, {"id": "-dq_rvVJrVo", "title": "Vinyl & Whiskey Bar 🎵  Japanese Jazz BGM | DIATONE + Sony Vintage · Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/-dq_rvVJrVo/mqdefault.jpg", "dur": "1:20:13"}, {"id": "d9_g86pvZEg", "title": "Live Jazz Club 🎷 Japanese Jazz BGM | McIntosh 275 · JBL Hi-Fi · Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/d9_g86pvZEg/mqdefault.jpg", "dur": "1:07:20"}, {"id": "7XVgNL62mr0", "title": "Jazz Bar After Midnight 🥃 1 Hour 29 Min Japanese Jazz BGM | Late Night Work, Study & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/7XVgNL62mr0/mqdefault.jpg", "dur": "1:29:57"}, {"id": "rOBTKLOSVV0", "title": "Late Night Jazz Bar ☕ 1 Hour Vintage Showa Jazz BGM | Study, Work & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/rOBTKLOSVV0/mqdefault.jpg", "dur": "1:18:35"}, {"id": "m4jMKgWY9RQ", "title": "Audiophile Jazz Lounge 🥃 1 Hour Premium Hi-Fi Japanese Jazz BGM | Whiskey Night Music", "thumb": "https://i.ytimg.com/vi/m4jMKgWY9RQ/mqdefault.jpg", "dur": "1:20:15"}, {"id": "pKZvQ05TnJc", "title": "Showa Retro Cafe Jazz ☕ 1 Hour Nostalgic Japanese Jazz BGM | Coffee, Focus & Study Music", "thumb": "https://i.ytimg.com/vi/pKZvQ05TnJc/mqdefault.jpg", "dur": "1:18:51"}, {"id": "iKILajnLl1U", "title": "Sleep Jazz Music 🌙 1 Hour Soothing Japanese Jazz BGM | Insomnia Relief, Meditation & Healing", "thumb": "https://i.ytimg.com/vi/iKILajnLl1U/mqdefault.jpg", "dur": "1:06:51"}, {"id": "Q5FzwR7gOs8", "title": "Rainy Day Jazz 🌧️ 1 Hour Mellow Japanese Jazz BGM | Coffee, Window Vibes & Chill Music", "thumb": "https://i.ytimg.com/vi/Q5FzwR7gOs8/mqdefault.jpg", "dur": "1:02:39"}, {"id": "RYBFQ3tw76c", "title": "Night Audio Room 🕯️ 1 Hour Premium Japanese Jazz BGM | Candlelight, Before Sleep & Meditation", "thumb": "https://i.ytimg.com/vi/RYBFQ3tw76c/mqdefault.jpg", "dur": "1:07:35"}, {"id": "-ffe1vDIZGY", "title": "Deep Focus in the Dark: Minimalist Upright Bass for High-End Productivity", "thumb": "https://i.ytimg.com/vi/-ffe1vDIZGY/mqdefault.jpg", "dur": "41:06"}, {"id": "zFFHPjaG8lA", "title": "Midnight Bourbon Lounge | Deep Double Bass Solo (Dark Jazz for Reading & Focus)", "thumb": "https://i.ytimg.com/vi/zFFHPjaG8lA/mqdefault.jpg", "dur": "52:33"}, {"id": "6zGf3I_AgsY", "title": "Late Night Reading in a Vintage Loft: Dark, Deep Upright Bass Playlist", "thumb": "https://i.ytimg.com/vi/6zGf3I_AgsY/mqdefault.jpg", "dur": "42:05"}, {"id": "D84Cl1LbwkI", "title": "Dark Espresso & Deep Bass: Minimalist Jazz for Late Night Focus", "thumb": "https://i.ytimg.com/vi/D84Cl1LbwkI/mqdefault.jpg", "dur": "47:23"}, {"id": "WgzKOeLf6Jk", "title": "The Sound of Deep Isolation: Solo Bass Minimalist Jazz", "thumb": "https://i.ytimg.com/vi/WgzKOeLf6Jk/mqdefault.jpg", "dur": "44:41"}, {"id": "w9y-kWFXWtY", "title": "A Glass of Bourbon & Deep Bass: Dark Minimalist Jazz", "thumb": "https://i.ytimg.com/vi/w9y-kWFXWtY/mqdefault.jpg", "dur": "42:22"}, {"id": "QHv_7Qnb4sQ", "title": "FM Jazz Bar 001 vol07 20260508 2138", "thumb": "https://i.ytimg.com/vi/QHv_7Qnb4sQ/mqdefault.jpg", "dur": "47:23"}, {"id": "I0zhC15eGPw", "title": "Pure Resonance | Solo Double Bass for Intellectual Focus & Reading", "thumb": "https://i.ytimg.com/vi/I0zhC15eGPw/mqdefault.jpg", "dur": "54:30"}, {"id": "dkLu6WhebCU", "title": "Midnight Solitude: Deep Bass Jazz for Late Night Thinking", "thumb": "https://i.ytimg.com/vi/dkLu6WhebCU/mqdefault.jpg", "dur": "1:00:26"}, {"id": "0o6618r2APU", "title": "Late Night Whiskey & Reading: Deep, Minimalist Solo Bass Jazz for Focus", "thumb": "https://i.ytimg.com/vi/0o6618r2APU/mqdefault.jpg", "dur": "1:00:43"}, {"id": "cBgcNU347I8", "title": "Midnight Resonances | Dark Solo Upright Bass for Deep Focus", "thumb": "https://i.ytimg.com/vi/cBgcNU347I8/mqdefault.jpg", "dur": "55:06"}, {"id": "t4-HG3sa3kc", "title": "The Blue Glow: Deep & Minimalist Double Bass for Late Night Moods", "thumb": "https://i.ytimg.com/vi/t4-HG3sa3kc/mqdefault.jpg", "dur": "1:06:42"}, {"id": "tn_RsR-Aa_o", "title": "A Cat's Dark Jazz: Midnight Deep Upright Bass for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/tn_RsR-Aa_o/mqdefault.jpg", "dur": "57:32"}, {"id": "mKWM6WpRJRs", "title": "Dark Upright Bass: Deep Focus Jazz for Reading & Work", "thumb": "https://i.ytimg.com/vi/mKWM6WpRJRs/mqdefault.jpg", "dur": "53:09"}, {"id": "QiCmfWj9LvA", "title": "Midnight Noir: Solo Upright Bass for Deep Focus & Reading", "thumb": "https://i.ytimg.com/vi/QiCmfWj9LvA/mqdefault.jpg", "dur": "54:29"}, {"id": "aKxEAPAPmoQ", "title": "Deep Focus Minimalist Jazz: Solo Upright Bass", "thumb": "https://i.ytimg.com/vi/aKxEAPAPmoQ/mqdefault.jpg", "dur": "28:11"}, {"id": "SOtAmFxOJ1g", "title": "Midnight Solitude: Dark Solo Upright Bass for Deep Thinking & Late Night Reading", "thumb": "https://i.ytimg.com/vi/SOtAmFxOJ1g/mqdefault.jpg", "dur": "55:50"}, {"id": "gM2iVOW5NDk", "title": "Deep Focus: Minimalist Dark Upright Bass for Study & Reading", "thumb": "https://i.ytimg.com/vi/gM2iVOW5NDk/mqdefault.jpg", "dur": "53:21"}, {"id": "leNF_MdEJes", "title": "Deep Night Solitude: Solo Upright Bass for Late Hours", "thumb": "https://i.ytimg.com/vi/leNF_MdEJes/mqdefault.jpg", "dur": "52:16"}, {"id": "LU7FUUL2UJ4", "title": "Deep Bass, Empty Bar: Minimalist Dark Jazz for Deep Focus & Reading (Vintage SONY & Cat)", "thumb": "https://i.ytimg.com/vi/LU7FUUL2UJ4/mqdefault.jpg", "dur": "55:50"}, {"id": "ZVLL0xY_4cQ", "title": "Deep Bass Solitude: Minimalist Solo Upright Bass for Deep Focus", "thumb": "https://i.ytimg.com/vi/ZVLL0xY_4cQ/mqdefault.jpg", "dur": "52:53"}, {"id": "Slj6qAly-6c", "title": "Deep Bass Focus: Minimalist Solo Upright Bass for Midnight Work & Reading", "thumb": "https://i.ytimg.com/vi/Slj6qAly-6c/mqdefault.jpg", "dur": "28:11"}, {"id": "wkx_nLBgJok", "title": "Midnight Speakeasy: The Deep Soul of Solo Upright Bass", "thumb": "https://i.ytimg.com/vi/wkx_nLBgJok/mqdefault.jpg", "dur": "29:54"}, {"id": "fseuAdWyJHo", "title": "Ultra Deep Bass Jazz: Minimalist McIntosh Sound for Midnight Reading", "thumb": "https://i.ytimg.com/vi/fseuAdWyJHo/mqdefault.jpg", "dur": "58:58"}, {"id": "kfZEL0TSlPk", "title": "Audiophile Noir: Deep Solo Bass through the Warmth of 300B Vacuum Tubes", "thumb": "https://i.ytimg.com/vi/kfZEL0TSlPk/mqdefault.jpg", "dur": "59:27"}, {"id": "vARqc2ByBXE", "title": "Deep Focus Upright Bass | Minimalist Dark Jazz for Work & Study", "thumb": "https://i.ytimg.com/vi/vARqc2ByBXE/mqdefault.jpg", "dur": "57:28"}, {"id": "vjfgAANr1WU", "title": "Deep Focus: Dark Solo Upright Bass Jazz for Late Night Work & Reading", "thumb": "https://i.ytimg.com/vi/vjfgAANr1WU/mqdefault.jpg", "dur": "59:57"}, {"id": "geFtNnQkDZA", "title": "Deep Focus: Solo Upright Bass Jazz for Reading & Concentration", "thumb": "https://i.ytimg.com/vi/geFtNnQkDZA/mqdefault.jpg", "dur": "56:15"}, {"id": "gSfDAHDlfJk", "title": "Midnight Vinyl Jazz: Slow Swing & Deep Bass for Deep Focus", "thumb": "https://i.ytimg.com/vi/gSfDAHDlfJk/mqdefault.jpg", "dur": "45:28"}, {"id": "CHmlQvyTgzE", "title": "Deep Bass Jazz & Slow Swing | Warm Analog Sound for Pure Relaxation", "thumb": "https://i.ytimg.com/vi/CHmlQvyTgzE/mqdefault.jpg", "dur": "47:16"}, {"id": "SJiergMrHQ4", "title": "Vintage Tube Amp Jazz: Warm Tones for Relaxation", "thumb": "https://i.ytimg.com/vi/SJiergMrHQ4/mqdefault.jpg", "dur": "50:01"}, {"id": "fTdQ2XhoLpQ", "title": "The Blue Mood: Sophisticated Saxophone & Deep Bass Analog Jazz", "thumb": "https://i.ytimg.com/vi/fTdQ2XhoLpQ/mqdefault.jpg", "dur": "59:38"}, {"id": "9I4hyfoCycc", "title": "The Perfect Book & Jazz Companion: Instrumental Slow Swing for Deep Work", "thumb": "https://i.ytimg.com/vi/9I4hyfoCycc/mqdefault.jpg", "dur": "49:35"}, {"id": "q6Oe_cFAi0o", "title": "Vintage Analog Warmth: Sophisticated Slow Jazz to Relax and Unwind", "thumb": "https://i.ytimg.com/vi/q6Oe_cFAi0o/mqdefault.jpg", "dur": "1:11:55"}, {"id": "0Q4CnFeqEKQ", "title": "Midnight in a Classic Jazz Bar: Slow Swing & Deep Bass for Late Night Relaxation", "thumb": "https://i.ytimg.com/vi/0Q4CnFeqEKQ/mqdefault.jpg", "dur": "1:03:11"}, {"id": "QZmwju2cs9Y", "title": "\"Immersive Slow Swing Jazz: Smoky Sax, Soft Trumpet & Deep Contrabass (Instrumental)\"", "thumb": "https://i.ytimg.com/vi/QZmwju2cs9Y/mqdefault.jpg", "dur": "45:59"}, {"id": "KMevmOTpKWQ", "title": "Midnight Espresso - Slow Swing Jazz Instrumental | Deep Bass & Saxophone", "thumb": "https://i.ytimg.com/vi/KMevmOTpKWQ/mqdefault.jpg", "dur": "54:03"}, {"id": "zEKhn3Rffj0", "title": "Cozy City Night Apartment 🌃 Warm Jazz Lounge Vibes to Chill & Study", "thumb": "https://i.ytimg.com/vi/zEKhn3Rffj0/mqdefault.jpg", "dur": "56:54"}, {"id": "PdV-0ebmRGs", "title": "Warm Cozy Jazz in the Rain: Instrumental Slow Swing with Deep Bass to Relax & Work", "thumb": "https://i.ytimg.com/vi/PdV-0ebmRGs/mqdefault.jpg", "dur": "43:31"}, {"id": "9V1-D5xJD-0", "title": "The Audiophile's Evening: Sophisticated Jazz for a Late Night High-Rise Retreat", "thumb": "https://i.ytimg.com/vi/9V1-D5xJD-0/mqdefault.jpg", "dur": "56:22"}, {"id": "oDGn_JE52mM", "title": "Vintage Hi-Fi Jazz Playlist: Deep Tones & Slow Swing for Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/oDGn_JE52mM/mqdefault.jpg", "dur": "39:54"}, {"id": "4UQPRj-go2A", "title": "\"J.S. BACH on Vacuum Tube Amp: Deep Focus & Reading Music (Analog Warmth)\"", "thumb": "https://i.ytimg.com/vi/4UQPRj-go2A/mqdefault.jpg", "dur": "56:22"}, {"id": "op7f7N_0x4w", "title": "Midnight Vinyl Jazz: Deep Bass & Warm Tube Amp Vibes 🎷", "thumb": "https://i.ytimg.com/vi/op7f7N_0x4w/mqdefault.jpg", "dur": "42:08"}, {"id": "HJUqAuPT4K4", "title": "Audiophile's Midnight: Deep Bass Slow Swing Jazz (Instrumental High-Fidelity)", "thumb": "https://i.ytimg.com/vi/HJUqAuPT4K4/mqdefault.jpg", "dur": "59:19"}, {"id": "WWwIwAwC_9k", "title": "The Audiophile Room: Warm Instrumental Jazz with Rich Bass Tones (Vinyl Style)", "thumb": "https://i.ytimg.com/vi/WWwIwAwC_9k/mqdefault.jpg", "dur": "43:32"}, {"id": "XSRHU7bGHC4", "title": "Cozy Room Jazz Playlist: Deep Bass & Slow Swing for Reading, Studying & Relaxing", "thumb": "https://i.ytimg.com/vi/XSRHU7bGHC4/mqdefault.jpg", "dur": "35:39"}, {"id": "opu2J48d1Sc", "title": "Deep Bass Late Night Jazz: Smooth Sax & Trumpet Swing for Audiophiles | Hi-Fi Sound", "thumb": "https://i.ytimg.com/vi/opu2J48d1Sc/mqdefault.jpg", "dur": "44:06"}, {"id": "YnJ7KkFw89c", "title": "Smooth Jazz & Chill Beats: Background Music to Stay Focused at Home", "thumb": "https://i.ytimg.com/vi/YnJ7KkFw89c/mqdefault.jpg", "dur": "36:59"}, {"id": "OdxtFm2NvGo", "title": "Deep Focus Jazz: Slow Swing & Low Fi Bass for Productive Work & Reading", "thumb": "https://i.ytimg.com/vi/OdxtFm2NvGo/mqdefault.jpg", "dur": "41:30"}, {"id": "tBl6VJXE5Ug", "title": "The Vinyl Den: Deep Bass Jazz for Late Night Reading", "thumb": "https://i.ytimg.com/vi/tBl6VJXE5Ug/mqdefault.jpg", "dur": "46:20"}, {"id": "NZOiZ_o3ymk", "title": "Analog Focus: Warm Jazz Playlist to Boost Your Productivity & Flow", "thumb": "https://i.ytimg.com/vi/NZOiZ_o3ymk/mqdefault.jpg", "dur": "35:53"}, {"id": "3IkN0UyCHUA", "title": "Relaxing Jazz for Late Night Study & Focus | 1980s Japanese Audio Aesthetic", "thumb": "https://i.ytimg.com/vi/3IkN0UyCHUA/mqdefault.jpg", "dur": "1:18:34"}, {"id": "8ILWEudE7lw", "title": "Retro Desk Companions: Upbeat & Smooth Jazz to Boost Your Mood", "thumb": "https://i.ytimg.com/vi/8ILWEudE7lw/mqdefault.jpg", "dur": "40:20"}, {"id": "d0h66f-lrYA", "title": "The Ultimate High-Fidelity Jazz Experience | Elegant Melodies for a Sophisticated Evening", "thumb": "https://i.ytimg.com/vi/d0h66f-lrYA/mqdefault.jpg", "dur": "1:03:35"}, {"id": "Gx7ldmpFXXE", "title": "Midnight Jazz in a Minimalist Room: Deep Focus & Relaxation 🌙", "thumb": "https://i.ytimg.com/vi/Gx7ldmpFXXE/mqdefault.jpg", "dur": "57:41"}, {"id": "HsQFc8VVAfE", "title": "Luxury Jazz & Elegant Vibes | Sophisticated Music for Deep Work & Focus", "thumb": "https://i.ytimg.com/vi/HsQFc8VVAfE/mqdefault.jpg", "dur": "1:04:40"}, {"id": "BDqGw2OOUkE", "title": "Midnight Jazz in a Luxurious Library 📚 Warm Fireplace & Vintage Tube Sound", "thumb": "https://i.ytimg.com/vi/BDqGw2OOUkE/mqdefault.jpg", "dur": "57:09"}, {"id": "oI4MEGA8RK0", "title": "Billionaire's Luxury Study: Elegant Jazz for Deep Focus & Success", "thumb": "https://i.ytimg.com/vi/oI4MEGA8RK0/mqdefault.jpg", "dur": "1:01:22"}, {"id": "Kr-ROIJw1GE", "title": "Luxury Home Library Jazz - Relaxing Instrumental Music for Reading & Focus", "thumb": "https://i.ytimg.com/vi/Kr-ROIJw1GE/mqdefault.jpg", "dur": "47:36"}, {"id": "OIJ8qDZ6IfM", "title": "Late Night Vinyl Sessions | Smooth Jazz for Deep Work & Intellectual Focus", "thumb": "https://i.ytimg.com/vi/OIJ8qDZ6IfM/mqdefault.jpg", "dur": "53:54"}, {"id": "jFg-Uzq10ms", "title": "Vintage Aesthetic Jazz 📻 Calm Your Mind, Find Your Focus", "thumb": "https://i.ytimg.com/vi/jFg-Uzq10ms/mqdefault.jpg", "dur": "57:37"}, {"id": "DNnRxKSqSWQ", "title": "POV: You’re Glamping Under a Million Stars ☕️ Smooth Jazz for Late Night Thoughts", "thumb": "https://i.ytimg.com/vi/DNnRxKSqSWQ/mqdefault.jpg", "dur": "1:02:38"}, {"id": "ovB_U0qsdv4", "title": "The Luxury Suite: Elegant Jazz Playlist for a Minimalist Modern Home", "thumb": "https://i.ytimg.com/vi/ovB_U0qsdv4/mqdefault.jpg", "dur": "59:22"}, {"id": "DeAKfwSLZSo", "title": "Vintage Presidential Lounge 🥃 Smooth Jazz Ambience from the White House", "thumb": "https://i.ytimg.com/vi/DeAKfwSLZSo/mqdefault.jpg", "dur": "1:03:03"}, {"id": "bqEFZ-IG-As", "title": "Midnight in Tokyo: Vintage Japanese Jazz from a Hidden Kissa", "thumb": "https://i.ytimg.com/vi/bqEFZ-IG-As/mqdefault.jpg", "dur": "1:04:34"}, {"id": "2e5uMqvxOl4", "title": "A Morning in Manhattan: 5-Star Hotel Lobby Ambience | Elegant Music for Reading & Focus", "thumb": "https://i.ytimg.com/vi/2e5uMqvxOl4/mqdefault.jpg", "dur": "1:00:01"}, {"id": "2hcYOKnzDNM", "title": "Luxury Hotel Lounge Ambience | Relaxing Jazz Music for Work, Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/2hcYOKnzDNM/mqdefault.jpg", "dur": "1:00:01"}, {"id": "_D-j_FtlSn8", "title": "Deep Focus in a Billionaire’s Private Library | Dark Luxury Lounge Music", "thumb": "https://i.ytimg.com/vi/_D-j_FtlSn8/mqdefault.jpg", "dur": "1:00:01"}, {"id": "EtAJy6fFB18", "title": "ELITE AMBIENCE | Modern Hotel Lounge Music for Productive Mornings & Relaxation", "thumb": "https://i.ytimg.com/vi/EtAJy6fFB18/mqdefault.jpg", "dur": "1:00:01"}, {"id": "k_KHfpK2CQ4", "title": "Productive Morning in a 5-Star Hotel Lobby | Luxury Lounge Music for Focus & Work", "thumb": "https://i.ytimg.com/vi/k_KHfpK2CQ4/mqdefault.jpg", "dur": "1:00:01"}, {"id": "1_oj06qTszA", "title": "Midnight in a Penthouse Lounge 🍸 Elegant Jazz & Soul for Productive Nights", "thumb": "https://i.ytimg.com/vi/1_oj06qTszA/mqdefault.jpg", "dur": "1:00:01"}, {"id": "QZihFoyrcS8", "title": "5-Star Hotel Lobby Ambience: Luxury Jazz for Deep Work & Focus", "thumb": "https://i.ytimg.com/vi/QZihFoyrcS8/mqdefault.jpg", "dur": "1:00:01"}, {"id": "5SSSVsp82Z8", "title": "Midnight Executive Suite 🕯️ Smooth Jazz for Late Night Productivity & Focus", "thumb": "https://i.ytimg.com/vi/5SSSVsp82Z8/mqdefault.jpg", "dur": "1:33:52"}, {"id": "T7pDuWh-QiI", "title": "Modern Elegance | Minimalist Luxury Lounge BGM for Productivity & Focus", "thumb": "https://i.ytimg.com/vi/T7pDuWh-QiI/mqdefault.jpg", "dur": "52:02"}, {"id": "2laiHKs-4tg", "title": "POV: You’re Reading in a 5-Star Hotel Lobby", "thumb": "https://i.ytimg.com/vi/2laiHKs-4tg/mqdefault.jpg", "dur": "54:06"}, {"id": "dRgBgxlNUIs", "title": "Sun-Drenched Florida Vibe: Sophisticated Hotel Lounge Music for Your Living Room", "thumb": "https://i.ytimg.com/vi/dRgBgxlNUIs/mqdefault.jpg", "dur": "1:03:54"}, {"id": "79ZaxMxJDrs", "title": "After Hours Escape: Sophisticated Moody Beats in a High-Rise Lounge", "thumb": "https://i.ytimg.com/vi/79ZaxMxJDrs/mqdefault.jpg", "dur": "1:24:49"}, {"id": "nH-O1ydvSDk", "title": "POV: You’re relaxing in a 5-star Tokyo hotel lounge on a rainy afternoon (Lounge Music)", "thumb": "https://i.ytimg.com/vi/nH-O1ydvSDk/mqdefault.jpg", "dur": "1:25:38"}, {"id": "krVOln-g9Kw", "title": "Title: Live Like a Millionaire: Elegant Lounge Music to Elevate Your Focus and Mood", "thumb": "https://i.ytimg.com/vi/krVOln-g9Kw/mqdefault.jpg", "dur": "48:28"}, {"id": "_AvgaYLB3kk", "title": "POV: You’re a Billionaire Relaxing in Your Private Mansion Lounge 🍸 Luxury Jazz & Deep House", "thumb": "https://i.ytimg.com/vi/_AvgaYLB3kk/mqdefault.jpg", "dur": "1:29:18"}, {"id": "KjAapvyLNjU", "title": "LUXURY HOTEL LOBBY JAZZ ☕️ Elegant Piano Music for Work, Study & Deep Focus", "thumb": "https://i.ytimg.com/vi/KjAapvyLNjU/mqdefault.jpg", "dur": "55:50"}, {"id": "LFeU3Av7_gU", "title": "Modern Hotel Lobby Music - Relaxing Piano Jazz for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/LFeU3Av7_gU/mqdefault.jpg", "dur": "59:20"}, {"id": "hru_L4rhLzA", "title": "POV: You’re Working in a Luxury Hotel Lounge ☕️ Relaxing Jazz Ambience for Deep Work", "thumb": "https://i.ytimg.com/vi/hru_L4rhLzA/mqdefault.jpg", "dur": "59:16"}, {"id": "BJDnxKQU9zM", "title": "Old Money Aesthetic: Sophisticated Hotel Lounge Music for Quiet Nights", "thumb": "https://i.ytimg.com/vi/BJDnxKQU9zM/mqdefault.jpg", "dur": "1:00:01"}, {"id": "pHT4ivAhZ9k", "title": "POV: You’re in a 5-Star Hotel Library Lounge at 2 AM 🍷 Smooth Jazz for Elite Minds", "thumb": "https://i.ytimg.com/vi/pHT4ivAhZ9k/mqdefault.jpg", "dur": "1:01:36"}, {"id": "jNWFA3S4-8w", "title": "Sunset Serenade: Cozy Jazz Melodies to Melt Your Stress Away", "thumb": "https://i.ytimg.com/vi/jNWFA3S4-8w/mqdefault.jpg", "dur": "1:04:21"}, {"id": "ellocDqhfAc", "title": "Presidential Vibes: Vintage Brass & Jazz for Late Night Productivity", "thumb": "https://i.ytimg.com/vi/ellocDqhfAc/mqdefault.jpg", "dur": "1:00:19"}, {"id": "u2AaLFunhWc", "title": "Executive Focus: Midnight Jazz for High-Stakes Deep Work", "thumb": "https://i.ytimg.com/vi/u2AaLFunhWc/mqdefault.jpg", "dur": "58:20"}, {"id": "InYxdd4F-xo", "title": "Deep Work Jazz: Midnight Melodies for Maximum Focus", "thumb": "https://i.ytimg.com/vi/InYxdd4F-xo/mqdefault.jpg", "dur": "1:02:34"}, {"id": "-pxBrtMxBVo", "title": "Midnight in the Palace | Smooth Jazz Ambience for a Royal Night", "thumb": "https://i.ytimg.com/vi/-pxBrtMxBVo/mqdefault.jpg", "dur": "58:16"}, {"id": "c-6WuFaOBgQ", "title": "Tokyo Skyline Ska – Energetic Jazz Fusion for Maximum Productivity", "thumb": "https://i.ytimg.com/vi/c-6WuFaOBgQ/mqdefault.jpg", "dur": "52:31"}, {"id": "eyNMVv3i3Jo", "title": "Midnight Jazz & Soft Piano Music | Relaxing BGM for Focus, Study and Deep Work", "thumb": "https://i.ytimg.com/vi/eyNMVv3i3Jo/mqdefault.jpg", "dur": "1:14:49"}, {"id": "MjKr9zCDza4", "title": "Blue Night & Golden Light: Sophisticated Smooth Jazz for an Elegant Evening", "thumb": "https://i.ytimg.com/vi/MjKr9zCDza4/mqdefault.jpg", "dur": "59:44"}, {"id": "Nl64mE-prdo", "title": "Pure Luxury: The Ultimate Smooth Jazz Playlist for a Sophisticated Night In", "thumb": "https://i.ytimg.com/vi/Nl64mE-prdo/mqdefault.jpg", "dur": "1:00:50"}, {"id": "55qGRjtHiaY", "title": "Midnight in Manhattan: Smooth Jazz & Luxury Penthouse Ambience", "thumb": "https://i.ytimg.com/vi/55qGRjtHiaY/mqdefault.jpg", "dur": "1:04:16"}, {"id": "0BjRv4Dvnn8", "title": "Midnight City Escape: Smooth Jazz for Rainy Nights & Deep Relaxation", "thumb": "https://i.ytimg.com/vi/0BjRv4Dvnn8/mqdefault.jpg", "dur": "1:01:39"}, {"id": "vos45srKuBo", "title": "Midnight Penthouse Jazz: Sleek & Sophisticated Beats for Urban Nights", "thumb": "https://i.ytimg.com/vi/vos45srKuBo/mqdefault.jpg", "dur": "1:05:13"}, {"id": "JQQWms36ZG8", "title": "Midnight Rhodes & Deep Bass - Minimalist Jazz for High-Fidelity Listening", "thumb": "https://i.ytimg.com/vi/JQQWms36ZG8/mqdefault.jpg", "dur": "1:04:31"}, {"id": "ykoZ75aE3kU", "title": "The Sound of Solitude: Warm Rhodes Jazz for a Starry Night", "thumb": "https://i.ytimg.com/vi/ykoZ75aE3kU/mqdefault.jpg", "dur": "55:49"}, {"id": "j93jT3T61yE", "title": "Your Private Villa in Mt. Fuji: Elegant Spring Jazz 🌸🗻", "thumb": "https://i.ytimg.com/vi/j93jT3T61yE/mqdefault.jpg", "dur": "1:02:22"}, {"id": "o-FpDoqNink", "title": "Midnight Luxury Jazz Bar: High-End Vintage Sound & Smooth Melodies for a Sophisticated Night", "thumb": "https://i.ytimg.com/vi/o-FpDoqNink/mqdefault.jpg", "dur": "56:34"}, {"id": "a56PDbQsqxI", "title": "Malibu Golden Hour: High-Fidelity Jazz for Coastal Living", "thumb": "https://i.ytimg.com/vi/a56PDbQsqxI/mqdefault.jpg", "dur": "1:00:00"}, {"id": "YPDL1xR6oN8", "title": "ou’re in a Late Night Jazz Club in New York (Midnight Jazz Playlist", "thumb": "https://i.ytimg.com/vi/YPDL1xR6oN8/mqdefault.jpg", "dur": "1:07:21"}, {"id": "rmwF00FF2hU", "title": "Smooth Jazz Music - Relaxing Sunset Jazz Piano for Work, Study & Focus", "thumb": "https://i.ytimg.com/vi/rmwF00FF2hU/mqdefault.jpg", "dur": "1:00:21"}, {"id": "_5efD-6R6As", "title": "Tokyo Jazz Fusion & Ska: Upbeat Instrumental Music for Work, Focus, and Energy", "thumb": "https://i.ytimg.com/vi/_5efD-6R6As/mqdefault.jpg", "dur": "53:45"}, {"id": "tyEOBcpW1aM", "title": "High-Energy Saxophone Jazz: Upbeat Brass Fusion for Deep Work & Productivity", "thumb": "https://i.ytimg.com/vi/tyEOBcpW1aM/mqdefault.jpg", "dur": "1:02:35"}, {"id": "sSniLoCSy9k", "title": "Luxury Private Lounge Jazz • Smooth Saxophone & Cozy Fireplace for Stress Relief", "thumb": "https://i.ytimg.com/vi/sSniLoCSy9k/mqdefault.jpg", "dur": "1:21:44"}, {"id": "Gte1BZcWGbE", "title": "A Night at the Vintage Studio | Relaxing Jazz Piano & Double Bass Mix", "thumb": "https://i.ytimg.com/vi/Gte1BZcWGbE/mqdefault.jpg", "dur": "59:31"}, {"id": "YqaMGIPbtb4", "title": "Vintage Echoes: Sophisticated Jazz & High-Fidelity Sound", "thumb": "https://i.ytimg.com/vi/YqaMGIPbtb4/mqdefault.jpg", "dur": "1:02:35"}, {"id": "K78EJKBF1e8", "title": "Midnight Coffee Jazz - Soft Piano Melodies to Wash Away the Day's Stress", "thumb": "https://i.ytimg.com/vi/K78EJKBF1e8/mqdefault.jpg", "dur": "1:06:23"}, {"id": "KcW0n_HHWig", "title": "Wooden Warmth: Pure Jazz Melodies in a High-Fidelity Listening Room", "thumb": "https://i.ytimg.com/vi/KcW0n_HHWig/mqdefault.jpg", "dur": "1:07:37"}, {"id": "2-m0r2bJLJk", "title": "Elevate Your Space: Sophisticated Jazz Melodies from a High-Rise Sanctuary", "thumb": "https://i.ytimg.com/vi/2-m0r2bJLJk/mqdefault.jpg", "dur": "1:12:37"}, {"id": "jUnBp-kWBHo", "title": "Urban Smooth Jazz - Sophisticated Night City Vibes for Deep Focus & Relaxation", "thumb": "https://i.ytimg.com/vi/jUnBp-kWBHo/mqdefault.jpg", "dur": "1:09:50"}, {"id": "1REbD1lqUVs", "title": "Analog Warmth // Sophisticated Smooth Jazz on 1980s Vintage Hi-Fi", "thumb": "https://i.ytimg.com/vi/1REbD1lqUVs/mqdefault.jpg", "dur": "1:09:05"}, {"id": "J9CcIB1srRQ", "title": "Midnight Penthouse Vibes: Luxury Urban Smooth Jazz for Your Late Night", "thumb": "https://i.ytimg.com/vi/J9CcIB1srRQ/mqdefault.jpg", "dur": "1:04:59"}, {"id": "r1y_3CZlbiI", "title": "Penthouse Lounge | Sophisticated Smooth Jazz & Late Night City Vibes", "thumb": "https://i.ytimg.com/vi/r1y_3CZlbiI/mqdefault.jpg", "dur": "1:14:24"}, {"id": "_vCwDHETnPk", "title": "Reclaiming My Peace. | Refreshing Morning Jazz to Wash Away the Workweek", "thumb": "https://i.ytimg.com/vi/_vCwDHETnPk/mqdefault.jpg", "dur": "1:09:28"}, {"id": "r4Il8wRYnvM", "title": "Smooth Jazz 2026 | Smooth & Groovy Urban Jazz Mix for Focused Work & Evening Chill", "thumb": "https://i.ytimg.com/vi/r4Il8wRYnvM/mqdefault.jpg", "dur": "1:00:01"}, {"id": "g51ixizyUiQ", "title": "High-Fidelity Urban Smooth Jazz | Sophisticated Midnight BGM for Relaxation", "thumb": "https://i.ytimg.com/vi/g51ixizyUiQ/mqdefault.jpg", "dur": "1:18:35"}, {"id": "LUwFzHCPC7s", "title": "Luxury Night Chillout: Deep Relaxation BGM for Focus & Reading", "thumb": "https://i.ytimg.com/vi/LUwFzHCPC7s/mqdefault.jpg", "dur": "1:00:51"}, {"id": "ODWClPyMYr8", "title": "Midnight Smooth Jazz & Luxury Vinyl Vibes - Relaxing Instrumental Music for a Sophisticated Evening", "thumb": "https://i.ytimg.com/vi/ODWClPyMYr8/mqdefault.jpg", "dur": "59:08"}, {"id": "BW2Z_Xyl2EQ", "title": "Elegant Night Jazz - Luxury Hi-Fi Sound & Cozy Fireplace Ambience for Relaxation", "thumb": "https://i.ytimg.com/vi/BW2Z_Xyl2EQ/mqdefault.jpg", "dur": "1:01:52"}, {"id": "azlzJGAVClI", "title": "Classy Vintage Jazz for Work & Study - Elegant Big Band Instrumental", "thumb": "https://i.ytimg.com/vi/azlzJGAVClI/mqdefault.jpg", "dur": "1:00:01"}, {"id": "83ZuwMGMecE", "title": "【Vintage Jazz】Premium Jazz for Reading & Relaxation - 1 Hour of Pure Analog Sound", "thumb": "https://i.ytimg.com/vi/83ZuwMGMecE/mqdefault.jpg", "dur": "1:47:12"}, {"id": "YTQ9PJOkMwI", "title": "Ocean Breeze Smooth Jazz: Relaxing Beachside Playlist for Summer Vibe", "thumb": "https://i.ytimg.com/vi/YTQ9PJOkMwI/mqdefault.jpg", "dur": "54:20"}, {"id": "J5Aw96W2ers", "title": "Urban Night Smooth Jazz: Sophisticated Saxophone Rhythms for Deep Work", "thumb": "https://i.ytimg.com/vi/J5Aw96W2ers/mqdefault.jpg", "dur": "1:10:07"}, {"id": "80LXjH0P5vo", "title": "Ultimate Immersion: Deep & Quiet Smooth Jazz in a Vintage Audiophile Room", "thumb": "https://i.ytimg.com/vi/80LXjH0P5vo/mqdefault.jpg", "dur": "1:10:59"}, {"id": "7S4xzIgZITQ", "title": "Smooth Jazz for Deep Work & Concentration: Quiet Saxophone Rhythms for Productivity", "thumb": "https://i.ytimg.com/vi/7S4xzIgZITQ/mqdefault.jpg", "dur": "1:01:21"}, {"id": "X-SsE6x9Ky8", "title": "Paris Golden Hour Smooth Jazz: Quiet Saxophone Rhythms for Deep Work & Focus", "thumb": "https://i.ytimg.com/vi/X-SsE6x9Ky8/mqdefault.jpg", "dur": "1:01:01"}, {"id": "5XZQsss17O0", "title": "Midnight Urban Smooth Jazz 🌃 Relaxing Saxophone BGM for Working & Studying", "thumb": "https://i.ytimg.com/vi/5XZQsss17O0/mqdefault.jpg", "dur": "1:13:49"}, {"id": "PkcPFynFCgo", "title": "Midnight Luxury Jazz: Smooth Saxophone & Soft Beats for Deep Focus", "thumb": "https://i.ytimg.com/vi/PkcPFynFCgo/mqdefault.jpg", "dur": "1:10:09"}, {"id": "UDrEtm3oK6g", "title": "Midnight Urban Smooth Jazz (Slowed & Reverb) 🌃 Nostalgic Vaporwave for Working & Studying", "thumb": "https://i.ytimg.com/vi/UDrEtm3oK6g/mqdefault.jpg", "dur": "1:13:12"}, {"id": "npCR1jSRBFE", "title": "Smooth Jazz for Working | 1 Hour of Ultimate Urban Night Chill", "thumb": "https://i.ytimg.com/vi/npCR1jSRBFE/mqdefault.jpg", "dur": "1:04:45"}, {"id": "PzMViE5MkWM", "title": "Paris Work Jazz – Effortless Focus from the First Note", "thumb": "https://i.ytimg.com/vi/PzMViE5MkWM/mqdefault.jpg", "dur": "1:03:39"}, {"id": "BcWYBRiXGH0", "title": "Executive Work Jazz – Big Band Smooth Jazz with Unconventional Sounds", "thumb": "https://i.ytimg.com/vi/BcWYBRiXGH0/mqdefault.jpg", "dur": "1:11:58"}, {"id": "VpdTJ9o57jA", "title": "Midnight Big Band Jazz Lounge – Vintage Brass & Smooth Night Swing", "thumb": "https://i.ytimg.com/vi/VpdTJ9o57jA/mqdefault.jpg", "dur": "1:22:05"}, {"id": "x8SnPLAX6i0", "title": "Blueprint of Funk Groove – 70s Ludwig Drum Kit in Glowing Detail", "thumb": "https://i.ytimg.com/vi/x8SnPLAX6i0/mqdefault.jpg", "dur": "1:12:23"}, {"id": "tFRwxCdT9_s", "title": "Inside the Funk Guitar Soul – The Art Behind Every Groove", "thumb": "https://i.ytimg.com/vi/tFRwxCdT9_s/mqdefault.jpg", "dur": "1:06:57"}, {"id": "GF1EBT3pPT0", "title": "Executive Suite Jazz – High-End Speakers, Deep Relaxation", "thumb": "https://i.ytimg.com/vi/GF1EBT3pPT0/mqdefault.jpg", "dur": "59:58"}, {"id": "8lX-5cLD9F8", "title": "Tokyo Funk Lounge – Shuffle Jazz Beats for Late-Night Flow", "thumb": "https://i.ytimg.com/vi/8lX-5cLD9F8/mqdefault.jpg", "dur": "55:54"}, {"id": "HMeNZVijVRU", "title": "Groovy Funk Jazz Lounge – Retro Shuffle Beats & Fun Vibes", "thumb": "https://i.ytimg.com/vi/HMeNZVijVRU/mqdefault.jpg", "dur": "1:25:13"}, {"id": "_J34rvndJcE", "title": "Elegant Hi-Fi Jazz – Deep Lounge Sound for Relaxing Nights", "thumb": "https://i.ytimg.com/vi/_J34rvndJcE/mqdefault.jpg", "dur": "45:23"}, {"id": "zR15GjQzuuk", "title": "Snowy Retro Funk Jazz – Playful 70s Groove on Vinyl", "thumb": "https://i.ytimg.com/vi/zR15GjQzuuk/mqdefault.jpg", "dur": "54:45"}, {"id": "kSiNyWuaceU", "title": "Groovy Japanese Funk Jazz – Shuffle Swing Beats & Vintage Speakers", "thumb": "https://i.ytimg.com/vi/kSiNyWuaceU/mqdefault.jpg", "dur": "1:15:11"}, {"id": "T_ZFneZtAvc", "title": "Vintage Japanese Funk Jazz – Retro 70s Comedy Groove & Hi-Fi Speaker Lounge", "thumb": "https://i.ytimg.com/vi/T_ZFneZtAvc/mqdefault.jpg", "dur": "55:50"}, {"id": "C0OLTIPVFQc", "title": "Oval Office Jazz – High-End Sound for Powerful Nights", "thumb": "https://i.ytimg.com/vi/C0OLTIPVFQc/mqdefault.jpg", "dur": "29:57"}, {"id": "XiMkJJgGCCo", "title": "Smooth & Focused Jazz – Firelight Reflections in Crystal Audio", "thumb": "https://i.ytimg.com/vi/XiMkJJgGCCo/mqdefault.jpg", "dur": "1:37:32"}, {"id": "EYq4uhm_DTM", "title": "Luxury Jazz R&B Mix – High-End Speakers in Royal Palace Ambience", "thumb": "https://i.ytimg.com/vi/EYq4uhm_DTM/mqdefault.jpg", "dur": "1:27:29"}, {"id": "tq26giwFHr8", "title": "Premium Jazz Lounge – Warm Fireplace Nights & Smooth 90s Grooves", "thumb": "https://i.ytimg.com/vi/tq26giwFHr8/mqdefault.jpg", "dur": "1:28:49"}, {"id": "lp9jn_ZPr0E", "title": "The Art of Stereo — Vintage Sound, Timeless Soul　A gentle jazz playlist for everyday relaxation", "thumb": "https://i.ytimg.com/vi/lp9jn_ZPr0E/mqdefault.jpg", "dur": "59:16"}, {"id": "SX6rj2ESbAs", "title": "“Velvet Night Jazz – Soulful Modal Grooves for a Luxury Evening”", "thumb": "https://i.ytimg.com/vi/SX6rj2ESbAs/mqdefault.jpg", "dur": "1:01:31"}, {"id": "aFj0E5X0Wik", "title": "Vintage Hi-Fi Jazz – Powerful Sound Experience", "thumb": "https://i.ytimg.com/vi/aFj0E5X0Wik/mqdefault.jpg", "dur": "1:52:38"}, {"id": "pX2vDXp2-4Y", "title": "Luxury Jazz Sound – Timeless Relaxation", "thumb": "https://i.ytimg.com/vi/pX2vDXp2-4Y/mqdefault.jpg", "dur": "1:36:46"}, {"id": "-pr2ONHD73I", "title": "Golden Hour Jazz – Chill & Smooth Relaxation", "thumb": "https://i.ytimg.com/vi/-pr2ONHD73I/mqdefault.jpg", "dur": "2:02:26"}, {"id": "V2jl5tzIaUo", "title": "Jazz resonating in the autumn forest - your relaxing time", "thumb": "https://i.ytimg.com/vi/V2jl5tzIaUo/mqdefault.jpg", "dur": "1:13:19"}, {"id": "tQBcXhJ6szk", "title": "Smooth jazz for a perfect evening - relaxing atmosphere", "thumb": "https://i.ytimg.com/vi/tQBcXhJ6szk/mqdefault.jpg", "dur": "1:09:53"}, {"id": "-wsSG4IS9uY", "title": "Cozy Jazz Playlist – Vintage Hi-Fi Sound & Relaxation", "thumb": "https://i.ytimg.com/vi/-wsSG4IS9uY/mqdefault.jpg", "dur": "2:14:04"}, {"id": "7OycOJx6Ub0", "title": "Relaxing Jazz Café – Brighten Up Your Time with Calm Background Music", "thumb": "https://i.ytimg.com/vi/7OycOJx6Ub0/mqdefault.jpg", "dur": "1:11:21"}, {"id": "Aaab13m9TZM", "title": "Cozy Jazz Café – Relaxing Background Music for Study & Work", "thumb": "https://i.ytimg.com/vi/Aaab13m9TZM/mqdefault.jpg", "dur": "1:16:31"}, {"id": "U8IemKUKtdc", "title": "Relaxing Jazz 20 Songs – Coffee, Study & Night Vibes", "thumb": "https://i.ytimg.com/vi/U8IemKUKtdc/mqdefault.jpg", "dur": "1:19:35"}];
+const TOKEN_KEY = 'gh_token_ki_musik';
+let ratings = {}, meta = {}, changed = false;
+let kanalMeta = {};
+let editSelection = {}, editOpen = false;
+
+// Robuste UTF-8-sichere Base64-Kodierung/Dekodierung (für koreanische/asiatische Zeichen etc.)
+function b64EncodeUtf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64DecodeUtf8(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem(TOKEN_KEY, t);
+  document.getElementById('token-overlay').style.display = 'none';
+  init();
+}
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + (cls || '');
+}
+
+window.addEventListener('load', () => {
+  if (getToken()) {
+    document.getElementById('token-overlay').style.display = 'none';
+    init();
+  }
+});
+
+async function init() {
+  await loadRatings();
+  await loadKanalMeta();
+  renderGrid();
+}
+
+async function loadKanalMeta() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      kanalMeta = JSON.parse(b64DecodeUtf8(data.content));
+    }
+  } catch(e) {}
+  const entry = kanalMeta[KANAL] || {};
+  document.getElementById('meta-categories').value = (entry.categories !== undefined) ? entry.categories : ORIG_CATEGORIES;
+  document.getElementById('meta-notes').value = entry.notizen || '';
+}
+
+function setMetaStatus(msg, cls) {
+  const el = document.getElementById('meta-status');
+  el.textContent = msg;
+  el.className = 'meta-status ' + (cls || '');
+}
+
+async function saveMeta() {
+  const btn = document.getElementById('meta-save-btn');
+  btn.disabled = true;
+  setMetaStatus('Speichern...', '');
+  const newCategories = document.getElementById('meta-categories').value.trim();
+  const newNotes = document.getElementById('meta-notes').value;
+  try {
+    let sha = null;
+    let currentMeta = {};
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      currentMeta = JSON.parse(b64DecodeUtf8(existing.content));
+    }
+    currentMeta[KANAL] = { categories: newCategories, notizen: newNotes };
+    const encoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+    const body = { message: 'Kategorien/Notizen aktualisiert: ' + KANAL, content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      kanalMeta = currentMeta;
+      setMetaStatus('✓ Gespeichert', 'ok');
+    } else {
+      const err = await putResp.json();
+      setMetaStatus('Fehler: ' + (err.message || putResp.status), 'err');
+    }
+  } catch(e) {
+    setMetaStatus('Netzwerkfehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const resp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      const content = JSON.parse(b64DecodeUtf8(data.content));
+      ratings = content.ratings || {};
+      meta = content.meta || {};
+    }
+  } catch(e) {}
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.id = 'song-' + v.id;
+    const cur = ratings[v.id] || 0;
+    const radioUrl = `radio2.html?kanal=${KANAL}&video=${v.id}`;
+    card.innerHTML = `
+      <a href="${radioUrl}" title="Im Radio-Player abspielen" class="play-btn">▶</a>
+      <a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" style="display:flex;align-items:center;gap:14px;flex:1;text-decoration:none;color:inherit">
+        ${v.thumb ? `<img src="${v.thumb}" class="thumb">` : '<div class="nothumb">▶</div>'}
+        <div class="video-info">
+          <span class="video-title">${v.title}</span>
+          <span class="video-dur">${v.dur}</span>
+        </div>
+      </a>
+      <div class="rating-area">
+        <div class="stars" id="stars-${v.id}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= cur ? 'active' : ''}" onclick="setRating('${v.id}',${n})">★</span>`).join('')}
+        </div>
+        <button class="clear-btn" onclick="setRating('${v.id}',0)">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateCount();
+  highlightSongFromUrl();
+}
+
+function highlightSongFromUrl() {
+  const songId = new URLSearchParams(window.location.search).get('song');
+  if (!songId) return;
+  const el = document.getElementById('song-' + songId);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px rgba(180,150,255,0.9)';
+    el.style.borderColor = 'rgba(180,150,255,0.9)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 4000);
+  }, 300);
+}
+
+function setRating(id, val) {
+  ratings[id] = val;
+  const v = VIDEOS.find(v => v.id === id);
+  if (val >= 4 && v) {
+    meta[id] = { title: v.title, channel: CHANNEL };
+  } else {
+    delete meta[id];
+  }
+  changed = true;
+  document.getElementById('changed-hint').style.display = 'inline';
+  document.querySelectorAll(`#stars-${id} .star`).forEach((s,i) => s.classList.toggle('active', i < val));
+  updateCount();
+}
+
+function updateCount() {
+  document.getElementById('rated-count').textContent = Object.values(ratings).filter(v => v > 0).length;
+}
+
+async function saveRatings() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  setStatus('Speichern...', '');
+  try {
+    let sha = null;
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) { const existing = await getResp.json(); sha = existing.sha; const exContent = JSON.parse(b64DecodeUtf8(existing.content)); meta = Object.assign(exContent.meta || {}, meta); }
+    const json = JSON.stringify({ channel: CHANNEL, updated: new Date().toISOString(), ratings, meta }, null, 2);
+    const encoded = b64EncodeUtf8(json);
+    const body = { message: 'Bewertung aktualisiert', content: encoded };
+    if (sha) body.sha = sha;
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (putResp.ok) {
+      changed = false;
+      document.getElementById('changed-hint').style.display = 'none';
+      setStatus('✓ In GitHub gespeichert', 'status-ok');
+    } else {
+      const err = await putResp.json();
+      setStatus('Fehler: ' + (err.message || putResp.status), 'status-err');
+    }
+  } catch(e) {
+    setStatus('Netzwerkfehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').classList.toggle('open', editOpen);
+  if (editOpen) {
+    VIDEOS.forEach(v => { if (!(v.id in editSelection)) editSelection[v.id] = true; });
+    document.getElementById('edit-search').value = '';
+    renderEditList();
+  }
+}
+
+function renderEditList() {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  const list = document.getElementById('edit-list');
+  list.innerHTML = '';
+  const filtered = VIDEOS.filter(v => !q || v.title.toLowerCase().includes(q));
+  filtered.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'edit-row';
+    row.innerHTML = `
+      <input type="checkbox" id="chk-${v.id}" ${editSelection[v.id] !== false ? 'checked' : ''} onchange="editSelection['${v.id}'] = this.checked; updateEditCount();">
+      <span class="edit-row-title">${v.title}</span>
+      <span class="edit-row-dur">${v.dur}</span>`;
+    list.appendChild(row);
+  });
+  updateEditCount();
+}
+
+function editSelectAll(val) {
+  const q = document.getElementById('edit-search').value.trim().toLowerCase();
+  VIDEOS.forEach(v => {
+    if (!q || v.title.toLowerCase().includes(q)) editSelection[v.id] = val;
+  });
+  renderEditList();
+}
+
+function updateEditCount() {
+  const total = VIDEOS.length;
+  const kept = VIDEOS.filter(v => editSelection[v.id] !== false).length;
+  document.getElementById('edit-count').textContent = kept + ' / ' + total + ' ausgewählt';
+}
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById('edit-status');
+  el.textContent = msg;
+  el.className = 'edit-status ' + (cls || '');
+}
+
+async function saveEdit() {
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled = true;
+  setEditStatus('Speichern...', '');
+  const keptVideos = VIDEOS.filter(v => editSelection[v.id] !== false);
+  const removedIds = VIDEOS.filter(v => editSelection[v.id] === false).map(v => v.id);
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Redaktion: Videoliste aktualisiert (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+
+    if (removedIds.length > 0) {
+      const metaGetResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+      );
+      let metaSha = null;
+      let currentMeta = {};
+      if (metaGetResp.ok) {
+        const existingMeta = await metaGetResp.json();
+        metaSha = existingMeta.sha;
+        currentMeta = JSON.parse(b64DecodeUtf8(existingMeta.content));
+      }
+      const entry = currentMeta[KANAL] || {};
+      const existingBlacklist = Array.isArray(entry.blacklist) ? entry.blacklist : [];
+      entry.blacklist = Array.from(new Set([...existingBlacklist, ...removedIds]));
+      currentMeta[KANAL] = entry;
+      const metaEncoded = b64EncodeUtf8(JSON.stringify(currentMeta, null, 2));
+      const metaBody = { message: 'Blacklist aktualisiert: ' + KANAL, content: metaEncoded };
+      if (metaSha) metaBody.sha = metaSha;
+      const metaPutResp = await fetch(
+        `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${META_FILE}`,
+        {
+          method: 'PUT',
+          headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(metaBody)
+        }
+      );
+      if (!metaPutResp.ok) {
+        const err = await metaPutResp.json();
+        throw new Error('Blacklist: ' + (err.message || metaPutResp.status));
+      }
+      kanalMeta = currentMeta;
+    }
+
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setEditStatus('✓ Gespeichert (' + removedIds.length + ' entfernt)', 'ok');
+  } catch(e) {
+    setEditStatus('Fehler: ' + e.message, 'err');
+  }
+  btn.disabled = false;
+}
+
+function checkThumbUnavailable(v) {
+  // Fragt YouTube direkt über die oEmbed-Schnittstelle, ob das Video noch existiert
+  // und öffentlich ist. Wichtig: YouTube liefert HTTP 401, wenn der Kanalinhaber
+  // Embedding deaktiviert hat – das Video existiert dann noch und ist auf YouTube
+  // selbst normal abspielbar, nur nicht einbettbar. Das darf NICHT als "nicht
+  // verfügbar" gewertet werden (sonst würden intakte Videos gelöscht). Nur ein
+  // echter 404/400 (Video gelöscht/privat/nicht gefunden) zählt als nicht verfügbar.
+  const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + v.id)}&format=json`;
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 8000));
+  return Promise.race([
+    fetch(oembedUrl, { method: 'GET' }).then(r => (!r.ok && r.status !== 401) ? 'unavailable' : 'ok').catch(() => 'timeout'),
+    timeout
+  ]).then(result => result === 'unavailable'); // bei Timeout/Netzwerkfehler im Zweifel behalten
+}
+
+async function checkAllThumbs(videos, onProgress) {
+  const BATCH_SIZE = 20;
+  const results = [];
+  for (let i = 0; i < videos.length; i += BATCH_SIZE) {
+    const batch = videos.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(v => checkThumbUnavailable(v).then(bad => ({ id: v.id, bad }))));
+    results.push(...batchResults);
+    if (onProgress) onProgress(Math.min(i + BATCH_SIZE, videos.length), videos.length);
+  }
+  return results;
+}
+
+let removeUnavailablePending = null;
+
+async function removeUnavailable() {
+  const btn = document.getElementById('remove-unavailable-btn');
+
+  // Zweiter Klick bestätigt die zuvor ermittelte Löschung. Bewusst kein
+  // natives confirm() – das wird auf manchen mobilen Browsern (z.B. iPad)
+  // blockiert/unterdrückt und lässt die Aktion dann lautlos hängen.
+  if (removeUnavailablePending) {
+    const pending = removeUnavailablePending;
+    removeUnavailablePending = null;
+    clearTimeout(pending.timeoutId);
+    await doRemoveUnavailable(pending.keptVideos, pending.missingCount);
+    return;
+  }
+
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  setStatus('Prüfe Verfügbarkeit der Thumbnails (0/' + VIDEOS.length + ')...', '');
+  try {
+    const checks = await checkAllThumbs(VIDEOS, (done, total) => {
+      setStatus('Prüfe Verfügbarkeit der Thumbnails (' + done + '/' + total + ')...', '');
+    });
+    const missingIds = new Set(checks.filter(c => c.bad).map(c => c.id));
+    const missing = VIDEOS.filter(v => missingIds.has(v.id));
+    if (missing.length === 0) {
+      setStatus('Keine nicht verfügbaren Videos gefunden', 'status-ok');
+      btn.disabled = false;
+      return;
+    }
+    const keptVideos = VIDEOS.filter(v => !missingIds.has(v.id));
+    const timeoutId = setTimeout(() => {
+      if (removeUnavailablePending) {
+        removeUnavailablePending = null;
+        btn.textContent = originalLabel;
+        setStatus('Abgebrochen (Zeit abgelaufen)', '');
+      }
+    }, 15000);
+    removeUnavailablePending = { keptVideos, missingCount: missing.length, timeoutId };
+    btn.textContent = '⚠️ ' + missing.length + ' entfernen – nochmal klicken zum Bestätigen';
+    setStatus('Bitte innerhalb von 15 Sekunden erneut klicken zum Bestätigen', '');
+    btn.disabled = false;
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+    btn.disabled = false;
+  }
+}
+
+async function doRemoveUnavailable(keptVideos, missingCount) {
+  const btn = document.getElementById('remove-unavailable-btn');
+  btn.disabled = true;
+  btn.textContent = '🗑️ Nicht verfügbare entfernen';
+  setStatus('Entferne nicht verfügbare Videos...', '');
+  try {
+    let sha = null;
+    let rawContent = '';
+    const getResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      { headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    if (getResp.ok) {
+      const existing = await getResp.json();
+      sha = existing.sha;
+      rawContent = b64DecodeUtf8(existing.content);
+    } else {
+      throw new Error('Kanal-Datei konnte nicht geladen werden');
+    }
+    const newVideosJson = JSON.stringify(keptVideos);
+    let newContent = rawContent.replace(/const VIDEOS = \[.*?\];/s, 'const VIDEOS = ' + newVideosJson + ';');
+    newContent = newContent.replace(/(<div class="channel-count">)\d+(\s*Videos<\/div>)/, '$1' + keptVideos.length + '$2');
+    const encoded = b64EncodeUtf8(newContent);
+    const body = { message: 'Nicht verfügbare Videos entfernt (' + KANAL + ')', content: encoded, sha };
+    const putResp = await fetch(
+      `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${KANAL}`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!putResp.ok) {
+      const err = await putResp.json();
+      throw new Error(err.message || ('HTTP ' + putResp.status));
+    }
+    VIDEOS.length = 0;
+    keptVideos.forEach(v => VIDEOS.push(v));
+    document.querySelector('.channel-count').textContent = VIDEOS.length + ' Videos';
+    renderGrid();
+    setStatus('✓ ' + missingCount + ' nicht verfügbare(s) Video(s) entfernt', 'status-ok');
+  } catch(e) {
+    setStatus('Fehler: ' + e.message, 'status-err');
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
